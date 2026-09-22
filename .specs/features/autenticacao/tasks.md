@@ -275,7 +275,7 @@ T23 → T24 → T25
 
 ---
 
-### T7: Declarar `AUTH_USER_MODEL` e gerar a migration inicial
+### T7: Declarar `AUTH_USER_MODEL` e gerar a migration inicial ✅
 
 **What**: Apontar `AUTH_USER_MODEL` para `contas.Usuario` e gerar/aplicar a primeira migration do projeto.
 **Where**: `config/settings.py`
@@ -290,17 +290,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `AUTH_USER_MODEL = "contas.Usuario"` declarado
-- [ ] `contas/migrations/0001_initial.py` gerado e aplicado
-- [ ] Esta é a **primeira** migration aplicada no projeto (AD-005)
-- [ ] Teste de integração: a tabela `contas_usuario` existe e tem as colunas `perfil` e `email`
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 1 teste passa (sem deleções silenciosas)
+- [x] `AUTH_USER_MODEL = "contas.Usuario"` declarado
+- [x] `contas/migrations/0001_initial.py` gerado e aplicado
+- [x] Esta é a **primeira** migration aplicada no projeto (AD-005)
+- [x] Teste de integração: a tabela `contas_usuario` existe e tem as colunas `perfil` e `email`
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 1 teste passa (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): declara AUTH_USER_MODEL e migration inicial`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

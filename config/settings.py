@@ -126,6 +126,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+# Modelo de usuario do projeto (AD-004, AD-005).
+# Declarado antes da primeira migration: trocar depois exige recriar o banco.
+AUTH_USER_MODEL = "contas.Usuario"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
