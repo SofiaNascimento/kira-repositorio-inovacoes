@@ -234,7 +234,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Design | Pending |
+| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-21 | P2: Atribuição de perfil restrita | - | Pending |
 | AUTH-22 | P2: Atribuição de perfil restrita | - | Pending |
 | AUTH-23 | Edge case: conta inativa | Design | Pending |

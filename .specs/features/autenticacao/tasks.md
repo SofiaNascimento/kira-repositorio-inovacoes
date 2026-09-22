@@ -368,7 +368,7 @@ T23 → T24 → T25
 
 ---
 
-### T10: `UsuarioManager` forçando perfil no `createsuperuser`
+### T10: `UsuarioManager` forçando perfil no `createsuperuser` ✅
 
 **What**: Estender `UserManager` para que `create_superuser` grave `perfil=ADMINISTRADOR`.
 **Where**: `contas/models.py`
@@ -383,16 +383,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `create_superuser` grava `perfil=ADMINISTRADOR` sem receber o argumento (AUTH-20)
-- [ ] `create_user` continua produzindo `perfil=USUARIO` (AUTH-17)
-- [ ] Teste de integração cobre os dois caminhos, verificando o valor persistido
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] `create_superuser` grava `perfil=ADMINISTRADOR` sem receber o argumento (AUTH-20)
+- [x] `create_user` continua produzindo `perfil=USUARIO` (AUTH-17)
+- [x] Teste de integração cobre os dois caminhos, verificando o valor persistido
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 2 testes passam (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): forca perfil ADMINISTRADOR em createsuperuser`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

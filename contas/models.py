@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -15,6 +15,19 @@ class PerfilUsuario(models.TextChoices):
 
     USUARIO = "USUARIO", "Usuário"
     ADMINISTRADOR = "ADMINISTRADOR", "Administrador"
+
+
+class UsuarioManager(UserManager):
+    """Manager de Usuario.
+
+    Existe por um motivo so: garantir que a conta criada por createsuperuser
+    nasca ADMINISTRADOR (AUTH-20). No MVP e assim que o primeiro
+    administrador passa a existir, e ele precisa dos poderes de curadoria.
+    """
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault("perfil", PerfilUsuario.ADMINISTRADOR)
+        return super().create_superuser(username, email, password, **extra_fields)
 
 
 class Usuario(AbstractUser):
@@ -34,6 +47,8 @@ class Usuario(AbstractUser):
         choices=PerfilUsuario.choices,
         default=PerfilUsuario.USUARIO,
     )
+
+    objects = UsuarioManager()
 
     class Meta:
         verbose_name = "usuário"

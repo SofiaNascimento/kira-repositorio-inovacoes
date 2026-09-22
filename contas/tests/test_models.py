@@ -31,3 +31,23 @@ def test_is_administrador_verdadeiro_para_perfil_administrador():
 def test_is_administrador_falso_para_perfil_usuario():
     """AUTH-19: e os nega para o perfil comum."""
     assert Usuario(perfil=Usuario.Perfil.USUARIO).is_administrador is False
+
+
+@pytest.mark.django_db
+def test_createsuperuser_nasce_administrador():
+    """AUTH-20: o primeiro admin do MVP vem daqui, sem passar argumento."""
+    admin = Usuario.objects.create_superuser(
+        username="raiz", email="raiz@x.com", password="senha-forte-123"
+    )
+    admin.refresh_from_db()
+    assert admin.perfil == Usuario.Perfil.ADMINISTRADOR
+
+
+@pytest.mark.django_db
+def test_create_user_nasce_usuario_comum():
+    """AUTH-17: a conta comum continua nascendo USUARIO."""
+    comum = Usuario.objects.create_user(
+        username="ana", email="ana@x.com", password="senha-forte-123"
+    )
+    comum.refresh_from_db()
+    assert comum.perfil == Usuario.Perfil.USUARIO
