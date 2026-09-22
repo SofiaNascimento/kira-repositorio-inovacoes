@@ -184,7 +184,7 @@ T23 → T24 → T25
 
 ---
 
-### T4: Configurar o PostgreSQL 16 e as variáveis de ambiente
+### T4: Configurar o PostgreSQL 16 e as variáveis de ambiente ✅
 
 **What**: Apontar `DATABASES` para PostgreSQL lendo credenciais do ambiente, com `DEBUG` também vindo do ambiente.
 **Where**: `config/settings.py`
@@ -199,16 +199,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `DATABASES["default"]` usa o backend `postgresql` com host/porta/credenciais do ambiente
-- [ ] `DEBUG` lê do ambiente e tem default `False`
-- [ ] `SECRET_KEY` vem do ambiente e não está versionada
-- [ ] `.env.example` documenta cada variável esperada
-- [ ] `python manage.py check --database default` conecta ao PostgreSQL 16 local
+- [x] `DATABASES["default"]` usa o backend `postgresql` com host/porta/credenciais do ambiente
+- [x] `DEBUG` lê do ambiente e tem default `False`
+- [x] `SECRET_KEY` vem do ambiente e não está versionada
+- [x] `.env.example` documenta cada variável esperada
+- [x] `python manage.py check --database default` conecta ao PostgreSQL 16 local
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(setup): configura PostgreSQL 16 e variaveis de ambiente`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
