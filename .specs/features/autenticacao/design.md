@@ -267,6 +267,11 @@ class Usuario(AbstractUser):
 - `usuario_perfil_valido` — `choices` só é verificado em `full_clean()`; um `save()` direto ou um
   `update()` em massa gravaria lixo. A `CheckConstraint` cumpre a AUTH-18 no nível que o AD-003 exige.
 
+> **Correção aplicada no Execute (T8):** o `TextChoices` mora no nível de módulo como
+> `PerfilUsuario` (o nome do diagrama de classes), com `Usuario.Perfil` como alias. Uma classe
+> aninhada ainda não existe no escopo quando o corpo de `Meta` é avaliado, então a `CheckConstraint`
+> não conseguiria referenciá-la. API pública inalterada.
+
 > **Nota de versão:** `CheckConstraint` usa `condition=` (o antigo `check=` está depreciado desde a
 > 5.1). `UniqueConstraint` sobre expressão exige Django ≥ 4.0. Ambos válidos na 5.2 LTS fixada.
 

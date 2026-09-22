@@ -306,7 +306,7 @@ T23 → T24 → T25
 
 ---
 
-### T8: Constraint de perfil válido no banco
+### T8: Constraint de perfil válido no banco ✅
 
 **What**: Acrescentar `CheckConstraint(condition=Q(perfil__in=Perfil.values))` ao `Meta` de `Usuario`.
 **Where**: `contas/models.py`
@@ -321,17 +321,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Constraint `usuario_perfil_valido` criada e migrada
-- [ ] Teste de integração: `Usuario.objects.create(perfil="CHEFE", ...)` levanta `IntegrityError`
-- [ ] Teste de integração: `update()` em massa para um perfil inválido também é rejeitado
-- [ ] Teste de integração: ambos os valores válidos gravam sem erro
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] Constraint `usuario_perfil_valido` criada e migrada
+- [x] Teste de integração: `Usuario.objects.create(perfil="CHEFE", ...)` levanta `IntegrityError`
+- [x] Teste de integração: `update()` em massa para um perfil inválido também é rejeitado
+- [x] Teste de integração: ambos os valores válidos gravam sem erro
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): adiciona check constraint de perfil valido`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

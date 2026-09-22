@@ -1,5 +1,19 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.db.models import Q
+
+
+class PerfilUsuario(models.TextChoices):
+    """Enumeracao PerfilUsuario do diagrama de classes (AD-004).
+
+    Fica no nivel de modulo, e nao aninhada em Usuario, porque a Meta do
+    modelo precisa referencia-la ao montar a CheckConstraint: uma classe
+    aninhada ainda nao existe no escopo quando o corpo da Meta e avaliado.
+    Usuario.Perfil continua valendo como alias.
+    """
+
+    USUARIO = "USUARIO", "Usuário"
+    ADMINISTRADOR = "ADMINISTRADOR", "Administrador"
 
 
 class Usuario(AbstractUser):
@@ -10,21 +24,27 @@ class Usuario(AbstractUser):
     pelos hashers do Django (RNF02): nao existe campo de senha proprio.
     """
 
-    class Perfil(models.TextChoices):
-        USUARIO = "USUARIO", "Usuário"
-        ADMINISTRADOR = "ADMINISTRADOR", "Administrador"
+    Perfil = PerfilUsuario
 
     email = models.EmailField("e-mail", unique=True)
     perfil = models.CharField(
         "perfil",
         max_length=13,
-        choices=Perfil.choices,
-        default=Perfil.USUARIO,
+        choices=PerfilUsuario.choices,
+        default=PerfilUsuario.USUARIO,
     )
 
     class Meta:
         verbose_name = "usuário"
         verbose_name_plural = "usuários"
+        constraints = [
+            # choices so e checado em full_clean(); um create() ou update()
+            # direto gravaria lixo. A regra desce para o banco (AD-003).
+            models.CheckConstraint(
+                condition=Q(perfil__in=PerfilUsuario.values),
+                name="usuario_perfil_valido",
+            ),
+        ]
 
     @property
     def is_administrador(self) -> bool:
@@ -32,4 +52,4 @@ class Usuario(AbstractUser):
 
         As demais features perguntam por aqui em vez de comparar o campo.
         """
-        return self.perfil == self.Perfil.ADMINISTRADOR
+        return self.perfil == PerfilUsuario.ADMINISTRADOR

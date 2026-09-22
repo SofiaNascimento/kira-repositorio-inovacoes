@@ -232,7 +232,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-15 | P1: Encerramento de sessão | Design | Pending |
 | AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Design | Pending |
+| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
 | AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Design | Pending |
 | AUTH-21 | P2: Atribuição de perfil restrita | - | Pending |
