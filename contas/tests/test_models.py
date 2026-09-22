@@ -51,3 +51,33 @@ def test_create_user_nasce_usuario_comum():
     )
     comum.refresh_from_db()
     assert comum.perfil == Usuario.Perfil.USUARIO
+
+
+@pytest.mark.django_db
+def test_promover_a_administrador_concede_is_staff():
+    """AUTH-22: sem is_staff o administrador nao abre o admin, unica
+    superficie de troca de perfil no MVP, e a RN11 fica inexequivel."""
+    u = Usuario.objects.create_user(username="ana", email="ana@x.com")
+    u.perfil = Usuario.Perfil.ADMINISTRADOR
+    u.save()
+    u.refresh_from_db()
+    assert u.is_staff is True
+
+
+@pytest.mark.django_db
+def test_usuario_comum_nao_ganha_is_staff():
+    """AUTH-22: a sincronizacao nao pode promover quem nao foi promovido."""
+    u = Usuario.objects.create_user(username="bruno", email="bruno@x.com")
+    u.refresh_from_db()
+    assert u.is_staff is False
+
+
+@pytest.mark.django_db
+def test_is_staff_concedido_manualmente_nao_e_revogado():
+    """A sincronizacao concede, nunca revoga: um USUARIO com acesso ao admin
+    dado de proposito continua com ele depois de qualquer save()."""
+    u = Usuario.objects.create_user(username="carla", email="carla@x.com", is_staff=True)
+    u.save()
+    u.refresh_from_db()
+    assert u.is_staff is True
+    assert u.perfil == Usuario.Perfil.USUARIO

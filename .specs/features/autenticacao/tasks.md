@@ -398,7 +398,7 @@ T23 → T24 → T25
 
 ---
 
-### T11: Sincronizar `is_staff` com o perfil
+### T11: Sincronizar `is_staff` com o perfil ✅
 
 **What**: Sobrescrever `Usuario.save()` para manter `is_staff` verdadeiro enquanto o perfil for `ADMINISTRADOR`.
 **Where**: `contas/models.py`
@@ -413,17 +413,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Promover uma conta a `ADMINISTRADOR` e salvar resulta em `is_staff=True`
-- [ ] Uma conta `USUARIO` criada normalmente permanece `is_staff=False`
-- [ ] `is_staff=True` concedido manualmente a um `USUARIO` não é revogado pelo `save()`
-- [ ] Teste de integração cobre os três casos
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] Promover uma conta a `ADMINISTRADOR` e salvar resulta em `is_staff=True`
+- [x] Uma conta `USUARIO` criada normalmente permanece `is_staff=False`
+- [x] `is_staff=True` concedido manualmente a um `USUARIO` não é revogado pelo `save()`
+- [x] Teste de integração cobre os três casos
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): sincroniza is_staff com o perfil administrador`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

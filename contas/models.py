@@ -69,6 +69,18 @@ class Usuario(AbstractUser):
             ),
         ]
 
+    def save(self, *args, **kwargs):
+        """Mantem is_staff coerente com o perfil.
+
+        Concede, nunca revoga: o admin e a unica superficie de troca de perfil
+        no MVP, entao um ADMINISTRADOR sem is_staff nao conseguiria exercer a
+        RN11. Revogar seria pior: tiraria acesso concedido de proposito a um
+        USUARIO por outro motivo.
+        """
+        if self.is_administrador:
+            self.is_staff = True
+        return super().save(*args, **kwargs)
+
     @property
     def is_administrador(self) -> bool:
         """Ponto unico de consulta do perfil (AUTH-19).
