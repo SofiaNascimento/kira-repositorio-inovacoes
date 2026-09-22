@@ -127,7 +127,7 @@ T23 → T24 → T25
 
 ---
 
-### T2: Gerar o esqueleto do projeto Django
+### T2: Gerar o esqueleto do projeto Django ✅
 
 **What**: Criar o projeto Django `config` com `manage.py` na raiz do repositório.
 **Where**: `config/`
@@ -142,14 +142,16 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `python manage.py check` termina sem erro
-- [ ] `.gitignore` já existente cobre `__pycache__`, `.env` e `*.sqlite3`
-- [ ] Nenhuma migration foi aplicada ainda (`AUTH_USER_MODEL` ainda não existe — AD-005)
+- [x] `python manage.py check` termina sem erro
+- [x] `.gitignore` já existente cobre `__pycache__`, `.env` e `*.sqlite3`
+- [x] Nenhuma migration foi aplicada ainda (`AUTH_USER_MODEL` ainda não existe — AD-005)
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(setup): gera esqueleto do projeto Django`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
