@@ -1,0 +1,9 @@
+# Runtime
+Django>=5.2,<5.3
+psycopg[binary]>=3.2,<4
+python-dotenv>=1.0,<2
+
+# Desenvolvimento e testes
+pytest>=8.3,<9
+pytest-django>=4.9,<5
+ruff>=0.8,<1
