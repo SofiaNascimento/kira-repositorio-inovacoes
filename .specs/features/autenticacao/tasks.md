@@ -155,7 +155,7 @@ T23 → T24 → T25
 
 ---
 
-### T3: Configurar pytest, pytest-django e Ruff
+### T3: Configurar pytest, pytest-django e Ruff ✅
 
 **What**: Registrar o módulo de settings para o pytest, o marcador `unit` e as regras do Ruff.
 **Where**: `pyproject.toml`
@@ -170,15 +170,17 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `DJANGO_SETTINGS_MODULE = "config.settings"` e `python_files = ["test_*.py"]` configurados
-- [ ] Marcador `unit` registrado (sem ele, `-m unit` emite warning)
-- [ ] `ruff check .` e `ruff format --check .` passam limpo
-- [ ] `pytest -q` roda e reporta "no tests ran" sem erro de configuração
+- [x] `DJANGO_SETTINGS_MODULE = "config.settings"` e `python_files = ["test_*.py"]` configurados
+- [x] Marcador `unit` registrado (sem ele, `-m unit` emite warning)
+- [x] `ruff check .` e `ruff format --check .` passam limpo
+- [x] `pytest -q` roda e reporta "no tests ran" sem erro de configuração
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(setup): configura pytest-django e ruff`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

@@ -1,0 +1,23 @@
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+addopts = "--strict-markers"
+markers = [
+    "unit: teste sem acesso ao banco de dados (gate quick)",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+exclude = [
+    ".claude",
+    ".agents",
+    ".venv",
+    "**/migrations",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "DJ"]
+
+[tool.ruff.lint.per-file-ignores]
+"config/settings.py" = ["E501"]
