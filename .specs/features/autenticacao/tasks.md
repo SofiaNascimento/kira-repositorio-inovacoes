@@ -337,7 +337,7 @@ T23 → T24 → T25
 
 ---
 
-### T9: Constraint de e-mail único case-insensitive
+### T9: Constraint de e-mail único case-insensitive ✅
 
 **What**: Acrescentar `UniqueConstraint(Lower("email"), name="usuario_email_unico_ci")` ao `Meta` de `Usuario`.
 **Where**: `contas/models.py`
@@ -352,17 +352,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Constraint `usuario_email_unico_ci` criada e migrada
-- [ ] Teste de integração: criar `ana@x.com` e depois `Ana@X.com` levanta `IntegrityError`
-- [ ] Teste de integração: dois e-mails realmente distintos convivem
-- [ ] `violation_error_message` traz "Já existe uma conta com este e-mail."
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] Constraint `usuario_email_unico_ci` criada e migrada
+- [x] Teste de integração: criar `ana@x.com` e depois `Ana@X.com` levanta `IntegrityError`
+- [x] Teste de integração: dois e-mails realmente distintos convivem
+- [x] `violation_error_message` traz "Já existe uma conta com este e-mail."
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 2 testes passam (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): adiciona unicidade case-insensitive de e-mail`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

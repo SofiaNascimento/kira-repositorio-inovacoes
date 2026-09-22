@@ -239,7 +239,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-22 | P2: Atribuição de perfil restrita | - | Pending |
 | AUTH-23 | Edge case: conta inativa | Design | Pending |
 | AUTH-24 | Edge case: CSRF ausente | Design | Pending |
-| AUTH-25 | Edge case: e-mail duplicado por caixa | Design | Pending |
+| AUTH-25 | Edge case: e-mail duplicado por caixa | Implementing | Implementing |
 | AUTH-26 | Edge case: banco indisponível | Design | Pending |
 | AUTH-27 | Edge case: log de tentativa malsucedida | Design | Pending |
 

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
+from django.db.models.functions import Lower
 
 
 class PerfilUsuario(models.TextChoices):
@@ -43,6 +44,13 @@ class Usuario(AbstractUser):
             models.CheckConstraint(
                 condition=Q(perfil__in=PerfilUsuario.values),
                 name="usuario_perfil_valido",
+            ),
+            # unique=True sozinho e case-sensitive no PostgreSQL: ana@x.com e
+            # Ana@X.com conviveriam e o login por e-mail ficaria ambiguo.
+            models.UniqueConstraint(
+                Lower("email"),
+                name="usuario_email_unico_ci",
+                violation_error_message="Já existe uma conta com este e-mail.",
             ),
         ]
 
