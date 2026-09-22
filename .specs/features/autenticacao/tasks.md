@@ -214,7 +214,7 @@ T23 → T24 → T25
 
 ---
 
-### T5: Criar a app `contas`
+### T5: Criar a app `contas` ✅
 
 **What**: Criar a app Django `contas` e registrá-la em `INSTALLED_APPS`.
 **Where**: `contas/`
@@ -229,15 +229,17 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] App criada e presente em `INSTALLED_APPS`
-- [ ] Diretório `contas/tests/` criado com `__init__.py`
-- [ ] `python manage.py check` passa
-- [ ] Continua sem nenhuma migration aplicada
+- [x] App criada e presente em `INSTALLED_APPS`
+- [x] Diretório `contas/tests/` criado com `__init__.py`
+- [x] `python manage.py check` passa
+- [x] Continua sem nenhuma migration aplicada
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(contas): cria a app de contas`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
