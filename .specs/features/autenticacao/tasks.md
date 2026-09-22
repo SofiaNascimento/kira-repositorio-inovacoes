@@ -243,7 +243,7 @@ T23 → T24 → T25
 
 ---
 
-### T6: Modelo `Usuario` com perfil, e-mail único e `is_administrador`
+### T6: Modelo `Usuario` com perfil, e-mail único e `is_administrador` ✅
 
 **What**: Definir `Usuario(AbstractUser)` com o `TextChoices` `Perfil`, `email` único e a property `is_administrador`.
 **Where**: `contas/models.py`
@@ -258,18 +258,20 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `Usuario.Perfil` expõe exatamente `USUARIO` e `ADMINISTRADOR` (AUTH-16)
-- [ ] `perfil` tem `default=Perfil.USUARIO` (AUTH-17)
-- [ ] `is_administrador` é o único ponto de consulta do perfil (AUTH-19)
-- [ ] Nenhum campo `senha_hash` próprio foi criado — a senha é a do `AbstractUser`
-- [ ] Testes unitários sem banco: `is_administrador` para cada valor do enum, default do perfil em instância não salva, e `Perfil.values` com exatamente dois elementos
-- [ ] Gate check passa: `pytest -q -m unit`
-- [ ] Test count: 4 testes passam (sem deleções silenciosas)
+- [x] `Usuario.Perfil` expõe exatamente `USUARIO` e `ADMINISTRADOR` (AUTH-16)
+- [x] `perfil` tem `default=Perfil.USUARIO` (AUTH-17)
+- [x] `is_administrador` é o único ponto de consulta do perfil (AUTH-19)
+- [x] Nenhum campo `senha_hash` próprio foi criado — a senha é a do `AbstractUser`
+- [x] Testes unitários sem banco: `is_administrador` para cada valor do enum, default do perfil em instância não salva, e `Perfil.values` com exatamente dois elementos
+- [x] Gate check passa: `pytest -q -m unit`
+- [x] Test count: 4 testes passam (sem deleções silenciosas)
 
 **Tests**: unit
 **Gate**: quick
 
 **Commit**: `feat(contas): adiciona modelo Usuario com perfil enum`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
