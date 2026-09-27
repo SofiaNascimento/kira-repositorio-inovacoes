@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 6,
+  "next_id": 7,
   "lessons": [
     {
       "id": "L-001",
@@ -94,6 +94,24 @@
       ],
       "created": "2026-09-27T03:25:06Z",
       "last_seen": "2026-09-27T03:25:06Z"
+    },
+    {
+      "id": "L-006",
+      "key": "surviving_mutant::test every admin screen a permission hook guards including delete not only list add and change",
+      "text": "Test every admin screen a permission hook guards, including delete, not only list, add and change",
+      "signal": "surviving_mutant",
+      "scope": "admin",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 2 A5 contas/admin.py:51 (admin)"
+      ],
+      "created": "2026-09-27T03:45:12Z",
+      "last_seen": "2026-09-27T03:45:12Z"
     }
   ]
 }

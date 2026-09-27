@@ -44,6 +44,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes)
 - last seen: 2026-09-27T03:25:06Z
 
+### L-006 - Test every admin screen a permission hook guards, including delete, not only list, add and change
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `admin` · harmful: 0
+- features: autenticacao
+- evidence: validation.md iteracao 2 A5 contas/admin.py:51 (admin)
+- last seen: 2026-09-27T03:45:12Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
