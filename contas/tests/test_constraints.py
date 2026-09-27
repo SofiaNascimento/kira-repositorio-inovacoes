@@ -21,9 +21,23 @@ def test_perfil_invalido_e_rejeitado_no_create():
 @pytest.mark.django_db
 def test_perfil_invalido_e_rejeitado_no_update_em_massa():
     """AUTH-18: update() em massa nao passa por validacao de modelo nenhuma."""
-    Usuario.objects.create(username="ana", email="ana@x.com")
-    with pytest.raises(IntegrityError):
+    ana = Usuario.objects.create(username="ana", email="ana@x.com")
+    with pytest.raises(IntegrityError), transaction.atomic():
         Usuario.objects.filter(username="ana").update(perfil="CHEFE")
+    ana.refresh_from_db()
+    assert ana.perfil == Usuario.Perfil.USUARIO
+
+
+@pytest.mark.django_db
+def test_perfil_invalido_e_rejeitado_com_validation_error_e_valor_inalterado():
+    """AUTH-18: a validacao acusa o campo perfil e o valor gravado nao muda."""
+    ana = Usuario.objects.create(username="ana", email="ana@x.com")
+    ana.perfil = "CHEFE"
+    with pytest.raises(ValidationError) as erro:
+        ana.full_clean()
+    assert "perfil" in erro.value.error_dict
+    ana.refresh_from_db()
+    assert ana.perfil == Usuario.Perfil.USUARIO
 
 
 @pytest.mark.django_db

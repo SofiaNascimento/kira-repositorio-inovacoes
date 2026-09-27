@@ -933,7 +933,7 @@ T26 → T27 → T28 → T29 → T30
 
 ---
 
-### T28: Perfil inválido vira `ValidationError` e o valor gravado não muda (F3)
+### T28: Perfil inválido vira `ValidationError` e o valor gravado não muda (F3) ✅
 
 **What**: Cobrir a AUTH-18 como a spec escreve: validation error no `full_clean()` e valor persistido inalterado depois de toda tentativa recusada.
 **Where**: `contas/tests/test_constraints.py`
@@ -948,14 +948,16 @@ T26 → T27 → T28 → T29 → T30
 
 **Done when**:
 
-- [ ] Teste de integração: `full_clean()` com perfil fora do enum levanta `ValidationError` no campo `perfil` e o valor relido do banco segue o anterior
-- [ ] O teste de `update()` em massa também afirma o valor persistido inalterado
-- [ ] Gate check passa: `pytest -q`
+- [x] Teste de integração: `full_clean()` com perfil fora do enum levanta `ValidationError` no campo `perfil` e o valor relido do banco segue o anterior
+- [x] O teste de `update()` em massa também afirma o valor persistido inalterado
+- [x] Gate check passa: `pytest -q`
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `test(contas): afirma validation error e perfil inalterado`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
