@@ -490,7 +490,7 @@ T23 → T24 → T25
 
 ---
 
-### T14: `LoginForm` com mensagem de erro única
+### T14: `LoginForm` com mensagem de erro única ✅
 
 **What**: Subclassar `AuthenticationForm` para rotular o campo como "Usuário ou e-mail" e unificar a mensagem de credencial inválida.
 **Where**: `contas/forms.py`
@@ -505,16 +505,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `error_messages["invalid_login"]` é "Usuário ou senha inválidos.", sem interpolar o rótulo do campo
-- [ ] Rótulo do campo é "Usuário ou e-mail", com `autofocus` e `autocomplete="username"` (RNF09)
-- [ ] Testes unitários: form vazio acusa os dois campos; só identificador acusa a senha; identificador digitado é repopulado após erro
-- [ ] Gate check passa: `pytest -q -m unit`
-- [ ] Test count: 4 testes passam (sem deleções silenciosas)
+- [x] `error_messages["invalid_login"]` é "Usuário ou senha inválidos.", sem interpolar o rótulo do campo
+- [x] Rótulo do campo é "Usuário ou e-mail", com `autofocus` e `autocomplete="username"` (RNF09)
+- [x] Testes unitários: form vazio acusa os dois campos; só identificador acusa a senha; identificador digitado é repopulado após erro
+- [x] Gate check passa: `pytest -q -m unit`
+- [x] Test count: 5 testes passam (sem deleções silenciosas) — os 4 previstos mais 1 para o rótulo e os atributos `autofocus`/`autocomplete`, critério que sem teste ficaria sem evidência
 
 **Tests**: unit
 **Gate**: quick
 
 **Commit**: `feat(contas): adiciona formulario de login com mensagem unica`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

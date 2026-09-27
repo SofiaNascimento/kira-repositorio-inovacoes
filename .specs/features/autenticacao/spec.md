@@ -217,8 +217,8 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | -------------- | ----- | ----- | ------ |
 | AUTH-01 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-02 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-03 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
-| AUTH-04 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
+| AUTH-03 | P1: Login por usuário ou e-mail | Execute | Implementing |
+| AUTH-04 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-05 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
 | AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |

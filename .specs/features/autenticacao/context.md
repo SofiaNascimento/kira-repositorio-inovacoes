@@ -80,3 +80,7 @@ implícitas estão resolvidas na spec (requisito ou `N/A because…`) na seção
   RF e exige serviço de e-mail no deploy de camada gratuita (RNF06). Candidata a feature própria.
 - **Tela de gestão de usuários fora do Django admin.** A nota da F1 no mapa de features já resolve
   via admin; uma tela própria seria incremento pós-MVP.
+- **`maxlength` do campo de login para e-mails longos** *(achado no Execute, T14)*. O
+  `AuthenticationForm` limita o identificador ao tamanho do username (150), e o `EmailField` aceita
+  até 254. Um e-mail com mais de 150 caracteres não caberia no campo. Irrelevante para o volume do
+  MVP; a correção é elevar o `maxlength` do campo para 254 no `LoginForm`.
