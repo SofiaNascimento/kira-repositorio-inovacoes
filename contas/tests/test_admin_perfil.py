@@ -1,4 +1,4 @@
-"""Testes e2e da restricao do campo de perfil no admin.
+"""Testes e2e da restricao das telas de usuario do admin.
 
 AUTH-21 (ramo de redirecionamento) e AUTH-22, pela RN11: so administrador
 atribui perfil.
@@ -18,10 +18,13 @@ def _editar(conta):
 
 @pytest.fixture
 def usuario_staff(db):
-    """USUARIO com acesso ao admin concedido a mao, para outro fim."""
+    """USUARIO com acesso ao admin e todas as permissoes de modelo sobre
+    usuarios, concedidos a mao: o perfil, e nao a permissao, e que decide."""
     conta = Usuario.objects.create_user(username="carla", email="carla@x.com", is_staff=True)
     conta.user_permissions.set(
-        Permission.objects.filter(codename__in=["view_usuario", "change_usuario"])
+        Permission.objects.filter(
+            codename__in=["view_usuario", "add_usuario", "change_usuario", "delete_usuario"]
+        )
     )
     return conta
 
@@ -39,21 +42,36 @@ def administrador_promovido(db):
     )
 
 
-def test_usuario_com_staff_abre_o_proprio_registro_sem_o_campo_perfil(client, usuario_staff):
-    """AUTH-22: o perfil nao e editavel por quem nao e administrador."""
-    client.force_login(usuario_staff)
-    resposta = client.get(_editar(usuario_staff))
-    assert resposta.status_code == 200
-    campos = resposta.context["adminform"].form.fields
-    assert "perfil" not in campos
-    assert "is_superuser" not in campos
+TELAS_DE_USUARIO = ["indice_do_app", "lista", "novo", "proprio_registro", "registro_de_terceiro"]
 
 
-def test_usuario_com_staff_nao_altera_conta_de_terceiro(client, usuario_staff, terceiro):
-    """AUTH-22: a conta alheia abre, no maximo, em modo leitura."""
+def _tela(nome, proprio, terceiro):
+    return {
+        "indice_do_app": "/admin/contas/",
+        "lista": LISTA,
+        "novo": f"{LISTA}add/",
+        "proprio_registro": _editar(proprio),
+        "registro_de_terceiro": _editar(terceiro),
+    }[nome]
+
+
+@pytest.mark.parametrize("tela", TELAS_DE_USUARIO)
+def test_usuario_com_staff_nao_abre_as_telas_de_usuario(client, usuario_staff, terceiro, tela):
+    """AUTH-22: so ADMINISTRADOR abre as telas de administracao de usuarios,
+    nem o proprio registro, mesmo com is_staff e permissoes de modelo."""
     client.force_login(usuario_staff)
-    resposta = client.get(_editar(terceiro))
-    assert resposta.context["has_change_permission"] is False
+    # No indice do app, o Django nega com 404 quando nenhum modelo dali e
+    # acessivel; nas demais telas, com 403.
+    esperado = 404 if tela == "indice_do_app" else 403
+    assert client.get(_tela(tela, usuario_staff, terceiro)).status_code == esperado
+
+
+@pytest.mark.parametrize("tela", TELAS_DE_USUARIO)
+def test_administrador_abre_as_telas_de_usuario(client, administrador_promovido, terceiro, tela):
+    """AUTH-22: o ADMINISTRADOR promovido, sem permissao de modelo nenhuma,
+    abre todas elas."""
+    client.force_login(administrador_promovido)
+    assert client.get(_tela(tela, administrador_promovido, terceiro)).status_code == 200
 
 
 def test_administrador_ve_e_altera_o_perfil_de_outra_conta(

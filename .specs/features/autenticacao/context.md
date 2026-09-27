@@ -84,7 +84,6 @@ implícitas estão resolvidas na spec (requisito ou `N/A because…`) na seção
   `AuthenticationForm` limita o identificador ao tamanho do username (150), e o `EmailField` aceita
   até 254. Um e-mail com mais de 150 caracteres não caberia no campo. Irrelevante para o volume do
   MVP; a correção é elevar o `maxlength` do campo para 254 no `LoginForm`.
-- **Travar `is_staff`, `groups` e `user_permissions` para não administradores** *(achado no Execute,
-  T24)*. Hoje só `perfil` e `is_superuser` ficam readonly. Um `USUARIO` com acesso manual ao admin
-  poderia ampliar as próprias permissões de modelo. Correção de uma linha em
-  `UsuarioAdmin.campos_so_do_administrador`, mais o teste correspondente.
+- ~~**Travar `is_staff`, `groups` e `user_permissions` para não administradores**~~ *(achado no
+  Execute, T24)*. **Resolvido na T26:** as telas de usuário do admin passaram a abrir só para
+  `is_administrador`, então nenhum não administrador chega ao formulário.

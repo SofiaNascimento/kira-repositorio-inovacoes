@@ -169,14 +169,14 @@ e é deliberado, porque cada peça pronta usada é uma peça a menos para testar
 - **Purpose**: superfície de criação de contas e o guarda da RN11 (AUTH-21, AUTH-22).
 - **Location**: `contas/admin.py`
 - **Interfaces**:
-  - `get_readonly_fields(request, obj)` — `perfil` e `is_superuser` somente-leitura quando
-    `not request.user.is_administrador`. *Ajuste no Execute (T24):* o readonly já tira o campo do
-    formulário e o mostra só como texto, então o `get_fieldsets` previsto não foi necessário.
-  - `has_change_permission(request, obj)` — `True` para `is_administrador` (um ADMINISTRADOR promovido
-    não é superusuário e não tem permissões de modelo); `False` para não administradores sobre contas
-    de terceiros; nos demais casos, as permissões de modelo do Django
-  - `save_model(request, obj, form, change)` — `raise PermissionDenied` (→ 403) se um POST alterar
-    `perfil` vindo de um não administrador, mesmo que o campo tenha sido removido do formulário
+  - `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission`,
+    `has_delete_permission` — todas devolvem `request.user.is_administrador`. O perfil, e não as
+    permissões de modelo do Django, decide quem abre as telas de usuário (AUTH-22). Um USUARIO com
+    `is_staff` recebe 403 em todas; um POST de alteração forjado nem chega ao formulário (AUTH-21, 403).
+    *Revisão na validação (T26):* a primeira versão (T24/T25) deixava um staff comum abrir o próprio
+    registro, com `perfil` readonly e um guarda em `save_model`. O Verifier apontou que isso contraria
+    a AUTH-22, e o autor decidiu seguir a spec. Com o acesso travado, readonly e `save_model` viraram
+    caminho inalcançável e saíram.
   - `form = UsuarioAlteracaoForm` / `add_form = UsuarioCriacaoForm` — *acrescentados no Execute (T23)*:
     os formulários de usuário do Django declaram `Meta.model = auth.User`, que o AD-005 substituiu. Os dois
     moram em `contas/forms.py` e apontam para `Usuario`. O de criação pede também o **e-mail**: é
@@ -306,7 +306,7 @@ AD-004 determina — o perfil é um atributo do usuário, não uma entidade.
 | E-mail duplicado por diferença de caixa (AUTH-25) | `UniqueConstraint` → `ValidationError` no form do admin | "Já existe uma conta com este e-mail." |
 | PostgreSQL indisponível (AUTH-26) | `OperationalError` não capturada → handler 500; `DEBUG=False` em produção | Página 500 própria, sem string de conexão nem traceback |
 | Perfil fora do enum (AUTH-18) | `CheckConstraint` → `IntegrityError`; `full_clean()` no admin antecipa como `ValidationError` | Erro de validação no admin; gravação direta é rejeitada pelo banco |
-| Não administrador tentando alterar perfil (AUTH-21) | `PermissionDenied` em `save_model` | 403 |
+| Não administrador tentando alterar perfil (AUTH-21) | `has_change_permission` falso → `PermissionDenied` no `change_view` | 403 |
 | Sessão expirada (AUTH-15) | Cookie inválido → requisição anônima → middleware redireciona | Volta ao login com `next` preservado |
 
 ---
@@ -324,7 +324,7 @@ de premissas da spec que só apareceram ao detalhar a implementação.
 | **Backend customizado que pula o *dummy hash* vaza quais contas existem por tempo de resposta** | `contas/backends.py` | Enumeração de contas — agravada por termos descartado o throttling | Herdar de `ModelBackend` e chamar `UserModel().set_password(password)` no caminho "não encontrado", como o original faz. Teste não cobre timing; fica como revisão de código explícita na task. |
 | **O `ModelBackend` de fallback reabre parte da recusa por ambiguidade** *(achado no Execute, T13)* | `config/settings.py` → `AUTHENTICATION_BACKENDS` | Quando o identificador casa com mais de uma conta, o `UsernameOrEmailBackend` recusa, e o `authenticate()` segue para o `ModelBackend`. Esse só aceita match **exato** de username (`get_by_natural_key`), que não é ambíguo. Ou seja: `ana` entra na conta `ana` mesmo que exista `ANA`, e ninguém entra pelo e-mail ambíguo | Aceito como está: o match exato é inequívoco, e o `UserCreationForm` do Django 5.2 já barra usernames que diferem só na caixa. Remover o fallback é a saída se um dia a regra precisar ser mais estrita. |
 | **Default-deny via middleware é silencioso quando mal configurado** | `config/settings.py` | Se o middleware for removido ou reordenado, tudo abre sem nenhum erro visível | Teste de varredura: itera as rotas registradas no `urlpatterns`, pede cada uma anonimamente e exige 302 para o login, salvo uma allowlist explícita. Esse teste é o que sustenta a AUTH-09 ao longo das features seguintes. |
-| **Staff comum pode se dar permissões de modelo** *(achado no Execute, T24)* | `contas/admin.py` | Um `USUARIO` com `is_staff` e `change_usuario` edita os próprios `groups` e `user_permissions`. Não ganha curadoria, que depende do `perfil` (travado), mas amplia as próprias permissões de modelo do Django | Fora do escopo da RN11 como especificada. No MVP ninguém recebe `is_staff` sem ser ADMINISTRADOR. Saída prevista: incluir `is_staff`, `groups` e `user_permissions` em `campos_so_do_administrador`. Registrado em Deferred Ideas. |
+| **Staff comum pode se dar permissões de modelo** *(achado no Execute, T24; resolvido na T26)* | `contas/admin.py` | Na versão da T24, um `USUARIO` com `is_staff` e `change_usuario` editava os próprios `groups` e `user_permissions` | Resolvido: as telas de usuário só abrem para `is_administrador`, então o staff comum não chega ao formulário. |
 | **`nucleo.HomeInternaView` é andaime** | `nucleo/views.py` | Vira tela órfã se ninguém lembrar de substituí-la | Declarada como provisória aqui e no `context.md`; a F3 a substitui pela listagem. |
 | **`SESSION_SAVE_EVERY_REQUEST = True` grava sessão a cada requisição** | `config/settings.py` | Escrita extra no banco por requisição — atrito com o RNF08 (≤ 2 s) | Irrelevante no volume do MVP (conjunto de demonstração). Se aparecer no passe de desempenho, a saída é mover as sessões para cache. Anotado, não pré-otimizado. |
 
@@ -373,8 +373,8 @@ de premissas da spec que só apareceram ao detalhar a implementação.
 | AUTH-18 | `usuario_perfil_valido` (`CheckConstraint`) |
 | AUTH-19 | `Usuario.is_administrador` |
 | AUTH-20 | `UsuarioManager.create_superuser` |
-| AUTH-21 | `UsuarioAdmin.save_model` → `PermissionDenied` *(ver Risks: emenda proposta à AC)* |
-| AUTH-22 | `UsuarioAdmin.get_fieldsets` / `has_change_permission` |
+| AUTH-21 | `UsuarioAdmin.has_change_permission` → `PermissionDenied` (403); sem `is_staff`, redirect ao login do admin |
+| AUTH-22 | `UsuarioAdmin.has_*_permission` → `is_administrador` |
 | AUTH-23 | `ModelBackend.user_can_authenticate()` herdado |
 | AUTH-24 | `CsrfViewMiddleware` + `{% csrf_token %}` |
 | AUTH-25 | `usuario_email_unico_ci` |

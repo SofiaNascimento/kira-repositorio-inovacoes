@@ -837,7 +837,7 @@ T26 → T27 → T28 → T29 → T30
 
 **Commit**: `feat(contas): esconde campo de perfil de nao administradores`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete (pendente) — *revista na T26:* o acesso passou a ser negado por inteiro; readonly saiu e os 2 testes de staff comum viraram o teste parametrizado de 403
 
 ---
 
@@ -869,11 +869,11 @@ T26 → T27 → T28 → T29 → T30
 
 **Commit**: `feat(contas): recusa com 403 alteracao de perfil por nao administrador`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete (pendente) — *revista na T26:* o 403 vem agora de `has_change_permission`; o guarda em `save_model` saiu por ficar inalcançável. Os 3 testes seguem sem mudança
 
 ---
 
-### T26: Telas de usuário do admin só para `ADMINISTRADOR` (F1)
+### T26: Telas de usuário do admin só para `ADMINISTRADOR` (F1) ✅
 
 **What**: As permissões `has_*` do `UsuarioAdmin` passam a seguir `is_administrador`; `get_readonly_fields` e o guarda do `save_model` saem, porque nenhum não administrador chega mais ao formulário.
 **Where**: `contas/admin.py`
@@ -888,16 +888,19 @@ T26 → T27 → T28 → T29 → T30
 
 **Done when**:
 
-- [ ] `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission` e `has_delete_permission` devolvem `request.user.is_administrador`
-- [ ] Um `USUARIO` com `is_staff` **e** permissões de modelo recebe 403 na listagem, na criação, no próprio registro e no registro de terceiro
-- [ ] Os 2 testes da T24 que afirmavam acesso de staff comum são reescritos para 403 (aprovado pelo autor)
-- [ ] Os testes da T25 (403 no POST forjado, aceite pelo ADMINISTRADOR) continuam passando sem mudança
-- [ ] Gate check passa: `pytest -q`
+- [x] `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission` e `has_delete_permission` devolvem `request.user.is_administrador`
+- [x] Um `USUARIO` com `is_staff` **e** todas as permissões de modelo recebe 403 na listagem, na criação, no próprio registro e no registro de terceiro, e 404 no índice do app (a forma do Django de negar essa tela)
+- [x] O `ADMINISTRADOR` promovido, sem permissão de modelo, abre as mesmas telas (200)
+- [x] Os 2 testes da T24 que afirmavam acesso de staff comum são reescritos para 403 (aprovado pelo autor)
+- [x] Os testes da T25 (403 no POST forjado, aceite pelo ADMINISTRADOR) continuam passando sem mudança
+- [x] Gate check passa: `pytest -q`
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `fix(contas): restringe telas de usuario do admin a administradores`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

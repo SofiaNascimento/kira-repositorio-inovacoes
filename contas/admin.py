@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.core.exceptions import PermissionDenied
 
 from contas.forms import UsuarioAlteracaoForm, UsuarioCriacaoForm
 from contas.models import Usuario
@@ -32,31 +31,21 @@ class UsuarioAdmin(UserAdmin):
     list_display = ("username", "email", "perfil", "is_active")
     list_filter = ("perfil", "is_active", "is_staff", "is_superuser")
 
-    # RN11: so administrador atribui perfil ou poderes de superusuario.
-    campos_so_do_administrador = ("perfil", "is_superuser")
+    # AUTH-22 e RN11: o perfil, e nao as permissoes de modelo do Django,
+    # decide quem abre as telas de usuario. Um ADMINISTRADOR promovido nao e
+    # superusuario; um USUARIO com is_staff recebe 403 em todas elas, e um
+    # POST de alteracao nem chega ao formulario (AUTH-21).
+    def has_module_permission(self, request):
+        return request.user.is_administrador
 
-    def get_readonly_fields(self, request, obj=None):
-        # Readonly tira o campo do formulario e o mostra so como texto.
-        campos = super().get_readonly_fields(request, obj)
-        if request.user.is_administrador:
-            return campos
-        return (*campos, *self.campos_so_do_administrador)
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_administrador
+
+    def has_add_permission(self, request):
+        return request.user.is_administrador
 
     def has_change_permission(self, request, obj=None):
-        # O perfil, e nao as permissoes de modelo, decide quem administra
-        # contas (AUTH-22): um ADMINISTRADOR promovido nao e superusuario.
-        if request.user.is_administrador:
-            return True
-        if obj is not None and obj.pk != request.user.pk:
-            return False
-        return super().has_change_permission(request, obj)
+        return request.user.is_administrador
 
-    def save_model(self, request, obj, form, change):
-        # Readonly so faz o formulario ignorar o perfil: um POST forjado
-        # passaria calado. Aqui ele vira 403 (AUTH-21).
-        if not request.user.is_administrador:
-            persistido = Usuario.objects.get(pk=obj.pk).perfil if change else Usuario.Perfil.USUARIO
-            submetido = request.POST.get("perfil", persistido)
-            if submetido != persistido or obj.perfil != persistido:
-                raise PermissionDenied("Só um administrador altera o perfil de uma conta.")
-        super().save_model(request, obj, form, change)
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_administrador
