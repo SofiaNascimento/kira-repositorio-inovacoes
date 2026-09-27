@@ -643,7 +643,7 @@ T23 → T24 → T25
 
 ---
 
-### T19: App `nucleo` com a home interna
+### T19: App `nucleo` com a home interna ✅
 
 **What**: App `nucleo` com `HomeInternaView` na rota `/`, primeira tela protegida do sistema.
 **Where**: `nucleo/`
@@ -658,17 +658,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] App criada, registrada e com rota `/` respondendo
-- [ ] Template estende `base.html` e traz o formulário de logout
-- [ ] Comentário no topo da view marcando-a como provisória, substituída pela listagem da F3
-- [ ] Testes e2e: usuário autenticado recebe 200; o conteúdo renderizado identifica a conta autenticada
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] App criada, registrada e com rota `/` respondendo
+- [x] Template estende `base.html` e traz o formulário de logout (herdado do cabeçalho da base, T17)
+- [x] Comentário no topo da view marcando-a como provisória, substituída pela listagem da F3
+- [x] Testes e2e: usuário autenticado recebe 200; o conteúdo renderizado identifica a conta autenticada
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 2 testes passam (sem deleções silenciosas)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(nucleo): adiciona home interna provisoria`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
