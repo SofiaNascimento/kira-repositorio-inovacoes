@@ -1,10 +1,14 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_not_required
 from django.contrib.auth.views import LoginView, LogoutView
+from django.utils.decorators import method_decorator
 
 from contas.forms import LoginForm
 
 
+# Unica excecao a negacao por padrao (AD-006).
+@method_decorator(login_not_required, name="dispatch")
 class LoginUsuarioView(LoginView):
     """Tela de login (AUTH-01 a AUTH-05, AUTH-12).
 

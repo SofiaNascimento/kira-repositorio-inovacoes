@@ -223,9 +223,9 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-08 | P1: Senha apenas como hash | Execute | Implementing |
-| AUTH-09 | P1: Telas internas restritas | Tasks | In Tasks |
-| AUTH-10 | P1: Telas internas restritas | Tasks | In Tasks |
-| AUTH-11 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-09 | P1: Telas internas restritas | Execute | Implementing |
+| AUTH-10 | P1: Telas internas restritas | Execute | Implementing |
+| AUTH-11 | P1: Telas internas restritas | Execute | Implementing |
 | AUTH-12 | P1: Telas internas restritas | Execute | Implementing |
 | AUTH-13 | P1: Encerramento de sessão | Execute | Implementing |
 | AUTH-14 | P1: Encerramento de sessão | Execute | Implementing |

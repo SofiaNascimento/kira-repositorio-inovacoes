@@ -674,7 +674,7 @@ T23 → T24 → T25
 
 ---
 
-### T20: Negar acesso por padrão via `LoginRequiredMiddleware`
+### T20: Negar acesso por padrão via `LoginRequiredMiddleware` ✅
 
 **What**: Ativar o middleware, abrir exceção só para o login e provar a negação com varredura de rotas.
 **Where**: `config/settings.py`
@@ -689,19 +689,21 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Middleware presente depois de `AuthenticationMiddleware` (`LOGIN_URL` e `LOGIN_REDIRECT_URL` já foram definidos na T16)
-- [ ] `LoginUsuarioView` marcada com `@login_not_required` — única exceção
-- [ ] **Teste de varredura**: percorre as rotas de `urlpatterns`, requisita cada uma anonimamente e exige 302 para `LOGIN_URL`, com allowlist explícita (`/entrar/`, estáticos, admin). É este teste que sustenta a AUTH-09 nas features seguintes
-- [ ] Teste e2e: anônimo pedindo `/` é redirecionado com `next=/` (AUTH-09)
-- [ ] Teste e2e: autenticar com `next` preenchido leva ao destino original (AUTH-10)
-- [ ] Teste e2e: conta `USUARIO` acessa a home igual a um `ADMINISTRADOR` (AUTH-11)
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 4 testes passam (sem deleções silenciosas)
+- [x] Middleware presente depois de `AuthenticationMiddleware` (`LOGIN_URL` e `LOGIN_REDIRECT_URL` já foram definidos na T16)
+- [x] `LoginUsuarioView` marcada com `@login_not_required` — única exceção
+- [x] **Teste de varredura**: percorre as rotas de `urlpatterns`, requisita cada uma anonimamente e exige 302 para `LOGIN_URL`, com allowlist explícita (`/entrar/`, estáticos, admin). É este teste que sustenta a AUTH-09 nas features seguintes
+- [x] Teste e2e: anônimo pedindo `/` é redirecionado com `next=/` (AUTH-09)
+- [x] Teste e2e: autenticar com `next` preenchido leva ao destino original (AUTH-10)
+- [x] Teste e2e: conta `USUARIO` acessa a home igual a um `ADMINISTRADOR` (AUTH-11)
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 4 testes, 5 casos passam (sem deleções silenciosas) — o de AUTH-11 é parametrizado pelos dois perfis. A varredura preenche conversores de rota (`<int:pk>` etc.) e falha diante de `re_path`, para que nenhuma rota nova escape dela
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(config): nega acesso por padrao com LoginRequiredMiddleware`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
