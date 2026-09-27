@@ -85,3 +85,59 @@ def test_usuario_sem_staff_e_mandado_ao_login_do_admin(client, terceiro):
     resposta = client.get(LISTA)
     assert resposta.status_code == 302
     assert resposta["Location"].startswith("/admin/login/")
+
+
+# POST forjado: o campo perfil nao esta no formulario de quem nao e
+# administrador, mas nada impede alguem de envia-lo na mao.
+
+
+def _post_de_edicao(conta, **alteracoes):
+    dados = {
+        "username": conta.username,
+        "email": conta.email,
+        "is_active": "on",
+        "is_staff": "on" if conta.is_staff else "",
+        "user_permissions": [str(p.pk) for p in conta.user_permissions.all()],
+        "date_joined_0": conta.date_joined.strftime("%d/%m/%Y"),
+        "date_joined_1": conta.date_joined.strftime("%H:%M:%S"),
+    }
+    dados.update(alteracoes)
+    return dados
+
+
+def test_usuario_forjando_a_propria_promocao_recebe_403(client, usuario_staff):
+    """AUTH-21, ramo 403: e o perfil persistido nao muda."""
+    client.force_login(usuario_staff)
+    resposta = client.post(
+        _editar(usuario_staff),
+        _post_de_edicao(usuario_staff, perfil=Usuario.Perfil.ADMINISTRADOR),
+    )
+    assert resposta.status_code == 403
+    usuario_staff.refresh_from_db()
+    assert usuario_staff.perfil == Usuario.Perfil.USUARIO
+
+
+def test_usuario_forjando_a_promocao_de_terceiro_recebe_403(client, usuario_staff, terceiro):
+    """AUTH-21, ramo 403: vale tambem sobre a conta alheia."""
+    client.force_login(usuario_staff)
+    resposta = client.post(
+        _editar(terceiro), _post_de_edicao(terceiro, perfil=Usuario.Perfil.ADMINISTRADOR)
+    )
+    assert resposta.status_code == 403
+    terceiro.refresh_from_db()
+    assert terceiro.perfil == Usuario.Perfil.USUARIO
+
+
+def test_o_mesmo_post_feito_por_administrador_e_aceito(
+    client, administrador_promovido, usuario_staff
+):
+    """AUTH-22: a promocao que foi recusada ao USUARIO passa para o
+    ADMINISTRADOR."""
+    client.force_login(administrador_promovido)
+    resposta = client.post(
+        _editar(usuario_staff),
+        _post_de_edicao(usuario_staff, perfil=Usuario.Perfil.ADMINISTRADOR),
+    )
+    assert resposta.status_code == 302
+    usuario_staff.refresh_from_db()
+    assert usuario_staff.perfil == Usuario.Perfil.ADMINISTRADOR

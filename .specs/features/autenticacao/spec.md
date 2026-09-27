@@ -235,7 +235,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
 | AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
 | AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-21 | P2: Atribuição de perfil restrita | Tasks | In Tasks |
+| AUTH-21 | P2: Atribuição de perfil restrita | Execute | Implementing |
 | AUTH-22 | P2: Atribuição de perfil restrita | Execute | Implementing |
 | AUTH-23 | Edge case: conta inativa | Execute | Implementing |
 | AUTH-24 | Edge case: CSRF ausente | Execute | Implementing |

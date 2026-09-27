@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.core.exceptions import PermissionDenied
 
 from contas.forms import UsuarioAlteracaoForm, UsuarioCriacaoForm
 from contas.models import Usuario
@@ -49,3 +50,13 @@ class UsuarioAdmin(UserAdmin):
         if obj is not None and obj.pk != request.user.pk:
             return False
         return super().has_change_permission(request, obj)
+
+    def save_model(self, request, obj, form, change):
+        # Readonly so faz o formulario ignorar o perfil: um POST forjado
+        # passaria calado. Aqui ele vira 403 (AUTH-21).
+        if not request.user.is_administrador:
+            persistido = Usuario.objects.get(pk=obj.pk).perfil if change else Usuario.Perfil.USUARIO
+            submetido = request.POST.get("perfil", persistido)
+            if submetido != persistido or obj.perfil != persistido:
+                raise PermissionDenied("Só um administrador altera o perfil de uma conta.")
+        super().save_model(request, obj, form, change)

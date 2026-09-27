@@ -833,7 +833,7 @@ T23 → T24 → T25
 
 ---
 
-### T25: Recusar com 403 a alteração de perfil por não administrador
+### T25: Recusar com 403 a alteração de perfil por não administrador ✅
 
 **What**: `save_model` levantando `PermissionDenied` quando um POST altera `perfil` sem o requisitante ser administrador.
 **Where**: `contas/admin.py`
@@ -848,18 +848,20 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `save_model` compara o `perfil` submetido com o persistido e levanta `PermissionDenied` se divergirem sem autorização
-- [ ] A defesa vale mesmo com o campo removido do formulário pela T24 (POST forjado)
-- [ ] Teste e2e: POST forjado de um `USUARIO` com `is_staff` tentando promover a si mesmo devolve 403 e o perfil persistido não muda (AUTH-21, ramo 403)
-- [ ] Teste e2e: POST forjado tentando promover terceiro devolve 403
-- [ ] Teste e2e: o mesmo POST feito por `ADMINISTRADOR` é aceito e persiste a mudança
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] `save_model` compara o `perfil` submetido no POST (e o do objeto) com o persistido e levanta `PermissionDenied` se divergirem sem autorização. O POST precisa ser lido direto: com o campo readonly, o formulário ignora o valor forjado em silêncio
+- [x] A defesa vale mesmo com o campo removido do formulário pela T24 (POST forjado)
+- [x] Teste e2e: POST forjado de um `USUARIO` com `is_staff` tentando promover a si mesmo devolve 403 e o perfil persistido não muda (AUTH-21, ramo 403)
+- [x] Teste e2e: POST forjado tentando promover terceiro devolve 403
+- [x] Teste e2e: o mesmo POST feito por `ADMINISTRADOR` é aceito e persiste a mudança
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(contas): recusa com 403 alteracao de perfil por nao administrador`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
