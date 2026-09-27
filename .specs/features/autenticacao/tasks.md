@@ -904,7 +904,7 @@ T26 → T27 → T28 → T29 → T30
 
 ---
 
-### T27: Senha ausente do HTML do login falho e da página 500 (F2)
+### T27: Senha ausente do HTML do login falho e da página 500 (F2) ✅
 
 **What**: Afirmar que a senha submetida não volta em nenhum corpo de resposta. Mata o mutante M6 (`render_value=True`).
 **Where**: `contas/tests/test_views_login.py`, `contas/tests/test_erro_500.py`
@@ -919,14 +919,17 @@ T26 → T27 → T28 → T29 → T30
 
 **Done when**:
 
-- [ ] Teste e2e: login recusado devolve 200 sem a senha submetida no HTML
-- [ ] A lista de trechos proibidos da página 500 inclui a senha submetida
-- [ ] Gate check passa: `pytest -q`
+- [x] Teste e2e: login recusado devolve 200 sem a senha submetida no HTML
+- [x] A lista de trechos proibidos da página 500 inclui a senha submetida
+- [x] Mutante M6 (`render_value=True`) morre, conferido em worktree descartável
+- [x] Gate check passa: `pytest -q`
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(contas): prova que a senha submetida nao volta na resposta`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

@@ -42,6 +42,14 @@ def test_credencial_invalida_rerenderiza_com_mensagem_unica(client, ana):
     assert resposta.content.decode().count(MENSAGEM) == 1
 
 
+def test_login_recusado_nao_devolve_a_senha_submetida(client, ana):
+    """AUTH-08: a senha digitada nao volta no HTML re-renderizado."""
+    senha_errada = "senha-errada-que-nao-volta-321"
+    resposta = client.post("/entrar/", {"username": "ana", "password": senha_errada})
+    assert resposta.status_code == 200
+    assert senha_errada not in resposta.content.decode()
+
+
 def test_post_sem_token_csrf_e_recusado_com_403(ana):
     """AUTH-24: 403 e nenhuma sessao autenticada."""
     cliente = Client(enforce_csrf_checks=True)

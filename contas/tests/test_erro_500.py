@@ -26,8 +26,11 @@ def banco_fora_do_ar(monkeypatch, client):
     return client
 
 
+SENHA_SUBMETIDA = "senha-forte-123"
+
+
 def _entrar(client):
-    return client.post("/entrar/", {"username": "ana", "password": "senha-forte-123"})
+    return client.post("/entrar/", {"username": "ana", "password": SENHA_SUBMETIDA})
 
 
 @pytest.mark.django_db
@@ -42,7 +45,8 @@ def test_banco_indisponivel_no_login_devolve_500_sem_abrir_sessao(banco_fora_do_
 
 @pytest.mark.django_db
 def test_pagina_500_nao_expoe_detalhes_da_conexao(banco_fora_do_ar):
-    """AUTH-26: nem host, nem usuario, nem senha, nem traceback."""
+    """AUTH-26 e AUTH-08: nem host, usuario ou senha do banco, nem traceback,
+    nem a senha que o visitante submeteu."""
     html = _entrar(banco_fora_do_ar).content.decode()
     banco = settings.DATABASES["default"]
     proibidos = [
@@ -51,6 +55,7 @@ def test_pagina_500_nao_expoe_detalhes_da_conexao(banco_fora_do_ar):
         "s3gr3d0-do-banco",
         "OperationalError",
         "Traceback",
+        SENHA_SUBMETIDA,
         *(banco[chave] for chave in ("HOST", "USER", "PASSWORD") if banco[chave]),
     ]
     for trecho in proibidos:
