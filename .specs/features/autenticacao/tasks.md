@@ -800,9 +800,9 @@ T23 → T24 → T25
 
 ---
 
-### T24: Esconder o campo de perfil de não administradores
+### T24: Esconder o campo de perfil de não administradores ✅
 
-**What**: `get_fieldsets`, `get_readonly_fields` e `has_change_permission` removendo `perfil` e `is_superuser` de quem não é administrador.
+**What**: `get_readonly_fields` e `has_change_permission` removendo `perfil` e `is_superuser` de quem não é administrador.
 **Where**: `contas/admin.py`
 **Depends on**: T23
 **Reuses**: Ganchos de permissão do `ModelAdmin`
@@ -815,18 +815,21 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Para `request.user.is_administrador` falso, `perfil` e `is_superuser` saem do formulário e entram em readonly
-- [ ] `has_change_permission` é falso para não administrador sobre conta de terceiro
-- [ ] Teste e2e: um `USUARIO` com `is_staff` concedido manualmente abre o próprio registro e **não** vê o campo `perfil`
-- [ ] Teste e2e: um `ADMINISTRADOR` vê e edita o campo
-- [ ] Teste e2e: um `USUARIO` sem `is_staff` é redirecionado ao login do admin (AUTH-21, ramo de redirecionamento)
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] Para `request.user.is_administrador` falso, `perfil` e `is_superuser` saem do formulário e entram em readonly
+- [x] `has_change_permission` é falso para não administrador sobre conta de terceiro, e verdadeiro para `is_administrador` (um ADMINISTRADOR promovido não é superusuário)
+- [x] Sem `get_fieldsets`: o readonly já tira o campo do formulário (ajuste registrado no design)
+- [x] Teste e2e: um `USUARIO` com `is_staff` concedido manualmente abre o próprio registro e **não** vê o campo `perfil`
+- [x] Teste e2e: um `ADMINISTRADOR` vê e edita o campo
+- [x] Teste e2e: um `USUARIO` sem `is_staff` é redirecionado ao login do admin (AUTH-21, ramo de redirecionamento)
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 4 testes passam (sem deleções silenciosas) — os 3 previstos mais 1 para o critério `has_change_permission` falso sobre conta de terceiro
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(contas): esconde campo de perfil de nao administradores`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
