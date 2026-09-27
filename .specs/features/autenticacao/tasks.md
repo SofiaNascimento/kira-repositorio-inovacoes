@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/autenticacao/spec.md`
 **Design**: `.specs/features/autenticacao/design.md`
-**Status**: In Progress
+**Status**: Complete — verificada (PASS na iteração 3, `validation.md`)
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff
 
@@ -133,7 +133,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `chore(setup): fixa dependencias do projeto com Django 5.2 LTS`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -161,7 +161,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `chore(setup): gera esqueleto do projeto Django`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -190,7 +190,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `chore(setup): configura pytest-django e ruff`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -220,7 +220,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `chore(setup): configura PostgreSQL 16 e variaveis de ambiente`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -249,7 +249,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `chore(contas): cria a app de contas`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -281,7 +281,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona modelo Usuario com perfil enum`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -312,7 +312,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): declara AUTH_USER_MODEL e migration inicial`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -343,7 +343,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona check constraint de perfil valido`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -374,7 +374,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona unicidade case-insensitive de e-mail`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -404,7 +404,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): forca perfil ADMINISTRADOR em createsuperuser`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -435,7 +435,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): sincroniza is_staff com o perfil administrador`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -466,7 +466,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona backend de login por usuario ou e-mail`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -496,7 +496,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): registra cadeia de authentication backends`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -526,7 +526,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona formulario de login com mensagem unica`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -556,7 +556,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(ui): adiciona template base com landmarks e mensagens`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -588,7 +588,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona tela de login`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -618,7 +618,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): adiciona encerramento de sessao`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -649,7 +649,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): registra tentativas de login malsucedidas`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -680,7 +680,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(nucleo): adiciona home interna provisoria`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -713,7 +713,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(config): nega acesso por padrao com LoginRequiredMiddleware`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -744,7 +744,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(config): define expiracao de sessao e cookies seguros`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -774,7 +774,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(config): adiciona pagina 500 sem vazamento de detalhes`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -806,7 +806,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): registra Usuario no admin`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -839,7 +839,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): esconde campo de perfil de nao administradores`
 
-**Status**: ✅ Complete (pendente) — *revista na T26:* o acesso passou a ser negado por inteiro; readonly saiu e os 2 testes de staff comum viraram o teste parametrizado de 403
+**Status**: ✅ Complete — *revista na T26:* o acesso passou a ser negado por inteiro; readonly saiu e os 2 testes de staff comum viraram o teste parametrizado de 403
 
 ---
 
@@ -871,7 +871,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `feat(contas): recusa com 403 alteracao de perfil por nao administrador`
 
-**Status**: ✅ Complete (pendente) — *revista na T26:* o 403 vem agora de `has_change_permission`; o guarda em `save_model` saiu por ficar inalcançável. Os 3 testes seguem sem mudança
+**Status**: ✅ Complete — *revista na T26:* o 403 vem agora de `has_change_permission`; o guarda em `save_model` saiu por ficar inalcançável. Os 3 testes seguem sem mudança
 
 ---
 
@@ -902,7 +902,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `fix(contas): restringe telas de usuario do admin a administradores`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -931,7 +931,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `test(contas): prova que a senha submetida nao volta na resposta`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -959,7 +959,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `test(contas): afirma validation error e perfil inalterado`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -988,7 +988,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `test(contas): completa evidencia de troca de senha, logout e conta inativa`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
@@ -1017,11 +1017,11 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `test(contas): cobre hash descartavel do backend de login`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 
-### T31: Tela de exclusão de usuário coberta por teste (iteração 2, A5)
+### T31: Tela de exclusão de usuário coberta por teste (iteração 2, A5) ✅
 
 **What**: Somar a tela de exclusão ao teste parametrizado das telas de usuário e cobrir um POST de exclusão forjado. Mata o mutante A5 (`has_delete_permission` → `True`).
 **Where**: `contas/tests/test_admin_perfil.py`
@@ -1046,7 +1046,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 
 **Commit**: `test(contas): cobre a tela de exclusao de usuario no admin`
 
-**Status**: ✅ Complete (pendente)
+**Status**: ✅ Complete
 
 ---
 

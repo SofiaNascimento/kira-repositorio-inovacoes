@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/autenticacao/spec.md`
 **Context**: `.specs/features/autenticacao/context.md`
-**Status**: Approved
+**Status**: Approved — implementado e verificado (2026-09-26)
 
 **Decisões de projeto vinculantes (lidas de `.specs/STATE.md`):**
 

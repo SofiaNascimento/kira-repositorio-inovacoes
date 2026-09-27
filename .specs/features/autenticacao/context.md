@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-09-21
 **Spec:** `.specs/features/autenticacao/spec.md`
-**Status:** Ready for design
+**Status:** Feature concluída e verificada (2026-09-26)
 
 ---
 

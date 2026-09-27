@@ -52,17 +52,17 @@
 
 ## Handoff
 
-- **Feature**: autenticacao — `.specs/features/autenticacao/`
-- **Phase / Task**: Validação, iteração 1 de 3 — Verifier deu **FAIL**. Tasks T1–T25 concluídas; faltam as correções F1–F5 do `validation.md`.
-- **Completed**: T1–T25 (25 de 25). Última task: T25 no `3f7bc98`.
-- **In-progress** (file:line): nenhum. O relatório está em `.specs/features/autenticacao/validation.md`.
-- **Next step**: o autor decide a AUTH-22 (F1). Depois disso: executar F1–F5, um commit por correção, e mandar o Verifier de novo.
-- **Blockers**: F1 depende de decisão do autor. Opção (a): as telas de usuário do admin passam a seguir `is_administrador`; os testes da T24 que abrem a tela com um `USUARIO` staff mudam. Opção (b): emendar a AUTH-22 para permitir que um staff comum abra o próprio registro.
+- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**.
+- **Phase / Task**: Execute encerrado. T1–T31 completas; Verifier independente deu PASS na iteração 3 de 3 (`validation.md`); `validate_state.py autenticacao` → exit 0.
+- **Completed**: T1–T31. 27 de 27 requisitos em `Verified` (AUTH-19 com ressalva: a cláusula de uso por outras features é regra de processo, auditada por grep).
+- **In-progress** (file:line): nenhum.
+- **Next step**: iniciar a próxima feature do `docs/mapa-de-features.md` (F2). Ela herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, com `on_delete=PROTECT` sugerido no design da F1) e AD-006 (toda view nova nasce protegida; o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433**; comandos pelo `.venv/`.
 - **Uncommitted files**: nenhum.
-- **Branch**: `main`
+- **Branch**: `main` (nada foi enviado ao remoto).
 
-**Correções pendentes (do `validation.md`)**: F1 AUTH-22 (decisão). F2 AUTH-08: senha ausente do HTML do login falho e da 500 (mutante M6). F3 AUTH-18: `ValidationError` via `full_clean` e valor gravado inalterado. F4: troca de senha (AUTH-07), cookie limpo no logout (AUTH-13), conta inativa na tela (AUTH-23). F5: teste do hash descartável (mutante M4).
+**Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
 
-**Decisões da retomada de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento (`a36971a`); execução inline.
+**Ideias adiadas em aberto (`context.md`)**: recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login.
 
-**Estado verificável na retomada**: `.venv/bin/pytest -q` → **66 passed**; `validate_state.py autenticacao` → exit 1 (FAIL esperado até as correções).
+**Estado verificável na retomada**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; `validate_state.py autenticacao` → exit 0.

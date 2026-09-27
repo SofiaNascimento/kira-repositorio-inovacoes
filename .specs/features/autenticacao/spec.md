@@ -18,11 +18,11 @@ acesso nem modelo de usuário: F1 é a fundação que precisa existir antes de F
 
 ## Goals
 
-- [ ] Um colaborador com conta consegue entrar no sistema informando usuário **ou** e-mail e senha, e
+- [x] Um colaborador com conta consegue entrar no sistema informando usuário **ou** e-mail e senha, e
       permanece autenticado por sessão do Django entre requisições.
-- [ ] Nenhuma tela interna é alcançável sem sessão autenticada — acesso anônimo é redirecionado ao login.
-- [ ] Nenhuma senha existe em texto puro no banco, em log ou em resposta HTTP; apenas o hash do Django.
-- [ ] O modelo de usuário carrega um campo de perfil restrito a `USUARIO` / `ADMINISTRADOR`, com ponto
+- [x] Nenhuma tela interna é alcançável sem sessão autenticada — acesso anônimo é redirecionado ao login.
+- [x] Nenhuma senha existe em texto puro no banco, em log ou em resposta HTTP; apenas o hash do Django.
+- [x] O modelo de usuário carrega um campo de perfil restrito a `USUARIO` / `ADMINISTRADOR`, com ponto
       único de consulta que F4 usará para autorizar edição e exclusão.
 
 ## Out of Scope
@@ -215,37 +215,38 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| AUTH-01 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-02 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-03 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-04 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-05 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-06 | P1: Senha apenas como hash | Execute | Implementing |
-| AUTH-07 | P1: Senha apenas como hash | Execute | Implementing |
-| AUTH-08 | P1: Senha apenas como hash | Execute | Implementing |
-| AUTH-09 | P1: Telas internas restritas | Execute | Implementing |
-| AUTH-10 | P1: Telas internas restritas | Execute | Implementing |
-| AUTH-11 | P1: Telas internas restritas | Execute | Implementing |
-| AUTH-12 | P1: Telas internas restritas | Execute | Implementing |
-| AUTH-13 | P1: Encerramento de sessão | Execute | Implementing |
-| AUTH-14 | P1: Encerramento de sessão | Execute | Implementing |
-| AUTH-15 | P1: Encerramento de sessão | Execute | Implementing |
-| AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
-| AUTH-21 | P2: Atribuição de perfil restrita | Execute | Implementing |
-| AUTH-22 | P2: Atribuição de perfil restrita | Execute | Implementing |
-| AUTH-23 | Edge case: conta inativa | Execute | Implementing |
-| AUTH-24 | Edge case: CSRF ausente | Execute | Implementing |
-| AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Implementing |
-| AUTH-26 | Edge case: banco indisponível | Execute | Implementing |
-| AUTH-27 | Edge case: log de tentativa malsucedida | Execute | Implementing |
+| AUTH-01 | P1: Login por usuário ou e-mail | Execute | Verified |
+| AUTH-02 | P1: Login por usuário ou e-mail | Execute | Verified |
+| AUTH-03 | P1: Login por usuário ou e-mail | Execute | Verified |
+| AUTH-04 | P1: Login por usuário ou e-mail | Execute | Verified |
+| AUTH-05 | P1: Login por usuário ou e-mail | Execute | Verified |
+| AUTH-06 | P1: Senha apenas como hash | Execute | Verified |
+| AUTH-07 | P1: Senha apenas como hash | Execute | Verified |
+| AUTH-08 | P1: Senha apenas como hash | Execute | Verified |
+| AUTH-09 | P1: Telas internas restritas | Execute | Verified |
+| AUTH-10 | P1: Telas internas restritas | Execute | Verified |
+| AUTH-11 | P1: Telas internas restritas | Execute | Verified |
+| AUTH-12 | P1: Telas internas restritas | Execute | Verified |
+| AUTH-13 | P1: Encerramento de sessão | Execute | Verified |
+| AUTH-14 | P1: Encerramento de sessão | Execute | Verified |
+| AUTH-15 | P1: Encerramento de sessão | Execute | Verified |
+| AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Verified |
+| AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Verified |
+| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Verified |
+| AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Verified ⚠️ |
+| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Verified |
+| AUTH-21 | P2: Atribuição de perfil restrita | Execute | Verified |
+| AUTH-22 | P2: Atribuição de perfil restrita | Execute | Verified |
+| AUTH-23 | Edge case: conta inativa | Execute | Verified |
+| AUTH-24 | Edge case: CSRF ausente | Execute | Verified |
+| AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Verified |
+| AUTH-26 | Edge case: banco indisponível | Execute | Verified |
+| AUTH-27 | Edge case: log de tentativa malsucedida | Execute | Verified |
 
 **ID format:** `AUTH-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 27 total, 27 mapeados para tasks (ver `tasks.md` → Cobertura de requisitos por task), 0 sem mapeamento
+**Coverage:** 27 total, 27 mapeados para tasks, 27 verificados (`validation.md`, iteração 3).
+⚠️ AUTH-19: a cláusula "every other feature SHALL use it" é regra de processo, sem resultado testável. Verificada por auditoria de código (grep): nenhuma comparação direta do campo fora do ponto de consulta.
 
 ---
 
@@ -265,12 +266,12 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 
 ## Success Criteria
 
-- [ ] Um colaborador com conta entra com username e com e-mail (em qualquer caixa) e permanece
+- [x] Um colaborador com conta entra com username e com e-mail (em qualquer caixa) e permanece
       autenticado entre requisições; credencial inválida devolve a mensagem única e nenhuma sessão.
-- [ ] Nenhuma URL interna responde conteúdo a um cliente sem sessão — verificado varrendo as rotas
+- [x] Nenhuma URL interna responde conteúdo a um cliente sem sessão — verificado varrendo as rotas
       internas registradas e confirmando redirecionamento ao login em todas.
-- [ ] A coluna de senha no PostgreSQL não contém nenhum valor legível; uma busca pela senha de teste
+- [x] A coluna de senha no PostgreSQL não contém nenhum valor legível; uma busca pela senha de teste
       no log da aplicação e no corpo das respostas não retorna ocorrência.
-- [ ] `createsuperuser` produz conta `ADMINISTRADOR`; conta criada pelo admin sem perfil nasce
+- [x] `createsuperuser` produz conta `ADMINISTRADOR`; conta criada pelo admin sem perfil nasce
       `USUARIO`; perfil fora do enum é rejeitado.
-- [ ] Um usuário `USUARIO` recebe 403 ao tentar alterar qualquer perfil.
+- [x] Um usuário `USUARIO` recebe 403 ao tentar alterar qualquer perfil.
