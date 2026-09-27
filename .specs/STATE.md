@@ -53,17 +53,16 @@
 ## Handoff
 
 - **Feature**: autenticacao — `.specs/features/autenticacao/`
-- **Phase / Task**: Fase 3 (Autenticação) / T12 — `UsernameOrEmailBackend`. Não iniciada.
-- **Completed**: T1, T2, T3, T4 (Fase 1) · T5, T6, T7, T8, T9, T10, T11 (Fase 2). 11 de 25.
-- **In-progress** (file:line): nenhum. A Fase 2 fechou no commit `b246945`; não há edição a meio caminho. O último arquivo tocado foi `contas/models.py:47` (`Usuario.save`, sincronização de `is_staff`), já commitado e com gate verde.
-- **Next step**: implementar T12 — criar `contas/backends.py` com `UsernameOrEmailBackend` herdando de `ModelBackend`, buscando por `Q(username__iexact=ident) | Q(email__iexact=ident)`, preservando o dummy hash no caminho "não encontrado", e escrever os 6 testes de integração previstos na task.
-- **Blockers**: nenhum bloqueio de código. Duas condições de ambiente para retomar:
-  1. O PostgreSQL 16 precisa estar no ar na porta **5433** (a 14 ocupa a 5432). Subir com `/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`. Banco: `kira`. Credenciais no `.env` (não versionado; modelo em `.env.example`).
-  2. Os comandos rodam pelo virtualenv `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). O `.venv` não é versionado: recriar com `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`.
-- **Uncommitted files**: nenhum arquivo da feature. O que resta na árvore **é anterior a esta sessão e não foi tocado por ela**:
-  - `README.md` — modificado: 238 linhas removidas, arquivo vazio no disco contra 238 no `HEAD`. Não foi alteração deste trabalho; já estava assim no início da sessão. **Não commitado de propósito** — precisa da decisão do autor (restaurar com `git restore README.md` ou commitar a remoção).
-  - `.DS_Store` — lixo do macOS, não rastreado e ausente do `.gitignore`.
-  - `.agents/`, `.claude/`, `docs/` — não rastreados desde antes da sessão. `.claude/skills/tlc-spec-driven/` é a própria metodologia; `docs/` traz requisitos, mapa de features e modelagem UML, que as specs referenciam.
+- **Phase / Task**: Fase 4 (Controle de acesso) / T19 — app `nucleo` com a home interna. Não iniciada.
+- **Completed**: T1–T4 (Fase 1) · T5–T11 (Fase 2) · T12–T18 (Fase 3). 18 de 25.
+- **In-progress** (file:line): nenhum. A Fase 3 fechou no commit `960815b` com gate de build verde.
+- **Next step**: implementar T19 — criar a app `nucleo` com `HomeInternaView` em `/`, template que estende `base.html`, e 2 testes e2e.
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`).
+- **Uncommitted files**: nenhum.
 - **Branch**: `main`
 
-**Estado verificável na retomada**: 11 commits a partir de `66cb910` até `b246945`; `.venv/bin/pytest -q` deve reportar **17 passed**; `.venv/bin/python manage.py makemigrations --check --dry-run` deve dizer "No changes detected". Se algum desses três não bater, reconcilie pelo git antes de escrever código.
+**Decisões da retomada de 2026-09-26:** o README fica vazio (decisão do autor; o esvaziamento entrou no `2095b21`); `.DS_Store` saiu do versionamento no `a36971a`; execução inline, sem sub-agentes.
+
+**Ajustes de execução registrados nos artefatos:** `LOGIN_URL`/`LOGIN_REDIRECT_URL` antecipados da T20 para a T16; mensagem de logout no `post()` e não no `dispatch()` (design); fallback do `ModelBackend` e ambiguidade (design, Risks); `maxlength` 150 do campo de login (context, Deferred Ideas). T12, T14 e T17 ganharam um teste a mais cada para cobrir critérios do *Done when*.
+
+**Estado verificável na retomada**: `.venv/bin/pytest -q` deve reportar **44 passed**; `makemigrations --check --dry-run` deve dizer "No changes detected".
