@@ -460,7 +460,7 @@ T23 → T24 → T25
 
 ---
 
-### T13: Registrar a cadeia de authentication backends
+### T13: Registrar a cadeia de authentication backends ✅
 
 **What**: Declarar `AUTHENTICATION_BACKENDS` com o backend customizado antes do `ModelBackend`.
 **Where**: `config/settings.py`
@@ -475,16 +475,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `UsernameOrEmailBackend` precede `ModelBackend` na lista
-- [ ] Teste de integração via `django.contrib.auth.authenticate()` (não mais chamando o backend direto): autentica por username e por e-mail
-- [ ] Teste de integração: credencial inválida retorna `None`
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] `UsernameOrEmailBackend` precede `ModelBackend` na lista
+- [x] Teste de integração via `django.contrib.auth.authenticate()` (não mais chamando o backend direto): autentica por username e por e-mail
+- [x] Teste de integração: credencial inválida retorna `None`
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): registra cadeia de authentication backends`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

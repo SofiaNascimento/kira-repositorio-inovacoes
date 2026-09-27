@@ -130,6 +130,13 @@ STATIC_URL = "static/"
 # Declarado antes da primeira migration: trocar depois exige recriar o banco.
 AUTH_USER_MODEL = "contas.Usuario"
 
+# Login por username ou e-mail (AUTH-01, AUTH-02). O ModelBackend fica como
+# fallback do framework, atras do backend do projeto.
+AUTHENTICATION_BACKENDS = [
+    "contas.backends.UsernameOrEmailBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

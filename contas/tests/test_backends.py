@@ -5,6 +5,7 @@ recusa devolve None, sem distinguir o motivo.
 """
 
 import pytest
+from django.contrib.auth import authenticate
 
 from contas.backends import UsernameOrEmailBackend
 from contas.models import Usuario
@@ -60,3 +61,21 @@ def test_identificador_ambiguo_e_recusado(ana):
     de uma conta, recusa em vez de escolher uma."""
     Usuario.objects.create_user(username="ANA", email="outra@x.com", password=SENHA)
     assert autenticar("ana") is None
+
+
+# Cadeia configurada em AUTHENTICATION_BACKENDS, via authenticate() do Django.
+
+
+def test_authenticate_do_django_aceita_username(ana):
+    """AUTH-01: o fluxo real de login passa pela cadeia configurada."""
+    assert authenticate(None, username="ana", password=SENHA).pk == ana.pk
+
+
+def test_authenticate_do_django_aceita_email(ana):
+    """AUTH-02: sem o backend do projeto na cadeia, o e-mail nao autenticaria."""
+    assert authenticate(None, username="ANA@x.com", password=SENHA).pk == ana.pk
+
+
+def test_authenticate_do_django_recusa_credencial_invalida(ana):
+    """AUTH-03: nenhum backend da cadeia aceita a senha errada."""
+    assert authenticate(None, username="ana@x.com", password="outra-senha-456") is None
