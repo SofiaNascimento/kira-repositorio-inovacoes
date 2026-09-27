@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "promote_threshold": 2,
+  "window_days": 45,
+  "quarantine_threshold": 2,
+  "next_id": 6,
+  "lessons": [
+    {
+      "id": "L-001",
+      "key": "surviving_mutant::assert that a submitted password is absent from every response body that re renders a form not only from logs",
+      "text": "Assert that a submitted password is absent from every response body that re-renders a form, not only from logs",
+      "signal": "surviving_mutant",
+      "scope": "forms",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M6 contas/forms.py:21 (forms)"
+      ],
+      "created": "2026-09-27T03:25:06Z",
+      "last_seen": "2026-09-27T03:25:06Z"
+    },
+    {
+      "id": "L-002",
+      "key": "surviving_mutant::cover the dummy password hash on the not found path of a custom auth backend with a test that observes the call",
+      "text": "Cover the dummy password hash on the not-found path of a custom auth backend with a test that observes the call",
+      "signal": "surviving_mutant",
+      "scope": "auth-backend",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M4 contas/backends.py:32 (auth-backend)"
+      ],
+      "created": "2026-09-27T03:25:06Z",
+      "last_seen": "2026-09-27T03:25:06Z"
+    },
+    {
+      "id": "L-003",
+      "key": "ac_gap::when an ac restricts a screen to one role test that other roles holding framework access are denied the screen not only that fields are hidden",
+      "text": "When an AC restricts a screen to one role, test that other roles holding framework access are denied the screen, not only that fields are hidden",
+      "signal": "ac_gap",
+      "scope": "admin",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "AUTH-22 contas/tests/test_admin_perfil.py:46 (admin)"
+      ],
+      "created": "2026-09-27T03:25:06Z",
+      "last_seen": "2026-09-27T03:25:06Z"
+    },
+    {
+      "id": "L-004",
+      "key": "ac_gap::assert the error type the ac names and that the stored value stays unchanged not just that the write fails",
+      "text": "Assert the error type the AC names and that the stored value stays unchanged, not just that the write fails",
+      "signal": "ac_gap",
+      "scope": "models",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "AUTH-18 contas/tests/test_constraints.py:17 (models)"
+      ],
+      "created": "2026-09-27T03:25:06Z",
+      "last_seen": "2026-09-27T03:25:06Z"
+    },
+    {
+      "id": "L-005",
+      "key": "ac_gap::assert every clause of a compound ac at the layer the ac describes a backend test does not cover a screen level outcome",
+      "text": "Assert every clause of a compound AC at the layer the AC describes; a backend test does not cover a screen-level outcome",
+      "signal": "ac_gap",
+      "scope": "routes",
+      "status": "candidate",
+      "features": [
+        "autenticacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes)"
+      ],
+      "created": "2026-09-27T03:25:06Z",
+      "last_seen": "2026-09-27T03:25:06Z"
+    }
+  ]
+}

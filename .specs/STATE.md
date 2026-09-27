@@ -53,16 +53,16 @@
 ## Handoff
 
 - **Feature**: autenticacao — `.specs/features/autenticacao/`
-- **Phase / Task**: Fase 4 (Controle de acesso) / T19 — app `nucleo` com a home interna. Não iniciada.
-- **Completed**: T1–T4 (Fase 1) · T5–T11 (Fase 2) · T12–T18 (Fase 3). 18 de 25.
-- **In-progress** (file:line): nenhum. A Fase 3 fechou no commit `960815b` com gate de build verde.
-- **Next step**: implementar T19 — criar a app `nucleo` com `HomeInternaView` em `/`, template que estende `base.html`, e 2 testes e2e.
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`).
+- **Phase / Task**: Validação, iteração 1 de 3 — Verifier deu **FAIL**. Tasks T1–T25 concluídas; faltam as correções F1–F5 do `validation.md`.
+- **Completed**: T1–T25 (25 de 25). Última task: T25 no `3f7bc98`.
+- **In-progress** (file:line): nenhum. O relatório está em `.specs/features/autenticacao/validation.md`.
+- **Next step**: o autor decide a AUTH-22 (F1). Depois disso: executar F1–F5, um commit por correção, e mandar o Verifier de novo.
+- **Blockers**: F1 depende de decisão do autor. Opção (a): as telas de usuário do admin passam a seguir `is_administrador`; os testes da T24 que abrem a tela com um `USUARIO` staff mudam. Opção (b): emendar a AUTH-22 para permitir que um staff comum abra o próprio registro.
 - **Uncommitted files**: nenhum.
 - **Branch**: `main`
 
-**Decisões da retomada de 2026-09-26:** o README fica vazio (decisão do autor; o esvaziamento entrou no `2095b21`); `.DS_Store` saiu do versionamento no `a36971a`; execução inline, sem sub-agentes.
+**Correções pendentes (do `validation.md`)**: F1 AUTH-22 (decisão). F2 AUTH-08: senha ausente do HTML do login falho e da 500 (mutante M6). F3 AUTH-18: `ValidationError` via `full_clean` e valor gravado inalterado. F4: troca de senha (AUTH-07), cookie limpo no logout (AUTH-13), conta inativa na tela (AUTH-23). F5: teste do hash descartável (mutante M4).
 
-**Ajustes de execução registrados nos artefatos:** `LOGIN_URL`/`LOGIN_REDIRECT_URL` antecipados da T20 para a T16; mensagem de logout no `post()` e não no `dispatch()` (design); fallback do `ModelBackend` e ambiguidade (design, Risks); `maxlength` 150 do campo de login (context, Deferred Ideas). T12, T14 e T17 ganharam um teste a mais cada para cobrir critérios do *Done when*.
+**Decisões da retomada de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento (`a36971a`); execução inline.
 
-**Estado verificável na retomada**: `.venv/bin/pytest -q` deve reportar **44 passed**; `makemigrations --check --dry-run` deve dizer "No changes detected".
+**Estado verificável na retomada**: `.venv/bin/pytest -q` → **66 passed**; `validate_state.py autenticacao` → exit 1 (FAIL esperado até as correções).
