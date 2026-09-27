@@ -99,8 +99,10 @@ T23 → T24 → T25
 Gaps do Verifier em `validation.md` (FAIL de 2026-09-26). F1 segue a decisão do autor: seguir a AUTH-22 como está escrita.
 
 ```
-T26 → T27 → T28 → T29 → T30
+T26 → T27 → T28 → T29 → T30 → T31
 ```
+
+T31 vem da iteração 2 do Verifier (mutante A5).
 
 ---
 
@@ -1019,6 +1021,35 @@ T26 → T27 → T28 → T29 → T30
 
 ---
 
+### T31: Tela de exclusão de usuário coberta por teste (iteração 2, A5)
+
+**What**: Somar a tela de exclusão ao teste parametrizado das telas de usuário e cobrir um POST de exclusão forjado. Mata o mutante A5 (`has_delete_permission` → `True`).
+**Where**: `contas/tests/test_admin_perfil.py`
+**Depends on**: T30
+**Reuses**: Fixtures e parametrização da T26
+**Requirement**: AUTH-22
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] `exclusao_de_terceiro` entra em `TELAS_DE_USUARIO`: 403 para staff comum, 200 para o ADMINISTRADOR
+- [x] Teste e2e: POST de exclusão forjado por staff comum com `delete_usuario` devolve 403 e a conta continua existindo
+- [x] Mutante A5 morre, conferido em worktree descartável
+- [x] Gate check passa: `pytest -q`
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(contas): cobre a tela de exclusao de usuario no admin`
+
+**Status**: ✅ Complete (pendente)
+
+---
+
 ## Phase Execution Map
 
 ```
@@ -1029,7 +1060,7 @@ Phase 2:  T5 → T6 → T7 → T8 → T9 → T10 → T11
 Phase 3:  T12 → T13 → T14 → T15 → T16 → T17 → T18
 Phase 4:  T19 → T20 → T21 → T22
 Phase 5:  T23 → T24 → T25
-Phase 6:  T26 → T27 → T28 → T29 → T30
+Phase 6:  T26 → T27 → T28 → T29 → T30 → T31
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):

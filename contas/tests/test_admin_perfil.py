@@ -42,7 +42,14 @@ def administrador_promovido(db):
     )
 
 
-TELAS_DE_USUARIO = ["indice_do_app", "lista", "novo", "proprio_registro", "registro_de_terceiro"]
+TELAS_DE_USUARIO = [
+    "indice_do_app",
+    "lista",
+    "novo",
+    "proprio_registro",
+    "registro_de_terceiro",
+    "exclusao_de_terceiro",
+]
 
 
 def _tela(nome, proprio, terceiro):
@@ -52,6 +59,7 @@ def _tela(nome, proprio, terceiro):
         "novo": f"{LISTA}add/",
         "proprio_registro": _editar(proprio),
         "registro_de_terceiro": _editar(terceiro),
+        "exclusao_de_terceiro": f"{LISTA}{terceiro.pk}/delete/",
     }[nome]
 
 
@@ -64,6 +72,15 @@ def test_usuario_com_staff_nao_abre_as_telas_de_usuario(client, usuario_staff, t
     # acessivel; nas demais telas, com 403.
     esperado = 404 if tela == "indice_do_app" else 403
     assert client.get(_tela(tela, usuario_staff, terceiro)).status_code == esperado
+
+
+def test_usuario_com_staff_forjando_exclusao_recebe_403(client, usuario_staff, terceiro):
+    """AUTH-22: a conta alheia nao pode ser apagada por quem nao e
+    administrador, nem com a permissao delete_usuario."""
+    client.force_login(usuario_staff)
+    resposta = client.post(f"{LISTA}{terceiro.pk}/delete/", {"post": "yes"})
+    assert resposta.status_code == 403
+    assert Usuario.objects.filter(pk=terceiro.pk).exists()
 
 
 @pytest.mark.parametrize("tela", TELAS_DE_USUARIO)
