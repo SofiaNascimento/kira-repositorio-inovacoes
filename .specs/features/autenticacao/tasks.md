@@ -768,7 +768,7 @@ T23 → T24 → T25
 
 ---
 
-### T23: Registrar `UsuarioAdmin`
+### T23: Registrar `UsuarioAdmin` ✅
 
 **What**: Registrar `Usuario` no admin estendendo `UserAdmin`, com `perfil` nos fieldsets e na listagem.
 **Where**: `contas/admin.py`
@@ -783,17 +783,20 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `Usuario` registrado; `perfil` aparece em `list_display`, `list_filter` e nos fieldsets
-- [ ] Nenhuma tela do admin exibe ou aceita senha em texto puro (AUTH-08)
-- [ ] Teste e2e: `ADMINISTRADOR` abre a listagem de usuários (200) e cria uma conta
-- [ ] Teste e2e: a conta criada pelo admin nasce com perfil `USUARIO`
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] `Usuario` registrado; `perfil` aparece em `list_display`, `list_filter` e nos fieldsets
+- [x] Nenhuma tela do admin exibe ou aceita senha em texto puro (AUTH-08)
+- [x] Formulários de criação e edição próprios (`UsuarioCriacaoForm`, `UsuarioAlteracaoForm` em `contas/forms.py`), porque os do Django apontam para `auth.User`; a criação pede o e-mail
+- [x] Teste e2e: `ADMINISTRADOR` abre a listagem de usuários (200) e cria uma conta
+- [x] Teste e2e: a conta criada pelo admin nasce com perfil `USUARIO`
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas) — os 2 previstos mais 1 para a tela de edição, que prova o critério de AUTH-08 (sem senha, sem hash, sem campo `password`)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(contas): registra Usuario no admin`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

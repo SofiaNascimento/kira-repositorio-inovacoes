@@ -175,7 +175,11 @@ e é deliberado, porque cada peça pronta usada é uma peça a menos para testar
   - `has_change_permission(request, obj)` — `False` para não administradores sobre contas de terceiros
   - `save_model(request, obj, form, change)` — `raise PermissionDenied` (→ 403) se um POST alterar
     `perfil` vindo de um não administrador, mesmo que o campo tenha sido removido do formulário
-- **Dependencies**: `UserAdmin`, `Usuario`
+  - `form = UsuarioAlteracaoForm` / `add_form = UsuarioCriacaoForm` — *acrescentados no Execute (T23)*:
+    os formulários de usuário do Django declaram `Meta.model = auth.User`, que o AD-005 substituiu. Os dois
+    moram em `contas/forms.py` e apontam para `Usuario`. O de criação pede também o **e-mail**: é
+    obrigatório e único, e sem ele a segunda conta criada pelo admin colidiria no e-mail vazio.
+- **Dependencies**: `UserAdmin`, `Usuario`, `UsuarioCriacaoForm`, `UsuarioAlteracaoForm`
 - **Reuses**: `django.contrib.auth.admin.UserAdmin` (já trata a senha com `ReadOnlyPasswordHashField`
   — nenhuma tela do admin exibe ou aceita senha em texto puro, reforçando AUTH-08).
 

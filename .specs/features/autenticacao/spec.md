@@ -220,8 +220,8 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-03 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-04 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-05 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
-| AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |
+| AUTH-06 | P1: Senha apenas como hash | Execute | Implementing |
+| AUTH-07 | P1: Senha apenas como hash | Execute | Implementing |
 | AUTH-08 | P1: Senha apenas como hash | Execute | Implementing |
 | AUTH-09 | P1: Telas internas restritas | Execute | Implementing |
 | AUTH-10 | P1: Telas internas restritas | Execute | Implementing |

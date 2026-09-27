@@ -1,4 +1,6 @@
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AdminUserCreationForm, AuthenticationForm, UserChangeForm
+
+from contas.models import Usuario
 
 
 class LoginForm(AuthenticationForm):
@@ -17,3 +19,23 @@ class LoginForm(AuthenticationForm):
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request, *args, **kwargs)
         self.fields["username"].label = "Usuário ou e-mail"
+
+
+class UsuarioCriacaoForm(AdminUserCreationForm):
+    """Criacao de conta no admin.
+
+    Os formularios do Django apontam para auth.User, que o AD-005 substituiu.
+    O e-mail entra porque e obrigatorio e unico: sem ele, a segunda conta
+    criada colidiria no e-mail vazio.
+    """
+
+    class Meta(AdminUserCreationForm.Meta):
+        model = Usuario
+        fields = ("username", "email")
+
+
+class UsuarioAlteracaoForm(UserChangeForm):
+    """Edicao de conta no admin; a senha segue como resumo mascarado do hash."""
+
+    class Meta(UserChangeForm.Meta):
+        model = Usuario
