@@ -707,7 +707,7 @@ T23 → T24 → T25
 
 ---
 
-### T21: Ciclo de vida e expiração da sessão
+### T21: Ciclo de vida e expiração da sessão ✅
 
 **What**: Configurar expiração por inatividade de 8 horas e o endurecimento dos cookies.
 **Where**: `config/settings.py`
@@ -722,17 +722,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `SESSION_COOKIE_AGE = 28800` e `SESSION_SAVE_EVERY_REQUEST = True` — sem o segundo, a contagem é a partir do login, não da última requisição
-- [ ] `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SECURE` e `CSRF_COOKIE_SECURE` verdadeiros fora de `DEBUG`
-- [ ] Teste de integração: sessão com `expiry` vencido resulta em requisição anônima e redirecionamento ao login
-- [ ] Teste de integração: uma requisição dentro da janela renova a expiração
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] `SESSION_COOKIE_AGE = 28800` e `SESSION_SAVE_EVERY_REQUEST = True` — sem o segundo, a contagem é a partir do login, não da última requisição
+- [x] `SESSION_COOKIE_HTTPONLY`, `SESSION_COOKIE_SECURE` e `CSRF_COOKIE_SECURE` verdadeiros fora de `DEBUG`
+- [x] Teste de integração: sessão com `expiry` vencido resulta em requisição anônima e redirecionamento ao login
+- [x] Teste de integração: uma requisição dentro da janela renova a expiração
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 3 testes passam (sem deleções silenciosas) — os 2 previstos mais 1 unitário que carrega o `settings.py` isolado com `DJANGO_DEBUG` ligado e desligado, para provar os flags de cookie (o `.env` local usa `DEBUG=True`)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(config): define expiracao de sessao e cookies seguros`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

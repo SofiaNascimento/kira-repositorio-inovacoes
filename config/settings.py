@@ -143,6 +143,15 @@ AUTHENTICATION_BACKENDS = [
 LOGIN_URL = "/entrar/"
 LOGIN_REDIRECT_URL = "/"
 
+# Sessao (AUTH-15, RNF02): expira apos 8 horas sem requisicoes. Sem
+# SESSION_SAVE_EVERY_REQUEST o prazo contaria a partir do login.
+SESSION_COOKIE_AGE = 8 * 60 * 60
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_HTTPONLY = True
+# Fora de DEBUG, os cookies so trafegam por HTTPS.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

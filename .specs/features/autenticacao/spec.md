@@ -229,7 +229,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-12 | P1: Telas internas restritas | Execute | Implementing |
 | AUTH-13 | P1: Encerramento de sessão | Execute | Implementing |
 | AUTH-14 | P1: Encerramento de sessão | Execute | Implementing |
-| AUTH-15 | P1: Encerramento de sessão | Tasks | In Tasks |
+| AUTH-15 | P1: Encerramento de sessão | Execute | Implementing |
 | AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
 | AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
 | AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
