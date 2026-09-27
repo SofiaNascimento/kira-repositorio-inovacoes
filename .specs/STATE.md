@@ -52,14 +52,14 @@
 
 ## Handoff
 
-- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**.
-- **Phase / Task**: Execute encerrado. T1–T31 completas; Verifier independente deu PASS na iteração 3 de 3 (`validation.md`); `validate_state.py autenticacao` → exit 0.
+- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**. Pausa em 2026-09-27, sem trabalho a meio caminho.
+- **Phase / Task**: Execute encerrado. Fases 1–6 completas (T1–T31). Verifier independente: PASS na iteração 3 de 3 (`validation.md`); `validate_state.py autenticacao` → exit 0.
 - **Completed**: T1–T31. 27 de 27 requisitos em `Verified` (AUTH-19 com ressalva: a cláusula de uso por outras features é regra de processo, auditada por grep).
-- **In-progress** (file:line): nenhum.
-- **Next step**: iniciar a próxima feature do `docs/mapa-de-features.md` (F2). Ela herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, com `on_delete=PROTECT` sugerido no design da F1) e AD-006 (toda view nova nasce protegida; o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433**; comandos pelo `.venv/`.
-- **Uncommitted files**: nenhum.
-- **Branch**: `main` (nada foi enviado ao remoto).
+- **In-progress** (file:line): nenhum. Último commit de código: `8b2eca9` (`contas/tests/test_admin_perfil.py`, T31); último commit da feature: `bccd08e` (fechamento dos artefatos).
+- **Next step**: iniciar a F2 do `docs/mapa-de-features.md` pelo Specify. A F2 herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, `on_delete=PROTECT` sugerido no design da F1) e AD-006 (o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`).
+- **Uncommitted files**: nenhum (este Handoff entra no commit da pausa).
+- **Branch**: `main`. O `origin/main` já está no `bccd08e` (push feito pelo autor); só este commit de pausa fica local.
 
 **Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
 
