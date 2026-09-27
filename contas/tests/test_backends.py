@@ -79,3 +79,36 @@ def test_authenticate_do_django_aceita_email(ana):
 def test_authenticate_do_django_recusa_credencial_invalida(ana):
     """AUTH-03: nenhum backend da cadeia aceita a senha errada."""
     assert authenticate(None, username="ana@x.com", password="outra-senha-456") is None
+
+
+# Anti-enumeracao: sem conta unica, o backend gasta o mesmo hash que gastaria
+# conferindo uma senha real. O requisito e o proprio efeito colateral, entao
+# o teste observa a chamada.
+
+
+@pytest.fixture
+def hashes(monkeypatch):
+    chamadas = []
+    original = Usuario.set_password
+
+    def espiao(self, senha):
+        chamadas.append(senha)
+        return original(self, senha)
+
+    monkeypatch.setattr(Usuario, "set_password", espiao)
+    return chamadas
+
+
+@pytest.mark.django_db
+def test_identificador_inexistente_gasta_o_hash_descartavel(hashes):
+    """AUTH-03: a resposta nao pode ser mais rapida para conta inexistente."""
+    assert autenticar("fantasma@x.com", senha="qualquer-senha-1") is None
+    assert hashes == ["qualquer-senha-1"]
+
+
+def test_identificador_ambiguo_gasta_o_hash_descartavel(ana, hashes):
+    """AUTH-03: o mesmo vale quando o identificador casa com mais de uma conta."""
+    Usuario.objects.create_user(username="ANA", email="outra@x.com")
+    hashes.clear()
+    assert autenticar("ana", senha="qualquer-senha-2") is None
+    assert hashes == ["qualquer-senha-2"]

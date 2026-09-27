@@ -990,7 +990,7 @@ T26 → T27 → T28 → T29 → T30
 
 ---
 
-### T30: Hash descartável no caminho "conta não encontrada" (F5)
+### T30: Hash descartável no caminho "conta não encontrada" (F5) ✅
 
 **What**: Teste que observa o hash descartável quando o identificador não resolve para uma conta única. Mata o mutante M4.
 **Where**: `contas/tests/test_backends.py`
@@ -1005,14 +1005,17 @@ T26 → T27 → T28 → T29 → T30
 
 **Done when**:
 
-- [ ] Teste de integração: identificador inexistente dispara `set_password` com a senha submetida, uma vez
-- [ ] O mesmo vale para identificador ambíguo
-- [ ] Gate check passa: `pytest -q`
+- [x] Teste de integração: identificador inexistente dispara `set_password` com a senha submetida, uma vez
+- [x] O mesmo vale para identificador ambíguo
+- [x] Mutante M4 (sem `set_password`) morre, conferido em worktree descartável
+- [x] Gate check passa: `pytest -q`
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `test(contas): cobre hash descartavel do backend de login`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
