@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% comment %}
+  AUTH-26: renderizada pelo server_error sem contexto. Nao mostra nada da
+  excecao: so o que o visitante pode fazer.
+{% endcomment %}
+
+{% block title %}Erro no servidor{% endblock %}
+
+{% block conteudo %}
+  <h1>Algo deu errado do nosso lado</h1>
+  <p>Não foi possível concluir o pedido agora. Aguarde alguns minutos e tente novamente.</p>
+  <p>Se o problema continuar, avise a equipe responsável pelo sistema.</p>
+  <p><a href="/">Voltar ao início</a></p>
+{% endblock %}

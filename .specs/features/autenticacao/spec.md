@@ -240,7 +240,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-23 | Edge case: conta inativa | Execute | Implementing |
 | AUTH-24 | Edge case: CSRF ausente | Execute | Implementing |
 | AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Implementing |
-| AUTH-26 | Edge case: banco indisponível | Tasks | In Tasks |
+| AUTH-26 | Edge case: banco indisponível | Execute | Implementing |
 | AUTH-27 | Edge case: log de tentativa malsucedida | Execute | Implementing |
 
 **ID format:** `AUTH-NN`

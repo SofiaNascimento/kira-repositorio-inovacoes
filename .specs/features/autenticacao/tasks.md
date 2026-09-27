@@ -738,7 +738,7 @@ T23 → T24 → T25
 
 ---
 
-### T22: Página de erro 500 sem vazamento de detalhes
+### T22: Página de erro 500 sem vazamento de detalhes ✅
 
 **What**: Template 500 próprio, garantindo que falha de banco não exponha string de conexão nem traceback.
 **Where**: `templates/500.html`
@@ -753,16 +753,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `templates/500.html` estende a base e traz orientação ao usuário
-- [ ] Teste e2e com `DEBUG=False`: simular `OperationalError` no login devolve 500, sem sessão aberta
-- [ ] Teste e2e: a resposta não contém host, usuário ou senha do banco, nem traceback
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] `templates/500.html` estende a base e traz orientação ao usuário
+- [x] Teste e2e com `DEBUG=False`: simular `OperationalError` no login devolve 500, sem sessão aberta
+- [x] Teste e2e: a resposta não contém host, usuário ou senha do banco, nem traceback
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 2 testes passam (sem deleções silenciosas)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(config): adiciona pagina 500 sem vazamento de detalhes`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
