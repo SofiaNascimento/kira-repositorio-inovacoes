@@ -1053,7 +1053,7 @@ T31 vem da iteração 2 do Verifier (mutante A5).
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 Phase 1:  T1 → T2 → T3 → T4
 Phase 2:  T5 → T6 → T7 → T8 → T9 → T10 → T11
@@ -1131,6 +1131,12 @@ falta de granularidade.
 | T23 | T22 | T22 → T23 (arco de fronteira) | ✅ Match |
 | T24 | T23 | T23 → T24 | ✅ Match |
 | T25 | T24 | T24 → T25 | ✅ Match |
+| T26 | T25 | T25 → T26 (arco de fronteira) | ✅ Match |
+| T27 | T26 | T26 → T27 | ✅ Match |
+| T28 | T27 | T27 → T28 | ✅ Match |
+| T29 | T28 | T28 → T29 | ✅ Match |
+| T30 | T29 | T29 → T30 | ✅ Match |
+| T31 | T30 | T30 → T31 | ✅ Match |
 
 Nenhuma dependência aponta para fase posterior.
 
@@ -1165,6 +1171,12 @@ Nenhuma dependência aponta para fase posterior.
 | T23 | Admin | e2e | e2e | ✅ OK |
 | T24 | Admin | e2e | e2e | ✅ OK |
 | T25 | Admin | e2e | e2e | ✅ OK |
+| T26 | Admin | e2e | e2e | ✅ OK |
+| T27 | Views e rotas (só testes) | e2e | e2e | ✅ OK |
+| T28 | Constraints de banco (só testes) | integration | integration | ✅ OK |
+| T29 | Modelo + views (só testes) | integration / e2e | e2e | ✅ OK |
+| T30 | Authentication backend (só testes) | integration | integration | ✅ OK |
+| T31 | Admin (só testes) | e2e | e2e | ✅ OK |
 
 Nenhuma violação. Nenhum `Tests: none` em task que produz lógica — os quatro casos (T1–T5, T15) são
 configuração, scaffold e template, que a matriz marca como cobertos pelo gate de build e exercitados
@@ -1178,26 +1190,26 @@ indiretamente pelos testes e2e das views que os consomem.
 | ----------- | ------- |
 | AUTH-01 | T12, T13, T16, T19 |
 | AUTH-02 | T9, T12, T13, T16 |
-| AUTH-03 | T14, T16 |
+| AUTH-03 | T14, T16, T30 |
 | AUTH-04 | T14, T16 |
 | AUTH-05 | T16 |
-| AUTH-06 / AUTH-07 | T6 (herdado do `AbstractUser`), verificado em T23 |
-| AUTH-08 | T18, T23 |
+| AUTH-06 / AUTH-07 | T6 (herdado do `AbstractUser`), verificado em T23 e T29 |
+| AUTH-08 | T18, T23, T27 |
 | AUTH-09 | T20 |
 | AUTH-10 | T20 |
 | AUTH-11 | T20 |
 | AUTH-12 | T16 |
-| AUTH-13 | T17 |
+| AUTH-13 | T17, T29 |
 | AUTH-14 | T17 |
 | AUTH-15 | T21 |
 | AUTH-16 | T6, T7 |
 | AUTH-17 | T6, T10 |
-| AUTH-18 | T8 |
+| AUTH-18 | T8, T28 |
 | AUTH-19 | T6 |
 | AUTH-20 | T10 |
-| AUTH-21 | T24, T25 |
-| AUTH-22 | T11, T23, T24 |
-| AUTH-23 | T12 |
+| AUTH-21 | T24, T25, T26 |
+| AUTH-22 | T11, T23, T24, T26, T31 |
+| AUTH-23 | T12, T29 |
 | AUTH-24 | T16 |
 | AUTH-25 | T9 |
 | AUTH-26 | T4, T22 |
