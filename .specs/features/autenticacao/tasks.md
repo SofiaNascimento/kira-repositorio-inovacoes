@@ -520,7 +520,7 @@ T23 → T24 → T25
 
 ---
 
-### T15: Template base do projeto
+### T15: Template base do projeto ✅
 
 **What**: Criar o template base com HTML semântico, região de mensagens e `lang="pt-br"`, do qual as telas herdam.
 **Where**: `templates/base.html`
@@ -535,16 +535,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `<html lang="pt-br">`, landmarks `header`/`main`/`footer`, `<title>` por bloco
-- [ ] Região de mensagens com `role="status"` iterando `messages`
-- [ ] Estilo de foco visível declarado (`:focus-visible`)
-- [ ] `DIRS` das settings inclui `templates/`
-- [ ] Gate check passa: `ruff check . && ruff format --check . && python manage.py makemigrations --check --dry-run && pytest -q`
+- [x] `<html lang="pt-br">`, landmarks `header`/`main`/`footer`, `<title>` por bloco
+- [x] Região de mensagens com `role="status"` iterando `messages`
+- [x] Estilo de foco visível declarado (`:focus-visible`)
+- [x] `DIRS` das settings inclui `templates/`
+- [x] Gate check passa: `ruff check . && ruff format --check . && python manage.py makemigrations --check --dry-run && pytest -q`
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `feat(ui): adiciona template base com landmarks e mensagens`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}KIRA{% endblock %} · Repositório de Inovações</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 60rem; padding: 0 1rem; line-height: 1.5; }
+    header, footer { padding: 1rem 0; }
+    /* RNF09: foco sempre visivel para quem navega pelo teclado. */
+    :focus-visible { outline: 3px solid #1a5fb4; outline-offset: 2px; }
+    .mensagens { list-style: none; padding: 0; }
+    .mensagens li { padding: .5rem 1rem; border-left: 4px solid #1a5fb4; background: #eef3fb; }
+  </style>
+</head>
+<body>
+  <header>
+    <strong>KIRA · Repositório de Inovações</strong>
+    {% block cabecalho %}{% endblock %}
+  </header>
+
+  <main>
+    <div role="status">
+      {% if messages %}
+        <ul class="mensagens">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer>
+    <small>KIRA · uso interno</small>
+  </footer>
+</body>
+</html>
