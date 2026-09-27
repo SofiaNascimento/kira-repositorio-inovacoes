@@ -429,7 +429,7 @@ T23 → T24 → T25
 
 ---
 
-### T12: `UsernameOrEmailBackend`
+### T12: `UsernameOrEmailBackend` ✅
 
 **What**: Backend de autenticação que resolve o identificador como username **ou** e-mail, preservando o dummy hash do `ModelBackend`.
 **Where**: `contas/backends.py`
@@ -444,17 +444,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Busca única com `Q(username__iexact=ident) | Q(email__iexact=ident)`
-- [ ] Mais de uma linha retornada ⇒ recusa (não confia na constraint)
-- [ ] Caminho "não encontrado" executa `set_password` descartável antes de retornar `None`
-- [ ] Testes de integração chamando o backend diretamente: username correto, e-mail correto, e-mail em caixa alternada, identificador inexistente, senha errada, conta inativa
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 6 testes passam (sem deleções silenciosas)
+- [x] Busca única com `Q(username__iexact=ident) | Q(email__iexact=ident)`
+- [x] Mais de uma linha retornada ⇒ recusa (não confia na constraint)
+- [x] Caminho "não encontrado" executa `set_password` descartável antes de retornar `None`
+- [x] Testes de integração chamando o backend diretamente: username correto, e-mail correto, e-mail em caixa alternada, identificador inexistente, senha errada, conta inativa
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 7 testes passam (sem deleções silenciosas) — os 6 previstos mais 1 para o critério "mais de uma linha ⇒ recusa", que sem teste ficaria sem evidência
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(contas): adiciona backend de login por usuario ou e-mail`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

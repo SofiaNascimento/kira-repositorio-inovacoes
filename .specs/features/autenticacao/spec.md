@@ -215,37 +215,37 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| AUTH-01 | P1: Login por usuário ou e-mail | Design | Pending |
-| AUTH-02 | P1: Login por usuário ou e-mail | Design | Pending |
-| AUTH-03 | P1: Login por usuário ou e-mail | Design | Pending |
-| AUTH-04 | P1: Login por usuário ou e-mail | Design | Pending |
-| AUTH-05 | P1: Login por usuário ou e-mail | Design | Pending |
-| AUTH-06 | P1: Senha apenas como hash | Design | Pending |
-| AUTH-07 | P1: Senha apenas como hash | Design | Pending |
-| AUTH-08 | P1: Senha apenas como hash | Design | Pending |
-| AUTH-09 | P1: Telas internas restritas | Design | Pending |
-| AUTH-10 | P1: Telas internas restritas | Design | Pending |
-| AUTH-11 | P1: Telas internas restritas | Design | Pending |
-| AUTH-12 | P1: Telas internas restritas | Design | Pending |
-| AUTH-13 | P1: Encerramento de sessão | Design | Pending |
-| AUTH-14 | P1: Encerramento de sessão | Design | Pending |
-| AUTH-15 | P1: Encerramento de sessão | Design | Pending |
-| AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Implementing | Implementing |
-| AUTH-21 | P2: Atribuição de perfil restrita | - | Pending |
-| AUTH-22 | P2: Atribuição de perfil restrita | - | Pending |
-| AUTH-23 | Edge case: conta inativa | Design | Pending |
-| AUTH-24 | Edge case: CSRF ausente | Design | Pending |
-| AUTH-25 | Edge case: e-mail duplicado por caixa | Implementing | Implementing |
-| AUTH-26 | Edge case: banco indisponível | Design | Pending |
-| AUTH-27 | Edge case: log de tentativa malsucedida | Design | Pending |
+| AUTH-01 | P1: Login por usuário ou e-mail | Execute | Implementing |
+| AUTH-02 | P1: Login por usuário ou e-mail | Execute | Implementing |
+| AUTH-03 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
+| AUTH-04 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
+| AUTH-05 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
+| AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
+| AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |
+| AUTH-08 | P1: Senha apenas como hash | Tasks | In Tasks |
+| AUTH-09 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-10 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-11 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-12 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-13 | P1: Encerramento de sessão | Tasks | In Tasks |
+| AUTH-14 | P1: Encerramento de sessão | Tasks | In Tasks |
+| AUTH-15 | P1: Encerramento de sessão | Tasks | In Tasks |
+| AUTH-16 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
+| AUTH-17 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
+| AUTH-18 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
+| AUTH-19 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
+| AUTH-20 | P1: Perfil USUARIO / ADMINISTRADOR | Execute | Implementing |
+| AUTH-21 | P2: Atribuição de perfil restrita | Tasks | In Tasks |
+| AUTH-22 | P2: Atribuição de perfil restrita | Execute | Implementing |
+| AUTH-23 | Edge case: conta inativa | Execute | Implementing |
+| AUTH-24 | Edge case: CSRF ausente | Tasks | In Tasks |
+| AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Implementing |
+| AUTH-26 | Edge case: banco indisponível | Tasks | In Tasks |
+| AUTH-27 | Edge case: log de tentativa malsucedida | Tasks | In Tasks |
 
 **ID format:** `AUTH-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 27 total, 0 mapeados para tasks (fase Tasks ainda não executada), 0 sem mapeamento ⚠️
+**Coverage:** 27 total, 27 mapeados para tasks (ver `tasks.md` → Cobertura de requisitos por task), 0 sem mapeamento
 
 ---
 
