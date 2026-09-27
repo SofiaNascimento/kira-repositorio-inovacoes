@@ -219,14 +219,14 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-02 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-03 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-04 | P1: Login por usuário ou e-mail | Execute | Implementing |
-| AUTH-05 | P1: Login por usuário ou e-mail | Tasks | In Tasks |
+| AUTH-05 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-08 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-09 | P1: Telas internas restritas | Tasks | In Tasks |
 | AUTH-10 | P1: Telas internas restritas | Tasks | In Tasks |
 | AUTH-11 | P1: Telas internas restritas | Tasks | In Tasks |
-| AUTH-12 | P1: Telas internas restritas | Tasks | In Tasks |
+| AUTH-12 | P1: Telas internas restritas | Execute | Implementing |
 | AUTH-13 | P1: Encerramento de sessão | Tasks | In Tasks |
 | AUTH-14 | P1: Encerramento de sessão | Tasks | In Tasks |
 | AUTH-15 | P1: Encerramento de sessão | Tasks | In Tasks |
@@ -238,7 +238,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-21 | P2: Atribuição de perfil restrita | Tasks | In Tasks |
 | AUTH-22 | P2: Atribuição de perfil restrita | Execute | Implementing |
 | AUTH-23 | Edge case: conta inativa | Execute | Implementing |
-| AUTH-24 | Edge case: CSRF ausente | Tasks | In Tasks |
+| AUTH-24 | Edge case: CSRF ausente | Execute | Implementing |
 | AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Implementing |
 | AUTH-26 | Edge case: banco indisponível | Tasks | In Tasks |
 | AUTH-27 | Edge case: log de tentativa malsucedida | Tasks | In Tasks |

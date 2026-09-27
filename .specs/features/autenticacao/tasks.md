@@ -550,7 +550,7 @@ T23 → T24 → T25
 
 ---
 
-### T16: Tela de login (`LoginUsuarioView`, rota e template)
+### T16: Tela de login (`LoginUsuarioView`, rota e template) ✅
 
 **What**: A tela de entrada completa: view, rota `/entrar/` e template que estende a base.
 **Where**: `contas/views.py`
@@ -565,17 +565,20 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] `LoginUsuarioView` usa `LoginForm` e `redirect_authenticated_user = True` (AUTH-12)
-- [ ] Rota `/entrar/` registrada em `contas/urls.py` e incluída no `config/urls.py`
-- [ ] Template `contas/templates/contas/login.html` com `{% csrf_token %}` e `<label>` associado a cada campo
-- [ ] Testes e2e: login por username redireciona ao destino padrão; login por e-mail idem; credencial inválida devolve 200 com a mensagem única; POST sem token CSRF devolve 403 (AUTH-24); chave de sessão muda após o login (AUTH-05); usuário autenticado pedindo `/entrar/` é redirecionado (AUTH-12)
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 6 testes passam (sem deleções silenciosas)
+- [x] `LoginUsuarioView` usa `LoginForm` e `redirect_authenticated_user = True` (AUTH-12)
+- [x] Rota `/entrar/` registrada em `contas/urls.py` e incluída no `config/urls.py`
+- [x] Template `contas/templates/contas/login.html` com `{% csrf_token %}` e `<label>` associado a cada campo
+- [x] Testes e2e: login por username redireciona ao destino padrão; login por e-mail idem; credencial inválida devolve 200 com a mensagem única; POST sem token CSRF devolve 403 (AUTH-24); chave de sessão muda após o login (AUTH-05); usuário autenticado pedindo `/entrar/` é redirecionado (AUTH-12)
+- [x] `LOGIN_URL = "/entrar/"` e `LOGIN_REDIRECT_URL = "/"` definidos aqui, antecipados da T20: sem eles o destino padrão do login seria `/accounts/profile/` e o teste não poderia afirmar o valor da spec
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 6 testes passam (sem deleções silenciosas)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(contas): adiciona tela de login`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
@@ -679,7 +682,7 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Middleware presente depois de `AuthenticationMiddleware`; `LOGIN_URL` e `LOGIN_REDIRECT_URL` definidos
+- [ ] Middleware presente depois de `AuthenticationMiddleware` (`LOGIN_URL` e `LOGIN_REDIRECT_URL` já foram definidos na T16)
 - [ ] `LoginUsuarioView` marcada com `@login_not_required` — única exceção
 - [ ] **Teste de varredura**: percorre as rotas de `urlpatterns`, requisita cada uma anonimamente e exige 302 para `LOGIN_URL`, com allowlist explícita (`/entrar/`, estáticos, admin). É este teste que sustenta a AUTH-09 nas features seguintes
 - [ ] Teste e2e: anônimo pedindo `/` é redirecionado com `next=/` (AUTH-09)
