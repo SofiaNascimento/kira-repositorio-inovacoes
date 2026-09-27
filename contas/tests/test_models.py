@@ -81,3 +81,16 @@ def test_is_staff_concedido_manualmente_nao_e_revogado():
     u.refresh_from_db()
     assert u.is_staff is True
     assert u.perfil == Usuario.Perfil.USUARIO
+
+
+@pytest.mark.django_db
+def test_troca_de_senha_persiste_so_o_hash():
+    """AUTH-07: a senha nova vai para o banco apenas como hash."""
+    u = Usuario.objects.create_user(username="ana", email="ana@x.com", password="antiga-123-abc")
+    u.set_password("Nova-senha-forte-2026")
+    u.save()
+    u.refresh_from_db()
+    assert u.password != "Nova-senha-forte-2026"
+    assert u.password.startswith("pbkdf2_sha256$")
+    assert u.check_password("Nova-senha-forte-2026") is True
+    assert u.check_password("antiga-123-abc") is False

@@ -961,7 +961,7 @@ T26 → T27 → T28 → T29 → T30
 
 ---
 
-### T29: Evidência completa de AUTH-07, AUTH-13 e AUTH-23 (F4)
+### T29: Evidência completa de AUTH-07, AUTH-13 e AUTH-23 (F4) ✅
 
 **What**: Troca de senha grava só o hash; o logout zera o cookie de sessão; conta inativa na tela recebe a mensagem genérica, sem sessão.
 **Where**: `contas/tests/test_models.py`, `contas/tests/test_views_logout.py`, `contas/tests/test_views_login.py`
@@ -976,15 +976,17 @@ T26 → T27 → T28 → T29 → T30
 
 **Done when**:
 
-- [ ] Teste de integração: `set_password()` + `save()` persiste só o hash da nova senha
-- [ ] Teste e2e: a resposta do POST em `/sair/` expira o cookie de sessão (valor vazio, `max-age=0`)
-- [ ] Teste e2e: POST em `/entrar/` com a credencial correta de uma conta inativa devolve 200, exatamente uma mensagem genérica e nenhuma sessão
-- [ ] Gate check passa: `pytest -q`
+- [x] Teste de integração: `set_password()` + `save()` persiste só o hash da nova senha
+- [x] Teste e2e: a resposta do POST em `/sair/` expira o cookie de sessão (valor vazio, `max-age=0`)
+- [x] Teste e2e: POST em `/entrar/` com a credencial correta de uma conta inativa devolve 200, exatamente uma mensagem genérica e nenhuma sessão
+- [x] Gate check passa: `pytest -q`
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(contas): completa evidencia de troca de senha, logout e conta inativa`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 

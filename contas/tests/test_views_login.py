@@ -50,6 +50,17 @@ def test_login_recusado_nao_devolve_a_senha_submetida(client, ana):
     assert senha_errada not in resposta.content.decode()
 
 
+def test_conta_inativa_recebe_a_mesma_mensagem_e_nenhuma_sessao(client, ana):
+    """AUTH-23: credencial correta de conta inativa, recusada na tela com a
+    mensagem generica de credencial invalida."""
+    ana.is_active = False
+    ana.save()
+    resposta = client.post("/entrar/", {"username": "ana", "password": SENHA})
+    assert resposta.status_code == 200
+    assert "_auth_user_id" not in client.session
+    assert resposta.content.decode().count(MENSAGEM) == 1
+
+
 def test_post_sem_token_csrf_e_recusado_com_403(ana):
     """AUTH-24: 403 e nenhuma sessao autenticada."""
     cliente = Client(enforce_csrf_checks=True)

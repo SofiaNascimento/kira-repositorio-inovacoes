@@ -56,3 +56,12 @@ def test_template_base_oferece_logout_por_formulario_post(rf, ana):
     html = render_to_string("base.html", request=request)
     assert '<form method="post" action="/sair/">' in html
     assert 'name="csrfmiddlewaretoken"' in html
+
+
+def test_logout_expira_o_cookie_de_sessao(client, ana):
+    """AUTH-13: a resposta do logout limpa o cookie de sessao do navegador."""
+    client.force_login(ana)
+    resposta = client.post("/sair/")
+    cookie = resposta.cookies[settings.SESSION_COOKIE_NAME]
+    assert cookie.value == ""
+    assert cookie["max-age"] == 0
