@@ -222,7 +222,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-05 | P1: Login por usuário ou e-mail | Execute | Implementing |
 | AUTH-06 | P1: Senha apenas como hash | Tasks | In Tasks |
 | AUTH-07 | P1: Senha apenas como hash | Tasks | In Tasks |
-| AUTH-08 | P1: Senha apenas como hash | Tasks | In Tasks |
+| AUTH-08 | P1: Senha apenas como hash | Execute | Implementing |
 | AUTH-09 | P1: Telas internas restritas | Tasks | In Tasks |
 | AUTH-10 | P1: Telas internas restritas | Tasks | In Tasks |
 | AUTH-11 | P1: Telas internas restritas | Tasks | In Tasks |
@@ -241,7 +241,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-24 | Edge case: CSRF ausente | Execute | Implementing |
 | AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Implementing |
 | AUTH-26 | Edge case: banco indisponível | Tasks | In Tasks |
-| AUTH-27 | Edge case: log de tentativa malsucedida | Tasks | In Tasks |
+| AUTH-27 | Edge case: log de tentativa malsucedida | Execute | Implementing |
 
 **ID format:** `AUTH-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified

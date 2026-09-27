@@ -612,7 +612,7 @@ T23 → T24 → T25
 
 ---
 
-### T18: Log de tentativa de login malsucedida
+### T18: Log de tentativa de login malsucedida ✅
 
 **What**: Receiver do sinal `user_login_failed` gravando timestamp e identificador submetido.
 **Where**: `contas/signals.py`
@@ -627,16 +627,19 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Receiver conectado em `ContasConfig.ready()`, com logger nomeado
-- [ ] Testes unitários com `caplog`: um login recusado emite um `warning` contendo o identificador
-- [ ] Teste unitário: a senha submetida **não** aparece em nenhum registro de log emitido
-- [ ] Gate check passa: `pytest -q -m unit`
-- [ ] Test count: 2 testes passam (sem deleções silenciosas)
+- [x] Receiver conectado em `ContasConfig.ready()`, com logger nomeado (`contas.autenticacao`)
+- [x] Horário em ISO 8601 na própria mensagem: o projeto não configura `LOGGING`, e sem formatter o registro sairia sem timestamp
+- [x] Testes unitários com `caplog`: um login recusado emite um `warning` contendo o identificador
+- [x] Teste unitário: a senha submetida **não** aparece em nenhum registro de log emitido
+- [x] Gate check passa: `pytest -q -m unit`
+- [x] Test count: 2 testes passam (sem deleções silenciosas)
 
 **Tests**: unit
 **Gate**: quick
 
 **Commit**: `feat(contas): registra tentativas de login malsucedidas`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
