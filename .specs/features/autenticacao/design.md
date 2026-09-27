@@ -158,7 +158,9 @@ e é deliberado, porque cada peça pronta usada é uma peça a menos para testar
 - **Location**: `contas/views.py` — rota `/sair/`
 - **Interfaces**:
   - `next_page = settings.LOGIN_URL`
-  - `dispatch()` — adiciona a mensagem `"Sessão encerrada."` via `django.contrib.messages` (AUTH-13)
+  - `post()` — adiciona a mensagem `"Sessão encerrada."` via `django.contrib.messages` (AUTH-13).
+    *Ajuste no Execute (T17):* era `dispatch()`; no `post()` a mensagem só aparece quando o logout
+    de fato acontece, e não num GET recusado com 405.
 - **Dependencies**: `django.contrib.messages`
 - **Reuses**: `LogoutView` (aceita apenas POST desde a 4.1 — o template usa um `<form>`, não um link).
 

@@ -16,6 +16,14 @@
 <body>
   <header>
     <strong>KIRA · Repositório de Inovações</strong>
+    {% if user.is_authenticated %}
+      {# LogoutView so aceita POST: sair e um formulario, nao um link. #}
+      <form method="post" action="{% url 'contas:sair' %}">
+        {% csrf_token %}
+        <span>{{ user.get_username }}</span>
+        <button type="submit">Sair</button>
+      </form>
+    {% endif %}
     {% block cabecalho %}{% endblock %}
   </header>
 

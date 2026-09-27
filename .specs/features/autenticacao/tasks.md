@@ -582,7 +582,7 @@ T23 → T24 → T25
 
 ---
 
-### T17: Tela de saída (`LogoutUsuarioView` e rota)
+### T17: Tela de saída (`LogoutUsuarioView` e rota) ✅
 
 **What**: Encerrar a sessão por POST, com mensagem de confirmação e retorno ao login.
 **Where**: `contas/views.py`
@@ -597,16 +597,18 @@ T23 → T24 → T25
 
 **Done when**:
 
-- [ ] Rota `/sair/` registrada; o template base expõe um `<form method="post">`, não um link
-- [ ] Mensagem "Sessão encerrada." adicionada antes do redirecionamento (AUTH-13)
-- [ ] Testes e2e: POST em `/sair/` limpa a sessão e redireciona ao login com a mensagem; GET em `/sair/` não encerra a sessão; reenviar o cookie antigo depois do logout resulta em requisição anônima (AUTH-14)
-- [ ] Gate check passa: `pytest -q`
-- [ ] Test count: 3 testes passam (sem deleções silenciosas)
+- [x] Rota `/sair/` registrada; o template base expõe um `<form method="post">`, não um link
+- [x] Mensagem "Sessão encerrada." adicionada antes do redirecionamento (AUTH-13)
+- [x] Testes e2e: POST em `/sair/` limpa a sessão e redireciona ao login com a mensagem; GET em `/sair/` não encerra a sessão; reenviar o cookie antigo depois do logout resulta em requisição anônima (AUTH-14)
+- [x] Gate check passa: `pytest -q`
+- [x] Test count: 4 testes passam (sem deleções silenciosas) — os 3 previstos mais 1 que renderiza o `base.html` autenticado e prova o `<form method="post">`, critério que ainda não tem página autenticada onde aparecer (a home chega na T19)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(contas): adiciona encerramento de sessao`
+
+**Status**: ✅ Complete (pendente)
 
 ---
 
