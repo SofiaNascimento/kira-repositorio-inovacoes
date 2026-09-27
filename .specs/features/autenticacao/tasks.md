@@ -94,6 +94,14 @@ A RN11 virando comportamento observável.
 T23 → T24 → T25
 ```
 
+### Phase 6: Correções da validação (iteração 1)
+
+Gaps do Verifier em `validation.md` (FAIL de 2026-09-26). F1 segue a decisão do autor: seguir a AUTH-22 como está escrita.
+
+```
+T26 → T27 → T28 → T29 → T30
+```
+
 ---
 
 ## Task Breakdown
@@ -865,6 +873,139 @@ T23 → T24 → T25
 
 ---
 
+### T26: Telas de usuário do admin só para `ADMINISTRADOR` (F1)
+
+**What**: As permissões `has_*` do `UsuarioAdmin` passam a seguir `is_administrador`; `get_readonly_fields` e o guarda do `save_model` saem, porque nenhum não administrador chega mais ao formulário.
+**Where**: `contas/admin.py`
+**Depends on**: T25
+**Reuses**: Ganchos de permissão do `ModelAdmin`
+**Requirement**: AUTH-22, AUTH-21
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission` e `has_delete_permission` devolvem `request.user.is_administrador`
+- [ ] Um `USUARIO` com `is_staff` **e** permissões de modelo recebe 403 na listagem, na criação, no próprio registro e no registro de terceiro
+- [ ] Os 2 testes da T24 que afirmavam acesso de staff comum são reescritos para 403 (aprovado pelo autor)
+- [ ] Os testes da T25 (403 no POST forjado, aceite pelo ADMINISTRADOR) continuam passando sem mudança
+- [ ] Gate check passa: `pytest -q`
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `fix(contas): restringe telas de usuario do admin a administradores`
+
+---
+
+### T27: Senha ausente do HTML do login falho e da página 500 (F2)
+
+**What**: Afirmar que a senha submetida não volta em nenhum corpo de resposta. Mata o mutante M6 (`render_value=True`).
+**Where**: `contas/tests/test_views_login.py`, `contas/tests/test_erro_500.py`
+**Depends on**: T26
+**Reuses**: Fixtures existentes
+**Requirement**: AUTH-08
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Teste e2e: login recusado devolve 200 sem a senha submetida no HTML
+- [ ] A lista de trechos proibidos da página 500 inclui a senha submetida
+- [ ] Gate check passa: `pytest -q`
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(contas): prova que a senha submetida nao volta na resposta`
+
+---
+
+### T28: Perfil inválido vira `ValidationError` e o valor gravado não muda (F3)
+
+**What**: Cobrir a AUTH-18 como a spec escreve: validation error no `full_clean()` e valor persistido inalterado depois de toda tentativa recusada.
+**Where**: `contas/tests/test_constraints.py`
+**Depends on**: T27
+**Reuses**: `CheckConstraint` e `choices` existentes
+**Requirement**: AUTH-18
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Teste de integração: `full_clean()` com perfil fora do enum levanta `ValidationError` no campo `perfil` e o valor relido do banco segue o anterior
+- [ ] O teste de `update()` em massa também afirma o valor persistido inalterado
+- [ ] Gate check passa: `pytest -q`
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(contas): afirma validation error e perfil inalterado`
+
+---
+
+### T29: Evidência completa de AUTH-07, AUTH-13 e AUTH-23 (F4)
+
+**What**: Troca de senha grava só o hash; o logout zera o cookie de sessão; conta inativa na tela recebe a mensagem genérica, sem sessão.
+**Where**: `contas/tests/test_models.py`, `contas/tests/test_views_logout.py`, `contas/tests/test_views_login.py`
+**Depends on**: T28
+**Reuses**: Fixtures existentes
+**Requirement**: AUTH-07, AUTH-13, AUTH-23
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Teste de integração: `set_password()` + `save()` persiste só o hash da nova senha
+- [ ] Teste e2e: a resposta do POST em `/sair/` expira o cookie de sessão (valor vazio, `max-age=0`)
+- [ ] Teste e2e: POST em `/entrar/` com a credencial correta de uma conta inativa devolve 200, exatamente uma mensagem genérica e nenhuma sessão
+- [ ] Gate check passa: `pytest -q`
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(contas): completa evidencia de troca de senha, logout e conta inativa`
+
+---
+
+### T30: Hash descartável no caminho "conta não encontrada" (F5)
+
+**What**: Teste que observa o hash descartável quando o identificador não resolve para uma conta única. Mata o mutante M4.
+**Where**: `contas/tests/test_backends.py`
+**Depends on**: T29
+**Reuses**: `UsernameOrEmailBackend`
+**Requirement**: AUTH-03 (anti-enumeração), critério da T12
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Teste de integração: identificador inexistente dispara `set_password` com a senha submetida, uma vez
+- [ ] O mesmo vale para identificador ambíguo
+- [ ] Gate check passa: `pytest -q`
+
+**Tests**: integration
+**Gate**: full
+
+**Commit**: `test(contas): cobre hash descartavel do backend de login`
+
+---
+
 ## Phase Execution Map
 
 ```
@@ -875,6 +1016,7 @@ Phase 2:  T5 → T6 → T7 → T8 → T9 → T10 → T11
 Phase 3:  T12 → T13 → T14 → T15 → T16 → T17 → T18
 Phase 4:  T19 → T20 → T21 → T22
 Phase 5:  T23 → T24 → T25
+Phase 6:  T26 → T27 → T28 → T29 → T30
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -884,6 +1026,7 @@ T4  → T5
 T11 → T12
 T18 → T19
 T22 → T23
+T25 → T26
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
