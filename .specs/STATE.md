@@ -52,20 +52,20 @@
 
 ## Handoff
 
-- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**. Retomada em 2026-09-27 só para conferir a base e testar no navegador; nenhum código mudou.
-- **Phase / Task**: Execute encerrado. Fases 1–6 completas (T1–T31). Verifier independente: PASS na iteração 3 de 3 (`validation.md`); `validate_state.py autenticacao` → exit 0.
-- **Completed**: T1–T31. 27 de 27 requisitos em `Verified` (AUTH-19 com ressalva: a cláusula de uso por outras features é regra de processo, auditada por grep).
-- **In-progress** (file:line): nenhum. Último commit de código: `8b2eca9` (`contas/tests/test_admin_perfil.py`, T31); último commit da feature: `bccd08e` (fechamento dos artefatos).
-- **Next step**: iniciar a F2 (`cadastro-inovacao`) do `docs/mapa-de-features.md` pelo Specify, com discuss das áreas cinzentas (ex.: RN10 título único por unidade, RN07 listas controladas fixas ou editáveis). A F2 herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, `on_delete=PROTECT` sugerido no design da F1) e AD-006 (o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Subir o banco é passo de ambiente, não escopo de feature. Teste no navegador exige `DJANGO_DEBUG=True` (fora de DEBUG os cookies são `Secure` e o login falha em HTTP).
-- **Banco local de desenvolvimento**: tem o superusuário `admin` (`admin@kira.local`, perfil `ADMINISTRADOR`), criado em 2026-09-27 para o teste manual. O `uat_usuario` criado pelo UAT foi apagado em seguida; o `admin` é a única conta. Senha fora do repositório; se perdida, `.venv/bin/python manage.py changepassword admin`.
-- **Uncommitted files**: nenhum (este Handoff entra no próprio commit).
-- **Branch**: `main`. O commit da pausa anterior (`4a45499`) já está no `origin/main`; o Handoff antigo dizia que ficaria só local.
+- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Specify concluído: spec aprovada pelo usuário em 2026-09-27, com todas as assumptions confirmadas.
+- **Phase / Task**: Specify ✅ (discuss feito, ritmo guiado; `context.md` escrito). Próxima fase: Design. Nenhum código escrito.
+- **Completed**: `spec.md` (43 requisitos, INOV-01 … INOV-43; `validate_spec.py` → 0 erros, 0 avisos) e `context.md`.
+- **In-progress** (file:line): nenhum.
+- **Next step**: Design da F2 — ler `spec.md`, `context.md` e os AD-001 … AD-006; decidir a app das entidades (`Inovacao`, `Unidade`, `Categoria`, `StatusInovacao`), a constraint `UniqueConstraint(Lower("titulo"), "unidade")`, a data migration das listas, `on_delete=PROTECT` nas FKs e o registro de Unidade/Categoria no admin restrito a `is_administrador`.
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
+- **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida).
+- **Uncommitted files**: nenhum (este Handoff entra no commit da spec).
+- **Branch**: `main`, commits locais à frente do `origin/main` desde `c78b83f`; nenhum push feito nesta sessão.
+
+**Decisões da discussão da F2 (2026-09-27):** listas mantidas só pelo `ADMINISTRADOR` no admin, com unidades provisórias; título único ignora maiúsculas/minúsculas e conta acentos; contato responsável pré-preenchido e editável; RF15 entra como P3.
 
 **Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
 
-**Ideias adiadas em aberto (`context.md`)**: recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login.
+**Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
 
-**Estado verificado na retomada de 2026-09-27**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; `ruff check` e `ruff format --check` → limpos; `validate_state.py autenticacao` → exit 0.
-
-**UAT**: feito em 2026-09-27 contra o servidor local, com cliente HTTP (cookies e CSRF reais): **24/24 PASS**, registrado em `validation.md` › Interactive UAT Results. O botão "voltar" de navegador gráfico não foi exercitado.
+**Estado verificado em 2026-09-27**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo. F1: UAT 24/24 PASS (`autenticacao/validation.md`).
