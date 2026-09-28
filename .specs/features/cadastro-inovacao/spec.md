@@ -296,49 +296,49 @@ sete campos, ligado ao campo pelo `aria-describedby`.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| INOV-01 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-02 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-03 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-04 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-05 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-06 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-07 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-08 | P1: Cadastrar uma inovação com autor, data e status automáticos | Design | Pending |
-| INOV-09 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-10 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-11 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-12 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-13 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-14 | P1: Validar e recuperar de erros sem perder o que foi digitado | Design | Pending |
-| INOV-15 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-16 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-17 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-18 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-19 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-20 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-21 | P1: Unidade e categoria só de listas controladas | Design | Pending |
-| INOV-22 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-23 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-24 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-25 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-26 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-27 | P1: Título único dentro da mesma unidade | Design | Pending |
-| INOV-28 | P1: Feedback claro sobre o resultado | Design | Pending |
-| INOV-29 | P1: Feedback claro sobre o resultado | Design | Pending |
-| INOV-30 | P1: Feedback claro sobre o resultado | Design | Pending |
-| INOV-31 | P1: Formulário acessível por teclado e leitor de tela | Design | Pending |
-| INOV-32 | P1: Formulário acessível por teclado e leitor de tela | Design | Pending |
-| INOV-33 | P1: Formulário acessível por teclado e leitor de tela | Design | Pending |
-| INOV-34 | P1: Formulário acessível por teclado e leitor de tela | Design | Pending |
-| INOV-35 | P1: Formulário acessível por teclado e leitor de tela | Design | Pending |
-| INOV-36 | P2: Cancelar sem salvar | Design | Pending |
-| INOV-37 | P2: Cancelar sem salvar | Design | Pending |
-| INOV-38 | P2: Ponto de entrada e contato pré-preenchido | Design | Pending |
-| INOV-39 | P2: Ponto de entrada e contato pré-preenchido | Design | Pending |
-| INOV-40 | P2: Ponto de entrada e contato pré-preenchido | Design | Pending |
-| INOV-41 | P3: Ajuda contextual nos campos | Design | Pending |
-| INOV-42 | Edge case: banco indisponível | Design | Pending |
-| INOV-43 | Edge case: duplo envio | Design | Pending |
+| INOV-01 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-02 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-03 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-04 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-05 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-06 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-07 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-08 | P1: Cadastrar uma inovação com autor, data e status automáticos | Tasks | Pending |
+| INOV-09 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-10 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-11 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-12 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-13 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-14 | P1: Validar e recuperar de erros sem perder o que foi digitado | Tasks | Pending |
+| INOV-15 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-16 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-17 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-18 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-19 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-20 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-21 | P1: Unidade e categoria só de listas controladas | Tasks | Pending |
+| INOV-22 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-23 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-24 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-25 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-26 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-27 | P1: Título único dentro da mesma unidade | Tasks | Pending |
+| INOV-28 | P1: Feedback claro sobre o resultado | Tasks | Pending |
+| INOV-29 | P1: Feedback claro sobre o resultado | Tasks | Pending |
+| INOV-30 | P1: Feedback claro sobre o resultado | Tasks | Pending |
+| INOV-31 | P1: Formulário acessível por teclado e leitor de tela | Tasks | Pending |
+| INOV-32 | P1: Formulário acessível por teclado e leitor de tela | Tasks | Pending |
+| INOV-33 | P1: Formulário acessível por teclado e leitor de tela | Tasks | Pending |
+| INOV-34 | P1: Formulário acessível por teclado e leitor de tela | Tasks | Pending |
+| INOV-35 | P1: Formulário acessível por teclado e leitor de tela | Tasks | Pending |
+| INOV-36 | P2: Cancelar sem salvar | Tasks | Pending |
+| INOV-37 | P2: Cancelar sem salvar | Tasks | Pending |
+| INOV-38 | P2: Ponto de entrada e contato pré-preenchido | Tasks | Pending |
+| INOV-39 | P2: Ponto de entrada e contato pré-preenchido | Tasks | Pending |
+| INOV-40 | P2: Ponto de entrada e contato pré-preenchido | Tasks | Pending |
+| INOV-41 | P3: Ajuda contextual nos campos | Tasks | Pending |
+| INOV-42 | Edge case: banco indisponível | Tasks | Pending |
+| INOV-43 | Edge case: duplo envio | Tasks | Pending |
 
 **ID format:** `INOV-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
