@@ -52,17 +52,20 @@
 
 ## Handoff
 
-- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**. Pausa em 2026-09-27, sem trabalho a meio caminho.
+- **Feature**: autenticacao — `.specs/features/autenticacao/` — **concluída e verificada**. Retomada em 2026-09-27 só para conferir a base e testar no navegador; nenhum código mudou.
 - **Phase / Task**: Execute encerrado. Fases 1–6 completas (T1–T31). Verifier independente: PASS na iteração 3 de 3 (`validation.md`); `validate_state.py autenticacao` → exit 0.
 - **Completed**: T1–T31. 27 de 27 requisitos em `Verified` (AUTH-19 com ressalva: a cláusula de uso por outras features é regra de processo, auditada por grep).
 - **In-progress** (file:line): nenhum. Último commit de código: `8b2eca9` (`contas/tests/test_admin_perfil.py`, T31); último commit da feature: `bccd08e` (fechamento dos artefatos).
-- **Next step**: iniciar a F2 do `docs/mapa-de-features.md` pelo Specify. A F2 herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, `on_delete=PROTECT` sugerido no design da F1) e AD-006 (o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`).
-- **Uncommitted files**: nenhum (este Handoff entra no commit da pausa).
-- **Branch**: `main`. O `origin/main` já está no `bccd08e` (push feito pelo autor); só este commit de pausa fica local.
+- **Next step**: iniciar a F2 (`cadastro-inovacao`) do `docs/mapa-de-features.md` pelo Specify, com discuss das áreas cinzentas (ex.: RN10 título único por unidade, RN07 listas controladas fixas ou editáveis). A F2 herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, `on_delete=PROTECT` sugerido no design da F1) e AD-006 (o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Subir o banco é passo de ambiente, não escopo de feature. Teste no navegador exige `DJANGO_DEBUG=True` (fora de DEBUG os cookies são `Secure` e o login falha em HTTP).
+- **Banco local de desenvolvimento**: tem o superusuário `admin` (`admin@kira.local`, perfil `ADMINISTRADOR`), criado em 2026-09-27 para o teste manual. Senha fora do repositório; se perdida, `.venv/bin/python manage.py changepassword admin`.
+- **Uncommitted files**: nenhum (este Handoff entra no próprio commit).
+- **Branch**: `main`. O commit da pausa anterior (`4a45499`) já está no `origin/main`; o Handoff antigo dizia que ficaria só local.
 
 **Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
 
 **Ideias adiadas em aberto (`context.md`)**: recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login.
 
-**Estado verificável na retomada**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; `validate_state.py autenticacao` → exit 0.
+**Estado verificado na retomada de 2026-09-27**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; `ruff check` e `ruff format --check` → limpos; `validate_state.py autenticacao` → exit 0.
+
+**UAT no navegador**: iniciado em 2026-09-27, resultado ainda não informado. `GET /` sem sessão → 302 para `/entrar/?next=/` (AUTH-09/10) e `createsuperuser` → `ADMINISTRADOR` com senha em hash `pbkdf2_sha256` (AUTH-16, AUTH-06) confirmados. Quando o roteiro terminar, registrar em `validation.md` › Interactive UAT Results.
