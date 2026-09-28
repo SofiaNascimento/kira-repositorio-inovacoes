@@ -135,7 +135,7 @@ O Verifier roda sem usuário. O UAT foi feito depois, em 2026-09-27, pelo orques
 
 Limite: o botão "voltar" de um navegador gráfico não foi exercitado. O item 7 prova a invalidação da sessão no servidor, que é o que o recarregamento da página depende. Uma cópia em cache exibida pelo navegador sem nova requisição fica fora deste UAT.
 
-Dados deixados no banco local de desenvolvimento: `admin` (`ADMINISTRADOR`) e `uat_usuario` (`USUARIO`, `is_staff`, inativo).
+Limpeza: o `uat_usuario` foi apagado depois do UAT. No banco local de desenvolvimento fica só o `admin` (`ADMINISTRADOR`).
 
 ---
 
