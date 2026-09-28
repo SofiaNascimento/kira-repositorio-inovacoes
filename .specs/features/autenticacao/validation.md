@@ -116,7 +116,26 @@ Worktree temporário `/private/tmp/claude-502/verifier-scratch-3` a partir de `H
 
 ## Interactive UAT Results
 
-Não realizado: o Verifier roda sem usuário. Recomendado ao orquestrador para login, logout e admin.
+O Verifier roda sem usuário. O UAT foi feito depois, em 2026-09-27, pelo orquestrador, a pedido do usuário. Foi executado contra o `runserver` local (PostgreSQL 16, `DJANGO_DEBUG=True`) por um cliente HTTP com cookies e CSRF reais, sem navegador gráfico. O estado final foi conferido direto no banco.
+
+**Resultado: 24 de 24 checagens PASS.**
+
+| # | Roteiro | Resultado observado | AC | Status |
+| - | ------- | ------------------- | -- | ------ |
+| 1 | `GET /` sem sessão | 302 → `/entrar/?next=/` | AUTH-09, AUTH-10 | ✅ |
+| 2 | Login por username | POST 302 → `/`; `GET /` 200 | AUTH-01 | ✅ |
+| 3 | Login por `ADMIN@KIRA.LOCAL` | 302 → `/` | AUTH-02 | ✅ |
+| 4 | Senha errada (`admin`) e usuário inexistente | 200 nos dois, mesmo alerta "Usuário ou senha inválidos.", sem cookie de sessão; identificador repopulado, senha ausente do HTML | AUTH-03, AUTH-04 | ✅ |
+| 5 | Log do servidor | Três linhas `Tentativa de login malsucedida para '<identificador>' em <timestamp>`; zero ocorrências das senhas usadas no log | AUTH-27, AUTH-08 | ✅ |
+| 6 | `GET /entrar/` já autenticado | 302 → `/` | AUTH-12 | ✅ |
+| 7 | `POST /sair/`, depois reuso do `sessionid` antigo | 302 → `/entrar/`; cookie antigo em `GET /` → 302 → `/entrar/?next=/` | AUTH-13, AUTH-14 | ✅ |
+| 8 | Admin cria `uat_usuario` sem perfil | Formulário de criação sem campo `perfil`; conta criada com `USUARIO`, senha `pbkdf2_sha256` | AUTH-17, AUTH-06 | ✅ |
+| 9 | Admin desativa a conta; login com ela | Antes de desativar, entra (302 → `/`). Depois: 200, mesma mensagem genérica, sem sessão; `is_active=False` no banco | AUTH-23 | ✅ |
+| 10 | `USUARIO` com `is_staff` no admin | Índice sem o módulo de usuários; 403 em changelist, add, change e delete; POST forjado de promoção → 403 e perfil continua `USUARIO` no banco | AUTH-21, AUTH-22 | ✅ |
+
+Limite: o botão "voltar" de um navegador gráfico não foi exercitado. O item 7 prova a invalidação da sessão no servidor, que é o que o recarregamento da página depende. Uma cópia em cache exibida pelo navegador sem nova requisição fica fora deste UAT.
+
+Dados deixados no banco local de desenvolvimento: `admin` (`ADMINISTRADOR`) e `uat_usuario` (`USUARIO`, `is_staff`, inativo).
 
 ---
 

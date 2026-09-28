@@ -58,7 +58,7 @@
 - **In-progress** (file:line): nenhum. Último commit de código: `8b2eca9` (`contas/tests/test_admin_perfil.py`, T31); último commit da feature: `bccd08e` (fechamento dos artefatos).
 - **Next step**: iniciar a F2 (`cadastro-inovacao`) do `docs/mapa-de-features.md` pelo Specify, com discuss das áreas cinzentas (ex.: RN10 título único por unidade, RN07 listas controladas fixas ou editáveis). A F2 herda AD-005 (FK de autoria via `settings.AUTH_USER_MODEL`, `on_delete=PROTECT` sugerido no design da F1) e AD-006 (o teste de varredura em `contas/tests/test_controle_acesso.py` cobre rotas novas automaticamente).
 - **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Subir o banco é passo de ambiente, não escopo de feature. Teste no navegador exige `DJANGO_DEBUG=True` (fora de DEBUG os cookies são `Secure` e o login falha em HTTP).
-- **Banco local de desenvolvimento**: tem o superusuário `admin` (`admin@kira.local`, perfil `ADMINISTRADOR`), criado em 2026-09-27 para o teste manual. Senha fora do repositório; se perdida, `.venv/bin/python manage.py changepassword admin`.
+- **Banco local de desenvolvimento**: tem o superusuário `admin` (`admin@kira.local`, perfil `ADMINISTRADOR`), criado em 2026-09-27 para o teste manual, e o `uat_usuario` (`USUARIO`, `is_staff`, inativo) que o UAT criou. Senha fora do repositório; se perdida, `.venv/bin/python manage.py changepassword admin`.
 - **Uncommitted files**: nenhum (este Handoff entra no próprio commit).
 - **Branch**: `main`. O commit da pausa anterior (`4a45499`) já está no `origin/main`; o Handoff antigo dizia que ficaria só local.
 
@@ -68,4 +68,4 @@
 
 **Estado verificado na retomada de 2026-09-27**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; `ruff check` e `ruff format --check` → limpos; `validate_state.py autenticacao` → exit 0.
 
-**UAT no navegador**: iniciado em 2026-09-27, resultado ainda não informado. `GET /` sem sessão → 302 para `/entrar/?next=/` (AUTH-09/10) e `createsuperuser` → `ADMINISTRADOR` com senha em hash `pbkdf2_sha256` (AUTH-16, AUTH-06) confirmados. Quando o roteiro terminar, registrar em `validation.md` › Interactive UAT Results.
+**UAT**: feito em 2026-09-27 contra o servidor local, com cliente HTTP (cookies e CSRF reais): **24/24 PASS**, registrado em `validation.md` › Interactive UAT Results. O botão "voltar" de navegador gráfico não foi exercitado.
