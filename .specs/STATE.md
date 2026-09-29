@@ -50,6 +50,14 @@
 - **Date**: 2026-09-21
 - **Status**: active
 
+### AD-007
+- **Decision**: Todo `ModelAdmin` do projeto só abre para o perfil `ADMINISTRADOR`, herdando `contas.admin.AcessoSomenteAdministradorMixin`, que responde a todos os `has_*_permission` com `request.user.is_administrador`.
+- **Reason**: Sem a regra, cada admin novo (as listas controladas da F2 agora, possivelmente outros depois) reabre a porta que a AUTH-22 fechou: basta `is_staff` e uma permissão de modelo para um `USUARIO` editar uma lista controlada. Um mixin único mantém a regra em um só lugar e a torna visível na declaração de cada admin.
+- **Trade-off**: As permissões de modelo e os grupos do Django deixam de ter efeito no admin do projeto; o perfil é o único critério. Quem conhece só o admin padrão vai estranhar que conceder permissão a um grupo não mude nada.
+- **Scope**: Todo `ModelAdmin` registrado em qualquer app — hoje `UsuarioAdmin` (F1), `UnidadeAdmin` e `CategoriaAdmin` (F2).
+- **Date**: 2026-09-27
+- **Status**: active
+
 ## Handoff
 
 - **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Pausa em 2026-09-27 entre o Design e o Tasks, sem trabalho a meio caminho.
