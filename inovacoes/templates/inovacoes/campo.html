@@ -1,0 +1,16 @@
+{% comment %}
+  Copia de django/forms/field.html (Django 5.2) com outra ordem:
+  rotulo, controle, erros, ajuda. A INOV-41 pede a ajuda abaixo do campo; os
+  ids _helptext e _error sao os mesmos do Django, entao o aria-describedby
+  continua automatico.
+{% endcomment %}
+{% if field.use_fieldset %}
+  <fieldset{% if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}>
+  {% if field.label %}{{ field.legend_tag }}{% endif %}
+{% else %}
+  {% if field.label %}{{ field.label_tag }}{% endif %}
+{% endif %}
+{{ field }}
+{{ field.errors }}
+{% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+{% if field.use_fieldset %}</fieldset>{% endif %}

@@ -61,10 +61,10 @@
 ## Handoff
 
 - **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Execute em andamento desde 2026-09-29, inline (sem sub-agentes).
-- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ⏳ — Fases 1 e 2 concluídas; próxima é a Fase 3 (T8–T12, admin das listas e formulário).
-- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` em `contas/admin.py`), T2 (app `inovacoes`), T3 (Unidade/Categoria sobre a base abstrata `ItemDeLista`), T4 (Inovacao + `StatusInovacao`), T5 (constraint de título por unidade), T6 (`validate_constraints` leva o duplicado ao campo `titulo`), T7 (carga inicial das listas, migration `0004`). AD-007 registrada em `## Decisions`.
+- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ⏳ — Fases 1 a 3 concluídas; próxima é a Fase 4 (T13–T17, tela de cadastro).
+- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` em `contas/admin.py`), T2 (app `inovacoes`), T3 (Unidade/Categoria sobre a base abstrata `ItemDeLista`), T4 (Inovacao + `StatusInovacao`), T5 (constraint de título por unidade), T6 (`validate_constraints` leva o duplicado ao campo `titulo`), T7 (carga inicial das listas, migration `0004`), T8 (admin das listas só para `ADMINISTRADOR`), T9–T11 (`InovacaoForm`: campos, rótulos, obrigatórios, limites, selects), T12 (ajuda abaixo do campo via `inovacoes/campo.html`). AD-007 registrada em `## Decisions`.
 - **In-progress** (file:line): nenhum.
-- **Next step**: T8 — `UnidadeAdmin` e `CategoriaAdmin` em `inovacoes/admin.py`, herdando o mixin da T1.
+- **Next step**: T13 — `InovacaoCreateView`, rota `/inovacoes/nova/` e template `inovacao_form.html`.
 - **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
 - **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida).
 - **Uncommitted files**: nenhum.
@@ -78,4 +78,4 @@
 
 **Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
 
-**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **108 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.
+**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **168 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.

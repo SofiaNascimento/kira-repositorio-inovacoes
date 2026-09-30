@@ -171,3 +171,54 @@ def test_item_apagado_entre_abrir_e_enviar_o_formulario_e_recusado(dados_validos
     form = InovacaoForm(data=dados_validos)
     assert not form.is_valid()
     assert form.errors == {"unidade": ["Selecione uma unidade da lista."]}
+
+
+def _atributo(html, id_controle, atributo):
+    """Valor de um atributo na tag do controle, ou None se ausente."""
+    inicio = html.index(f'id="{id_controle}"')
+    tag = html[html.rindex("<", 0, inicio) : html.index(">", inicio)]
+    marcador = f'{atributo}="'
+    if marcador not in tag:
+        return None
+    resto = tag[tag.index(marcador) + len(marcador) :]
+    return resto[: resto.index('"')]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("campo", CAMPOS)
+def test_ajuda_com_exemplo_fica_abaixo_do_controle_e_ligada_a_ele(campo):
+    """INOV-41: texto de apoio com exemplo, depois do controle, no aria-describedby."""
+    html = InovacaoForm()[campo].as_field_group()
+    id_ajuda = f"id_{campo}_helptext"
+    assert f'id="{id_ajuda}"' in html
+    ajuda = html[html.index(f'id="{id_ajuda}"') :]
+    assert "Ex.:" in ajuda[: ajuda.index("</")]
+    assert html.index(f'id="id_{campo}"') < html.index(f'id="{id_ajuda}"')
+    assert id_ajuda in _atributo(html, f"id_{campo}", "aria-describedby").split()
+
+
+@pytest.mark.django_db
+def test_campo_com_erro_fica_invalido_e_ligado_a_mensagem(dados_validos):
+    """INOV-33: aria-invalid e aria-describedby apontando para o erro, que vem
+    antes da ajuda (rotulo, controle, erros, ajuda)."""
+    dados_validos["titulo"] = ""
+    form = InovacaoForm(data=dados_validos)
+    form.is_valid()
+    html = form["titulo"].as_field_group()
+    assert _atributo(html, "id_titulo", "aria-invalid") == "true"
+    assert "id_titulo_error" in _atributo(html, "id_titulo", "aria-describedby").split()
+    erro = html[html.index('id="id_titulo_error"') :]
+    assert "Informe o título da inovação." in erro[: erro.index("</ul>")]
+    assert (
+        html.index('id="id_titulo"')
+        < html.index('id="id_titulo_error"')
+        < html.index('id="id_titulo_helptext"')
+    )
+
+
+@pytest.mark.django_db
+def test_campo_sem_erro_nao_fica_invalido(dados_validos):
+    dados_validos["titulo"] = ""
+    form = InovacaoForm(data=dados_validos)
+    form.is_valid()
+    assert _atributo(form["problema"].as_field_group(), "id_problema", "aria-invalid") is None

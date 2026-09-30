@@ -437,7 +437,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T12: Ajuda contextual abaixo do campo
+### T12: Ajuda contextual abaixo do campo ✅
 
 **What**: `help_texts` com exemplo em cada campo e o template de campo que põe a ajuda abaixo do controle.
 **Where**: `inovacoes/templates/inovacoes/campo.html`
@@ -452,16 +452,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `help_texts` no `InovacaoForm` com uma frase e um "Ex.:" por campo; `__init__` aplica `template_name = "inovacoes/campo.html"` a todos os campos
-- [ ] `campo.html` renderiza rótulo → controle → erros → ajuda
-- [ ] Testes de integração sobre o HTML renderizado: para cada um dos sete campos, a ajuda com "Ex.:" aparece depois do controle e o `aria-describedby` do controle inclui `id_<campo>_helptext`, que existe no HTML (INOV-41); num form inválido, o campo com erro tem `aria-invalid="true"` e o `aria-describedby` inclui `id_<campo>_error`, que existe e contém a mensagem (INOV-33); campo sem erro não tem `aria-invalid`
-- [ ] Gate check passa (build)
-- [ ] Test count: 168 testes passam (+9, com parametrização)
+- [x] `help_texts` no `InovacaoForm` com uma frase e um "Ex.:" por campo; `__init__` aplica `template_name = "inovacoes/campo.html"` a todos os campos
+- [x] `campo.html` renderiza rótulo → controle → erros → ajuda
+- [x] Testes de integração sobre o HTML renderizado: para cada um dos sete campos, a ajuda com "Ex.:" aparece depois do controle e o `aria-describedby` do controle inclui `id_<campo>_helptext`, que existe no HTML (INOV-41); num form inválido, o campo com erro tem `aria-invalid="true"` e o `aria-describedby` inclui `id_<campo>_error`, que existe e contém a mensagem (INOV-33); campo sem erro não tem `aria-invalid`
+- [x] Gate check passa (build)
+- [x] Test count: 168 testes passam (+9, com parametrização)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): mostra ajuda com exemplo abaixo de cada campo`
+
+**Status**: ✅ Complete — 168 passed (+9), build gate verde
 
 ---
 

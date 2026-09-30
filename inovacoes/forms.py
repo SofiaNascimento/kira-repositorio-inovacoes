@@ -32,6 +32,20 @@ class InovacaoForm(forms.ModelForm):
             "resultado": "Resultado ou impacto",
             "contato": "Contato responsável (obrigatório)",
         }
+        # INOV-41 (RF15): uma frase com exemplo por campo.
+        help_texts = {
+            "titulo": "Nome curto da solução. Ex.: Conciliação bancária automática",
+            "unidade": "Unidade onde a solução foi aplicada. Ex.: Sede",
+            "categoria": "Área de back office da solução. Ex.: Financeiro",
+            "problema": (
+                "O que dava errado antes. Ex.: A conciliação era manual e levava dois dias por mês."
+            ),
+            "solucao": (
+                "O que foi feito e como. Ex.: Um script cruza o extrato com os lançamentos."
+            ),
+            "resultado": "O que mudou depois. Ex.: O fechamento passou a levar duas horas.",
+            "contato": "Quem responde pela solução. Ex.: Ana Souza (ana@x.com)",
+        }
         error_messages = {
             "titulo": {
                 "required": "Informe o título da inovação.",
@@ -66,6 +80,9 @@ class InovacaoForm(forms.ModelForm):
         # ordem alfabetica pela Meta.ordering das listas.
         for nome in ("unidade", "categoria"):
             self.fields[nome].empty_label = "Selecione…"
+        # A ajuda vai abaixo do controle (INOV-41); o padrao do Django a poe acima.
+        for campo in self.fields.values():
+            campo.template_name = "inovacoes/campo.html"
         for nome in ("problema", "solucao", "resultado"):
             campo = self.fields[nome]
             campo.max_length = LIMITE_TEXTO_LONGO
