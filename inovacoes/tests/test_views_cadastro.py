@@ -1,10 +1,11 @@
 """Testes e2e da tela de cadastro de inovacao (/inovacoes/nova/)."""
 
+import re
 from unittest import mock
 
 import pytest
 from django.utils import timezone
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
 from inovacoes.models import Inovacao, StatusInovacao, Unidade
@@ -279,3 +280,26 @@ def test_contato_trocado_pela_pessoa_e_o_que_fica_gravado(logado, dados):
     dados["contato"] = "Equipe de Tesouraria (tesouraria@x.com)"
     logado.post(NOVA, dados)
     assert Inovacao.objects.get().contato == "Equipe de Tesouraria (tesouraria@x.com)"
+
+
+def _link_cancelar(html):
+    links = re.findall(r"<a\b([^>]*)>\s*Cancelar\s*</a>", html)
+    assert len(links) == 1, links
+    return links[0]
+
+
+def test_formulario_tem_link_cancelar_para_a_home(logado):
+    """INOV-36: um link, nao um botao do formulario."""
+    atributos = _link_cancelar(logado.get(NOVA).content.decode())
+    assert re.search(r'\bhref="/"', atributos)
+
+
+def test_cancelar_leva_a_home_sem_gravar_nem_pedir_confirmacao(logado):
+    """INOV-37: o link e um GET comum, sem script de confirmacao."""
+    atributos = _link_cancelar(logado.get(NOVA).content.decode())
+    assert "onclick" not in atributos
+    href = re.search(r'\bhref="([^"]*)"', atributos).group(1)
+    resposta = logado.get(href)
+    assert resposta.status_code == 200
+    assertTemplateUsed(resposta, "nucleo/home.html")
+    assert not Inovacao.objects.exists()

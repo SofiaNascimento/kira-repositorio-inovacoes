@@ -644,7 +644,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T19: Cancelar sem salvar
+### T19: Cancelar sem salvar ✅
 
 **What**: Link "Cancelar" para a home, fora do envio do form.
 **Where**: `inovacoes/templates/inovacoes/inovacao_form.html`
@@ -659,15 +659,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `<a href="{% url 'nucleo:home' %}">Cancelar</a>` ao lado do botão Salvar
-- [ ] Testes e2e: a página tem um `<a>` com o texto "Cancelar" e `href="/"` (INOV-36); seguir esse `href` com GET responde 200 na home, sem nenhuma inovação nova e sem página de confirmação no caminho (INOV-37)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 198 testes passam (+2)
+- [x] `<a href="{% url 'nucleo:home' %}">Cancelar</a>` ao lado do botão Salvar
+- [x] Testes e2e: a página tem um `<a>` com o texto "Cancelar" e `href="/"` (INOV-36); seguir esse `href` com GET responde 200 na home, sem nenhuma inovação nova e sem página de confirmação no caminho (INOV-37)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 198 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): permite cancelar o cadastro sem salvar`
+
+**Status**: ✅ Complete — 198 passed (+2)
 
 ---
 
