@@ -60,19 +60,21 @@
 
 ## Handoff
 
-- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. **Concluída em 2026-09-29**, execução inline.
-- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ✅ — 23 tasks. Verifier: FAIL na iteração 1 (2 mutantes sobreviventes por teste fraco, corrigidos em T22–T23), **PASS na iteração 2** (43/43 ACs, sensor 20/21 com 1 mutante equivalente; `validate_state.py` 0 erros). UAT interativo ⏳ não feito.
-- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` em `contas/admin.py`), T2 (app `inovacoes`), T3 (Unidade/Categoria sobre a base abstrata `ItemDeLista`), T4 (Inovacao + `StatusInovacao`), T5 (constraint de título por unidade), T6 (`validate_constraints` leva o duplicado ao campo `titulo`), T7 (carga inicial das listas, migration `0004`), T8 (admin das listas só para `ADMINISTRADOR`), T9–T11 (`InovacaoForm`: campos, rótulos, obrigatórios, limites, selects), T12 (ajuda abaixo do campo via `inovacoes/campo.html`), T13 (`InovacaoCreateView` em `/inovacoes/nova/`), T14 (resumo `role="alert"` e prova de envio inválido), T15 (corrida tratada pelo nome da constraint), T16 (mensagem de sucesso), T17 (contato pré-preenchido), T18 (acessibilidade), T19 (Cancelar), T20 (link no cabeçalho), T21 (banco indisponível → 500), T22–T23 (testes que matam os mutantes V2b e T4 da validação). AD-007 registrada em `## Decisions`.
-- **In-progress** (file:line): nenhum.
-- **Next step**: UAT interativo da F2 no navegador (teclado, foco visível, leitor de tela, admin das listas), se o usuário quiser; antes, `.venv/bin/python manage.py migrate` no banco local, que ainda não tem as migrations `inovacoes 0001–0004`. Depois, Specify da próxima feature (F3, consulta).
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
-- **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida).
-- **Uncommitted files**: nenhum.
-- **Branch**: `main`, à frente de `origin/main` pelos commits desta sessão (nenhum push feito).
+- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Concluída e verificada em 2026-09-29; pausa em 2026-09-29 sem trabalho a meio caminho.
+- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ · Execute ✅ (T1–T23) · Verifier ✅ (FAIL na iteração 1, corrigido em T22–T23; **PASS na iteração 2**: 43/43 ACs, sensor 20/21 com 1 mutante equivalente; `validate_state.py` 0 erros) · UAT interativo ⏳ não iniciado.
+- **Completed**: T1–T23 (detalhe em `tasks.md`); AD-007 registrada; artefatos da F2 alinhados ao implementado (commit `0d3419d`: status de `design.md` e `context.md`, migrations reais no design, Goals e Success Criteria da `spec.md`).
+- **In-progress** (file:line): nenhum. Único item aberto da spec: o Success Criterion "preenchido e enviado só com teclado" (`.specs/features/cadastro-inovacao/spec.md`, seção Success Criteria), que depende do UAT; o HTML já está provado por `inovacoes/tests/test_views_acessibilidade.py`.
+- **Next step**: UAT da F1+F2 no navegador pelo roteiro de 21 itens passado ao usuário (contas `maria` e `joao` a criar; itens 17–18 fecham o critério de teclado). Antes, `.venv/bin/python manage.py migrate`: o banco local ainda não tem `inovacoes 0001–0004`. Depois, Specify da F3 (consulta-inovacoes).
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py runserver`). O `.env` já traz `DJANGO_DEBUG=True`, necessário para o login funcionar em `http://`.
+- **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida). Nenhum dado da F2 ainda (migrations não aplicadas).
+- **Uncommitted files**: nenhum (só este Handoff, que entra no commit da pausa).
+- **Branch**: `main`. O `origin/main` estava igual à `main` antes deste commit (push feito pelo autor); só o commit da pausa fica local.
 
 **Desvio registrado no `tasks.md`:** quatro migrations em vez de duas (uma por task de modelo); esquema final igual ao do design.
 
 **Decisões da discussão da F2 (2026-09-27):** listas mantidas só pelo `ADMINISTRADOR` no admin, com unidades provisórias; título único ignora maiúsculas/minúsculas e conta acentos; contato responsável pré-preenchido e editável; RF15 entra como P3; arquitetura A (uma app `inovacoes`).
+
+**Decisões da sessão de 2026-09-29:** execução inline da F2; o Success Criterion de teclado fica desmarcado até o UAT.
 
 **Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
 
