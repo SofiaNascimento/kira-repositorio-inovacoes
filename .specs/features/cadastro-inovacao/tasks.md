@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Em correção — Verifier FAIL na iteração 1 (`validation.md`); T22–T23 abertas
+**Status**: Implementada (23/23) — correções da iteração 1 feitas; aguardando o Verifier (iteração 2)
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
@@ -768,7 +768,7 @@ T22 → T23
 
 ---
 
-### T23: Título preservado quando o erro está em outro campo (mutante T4)
+### T23: Título preservado quando o erro está em outro campo (mutante T4) ✅
 
 **What**: Teste que provoca o erro em `solucao` e confirma que os outros seis campos, inclusive o título, voltam com o valor digitado.
 **Where**: `inovacoes/tests/test_views_cadastro.py`
@@ -783,15 +783,17 @@ T22 → T23
 
 **Done when**:
 
-- [ ] Novo teste e2e: `solucao` vazia; o `input` do título traz `value="<título digitado>"`, e unidade, categoria, problema, resultado e contato voltam preenchidos; nada é gravado
-- [ ] Os testes existentes ficam como estão
-- [ ] Gate check passa (build) — fechamento da iteração
-- [ ] Test count: 205 testes passam (+1)
+- [x] Novo teste e2e: `solucao` vazia; o `input` do título traz `value="<título digitado>"`, e unidade, categoria, problema, resultado e contato voltam preenchidos; nada é gravado
+- [x] Os testes existentes ficam como estão
+- [x] Gate check passa (build) — fechamento da iteração
+- [x] Test count: 205 testes passam (+1)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): prova que o titulo volta preenchido apos erro`
+
+**Status**: ✅ Complete — 205 passed (+1), build gate verde; mata o mutante T4
 
 ---
 

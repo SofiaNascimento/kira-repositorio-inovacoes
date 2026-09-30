@@ -61,10 +61,10 @@
 ## Handoff
 
 - **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Execute em andamento desde 2026-09-29, inline (sem sub-agentes).
-- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ⏳ — as 21 tasks concluídas; falta a validação independente (Verifier → `validation.md`).
-- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` em `contas/admin.py`), T2 (app `inovacoes`), T3 (Unidade/Categoria sobre a base abstrata `ItemDeLista`), T4 (Inovacao + `StatusInovacao`), T5 (constraint de título por unidade), T6 (`validate_constraints` leva o duplicado ao campo `titulo`), T7 (carga inicial das listas, migration `0004`), T8 (admin das listas só para `ADMINISTRADOR`), T9–T11 (`InovacaoForm`: campos, rótulos, obrigatórios, limites, selects), T12 (ajuda abaixo do campo via `inovacoes/campo.html`), T13 (`InovacaoCreateView` em `/inovacoes/nova/`), T14 (resumo `role="alert"` e prova de envio inválido), T15 (corrida tratada pelo nome da constraint), T16 (mensagem de sucesso), T17 (contato pré-preenchido), T18 (acessibilidade), T19 (Cancelar), T20 (link no cabeçalho), T21 (banco indisponível → 500). AD-007 registrada em `## Decisions`.
+- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ⏳ — 23 tasks concluídas. Verifier iteração 1: FAIL (2 mutantes sobreviventes, só testes fracos); corrigidos em T22–T23. Falta a iteração 2 do Verifier.
+- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` em `contas/admin.py`), T2 (app `inovacoes`), T3 (Unidade/Categoria sobre a base abstrata `ItemDeLista`), T4 (Inovacao + `StatusInovacao`), T5 (constraint de título por unidade), T6 (`validate_constraints` leva o duplicado ao campo `titulo`), T7 (carga inicial das listas, migration `0004`), T8 (admin das listas só para `ADMINISTRADOR`), T9–T11 (`InovacaoForm`: campos, rótulos, obrigatórios, limites, selects), T12 (ajuda abaixo do campo via `inovacoes/campo.html`), T13 (`InovacaoCreateView` em `/inovacoes/nova/`), T14 (resumo `role="alert"` e prova de envio inválido), T15 (corrida tratada pelo nome da constraint), T16 (mensagem de sucesso), T17 (contato pré-preenchido), T18 (acessibilidade), T19 (Cancelar), T20 (link no cabeçalho), T21 (banco indisponível → 500), T22–T23 (testes que matam os mutantes V2b e T4 da validação). AD-007 registrada em `## Decisions`.
 - **In-progress** (file:line): nenhum.
-- **Next step**: rodar o Verifier da F2 (spec-anchored check + discrimination sensor) e gravar `.specs/features/cadastro-inovacao/validation.md`; depois UAT, se o usuário quiser.
+- **Next step**: rodar o Verifier da F2, iteração 2 (de no máximo 3), e atualizar `validation.md`; depois UAT, se o usuário quiser.
 - **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
 - **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida).
 - **Uncommitted files**: nenhum.
@@ -78,4 +78,4 @@
 
 **Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
 
-**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **203 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.
+**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **205 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.

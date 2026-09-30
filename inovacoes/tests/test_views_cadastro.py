@@ -191,6 +191,28 @@ def test_envio_invalido_preserva_tudo_o_que_foi_digitado(logado, dados, unidade,
     assert not Inovacao.objects.exists()
 
 
+def _valor_do_input(html, campo):
+    tag = html[html.rindex("<", 0, html.index(f'id="id_{campo}"')) :]
+    tag = tag[: tag.index(">")]
+    return re.search(r'\bvalue="([^"]*)"', tag).group(1)
+
+
+def test_erro_em_outro_campo_preserva_o_titulo_e_os_demais(logado, dados, unidade, categoria):
+    """INOV-11: o erro fica na solucao; o titulo e todo o resto voltam como
+    foram digitados."""
+    dados["solucao"] = ""
+    resposta = logado.post(NOVA, dados)
+    assert resposta.context["form"].errors == {"solucao": ["Descreva a solução aplicada."]}
+    html = resposta.content.decode()
+    assert _valor_do_input(html, "titulo") == dados["titulo"]
+    assert _valor_do_input(html, "contato") == dados["contato"]
+    assert f'<option value="{unidade.pk}" selected>' in html
+    assert f'<option value="{categoria.pk}" selected>' in html
+    for campo in ["problema", "resultado"]:
+        assert f">\n{dados[campo]}</textarea>" in html
+    assert not Inovacao.objects.exists()
+
+
 def test_titulo_repetido_na_mesma_unidade_e_recusado_no_campo_titulo(logado, dados, criar_inovacao):
     """INOV-22 e INOV-23: caixa diferente e espacos nas pontas nao escapam."""
     criar_inovacao(titulo="Controle de Caixa")
