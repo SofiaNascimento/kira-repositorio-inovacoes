@@ -5,8 +5,35 @@ from contas.forms import UsuarioAlteracaoForm, UsuarioCriacaoForm
 from contas.models import Usuario
 
 
+class AcessoSomenteAdministradorMixin:
+    """Abre o ModelAdmin so para o perfil ADMINISTRADOR (AD-007).
+
+    Todo ModelAdmin do projeto herda este mixin antes do ModelAdmin, para que
+    ele venca na MRO.
+    """
+
+    # AUTH-22 e RN11: o perfil, e nao as permissoes de modelo do Django,
+    # decide quem abre as telas do admin. Um ADMINISTRADOR promovido nao e
+    # superusuario; um USUARIO com is_staff recebe 403 em todas elas, e um
+    # POST de alteracao nem chega ao formulario (AUTH-21).
+    def has_module_permission(self, request):
+        return request.user.is_administrador
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_administrador
+
+    def has_add_permission(self, request):
+        return request.user.is_administrador
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_administrador
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_administrador
+
+
 @admin.register(Usuario)
-class UsuarioAdmin(UserAdmin):
+class UsuarioAdmin(AcessoSomenteAdministradorMixin, UserAdmin):
     """Unica superficie de criacao de contas e de troca de perfil no MVP (RN11).
 
     A senha continua tratada pelo UserAdmin: resumo mascarado do hash na
@@ -30,22 +57,3 @@ class UsuarioAdmin(UserAdmin):
     )
     list_display = ("username", "email", "perfil", "is_active")
     list_filter = ("perfil", "is_active", "is_staff", "is_superuser")
-
-    # AUTH-22 e RN11: o perfil, e nao as permissoes de modelo do Django,
-    # decide quem abre as telas de usuario. Um ADMINISTRADOR promovido nao e
-    # superusuario; um USUARIO com is_staff recebe 403 em todas elas, e um
-    # POST de alteracao nem chega ao formulario (AUTH-21).
-    def has_module_permission(self, request):
-        return request.user.is_administrador
-
-    def has_view_permission(self, request, obj=None):
-        return request.user.is_administrador
-
-    def has_add_permission(self, request):
-        return request.user.is_administrador
-
-    def has_change_permission(self, request, obj=None):
-        return request.user.is_administrador
-
-    def has_delete_permission(self, request, obj=None):
-        return request.user.is_administrador

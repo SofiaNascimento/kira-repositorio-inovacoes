@@ -105,7 +105,7 @@ T18 → T19 → T20 → T21
 
 ## Task Breakdown
 
-### T1: Extrair `AcessoSomenteAdministradorMixin` do `UsuarioAdmin`
+### T1: Extrair `AcessoSomenteAdministradorMixin` do `UsuarioAdmin` ✅
 
 **What**: Mover os cinco `has_*_permission` do `UsuarioAdmin` para um mixin reutilizável, sem mudar comportamento (AD-007).
 **Where**: `contas/admin.py`
@@ -120,16 +120,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `class AcessoSomenteAdministradorMixin` em `contas/admin.py` com `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission` e `has_delete_permission` → `request.user.is_administrador`; o comentário AUTH-22/RN11 acompanha o código
-- [ ] `UsuarioAdmin(AcessoSomenteAdministradorMixin, UserAdmin)` — o mixin vem antes, para vencer a MRO
-- [ ] `git diff --stat contas/tests/` vazio: `test_admin_perfil.py` e `test_admin.py` passam **sem alteração**
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 84 testes passam (nenhum novo, nenhum removido)
+- [x] `class AcessoSomenteAdministradorMixin` em `contas/admin.py` com `has_module_permission`, `has_view_permission`, `has_add_permission`, `has_change_permission` e `has_delete_permission` → `request.user.is_administrador`; o comentário AUTH-22/RN11 acompanha o código
+- [x] `UsuarioAdmin(AcessoSomenteAdministradorMixin, UserAdmin)` — o mixin vem antes, para vencer a MRO
+- [x] `git diff --stat contas/tests/` vazio: `test_admin_perfil.py` e `test_admin.py` passam **sem alteração**
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 84 testes passam (nenhum novo, nenhum removido)
 
 **Tests**: e2e (a suíte existente de `contas/tests/test_admin*.py` é a rede da refatoração)
 **Gate**: full
 
 **Commit**: `refactor(contas): extrai o mixin de acesso somente administrador do admin`
+
+**Status**: ✅ Complete — 84 passed, `contas/tests/` sem alteração
 
 ---
 
