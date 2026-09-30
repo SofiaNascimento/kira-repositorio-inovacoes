@@ -557,7 +557,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T16: Mensagem de sucesso
+### T16: Mensagem de sucesso ✅
 
 **What**: `messages.success` com o título salvo, lida uma vez na home.
 **Where**: `inovacoes/views.py`
@@ -572,15 +572,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Depois do `save()`, `messages.success(request, "Inovação “<título>” cadastrada com sucesso.")` com o título já sem espaços
-- [ ] Testes e2e: seguindo o redirect, a mensagem exata, com aspas curvas e o título salvo, está dentro do `role="status"` (INOV-28); recarregar a home não a mostra de novo (INOV-29)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 189 testes passam (+2)
+- [x] Depois do `save()`, `messages.success(request, "Inovação “<título>” cadastrada com sucesso.")` com o título já sem espaços
+- [x] Testes e2e: seguindo o redirect, a mensagem exata, com aspas curvas e o título salvo, está dentro do `role="status"` (INOV-28); recarregar a home não a mostra de novo (INOV-29)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 189 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): confirma o cadastro com mensagem de sucesso`
+
+**Status**: ✅ Complete — 189 passed (+2)
 
 ---
 

@@ -233,3 +233,24 @@ def test_outra_violacao_de_integridade_nao_vira_titulo_duplicado(logado, dados):
         resposta = logado.post(NOVA, dados)
     assert resposta.status_code == 500
     assert not Inovacao.objects.exists()
+
+
+def _regiao_de_status(html):
+    inicio = html.index('role="status"')
+    return html[inicio : html.index("</div>", inicio)]
+
+
+def test_cadastro_bem_sucedido_confirma_com_o_titulo_salvo(logado, dados):
+    """INOV-28: na pagina do redirect, dentro do role=status."""
+    dados["titulo"] = "  Conciliação bancária automática  "
+    resposta = logado.post(NOVA, dados, follow=True)
+    assert resposta.redirect_chain == [("/", 302)]
+    regiao = _regiao_de_status(resposta.content.decode())
+    assert "Inovação “Conciliação bancária automática” cadastrada com sucesso." in regiao
+
+
+def test_mensagem_de_sucesso_nao_reaparece_ao_recarregar(logado, dados):
+    """INOV-29."""
+    logado.post(NOVA, dados, follow=True)
+    html = logado.get("/").content.decode()
+    assert "cadastrada com sucesso" not in html

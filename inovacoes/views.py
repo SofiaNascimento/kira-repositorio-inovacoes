@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -38,4 +39,6 @@ class InovacaoCreateView(CreateView):
                 raise
             form.add_error("titulo", _mensagem_de_titulo_duplicado())
             return self.form_invalid(form)
+        # INOV-28: diz o que aconteceu e com qual registro (RF12).
+        messages.success(self.request, f"Inovação “{self.object.titulo}” cadastrada com sucesso.")
         return HttpResponseRedirect(self.get_success_url())
