@@ -287,7 +287,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T7: Carga inicial das listas
+### T7: Carga inicial das listas ✅
 
 **What**: Data migration que cria as 5 categorias e as 5 unidades provisórias.
 **Where**: `inovacoes/migrations/0004_listas_iniciais.py`
@@ -302,16 +302,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Função direta cria Atendimento interno, Compras, Financeiro, RH, TI interno (categorias) e Filial Leste, Filial Norte, Filial Oeste, Filial Sul, Sede (unidades) com `get_or_create`; a reversa apaga só esses nomes
-- [ ] Testes de integração: o banco de teste (migrations aplicadas) tem exatamente esses 5 + 5 nomes, na ordem alfabética (INOV-18, INOV-15); rodar a função direta de novo não duplica nada
-- [ ] Os testes das T3–T6 continuam verdes com a carga presente
-- [ ] Gate check passa (build)
-- [ ] Test count: 108 testes passam (+3)
+- [x] Função direta cria Atendimento interno, Compras, Financeiro, RH, TI interno (categorias) e Filial Leste, Filial Norte, Filial Oeste, Filial Sul, Sede (unidades) com `get_or_create`; a reversa apaga só esses nomes
+- [x] Testes de integração: o banco de teste (migrations aplicadas) tem exatamente esses 5 + 5 nomes, na ordem alfabética (INOV-18, INOV-15); rodar a função direta de novo não duplica nada
+- [x] Os testes das T3–T6 continuam verdes com a carga presente
+- [x] Gate check passa (build)
+- [x] Test count: 108 testes passam (+3)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): carrega as unidades e categorias iniciais`
+
+**Status**: ✅ Complete — 108 passed (+3), build gate verde
 
 ---
 
