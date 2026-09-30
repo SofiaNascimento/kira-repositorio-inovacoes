@@ -467,7 +467,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T13: Tela de cadastro (`InovacaoCreateView`, rota e template)
+### T13: Tela de cadastro (`InovacaoCreateView`, rota e template) ✅
 
 **What**: A rota `/inovacoes/nova/` com GET do form vazio e POST que grava com o autor da sessão e redireciona à home.
 **Where**: `inovacoes/views.py`
@@ -482,18 +482,20 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `InovacaoCreateView` com `form_class = InovacaoForm`, `form_valid` que fixa `form.instance.autor = request.user` e `success_url` = `nucleo:home`; sem decorator (AD-006)
-- [ ] `inovacoes/urls.py` com `app_name = "inovacoes"` e `nova/` → `name="nova"`, incluído em `config/urls.py` sob `inovacoes/`
-- [ ] `inovacao_form.html` estende `base.html`: `<h1>Cadastrar inovação</h1>`, `<form method="post" novalidate>`, `{% csrf_token %}`, `{{ campo.as_field_group }}` por campo e `<button type="submit">Salvar</button>`
-- [ ] Testes e2e: GET autenticado → 200 com exatamente os sete campos editáveis (INOV-01); POST válido grava exatamente uma inovação com os valores sem espaços nas pontas (INOV-02) e responde 302 para `/` (INOV-03); autor = conta logada (INOV-04); status `EM_TESTE` e `data_criacao` do momento (INOV-05); `autor`, `status` e `data_criacao` forjados no POST são ignorados (INOV-06); `USUARIO` e `ADMINISTRADOR` cadastram igual (INOV-08, parametrizado); anônimo em GET e em POST vai a `/entrar/?next=/inovacoes/nova/` e nada é gravado (INOV-07)
-- [ ] O teste de varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/nova/`
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 178 testes passam (+10)
+- [x] `InovacaoCreateView` com `form_class = InovacaoForm`, `form_valid` que fixa `form.instance.autor = request.user` e `success_url` = `nucleo:home`; sem decorator (AD-006)
+- [x] `inovacoes/urls.py` com `app_name = "inovacoes"` e `nova/` → `name="nova"`, incluído em `config/urls.py` sob `inovacoes/`
+- [x] `inovacao_form.html` estende `base.html`: `<h1>Cadastrar inovação</h1>`, `<form method="post" novalidate>`, `{% csrf_token %}`, `{{ campo.as_field_group }}` por campo e `<button type="submit">Salvar</button>`
+- [x] Testes e2e: GET autenticado → 200 com exatamente os sete campos editáveis (INOV-01); POST válido grava exatamente uma inovação com os valores sem espaços nas pontas (INOV-02) e responde 302 para `/` (INOV-03); autor = conta logada (INOV-04); status `EM_TESTE` e `data_criacao` do momento (INOV-05); `autor`, `status` e `data_criacao` forjados no POST são ignorados (INOV-06); `USUARIO` e `ADMINISTRADOR` cadastram igual (INOV-08, parametrizado); anônimo em GET e em POST vai a `/entrar/?next=/inovacoes/nova/` e nada é gravado (INOV-07)
+- [x] O teste de varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/nova/`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 178 testes passam (+10)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a tela de cadastro de inovacao`
+
+**Status**: ✅ Complete — 178 passed (+10); a varredura da F1 já enxerga `/inovacoes/nova/`
 
 ---
 
