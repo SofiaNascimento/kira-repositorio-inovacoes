@@ -110,3 +110,27 @@ def test_rotulos_marcam_obrigatorio_so_nos_seis_campos_obrigatorios():
     """INOV-32: a obrigatoriedade esta no texto, nao so na cor."""
     form = InovacaoForm()
     assert {campo: form.fields[campo].label for campo in CAMPOS} == ROTULOS
+
+
+LIMITES = {"titulo": 150, "contato": 150, "problema": 5000, "solucao": 5000, "resultado": 5000}
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("campo", LIMITES)
+def test_texto_acima_do_limite_informa_limite_e_tamanho_digitado(dados_validos, campo):
+    """INOV-12: a mensagem traz o limite real e quanto a pessoa digitou."""
+    limite = LIMITES[campo]
+    dados_validos[campo] = "x" * (limite + 1)
+    form = InovacaoForm(data=dados_validos)
+    assert not form.is_valid()
+    assert form.errors == {
+        campo: [f"Use no máximo {limite} caracteres (você digitou {limite + 1})."]
+    }
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("campo", LIMITES)
+def test_texto_exatamente_no_limite_e_aceito(dados_validos, campo):
+    dados_validos[campo] = "x" * LIMITES[campo]
+    form = InovacaoForm(data=dados_validos)
+    assert form.is_valid(), form.errors

@@ -378,7 +378,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T10: Mensagens de tamanho excedido
+### T10: Mensagens de tamanho excedido ✅
 
 **What**: Limite de 5.000 caracteres nos textos longos e a mensagem com limite e tamanho digitado em todos os campos de texto.
 **Where**: `inovacoes/forms.py`
@@ -393,16 +393,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `problema`, `solucao` e `resultado` com `max_length=5000` no form; `titulo` e `contato` herdam 150 do model
-- [ ] Mensagem "Use no máximo N caracteres (você digitou M)." nos cinco campos
-- [ ] Testes de integração, parametrizados pelos cinco campos: limite + 1 é recusado com a mensagem e os valores reais (ex.: "Use no máximo 150 caracteres (você digitou 151)."); exatamente o limite é aceito
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 154 testes passam (+10)
+- [x] `problema`, `solucao` e `resultado` com `max_length=5000` no form; `titulo` e `contato` herdam 150 do model
+- [x] Mensagem "Use no máximo N caracteres (você digitou M)." nos cinco campos
+- [x] Testes de integração, parametrizados pelos cinco campos: limite + 1 é recusado com a mensagem e os valores reais (ex.: "Use no máximo 150 caracteres (você digitou 151)."); exatamente o limite é aceito
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 154 testes passam (+10)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): informa o limite de caracteres nos campos de texto`
+
+**Status**: ✅ Complete — 154 passed (+10)
 
 ---
 
