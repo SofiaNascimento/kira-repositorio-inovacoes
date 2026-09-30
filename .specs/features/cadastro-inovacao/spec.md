@@ -3,7 +3,7 @@
 **Fontes:** `docs/requisitos.md` (RF02, RF12, RF13, RF14, RF15, RN01, RN02, RN03, RN06, RN07, RN08, RN10, RNF01, RNF05, RNF09; seção 5, Estrutura de Dados) · `docs/mapa-de-features.md` (F2) · `docs/modelagem-uml.md` (classes Inovacao, Unidade, Categoria, StatusInovacao)
 **Decisões vinculantes:** AD-002 (MVT sem Service Layer) · AD-003 (PostgreSQL, integridade no banco) · AD-005 (autor via `settings.AUTH_USER_MODEL`) · AD-006 (acesso negado por padrão)
 **Reusa da F1:** `contas.Usuario` como autor · `is_administrador` como ponto único de consulta do perfil (AUTH-19) · página 500 sem vazamento (AUTH-26) · região de mensagens `role="status"` do `templates/base.html`
-**Status:** Aprovada pelo usuário em 2026-09-27 (assumptions confirmadas na aprovação)
+**Status:** Aprovada pelo usuário em 2026-09-27 (assumptions confirmadas na aprovação) · implementada e verificada em 2026-09-29 (`validation.md`, iteração 2)
 **Contexto da discussão:** `.specs/features/cadastro-inovacao/context.md`
 
 > **Nota de notação:** como na F1, os critérios de aceite estão em EARS em inglês (WHEN / WHILE /
@@ -20,14 +20,14 @@ corrigir erros sem perder o que foi digitado e deixa autor, data e status a carg
 
 ## Goals
 
-- [ ] Um usuário autenticado, de qualquer perfil, registra uma inovação completa pelo formulário em uma
+- [x] Um usuário autenticado, de qualquer perfil, registra uma inovação completa pelo formulário em uma
       única submissão válida, e o registro fica persistido no PostgreSQL com autor, data de criação e
       status `Em teste` definidos pelo sistema.
-- [ ] Nenhuma submissão inválida grava registro, e toda submissão inválida devolve o formulário com a
+- [x] Nenhuma submissão inválida grava registro, e toda submissão inválida devolve o formulário com a
       mensagem de erro no campo afetado e todos os valores já digitados preservados.
-- [ ] Nenhum par de inovações na mesma unidade tem títulos iguais sem distinção de maiúsculas e
+- [x] Nenhum par de inovações na mesma unidade tem títulos iguais sem distinção de maiúsculas e
       minúsculas — garantido pelo banco, não só pelo formulário.
-- [ ] Unidade e categoria de toda inovação vêm de listas controladas mantidas somente pelo perfil
+- [x] Unidade e categoria de toda inovação vêm de listas controladas mantidas somente pelo perfil
       `ADMINISTRADOR`.
 
 ## Out of Scope
@@ -373,10 +373,12 @@ sete campos, ligado ao campo pelo `aria-describedby`.
 
 ## Success Criteria
 
-- [ ] Um `USUARIO` e um `ADMINISTRADOR` cadastram cada um uma inovação pelo formulário, e o banco mostra
+- [x] Um `USUARIO` e um `ADMINISTRADOR` cadastram cada um uma inovação pelo formulário, e o banco mostra
       autor correto, status `Em teste` e data de criação preenchida em ambas.
-- [ ] Um envio com todos os campos obrigatórios vazios mostra as seis mensagens de campo e o resumo, e
+- [x] Um envio com todos os campos obrigatórios vazios mostra as seis mensagens de campo e o resumo, e
       nenhum registro novo existe no banco.
-- [ ] Uma tentativa de gravar dois títulos iguais em caixa diferente na mesma unidade falha tanto
+- [x] Uma tentativa de gravar dois títulos iguais em caixa diferente na mesma unidade falha tanto
       pelo formulário quanto por inserção direta no banco.
 - [ ] O formulário é preenchido e enviado só com teclado, e todo campo tem rótulo associado.
+      Rótulos, `required`, ordem de foco e `:focus-visible` estão provados no HTML
+      (`inovacoes/tests/test_views_acessibilidade.py`); o percurso real com teclado fica para o UAT.

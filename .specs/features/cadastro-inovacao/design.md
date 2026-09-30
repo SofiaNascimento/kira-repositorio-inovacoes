@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Context**: `.specs/features/cadastro-inovacao/context.md`
-**Status**: Approved (2026-09-27)
+**Status**: Approved (2026-09-27) — implementado e verificado (2026-09-29, `validation.md`)
 
 **Abordagem escolhida:** A — uma app `inovacoes` com todo o domínio (Unidade, Categoria,
 StatusInovacao, Inovacao). Descartada: B, duas apps (`catalogos` + `inovacoes`). A separação não
@@ -218,17 +218,23 @@ graph TD
 - **Purpose**: um só lugar para a regra "o admin do projeto abre só para `ADMINISTRADOR`".
 - **Location**: `contas/admin.py`
 - **Interfaces**: `has_module_permission`, `has_view_permission`, `has_add_permission`,
-  `has_change_permission`, `has_delete_permission` → `request.user.is_administrador`. É o código de
-  `contas/admin.py:34-50`, só movido. O `UsuarioAdmin` passa a herdá-lo.
+  `has_change_permission`, `has_delete_permission` → `request.user.is_administrador`. É o código que
+  estava em `contas/admin.py:34-50`, só movido; hoje o mixin fica em `contas/admin.py:8-32` (T1). O
+  `UsuarioAdmin` passa a herdá-lo.
 - **Dependencies**: `Usuario.is_administrador`
 - **Reuses**: a própria F1. Os testes de `contas/tests/test_admin_perfil.py` são a rede de segurança
   da refatoração.
 
 ### Migrations
 
-- `inovacoes/migrations/0001_initial.py` — as três tabelas e as constraints.
-- `inovacoes/migrations/0002_listas_iniciais.py` — `RunPython` que cria as 5 categorias e as 5
-  unidades com `get_or_create` (idempotente). A função reversa apaga só esses nomes (INOV-18).
+O desenho previa duas migrations. Como cada modelo nasceu em uma task, ficaram quatro, com o mesmo
+esquema final:
+
+- `inovacoes/migrations/0001_initial.py` — Unidade e Categoria, com as constraints de nome (T3).
+- `inovacoes/migrations/0002_inovacao.py` — Inovacao e a constraint de status (T4).
+- `inovacoes/migrations/0003_titulo_unico_por_unidade.py` — a constraint de título por unidade (T5).
+- `inovacoes/migrations/0004_listas_iniciais.py` — `RunPython` que cria as 5 categorias e as 5
+  unidades com `get_or_create` (idempotente). A função reversa apaga só esses nomes (INOV-18, T7).
 
 ---
 
@@ -350,7 +356,7 @@ class Inovacao(models.Model):
 | **Refatorar o admin da F1 mexe em código verificado** | `contas/admin.py:34-50` | Regressão na AUTH-21 e na AUTH-22 | Task própria, só de mover o código para o mixin, sem mudar comportamento. Gate: os testes de `contas/tests/test_admin_perfil.py` e `test_admin.py` continuam verdes, sem alteração. |
 | **A ordem alfabética depende da collation do banco** | `Meta.ordering = ["nome"]` | Local: `en_US.UTF-8` (conferido: "Área < atendimento < Compras < …"). Um banco em collation `C` no deploy poria nomes com acento ou minúsculos no fim | As listas iniciais não têm acento nem minúscula inicial, então INOV-15 passa nas duas collations. A collation do banco de deploy fica anotada como checagem do passe de deploy (RNF06). |
 | **O contato pré-preenchido pode passar de 150 caracteres** | `InovacaoCreateView.get_initial` | `first_name` e `last_name` têm até 150 cada e o e-mail até 254; nesse caso extremo o envio falha na INOV-12 | Aceito: o usuário vê a mensagem de tamanho no campo e edita (é o comportamento da spec). Não se trunca em silêncio. |
-| **A data migration afeta os testes** | `inovacoes/migrations/0002_listas_iniciais.py` | O pytest-django aplica as migrations, então os 10 itens existem em todo teste. Um teste que cria "Sede" colide com `unidade_nome_unico_ci` | Os testes usam os itens da carga inicial ou nomes próprios de teste. O teste da INOV-18 afirma exatamente os 10 nomes. |
+| **A data migration afeta os testes** | `inovacoes/migrations/0004_listas_iniciais.py` | O pytest-django aplica as migrations, então os 10 itens existem em todo teste. Um teste que cria "Sede" colide com `unidade_nome_unico_ci` | Os testes usam os itens da carga inicial ou nomes próprios de teste. O teste da INOV-18 afirma exatamente os 10 nomes. |
 | **O template de campo é cópia do Django** | `inovacoes/templates/inovacoes/campo.html` | Numa atualização do Django, a cópia pode divergir do original (por exemplo, `fieldset`) | Os testes afirmam o resultado (ordem controle → ajuda, `aria-describedby` com os dois ids), e não o template. Uma divergência quebra teste, não passa em silêncio. |
 | **A home interna segue como andaime** | `nucleo/views.py` | O destino pós-cadastro e o "Cancelar" apontam para uma tela provisória | Declarado na spec e no Handoff. A F3 troca os dois destinos. |
 
@@ -368,14 +374,14 @@ class Inovacao(models.Model):
 | Nome da data | `data_criacao` | Espelha o atributo do diagrama e o vocabulário da RN08. |
 | `Inovacao` fora do admin | Não registrada | Contornaria a autoria (RN08) e, na F4, a RN05. |
 
-> **Decisão de nível de projeto proposta → `.specs/STATE.md`:**
+> **Decisão de nível de projeto → `.specs/STATE.md` (registrada como AD-007 em 2026-09-29):**
 > **AD-007 — Todo `ModelAdmin` do projeto só abre para `ADMINISTRADOR`, herdando
 > `contas.admin.AcessoSomenteAdministradorMixin`.** Sem isso, cada admin novo (listas agora,
 > possivelmente outros depois) reabre a porta que a AUTH-22 fechou: basta `is_staff` e uma permissão
 > de modelo para um `USUARIO` editar a lista controlada. É uma convenção que toda feature seguinte
 > herda e que surpreende quem só conhece o admin padrão. **Trade-off**: as permissões de modelo e
 > grupos do Django deixam de ter efeito no admin do projeto; o perfil é o único critério. Aprovada com o design em
-> 2026-09-27; o registro no log ficou pendente (pausa pedida sem tocar em `## Decisions`).
+> 2026-09-27 e registrada no log em 2026-09-29.
 
 ---
 
@@ -400,7 +406,7 @@ class Inovacao(models.Model):
 | INOV-15 | `Meta.ordering = ["nome"]` + `ModelChoiceField` |
 | INOV-16 | FKs `NOT NULL` |
 | INOV-17 | `ModelChoiceField` → `error_messages["invalid_choice"]` |
-| INOV-18 | Data migration `0002_listas_iniciais` |
+| INOV-18 | Data migration `0004_listas_iniciais` |
 | INOV-19 | `on_delete=PROTECT` + delete view do admin |
 | INOV-20 | `AcessoSomenteAdministradorMixin` |
 | INOV-21 | `UnidadeAdmin` / `CategoriaAdmin` registrados |

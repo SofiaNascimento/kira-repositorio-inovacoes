@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-09-27
 **Spec:** `.specs/features/cadastro-inovacao/spec.md`
-**Status:** Ready for design (spec aprovada em 2026-09-27)
+**Status:** Feature concluída e verificada (2026-09-29)
 
 ---
 
