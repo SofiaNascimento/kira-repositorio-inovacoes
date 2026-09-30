@@ -673,7 +673,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T20: Link "Cadastrar inovação" no cabeçalho
+### T20: Link "Cadastrar inovação" no cabeçalho ✅
 
 **What**: `<nav aria-label="Principal">` com o link para o cadastro no cabeçalho autenticado.
 **Where**: `templates/base.html`
@@ -688,16 +688,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Link `<a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>` dentro de `<nav aria-label="Principal">` no `<header>`, só para usuário autenticado
-- [ ] Testes e2e: na home e no próprio formulário, autenticado, o `<header>` tem o link com o texto e `href="/inovacoes/nova/"` (INOV-38); na tela de login, anônima, o link não aparece
-- [ ] Os testes existentes de `contas/tests/` que leem o `base.html` continuam verdes
-- [ ] Gate check passa (build)
-- [ ] Test count: 201 testes passam (+3)
+- [x] Link `<a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>` dentro de `<nav aria-label="Principal">` no `<header>`, só para usuário autenticado
+- [x] Testes e2e: na home e no próprio formulário, autenticado, o `<header>` tem o link com o texto e `href="/inovacoes/nova/"` (INOV-38); na tela de login, anônima, o link não aparece
+- [x] Os testes existentes de `contas/tests/` que leem o `base.html` continuam verdes
+- [x] Gate check passa (build)
+- [x] Test count: 201 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona o cadastro de inovacao ao cabecalho`
+
+**Status**: ✅ Complete — 201 passed (+3), build gate verde
 
 ---
 
