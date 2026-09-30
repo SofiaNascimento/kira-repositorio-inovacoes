@@ -37,8 +37,14 @@ class InovacaoForm(forms.ModelForm):
                 "required": "Informe o título da inovação.",
                 "max_length": MENSAGEM_TAMANHO,
             },
-            "unidade": {"required": "Selecione a unidade de origem."},
-            "categoria": {"required": "Selecione a categoria."},
+            "unidade": {
+                "required": "Selecione a unidade de origem.",
+                "invalid_choice": "Selecione uma unidade da lista.",
+            },
+            "categoria": {
+                "required": "Selecione a categoria.",
+                "invalid_choice": "Selecione uma categoria da lista.",
+            },
             "problema": {
                 "required": "Descreva o problema ou dor.",
                 "max_length": MENSAGEM_TAMANHO,
@@ -56,6 +62,10 @@ class InovacaoForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # INOV-15: o ModelChoiceField so aceita pk do queryset, que vem em
+        # ordem alfabetica pela Meta.ordering das listas.
+        for nome in ("unidade", "categoria"):
+            self.fields[nome].empty_label = "Selecione…"
         for nome in ("problema", "solucao", "resultado"):
             campo = self.fields[nome]
             campo.max_length = LIMITE_TEXTO_LONGO

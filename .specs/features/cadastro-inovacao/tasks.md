@@ -408,7 +408,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T11: Seleção de unidade e categoria
+### T11: Seleção de unidade e categoria ✅
 
 **What**: `ModelChoiceField` de unidade e categoria com "Selecione…" e as mensagens de valor fora da lista.
 **Where**: `inovacoes/forms.py`
@@ -423,15 +423,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `empty_label="Selecione…"` nos dois campos; `error_messages["invalid_choice"]` = "Selecione uma unidade da lista." / "Selecione uma categoria da lista."
-- [ ] Testes de integração: as opções de cada select são exatamente os registros do banco em ordem alfabética, depois da opção vazia (INOV-15); pk inexistente é recusado com a mensagem do campo certo (INOV-17, parametrizado pelos dois); item apagado entre montar e enviar o form cai na mesma mensagem
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 159 testes passam (+5)
+- [x] `empty_label="Selecione…"` nos dois campos; `error_messages["invalid_choice"]` = "Selecione uma unidade da lista." / "Selecione uma categoria da lista."
+- [x] Testes de integração: as opções de cada select são exatamente os registros do banco em ordem alfabética, depois da opção vazia (INOV-15); pk inexistente é recusado com a mensagem do campo certo (INOV-17, parametrizado pelos dois); item apagado entre montar e enviar o form cai na mesma mensagem
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 159 testes passam (+5)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): restringe unidade e categoria as listas controladas`
+
+**Status**: ✅ Complete — 159 passed (+5)
 
 ---
 

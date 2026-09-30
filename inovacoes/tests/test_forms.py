@@ -134,3 +134,40 @@ def test_texto_exatamente_no_limite_e_aceito(dados_validos, campo):
     dados_validos[campo] = "x" * LIMITES[campo]
     form = InovacaoForm(data=dados_validos)
     assert form.is_valid(), form.errors
+
+
+OPCOES_INICIAIS = {
+    "unidade": ["Filial Leste", "Filial Norte", "Filial Oeste", "Filial Sul", "Sede"],
+    "categoria": ["Atendimento interno", "Compras", "Financeiro", "RH", "TI interno"],
+}
+MENSAGEM_FORA_DA_LISTA = {
+    "unidade": "Selecione uma unidade da lista.",
+    "categoria": "Selecione uma categoria da lista.",
+}
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("campo", OPCOES_INICIAIS)
+def test_select_lista_so_os_itens_cadastrados_em_ordem_alfabetica(campo):
+    """INOV-15: primeiro a opcao vazia, depois os itens do banco."""
+    rotulos = [rotulo for _, rotulo in InovacaoForm().fields[campo].choices]
+    assert rotulos == ["Selecione…", *OPCOES_INICIAIS[campo]]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("campo", MENSAGEM_FORA_DA_LISTA)
+def test_item_inexistente_e_recusado_com_a_mensagem_do_campo(dados_validos, campo):
+    """INOV-17: so ocorre com POST adulterado."""
+    dados_validos[campo] = "999999"
+    form = InovacaoForm(data=dados_validos)
+    assert not form.is_valid()
+    assert form.errors == {campo: [MENSAGEM_FORA_DA_LISTA[campo]]}
+
+
+@pytest.mark.django_db
+def test_item_apagado_entre_abrir_e_enviar_o_formulario_e_recusado(dados_validos, unidade):
+    """INOV-17: a pessoa escolheu um item que deixou de existir."""
+    unidade.delete()
+    form = InovacaoForm(data=dados_validos)
+    assert not form.is_valid()
+    assert form.errors == {"unidade": ["Selecione uma unidade da lista."]}
