@@ -615,7 +615,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T18: Formulário acessível por teclado e leitor de tela
+### T18: Formulário acessível por teclado e leitor de tela ✅
 
 **What**: Prova, sobre o HTML da página, das ACs de acessibilidade; ajusta o template onde faltar.
 **Where**: `inovacoes/tests/test_views_acessibilidade.py`
@@ -630,15 +630,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Testes e2e com `html.parser` da biblioteca padrão sobre `/inovacoes/nova/`: todo controle tem um `<label for>` visível com o mesmo `id` (INOV-31); os seis obrigatórios têm `required` e "(obrigatório)" no rótulo, e `resultado` não tem (INOV-32); os controles do form são só `input`, `select`, `textarea`, `button` e `a`, e nenhum elemento tem `tabindex` positivo (INOV-34); a página carrega a regra `:focus-visible` com contorno, que alcança os controles e o link de cancelar (INOV-35)
-- [ ] Se algum teste acusar falta, o ajuste vai no template da T13 dentro desta task
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 196 testes passam (+4)
+- [x] Testes e2e com `html.parser` da biblioteca padrão sobre `/inovacoes/nova/`: todo controle tem um `<label for>` visível com o mesmo `id` (INOV-31); os seis obrigatórios têm `required` e "(obrigatório)" no rótulo, e `resultado` não tem (INOV-32); os controles do form são só `input`, `select`, `textarea`, `button` e `a`, e nenhum elemento tem `tabindex` positivo (INOV-34); a página carrega a regra `:focus-visible` com contorno, que alcança os controles e o link de cancelar (INOV-35)
+- [x] Se algum teste acusar falta, o ajuste vai no template da T13 dentro desta task
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 196 testes passam (+4)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): cobre a acessibilidade do formulario de cadastro`
+
+**Status**: ✅ Complete — 196 passed (+4); nenhum ajuste no template foi necessário; faltas injetadas (tabindex positivo, role=button, outline: none) derrubaram os testes
 
 ---
 
