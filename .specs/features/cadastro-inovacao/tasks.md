@@ -586,7 +586,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T17: Contato responsável pré-preenchido
+### T17: Contato responsável pré-preenchido ✅
 
 **What**: `get_initial` preenche o contato com o nome (ou username) e o e-mail de quem está logado.
 **Where**: `inovacoes/views.py`
@@ -601,15 +601,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `get_initial()` → `{"contato": "<nome completo> (<e-mail>)"}`, com `username` no lugar do nome quando `first_name` e `last_name` estão vazios
-- [ ] Testes e2e: conta com nome vê "Ana Souza (ana@x.com)" no campo; conta sem nome vê "ana (ana@x.com)" (INOV-39); trocar o contato antes de salvar grava o valor digitado (INOV-40)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 192 testes passam (+3)
+- [x] `get_initial()` → `{"contato": "<nome completo> (<e-mail>)"}`, com `username` no lugar do nome quando `first_name` e `last_name` estão vazios
+- [x] Testes e2e: conta com nome vê "Ana Souza (ana@x.com)" no campo; conta sem nome vê "ana (ana@x.com)" (INOV-39); trocar o contato antes de salvar grava o valor digitado (INOV-40)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 192 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): pre-preenche o contato responsavel com o autor`
+
+**Status**: ✅ Complete — 192 passed (+3), build gate verde
 
 ---
 

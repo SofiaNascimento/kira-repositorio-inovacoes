@@ -254,3 +254,28 @@ def test_mensagem_de_sucesso_nao_reaparece_ao_recarregar(logado, dados):
     logado.post(NOVA, dados, follow=True)
     html = logado.get("/").content.decode()
     assert "cadastrada com sucesso" not in html
+
+
+def _valor_do_contato(html):
+    tag = html[html.rindex("<", 0, html.index('id="id_contato"')) :]
+    tag = tag[: tag.index(">")]
+    return tag[tag.index('value="') + len('value="') :].split('"')[0]
+
+
+def test_contato_vem_preenchido_com_nome_e_email(logado):
+    """INOV-39: conta com nome."""
+    assert _valor_do_contato(logado.get(NOVA).content.decode()) == "Ana Souza (ana@x.com)"
+
+
+@pytest.mark.django_db
+def test_contato_usa_o_username_quando_a_conta_nao_tem_nome(client):
+    """INOV-39: conta sem nome nem sobrenome."""
+    client.force_login(Usuario.objects.create_user(username="bruno", email="bruno@x.com"))
+    assert _valor_do_contato(client.get(NOVA).content.decode()) == "bruno (bruno@x.com)"
+
+
+def test_contato_trocado_pela_pessoa_e_o_que_fica_gravado(logado, dados):
+    """INOV-40."""
+    dados["contato"] = "Equipe de Tesouraria (tesouraria@x.com)"
+    logado.post(NOVA, dados)
+    assert Inovacao.objects.get().contato == "Equipe de Tesouraria (tesouraria@x.com)"

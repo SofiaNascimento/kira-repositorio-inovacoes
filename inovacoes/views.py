@@ -24,6 +24,12 @@ class InovacaoCreateView(CreateView):
     # PROVISORIO: a home interna e o destino ate a F3 trazer a pagina de detalhe.
     success_url = reverse_lazy("nucleo:home")
 
+    def get_initial(self):
+        # INOV-39: pre-preenchido e editavel; o responsavel nem sempre e o autor.
+        usuario = self.request.user
+        nome = usuario.get_full_name() or usuario.get_username()
+        return {"contato": f"{nome} ({usuario.email})"}
+
     def form_valid(self, form):
         # INOV-04: o autor vem da sessao, nunca do formulario.
         form.instance.autor = self.request.user
