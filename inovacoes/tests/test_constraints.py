@@ -53,3 +53,28 @@ def test_status_invalido_e_recusado_no_update_em_massa(criar_inovacao):
         Inovacao.objects.filter(pk=inovacao.pk).update(status="APROVADA")
     inovacao.refresh_from_db()
     assert inovacao.status == StatusInovacao.EM_TESTE
+
+
+@pytest.mark.django_db
+def test_titulo_repetido_em_outra_caixa_na_mesma_unidade_e_recusado_pelo_banco(criar_inovacao):
+    """INOV-26: a unicidade vive numa constraint, nao so no formulario."""
+    criar_inovacao(titulo="Controle de Caixa")
+    with pytest.raises(IntegrityError):
+        criar_inovacao(titulo="CONTROLE DE CAIXA")
+
+
+@pytest.mark.django_db
+def test_mesmo_titulo_em_outra_unidade_e_aceito(criar_inovacao):
+    """INOV-24: a colisao e por unidade, nao global."""
+    criar_inovacao(titulo="Controle de Caixa")
+    outra = Unidade.objects.create(nome="Teste Outra Unidade")
+    criar_inovacao(titulo="Controle de Caixa", unidade=outra)
+    assert Inovacao.objects.filter(titulo="Controle de Caixa").count() == 2
+
+
+@pytest.mark.django_db
+def test_titulos_que_diferem_so_no_acento_sao_distintos(criar_inovacao):
+    """INOV-27: acentos contam; lower() do PostgreSQL nao os remove."""
+    criar_inovacao(titulo="Solução de Caixa")
+    criar_inovacao(titulo="Solucao de Caixa")
+    assert Inovacao.objects.count() == 2

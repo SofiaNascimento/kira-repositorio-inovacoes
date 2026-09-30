@@ -228,7 +228,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T5: Título único por unidade no banco
+### T5: Título único por unidade no banco ✅
 
 **What**: `UniqueConstraint(Lower("titulo"), "unidade")` com código e mensagem de duplicado.
 **Where**: `inovacoes/models.py`
@@ -243,16 +243,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Constraint `inovacao_titulo_unico_por_unidade` com `violation_error_code="titulo_duplicado"` e a mensagem "Já existe uma inovação com este título nesta unidade. Escolha outro título."
-- [ ] Migration `0003_titulo_unico_por_unidade` gerada
-- [ ] Testes de integração gravando direto no banco (`objects.create`, sem form): mesmo título em caixa diferente na mesma unidade → `IntegrityError` (INOV-26); mesmo título em unidade diferente → aceito (INOV-24); "Solução" e "Solucao" na mesma unidade → aceitos (INOV-27)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 102 testes passam (+3)
+- [x] Constraint `inovacao_titulo_unico_por_unidade` com `violation_error_code="titulo_duplicado"` e a mensagem "Já existe uma inovação com este título nesta unidade. Escolha outro título."
+- [x] Migration `0003_titulo_unico_por_unidade` gerada
+- [x] Testes de integração gravando direto no banco (`objects.create`, sem form): mesmo título em caixa diferente na mesma unidade → `IntegrityError` (INOV-26); mesmo título em unidade diferente → aceito (INOV-24); "Solução" e "Solucao" na mesma unidade → aceitos (INOV-27)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 102 testes passam (+3)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): impede titulo repetido na mesma unidade`
+
+**Status**: ✅ Complete — 102 passed (+3)
 
 ---
 

@@ -84,6 +84,17 @@ class Inovacao(models.Model):
         verbose_name = "inovação"
         verbose_name_plural = "inovações"
         constraints = [
+            # RN10: mesmo titulo na mesma unidade, sem distinguir caixa. Acentos
+            # contam: lower() do PostgreSQL nao os remove (INOV-27).
+            models.UniqueConstraint(
+                Lower("titulo"),
+                "unidade",
+                name="inovacao_titulo_unico_por_unidade",
+                violation_error_code="titulo_duplicado",
+                violation_error_message=(
+                    "Já existe uma inovação com este título nesta unidade. Escolha outro título."
+                ),
+            ),
             # choices so e checado em full_clean(); a regra desce para o banco.
             models.CheckConstraint(
                 condition=Q(status__in=StatusInovacao.values),
