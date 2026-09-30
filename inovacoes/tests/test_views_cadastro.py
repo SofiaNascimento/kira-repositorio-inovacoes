@@ -68,6 +68,20 @@ def test_autor_e_a_conta_logada(logado, dados, autor):
     assert Inovacao.objects.get().autor == autor
 
 
+@pytest.mark.django_db
+def test_autor_e_quem_enviou_e_nao_outra_conta_do_banco(client, dados):
+    """INOV-04: com contas criadas antes e depois, o autor continua sendo a
+    conta logada, nao a mais antiga nem a mais nova."""
+    antiga = Usuario.objects.create_user(username="antiga", email="antiga@x.com")
+    quem_envia = Usuario.objects.create_user(username="carla", email="carla@x.com")
+    nova = Usuario.objects.create_user(username="nova", email="nova@x.com")
+    client.force_login(quem_envia)
+    client.post(NOVA, dados)
+    autor = Inovacao.objects.get().autor
+    assert autor == quem_envia
+    assert autor not in (antiga, nova)
+
+
 def test_status_e_data_de_criacao_sao_do_sistema(logado, dados):
     """INOV-05."""
     antes = timezone.now()

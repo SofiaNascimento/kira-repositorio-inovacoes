@@ -739,7 +739,7 @@ T22 → T23
 
 ---
 
-### T22: Autor distinto da conta mais antiga (mutante V2b)
+### T22: Autor distinto da conta mais antiga (mutante V2b) ✅
 
 **What**: Teste que prova que o autor é quem enviou o formulário, e não uma conta qualquer do banco.
 **Where**: `inovacoes/tests/test_views_cadastro.py`
@@ -754,15 +754,17 @@ T22 → T23
 
 **Done when**:
 
-- [ ] Novo teste e2e: uma conta criada antes e outra depois de quem envia; o autor gravado é a conta logada e não é nenhuma das outras duas (mata "menor `pk`" e "maior `pk`")
-- [ ] Os testes existentes ficam como estão
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 204 testes passam (+1)
+- [x] Novo teste e2e: uma conta criada antes e outra depois de quem envia; o autor gravado é a conta logada e não é nenhuma das outras duas (mata "menor `pk`" e "maior `pk`")
+- [x] Os testes existentes ficam como estão
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 204 testes passam (+1)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): distingue o autor das demais contas no cadastro`
+
+**Status**: ✅ Complete — 204 passed (+1); mata os mutantes "menor pk" (V2b) e "maior pk"
 
 ---
 
