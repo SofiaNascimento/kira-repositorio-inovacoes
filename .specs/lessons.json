@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 7,
+  "next_id": 9,
   "lessons": [
     {
       "id": "L-001",
@@ -112,6 +112,42 @@
       ],
       "created": "2026-09-27T03:45:12Z",
       "last_seen": "2026-09-27T03:45:12Z"
+    },
+    {
+      "id": "L-007",
+      "key": "surviving_mutant::when asserting that a record is attributed to the requesting user create another account before that user so the assertion cannot pass by picking the oldest or any fixed account",
+      "text": "When asserting that a record is attributed to the requesting user, create another account before that user so the assertion cannot pass by picking the oldest or any fixed account",
+      "signal": "surviving_mutant",
+      "scope": "views",
+      "status": "candidate",
+      "features": [
+        "cadastro-inovacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md mutante V2b; INOV-04; inovacoes/tests/test_views_cadastro.py:68 (views)"
+      ],
+      "created": "2026-09-30T00:34:12Z",
+      "last_seen": "2026-09-30T00:34:12Z"
+    },
+    {
+      "id": "L-008",
+      "key": "surviving_mutant::when testing that a rejected form preserves input trigger the error in a different field than the one whose preserved value you assert and assert every field",
+      "text": "When testing that a rejected form preserves input, trigger the error in a different field than the one whose preserved value you assert, and assert every field",
+      "signal": "surviving_mutant",
+      "scope": "forms",
+      "status": "candidate",
+      "features": [
+        "cadastro-inovacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md mutante T4; INOV-11; inovacoes/tests/test_views_cadastro.py:170 (forms)"
+      ],
+      "created": "2026-09-30T00:34:12Z",
+      "last_seen": "2026-09-30T00:34:12Z"
     }
   ]
 }

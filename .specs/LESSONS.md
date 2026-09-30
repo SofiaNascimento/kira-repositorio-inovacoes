@@ -50,6 +50,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 2 A5 contas/admin.py:51 (admin)
 - last seen: 2026-09-27T03:45:12Z
 
+### L-007 - When asserting that a record is attributed to the requesting user, create another account before that user so the assertion cannot pass by picking the oldest or any fixed account
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `views` · harmful: 0
+- features: cadastro-inovacao
+- evidence: validation.md mutante V2b; INOV-04; inovacoes/tests/test_views_cadastro.py:68 (views)
+- last seen: 2026-09-30T00:34:12Z
+
+### L-008 - When testing that a rejected form preserves input, trigger the error in a different field than the one whose preserved value you assert, and assert every field
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
+- features: cadastro-inovacao
+- evidence: validation.md mutante T4; INOV-11; inovacoes/tests/test_views_cadastro.py:170 (forms)
+- last seen: 2026-09-30T00:34:12Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

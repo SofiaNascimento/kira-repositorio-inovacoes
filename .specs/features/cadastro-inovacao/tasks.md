@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Implementada (21/21) — aguardando o Verifier
+**Status**: Em correção — Verifier FAIL na iteração 1 (`validation.md`); T22–T23 abertas
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
@@ -99,6 +99,14 @@ O que a spec pede da página além do fluxo principal.
 
 ```
 T18 → T19 → T20 → T21
+```
+
+### Phase 6: Correções da validação (iteração 1)
+
+Gaps do Verifier em `validation.md` (FAIL de 2026-09-29): dois mutantes sobreviventes, ambos por teste fraco. Nenhum código de produção muda.
+
+```
+T22 → T23
 ```
 
 ---
@@ -731,16 +739,71 @@ T18 → T19 → T20 → T21
 
 ---
 
+### T22: Autor distinto da conta mais antiga (mutante V2b)
+
+**What**: Teste que prova que o autor é quem enviou o formulário, e não uma conta qualquer do banco.
+**Where**: `inovacoes/tests/test_views_cadastro.py`
+**Depends on**: T21
+**Reuses**: Fixtures `dados` e `client` do próprio arquivo
+**Requirement**: INOV-04
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Novo teste e2e: uma conta criada antes e outra depois de quem envia; o autor gravado é a conta logada e não é nenhuma das outras duas (mata "menor `pk`" e "maior `pk`")
+- [ ] Os testes existentes ficam como estão
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: 204 testes passam (+1)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): distingue o autor das demais contas no cadastro`
+
+---
+
+### T23: Título preservado quando o erro está em outro campo (mutante T4)
+
+**What**: Teste que provoca o erro em `solucao` e confirma que os outros seis campos, inclusive o título, voltam com o valor digitado.
+**Where**: `inovacoes/tests/test_views_cadastro.py`
+**Depends on**: T22
+**Reuses**: Fixture `dados`; mesmas asserções de HTML do teste de preservação da T14
+**Requirement**: INOV-11
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Novo teste e2e: `solucao` vazia; o `input` do título traz `value="<título digitado>"`, e unidade, categoria, problema, resultado e contato voltam preenchidos; nada é gravado
+- [ ] Os testes existentes ficam como estão
+- [ ] Gate check passa (build) — fechamento da iteração
+- [ ] Test count: 205 testes passam (+1)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): prova que o titulo volta preenchido apos erro`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4 → T5 → T6 → T7
 Phase 3:  T8 → T9 → T10 → T11 → T12
 Phase 4:  T13 → T14 → T15 → T16 → T17
 Phase 5:  T18 → T19 → T20 → T21
+Phase 6:  T22 → T23
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -750,6 +813,7 @@ T2  → T3
 T7  → T8
 T12 → T13
 T17 → T18
+T21 → T22
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -775,7 +839,7 @@ começar.
 | T13 | 1 tela = view + rota + template | ⚠️ 3 arquivos, coeso — ver nota |
 | T14, T19 | 1 trecho do template da tela | ✅ Granular |
 | T15, T16, T17 | 1 método cada em `inovacoes/views.py` | ✅ Granular |
-| T18, T21 | 1 arquivo de teste (o código já existe) | ✅ Granular |
+| T18, T21, T22, T23 | 1 arquivo de teste (o código já existe) | ✅ Granular |
 | T20 | 1 trecho do `base.html` | ✅ Granular |
 
 **Nota sobre T12 e T13:** o `campo.html` não tem efeito sem o `template_name` aplicado no form, e a
@@ -814,6 +878,8 @@ handler 500). A task é a evidência das ACs; se a evidência acusar falta, o aj
 | T19 | T18 | T18 → T19 | ✅ Match |
 | T20 | T19 | T19 → T20 | ✅ Match |
 | T21 | T20 | T20 → T21 | ✅ Match |
+| T22 | T21 | T21 → T22 (arco de fronteira) | ✅ Match |
+| T23 | T22 | T22 → T23 | ✅ Match |
 
 Nenhuma dependência aponta para fase posterior.
 
@@ -844,6 +910,8 @@ Nenhuma dependência aponta para fase posterior.
 | T19 | Template de página | e2e | e2e | ✅ OK |
 | T20 | Template de página (`base.html`) | e2e | e2e | ✅ OK |
 | T21 | Views (só testes) | e2e | e2e | ✅ OK |
+| T22 | Views (só testes) | e2e | e2e | ✅ OK |
+| T23 | Views (só testes) | e2e | e2e | ✅ OK |
 
 Nenhuma violação. O único `Tests: none` (T2) é scaffold, que a matriz cobre pelo gate de build.
 
@@ -856,14 +924,14 @@ Nenhuma violação. O único `Tests: none` (T2) é scaffold, que a matriz cobre 
 | INOV-01 | T9, T13 |
 | INOV-02 | T9, T13 |
 | INOV-03 | T13 |
-| INOV-04 | T13 |
+| INOV-04 | T13, T22 |
 | INOV-05 | T4, T13 |
 | INOV-06 | T9, T13 |
 | INOV-07 | T13 |
 | INOV-08 | T13 |
 | INOV-09 | T9, T14 |
 | INOV-10 | T9 |
-| INOV-11 | T14 |
+| INOV-11 | T14, T23 |
 | INOV-12 | T10 |
 | INOV-13 | T14 |
 | INOV-14 | T4, T9 |
