@@ -165,7 +165,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T3: Modelos `Unidade` e `Categoria`
+### T3: Modelos `Unidade` e `Categoria` ✅
 
 **What**: As duas listas controladas, com ordem alfabética e nome único sem distinção de caixa.
 **Where**: `inovacoes/models.py`
@@ -180,17 +180,19 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `Unidade` e `Categoria` com `nome = CharField(max_length=100)`, `__str__` → `nome`, `Meta.ordering = ["nome"]`, `verbose_name` em português
-- [ ] Constraints `unidade_nome_unico_ci` e `categoria_nome_unico_ci` (`Lower("nome")`) com a mensagem "Já existe um item com este nome."
-- [ ] Migration `inovacoes/migrations/0001_initial.py` gerada
-- [ ] Testes de integração, parametrizados pelos dois modelos: a consulta padrão sai em ordem alfabética; nomes que diferem só na caixa violam a constraint no `create()`; `full_clean()` acusa a mensagem da constraint. Os testes usam nomes próprios (ex.: "Teste Beta"), que não colidem com a carga da T7
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 90 testes passam (+6)
+- [x] `Unidade` e `Categoria` com `nome = CharField(max_length=100)`, `__str__` → `nome`, `Meta.ordering = ["nome"]`, `verbose_name` em português
+- [x] Constraints `unidade_nome_unico_ci` e `categoria_nome_unico_ci` (`Lower("nome")`) com a mensagem "Já existe um item com este nome."
+- [x] Migration `inovacoes/migrations/0001_initial.py` gerada
+- [x] Testes de integração, parametrizados pelos dois modelos: a consulta padrão sai em ordem alfabética; nomes que diferem só na caixa violam a constraint no `create()`; `full_clean()` acusa a mensagem da constraint. Os testes usam nomes próprios (ex.: "Teste Beta"), que não colidem com a carga da T7
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 90 testes passam (+6)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona as listas de unidade e categoria`
+
+**Status**: ✅ Complete — 90 passed (+6); base abstrata `ItemDeLista` registrada no design
 
 ---
 

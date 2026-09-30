@@ -114,6 +114,9 @@ graph TD
   - `UniqueConstraint(Lower("nome"))` com mensagem "Já existe um item com este nome." (ver *Tech Decisions*)
 - **Dependencies**: nenhuma
 - **Reuses**: padrão de constraint case-insensitive da F1.
+- **Ajuste na implementação (T3)**: os dois modelos herdam uma base abstrata `ItemDeLista`, que
+  concentra `nome`, `ordering`, `__str__` e a constraint. O nome da constraint usa `%(class)s`, então
+  o banco recebe os mesmos `unidade_nome_unico_ci` e `categoria_nome_unico_ci` do desenho.
 
 ### `inovacoes.models.StatusInovacao`
 
