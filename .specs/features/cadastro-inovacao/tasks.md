@@ -499,7 +499,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T14: Resposta a envio inválido
+### T14: Resposta a envio inválido ✅
 
 **What**: O resumo de erro no topo do form e a prova, pela tela, de que envio inválido preserva os dados e não grava nada.
 **Where**: `inovacoes/templates/inovacoes/inovacao_form.html`
@@ -514,15 +514,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Com `form.errors`, `<div role="alert">` com "Não foi possível salvar a inovação. Corrija os campos indicados." antes do primeiro campo
-- [ ] Testes e2e: envio com todos os obrigatórios vazios → 200, as seis mensagens, o resumo antes do primeiro campo e nenhum registro (INOV-09, INOV-13, INOV-30); envio inválido preserva todo valor digitado, inclusive a unidade e a categoria selecionadas (INOV-11); " controle de caixa " na unidade em que "Controle de Caixa" existe → mensagem de duplicado no título (INOV-22, INOV-23); o mesmo título em outra unidade → 302 (INOV-24); o mesmo POST válido enviado duas vezes grava um e responde 200 com a mensagem de duplicado ao segundo (INOV-43); form válido não mostra o resumo
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 185 testes passam (+7)
+- [x] Com `form.errors`, `<div role="alert">` com "Não foi possível salvar a inovação. Corrija os campos indicados." antes do primeiro campo
+- [x] Testes e2e: envio com todos os obrigatórios vazios → 200, as seis mensagens, o resumo antes do primeiro campo e nenhum registro (INOV-09, INOV-13, INOV-30); envio inválido preserva todo valor digitado, inclusive a unidade e a categoria selecionadas (INOV-11); " controle de caixa " na unidade em que "Controle de Caixa" existe → mensagem de duplicado no título (INOV-22, INOV-23); o mesmo título em outra unidade → 302 (INOV-24); o mesmo POST válido enviado duas vezes grava um e responde 200 com a mensagem de duplicado ao segundo (INOV-43); form válido não mostra o resumo
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 185 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): resume os erros no topo do formulario de cadastro`
+
+**Status**: ✅ Complete — 185 passed (+7)
 
 ---
 

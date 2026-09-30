@@ -5,6 +5,13 @@
 {% block conteudo %}
   <h1>Cadastrar inovação</h1>
 
+  {# INOV-30 (RF12): resumo antes do primeiro campo, anunciado pelo leitor de tela. #}
+  {% if form.errors %}
+    <div role="alert">
+      <p>Não foi possível salvar a inovação. Corrija os campos indicados.</p>
+    </div>
+  {% endif %}
+
   {# novalidate: as mensagens do RF13 sao as do servidor, em portugues; o atributo required continua no HTML (INOV-32). #}
   <form method="post" novalidate>
     {% csrf_token %}

@@ -5,7 +5,7 @@ from django.utils import timezone
 from pytest_django.asserts import assertRedirects
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, StatusInovacao
+from inovacoes.models import Inovacao, StatusInovacao, Unidade
 
 NOVA = "/inovacoes/nova/"
 CAMPOS = ["titulo", "unidade", "categoria", "problema", "solucao", "resultado", "contato"]
@@ -115,3 +115,89 @@ def test_anonimo_enviando_o_formulario_vai_ao_login_sem_gravar(client, dados):
     resposta = client.post(NOVA, dados)
     assertRedirects(resposta, "/entrar/?next=/inovacoes/nova/", fetch_redirect_response=False)
     assert not Inovacao.objects.exists()
+
+
+RESUMO = "Não foi possível salvar a inovação. Corrija os campos indicados."
+MENSAGEM_DUPLICADO = "Já existe uma inovação com este título nesta unidade. Escolha outro título."
+MENSAGEM_OBRIGATORIO = {
+    "titulo": "Informe o título da inovação.",
+    "unidade": "Selecione a unidade de origem.",
+    "categoria": "Selecione a categoria.",
+    "problema": "Descreva o problema ou dor.",
+    "solucao": "Descreva a solução aplicada.",
+    "contato": "Informe o contato responsável.",
+}
+
+
+def _trecho_do_alerta(html):
+    inicio = html.index('role="alert"')
+    return html[inicio : html.index("</div>", inicio)]
+
+
+def test_envio_com_obrigatorios_vazios_mostra_as_seis_mensagens_e_nao_grava(logado):
+    """INOV-09 e INOV-13."""
+    resposta = logado.post(NOVA, {campo: "" for campo in CAMPOS})
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {
+        campo: [mensagem] for campo, mensagem in MENSAGEM_OBRIGATORIO.items()
+    }
+    html = resposta.content.decode()
+    for campo, mensagem in MENSAGEM_OBRIGATORIO.items():
+        erro = html[html.index(f'id="id_{campo}_error"') :]
+        assert mensagem in erro[: erro.index("</ul>")]
+    assert not Inovacao.objects.exists()
+
+
+def test_envio_invalido_mostra_o_resumo_antes_do_primeiro_campo(logado, dados):
+    """INOV-30: role=alert, texto fixo, antes do primeiro campo."""
+    dados["solucao"] = ""
+    html = logado.post(NOVA, dados).content.decode()
+    assert RESUMO in _trecho_do_alerta(html)
+    assert html.index('role="alert"') < html.index('id="id_titulo"')
+
+
+def test_formulario_sem_erro_nao_mostra_o_resumo(logado):
+    html = logado.get(NOVA).content.decode()
+    assert 'role="alert"' not in html
+    assert RESUMO not in html
+
+
+def test_envio_invalido_preserva_tudo_o_que_foi_digitado(logado, dados, unidade, categoria):
+    """INOV-11: inclusive a unidade e a categoria selecionadas."""
+    dados["titulo"] = ""
+    html = logado.post(NOVA, dados).content.decode()
+    assert f'<option value="{unidade.pk}" selected>' in html
+    assert f'<option value="{categoria.pk}" selected>' in html
+    assert f'value="{dados["contato"]}"' in html
+    for campo in ["problema", "solucao", "resultado"]:
+        assert f">\n{dados[campo]}</textarea>" in html
+    assert not Inovacao.objects.exists()
+
+
+def test_titulo_repetido_na_mesma_unidade_e_recusado_no_campo_titulo(logado, dados, criar_inovacao):
+    """INOV-22 e INOV-23: caixa diferente e espacos nas pontas nao escapam."""
+    criar_inovacao(titulo="Controle de Caixa")
+    dados["titulo"] = "  controle de caixa  "
+    resposta = logado.post(NOVA, dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
+    assert Inovacao.objects.count() == 1
+
+
+def test_mesmo_titulo_em_outra_unidade_e_aceito(logado, dados, criar_inovacao):
+    """INOV-24."""
+    criar_inovacao(titulo="Controle de Caixa")
+    dados.update(
+        {"titulo": "Controle de Caixa", "unidade": str(Unidade.objects.get(nome="Sede").pk)}
+    )
+    assertRedirects(logado.post(NOVA, dados), "/", fetch_redirect_response=False)
+    assert Inovacao.objects.count() == 2
+
+
+def test_segundo_envio_identico_e_recusado_como_duplicado(logado, dados):
+    """INOV-43: duplo clique grava uma vez so."""
+    assertRedirects(logado.post(NOVA, dados), "/", fetch_redirect_response=False)
+    resposta = logado.post(NOVA, dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
+    assert Inovacao.objects.count() == 1
