@@ -196,7 +196,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T4: `StatusInovacao` e modelo `Inovacao`
+### T4: `StatusInovacao` e modelo `Inovacao` ✅
 
 **What**: O enum do ciclo de vida e a entidade central, com FKs `PROTECT`, defaults do sistema e `CheckConstraint` de status.
 **Where**: `inovacoes/models.py`
@@ -211,18 +211,20 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `StatusInovacao(TextChoices)` no nível de módulo com `EM_TESTE`, `VALIDADA`, `DISPONIVEL_PARA_REPLICACAO` e os rótulos do design
-- [ ] `Inovacao` com os campos de *Data Models* do design: `titulo` (150), `unidade` e `categoria` (`PROTECT`), `problema`, `solucao`, `resultado` (`blank=True`), `contato` (150), `status` (default `EM_TESTE`), `autor` (`settings.AUTH_USER_MODEL`, `PROTECT`, `related_name="inovacoes"`), `data_criacao` (`auto_now_add`); `__str__` → `titulo`
-- [ ] Constraint `inovacao_status_valido`
-- [ ] Migration `0002_inovacao` gerada
-- [ ] Testes de integração: registro criado sem status nem data nasce `EM_TESTE` e com `data_criacao` entre o instante antes e depois do `create()` (INOV-05); `unidade=None` e `categoria=None` violam `NOT NULL` (INOV-16); status fora do enum viola a constraint no `create()` e no `update()` em massa; apagar Unidade ou Categoria em uso levanta `ProtectedError` e o item continua no banco (INOV-19); `full_clean()` aceita `resultado` vazio (INOV-14)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 99 testes passam (+9)
+- [x] `StatusInovacao(TextChoices)` no nível de módulo com `EM_TESTE`, `VALIDADA`, `DISPONIVEL_PARA_REPLICACAO` e os rótulos do design
+- [x] `Inovacao` com os campos de *Data Models* do design: `titulo` (150), `unidade` e `categoria` (`PROTECT`), `problema`, `solucao`, `resultado` (`blank=True`), `contato` (150), `status` (default `EM_TESTE`), `autor` (`settings.AUTH_USER_MODEL`, `PROTECT`, `related_name="inovacoes"`), `data_criacao` (`auto_now_add`); `__str__` → `titulo`
+- [x] Constraint `inovacao_status_valido`
+- [x] Migration `0002_inovacao` gerada
+- [x] Testes de integração: registro criado sem status nem data nasce `EM_TESTE` e com `data_criacao` entre o instante antes e depois do `create()` (INOV-05); `unidade=None` e `categoria=None` violam `NOT NULL` (INOV-16); status fora do enum viola a constraint no `create()` e no `update()` em massa; apagar Unidade ou Categoria em uso levanta `ProtectedError` e o item continua no banco (INOV-19); `full_clean()` aceita `resultado` vazio (INOV-14)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 99 testes passam (+9)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o modelo de inovacao e o enum de status`
+
+**Status**: ✅ Complete — 99 passed (+9)
 
 ---
 

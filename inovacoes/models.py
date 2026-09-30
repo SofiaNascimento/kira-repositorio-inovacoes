@@ -1,5 +1,19 @@
+from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from django.db.models.functions import Lower
+
+
+class StatusInovacao(models.TextChoices):
+    """Enumeracao StatusInovacao do diagrama de classes (RN03).
+
+    Fica no nivel de modulo pelo mesmo motivo do PerfilUsuario: a Meta de
+    Inovacao precisa referencia-la ao montar a CheckConstraint.
+    """
+
+    EM_TESTE = "EM_TESTE", "Em teste"
+    VALIDADA = "VALIDADA", "Validada"
+    DISPONIVEL_PARA_REPLICACAO = "DISPONIVEL_PARA_REPLICACAO", "Disponível para replicação"
 
 
 class ItemDeLista(models.Model):
@@ -37,3 +51,45 @@ class Categoria(ItemDeLista):
     class Meta(ItemDeLista.Meta):
         verbose_name = "categoria"
         verbose_name_plural = "categorias"
+
+
+class Inovacao(models.Model):
+    """A entidade central do dominio (RF02).
+
+    Autor, status e data de criacao sao do sistema (RN03, RN08): nenhum deles
+    entra no formulario de cadastro.
+    """
+
+    titulo = models.CharField("título", max_length=150)
+    # PROTECT: item de lista em uso nao pode ser apagado (INOV-19).
+    unidade = models.ForeignKey(Unidade, on_delete=models.PROTECT, verbose_name="unidade de origem")
+    categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, verbose_name="categoria")
+    problema = models.TextField("problema ou dor")
+    solucao = models.TextField("solução aplicada")
+    resultado = models.TextField("resultado ou impacto", blank=True)
+    contato = models.CharField("contato responsável", max_length=150)
+    status = models.CharField(
+        "status", max_length=26, choices=StatusInovacao.choices, default=StatusInovacao.EM_TESTE
+    )
+    # Excluir uma conta nao apaga o conhecimento que ela registrou.
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="inovacoes",
+        verbose_name="autor",
+    )
+    data_criacao = models.DateTimeField("data de criação", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "inovação"
+        verbose_name_plural = "inovações"
+        constraints = [
+            # choices so e checado em full_clean(); a regra desce para o banco.
+            models.CheckConstraint(
+                condition=Q(status__in=StatusInovacao.values),
+                name="inovacao_status_valido",
+            ),
+        ]
+
+    def __str__(self):
+        return self.titulo
