@@ -258,7 +258,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T6: Erro de título duplicado no campo `titulo`
+### T6: Erro de título duplicado no campo `titulo` ✅
 
 **What**: `Inovacao.validate_constraints` move o erro de código `titulo_duplicado` de `NON_FIELD_ERRORS` para `titulo`.
 **Where**: `inovacoes/models.py`
@@ -273,15 +273,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `validate_constraints(exclude=None)` chama o do Django e remapeia só os erros de código `titulo_duplicado`; qualquer outro erro sai como veio
-- [ ] Testes de integração: `full_clean()` de um duplicado (caixa diferente, mesma unidade) traz a mensagem exata em `error_dict["titulo"]` e nada em `NON_FIELD_ERRORS`; um título novo passa sem erro; outro erro de constraint (ex.: nome de `Unidade` duplicado, pela mesma rotina do Django) não é tocado pelo remapeamento
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 105 testes passam (+3)
+- [x] `validate_constraints(exclude=None)` chama o do Django e remapeia só os erros de código `titulo_duplicado`; qualquer outro erro sai como veio
+- [x] Testes de integração: `full_clean()` de um duplicado (caixa diferente, mesma unidade) traz a mensagem exata em `error_dict["titulo"]` e nada em `NON_FIELD_ERRORS`; um título novo passa sem erro; outro erro de constraint da própria `Inovacao` (status fora do enum, via `validate_constraints()`) continua em `NON_FIELD_ERRORS` e não vai para `titulo`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 105 testes passam (+3)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): associa o erro de titulo duplicado ao campo titulo`
+
+**Status**: ✅ Complete — 105 passed (+3); o caso "outro erro" usa a CheckConstraint de status da própria Inovacao
 
 ---
 

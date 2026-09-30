@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
@@ -104,3 +105,23 @@ class Inovacao(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    def validate_constraints(self, exclude=None):
+        """Leva o erro de titulo duplicado para o campo titulo (INOV-22).
+
+        Uma UniqueConstraint sobre expressao nao sabe a que campo pertence e o
+        Django a acusa como erro geral. Resolver aqui, e nao no formulario, faz
+        a regra valer para qualquer full_clean().
+        """
+        try:
+            super().validate_constraints(exclude=exclude)
+        except ValidationError as erro:
+            erros = erro.error_dict
+            gerais = erros.pop(NON_FIELD_ERRORS, [])
+            duplicados = [e for e in gerais if e.code == "titulo_duplicado"]
+            outros = [e for e in gerais if e.code != "titulo_duplicado"]
+            if duplicados:
+                erros.setdefault("titulo", []).extend(duplicados)
+            if outros:
+                erros[NON_FIELD_ERRORS] = outros
+            raise ValidationError(erros) from erro
