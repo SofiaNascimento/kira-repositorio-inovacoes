@@ -317,7 +317,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T8: Admin de `Unidade` e `Categoria` só para `ADMINISTRADOR`
+### T8: Admin de `Unidade` e `Categoria` só para `ADMINISTRADOR` ✅
 
 **What**: Registrar `UnidadeAdmin` e `CategoriaAdmin` herdando o mixin da T1; `Inovacao` fica fora do admin.
 **Where**: `inovacoes/admin.py`
@@ -332,16 +332,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `UnidadeAdmin` e `CategoriaAdmin` com `list_display = ("nome",)` e `search_fields = ("nome",)`, ambos `(AcessoSomenteAdministradorMixin, admin.ModelAdmin)`
-- [ ] `admin.site.is_registered(Inovacao)` é falso
-- [ ] Testes e2e, parametrizados pelos dois modelos: `USUARIO` com `is_staff` e todas as permissões de modelo recebe 403 na lista, na inclusão, na alteração e na exclusão, e 404 no índice da app (mesmo comportamento documentado na F1) (INOV-20); `ADMINISTRADOR` sem superusuário lista, inclui e renomeia (INOV-21); `ADMINISTRADOR` tentando excluir item usado por uma inovação vê a recusa e o item continua no banco (INOV-19); `Inovacao` não está registrada
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 127 testes passam (+19, com parametrização)
+- [x] `UnidadeAdmin` e `CategoriaAdmin` com `list_display = ("nome",)` e `search_fields = ("nome",)`, ambos `(AcessoSomenteAdministradorMixin, admin.ModelAdmin)`
+- [x] `admin.site.is_registered(Inovacao)` é falso
+- [x] Testes e2e, parametrizados pelos dois modelos: `USUARIO` com `is_staff` e todas as permissões de modelo recebe 403 na lista, na inclusão, na alteração e na exclusão, e 404 no índice da app (mesmo comportamento documentado na F1) (INOV-20); `ADMINISTRADOR` sem superusuário lista, inclui e renomeia (INOV-21); `ADMINISTRADOR` tentando excluir item usado por uma inovação vê a recusa e o item continua no banco (INOV-19); `Inovacao` não está registrada
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 132 testes passam (+24, com parametrização: inclui POST forjado de inclusão, renomeação e exclusão, como a F1)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): restringe o admin das listas ao administrador`
+
+**Status**: ✅ Complete — 132 passed (+24)
 
 ---
 
@@ -365,7 +367,7 @@ T18 → T19 → T20 → T21
 - [ ] `error_messages["required"]` com os seis textos da tabela de Assumptions da spec
 - [ ] Testes de integração: o form expõe exatamente os sete campos na ordem (INOV-01); cada obrigatório vazio traz a sua mensagem (INOV-09, parametrizado pelos seis); só espaços conta como vazio (INOV-10); espaços nas pontas saem do `cleaned_data` (INOV-02); `resultado` vazio é aceito (INOV-14); `autor`, `status` e `data_criacao` enviados nos dados não aparecem em `cleaned_data` nem na instância (INOV-06); rótulos trazem "(obrigatório)" só nos seis (INOV-32)
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 139 testes passam (+12, com parametrização)
+- [ ] Test count: 144 testes passam (+12, com parametrização)
 
 **Tests**: integration
 **Gate**: full
@@ -393,7 +395,7 @@ T18 → T19 → T20 → T21
 - [ ] Mensagem "Use no máximo N caracteres (você digitou M)." nos cinco campos
 - [ ] Testes de integração, parametrizados pelos cinco campos: limite + 1 é recusado com a mensagem e os valores reais (ex.: "Use no máximo 150 caracteres (você digitou 151)."); exatamente o limite é aceito
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 149 testes passam (+10)
+- [ ] Test count: 154 testes passam (+10)
 
 **Tests**: integration
 **Gate**: full
@@ -420,7 +422,7 @@ T18 → T19 → T20 → T21
 - [ ] `empty_label="Selecione…"` nos dois campos; `error_messages["invalid_choice"]` = "Selecione uma unidade da lista." / "Selecione uma categoria da lista."
 - [ ] Testes de integração: as opções de cada select são exatamente os registros do banco em ordem alfabética, depois da opção vazia (INOV-15); pk inexistente é recusado com a mensagem do campo certo (INOV-17, parametrizado pelos dois); item apagado entre montar e enviar o form cai na mesma mensagem
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 154 testes passam (+5)
+- [ ] Test count: 159 testes passam (+5)
 
 **Tests**: integration
 **Gate**: full
@@ -448,7 +450,7 @@ T18 → T19 → T20 → T21
 - [ ] `campo.html` renderiza rótulo → controle → erros → ajuda
 - [ ] Testes de integração sobre o HTML renderizado: para cada um dos sete campos, a ajuda com "Ex.:" aparece depois do controle e o `aria-describedby` do controle inclui `id_<campo>_helptext`, que existe no HTML (INOV-41); num form inválido, o campo com erro tem `aria-invalid="true"` e o `aria-describedby` inclui `id_<campo>_error`, que existe e contém a mensagem (INOV-33); campo sem erro não tem `aria-invalid`
 - [ ] Gate check passa (build)
-- [ ] Test count: 163 testes passam (+9, com parametrização)
+- [ ] Test count: 168 testes passam (+9, com parametrização)
 
 **Tests**: integration
 **Gate**: build
@@ -478,7 +480,7 @@ T18 → T19 → T20 → T21
 - [ ] Testes e2e: GET autenticado → 200 com exatamente os sete campos editáveis (INOV-01); POST válido grava exatamente uma inovação com os valores sem espaços nas pontas (INOV-02) e responde 302 para `/` (INOV-03); autor = conta logada (INOV-04); status `EM_TESTE` e `data_criacao` do momento (INOV-05); `autor`, `status` e `data_criacao` forjados no POST são ignorados (INOV-06); `USUARIO` e `ADMINISTRADOR` cadastram igual (INOV-08, parametrizado); anônimo em GET e em POST vai a `/entrar/?next=/inovacoes/nova/` e nada é gravado (INOV-07)
 - [ ] O teste de varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/nova/`
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 173 testes passam (+10)
+- [ ] Test count: 178 testes passam (+10)
 
 **Tests**: e2e
 **Gate**: full
@@ -505,7 +507,7 @@ T18 → T19 → T20 → T21
 - [ ] Com `form.errors`, `<div role="alert">` com "Não foi possível salvar a inovação. Corrija os campos indicados." antes do primeiro campo
 - [ ] Testes e2e: envio com todos os obrigatórios vazios → 200, as seis mensagens, o resumo antes do primeiro campo e nenhum registro (INOV-09, INOV-13, INOV-30); envio inválido preserva todo valor digitado, inclusive a unidade e a categoria selecionadas (INOV-11); " controle de caixa " na unidade em que "Controle de Caixa" existe → mensagem de duplicado no título (INOV-22, INOV-23); o mesmo título em outra unidade → 302 (INOV-24); o mesmo POST válido enviado duas vezes grava um e responde 200 com a mensagem de duplicado ao segundo (INOV-43); form válido não mostra o resumo
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 180 testes passam (+7)
+- [ ] Test count: 185 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
@@ -532,7 +534,7 @@ T18 → T19 → T20 → T21
 - [ ] `IntegrityError` com `constraint_name == "inovacao_titulo_unico_por_unidade"` → `form.add_error("titulo", <mensagem da constraint>)` e `form_invalid` (200); qualquer outro `IntegrityError` sobe
 - [ ] Testes e2e: com `Inovacao.validate_constraints` neutralizado por `mock.patch` e um registro igual já no banco, o POST responde 200 com a mensagem de duplicado no título, o resumo, e segue existindo um único registro (INOV-25); um `IntegrityError` de outra constraint sobe (com `raise_request_exception = False`, 500) em vez de virar "título duplicado"
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 182 testes passam (+2)
+- [ ] Test count: 187 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
@@ -559,7 +561,7 @@ T18 → T19 → T20 → T21
 - [ ] Depois do `save()`, `messages.success(request, "Inovação “<título>” cadastrada com sucesso.")` com o título já sem espaços
 - [ ] Testes e2e: seguindo o redirect, a mensagem exata, com aspas curvas e o título salvo, está dentro do `role="status"` (INOV-28); recarregar a home não a mostra de novo (INOV-29)
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 184 testes passam (+2)
+- [ ] Test count: 189 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
@@ -586,7 +588,7 @@ T18 → T19 → T20 → T21
 - [ ] `get_initial()` → `{"contato": "<nome completo> (<e-mail>)"}`, com `username` no lugar do nome quando `first_name` e `last_name` estão vazios
 - [ ] Testes e2e: conta com nome vê "Ana Souza (ana@x.com)" no campo; conta sem nome vê "ana (ana@x.com)" (INOV-39); trocar o contato antes de salvar grava o valor digitado (INOV-40)
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 187 testes passam (+3)
+- [ ] Test count: 192 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: full
@@ -613,7 +615,7 @@ T18 → T19 → T20 → T21
 - [ ] Testes e2e com `html.parser` da biblioteca padrão sobre `/inovacoes/nova/`: todo controle tem um `<label for>` visível com o mesmo `id` (INOV-31); os seis obrigatórios têm `required` e "(obrigatório)" no rótulo, e `resultado` não tem (INOV-32); os controles do form são só `input`, `select`, `textarea`, `button` e `a`, e nenhum elemento tem `tabindex` positivo (INOV-34); a página carrega a regra `:focus-visible` com contorno, que alcança os controles e o link de cancelar (INOV-35)
 - [ ] Se algum teste acusar falta, o ajuste vai no template da T13 dentro desta task
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 191 testes passam (+4)
+- [ ] Test count: 196 testes passam (+4)
 
 **Tests**: e2e
 **Gate**: full
@@ -640,7 +642,7 @@ T18 → T19 → T20 → T21
 - [ ] `<a href="{% url 'nucleo:home' %}">Cancelar</a>` ao lado do botão Salvar
 - [ ] Testes e2e: a página tem um `<a>` com o texto "Cancelar" e `href="/"` (INOV-36); seguir esse `href` com GET responde 200 na home, sem nenhuma inovação nova e sem página de confirmação no caminho (INOV-37)
 - [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 193 testes passam (+2)
+- [ ] Test count: 198 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
@@ -668,7 +670,7 @@ T18 → T19 → T20 → T21
 - [ ] Testes e2e: na home e no próprio formulário, autenticado, o `<header>` tem o link com o texto e `href="/inovacoes/nova/"` (INOV-38); na tela de login, anônima, o link não aparece
 - [ ] Os testes existentes de `contas/tests/` que leem o `base.html` continuam verdes
 - [ ] Gate check passa (build)
-- [ ] Test count: 196 testes passam (+3)
+- [ ] Test count: 201 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: build
@@ -694,7 +696,7 @@ T18 → T19 → T20 → T21
 
 - [ ] Testes e2e com `Inovacao.save` forçado a levantar `OperationalError` com detalhes de conexão falsos e `raise_request_exception = False`: o POST válido responde 500 com `500.html` e nenhuma inovação existe no banco; o HTML não contém host, usuário, senha, `OperationalError` nem `Traceback` (INOV-42)
 - [ ] Gate check passa (build) — fechamento da feature
-- [ ] Test count: 198 testes passam (+2)
+- [ ] Test count: 203 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: build
