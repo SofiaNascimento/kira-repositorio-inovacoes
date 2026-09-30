@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Implementada (23/23) — correções da iteração 1 feitas; aguardando o Verifier (iteração 2)
+**Status**: Complete — verificada (PASS na iteração 2, `validation.md`)
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
