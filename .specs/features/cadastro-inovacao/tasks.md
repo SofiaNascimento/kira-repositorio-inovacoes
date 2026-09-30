@@ -347,7 +347,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T9: `InovacaoForm` — campos, rótulos e obrigatoriedade
+### T9: `InovacaoForm` — campos, rótulos e obrigatoriedade ✅
 
 **What**: O `ModelForm` com os sete campos na ordem da spec, rótulos com "(obrigatório)" e as mensagens de campo vazio.
 **Where**: `inovacoes/forms.py`
@@ -362,17 +362,19 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `Meta.fields` = `titulo, unidade, categoria, problema, solucao, resultado, contato`, nessa ordem; `autor`, `status`, `data_criacao` fora
-- [ ] `labels` do design, com "(obrigatório)" nos seis obrigatórios e não em "Resultado ou impacto"; `label_suffix = ""`
-- [ ] `error_messages["required"]` com os seis textos da tabela de Assumptions da spec
-- [ ] Testes de integração: o form expõe exatamente os sete campos na ordem (INOV-01); cada obrigatório vazio traz a sua mensagem (INOV-09, parametrizado pelos seis); só espaços conta como vazio (INOV-10); espaços nas pontas saem do `cleaned_data` (INOV-02); `resultado` vazio é aceito (INOV-14); `autor`, `status` e `data_criacao` enviados nos dados não aparecem em `cleaned_data` nem na instância (INOV-06); rótulos trazem "(obrigatório)" só nos seis (INOV-32)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 144 testes passam (+12, com parametrização)
+- [x] `Meta.fields` = `titulo, unidade, categoria, problema, solucao, resultado, contato`, nessa ordem; `autor`, `status`, `data_criacao` fora
+- [x] `labels` do design, com "(obrigatório)" nos seis obrigatórios e não em "Resultado ou impacto"; `label_suffix = ""`
+- [x] `error_messages["required"]` com os seis textos da tabela de Assumptions da spec
+- [x] Testes de integração: o form expõe exatamente os sete campos na ordem (INOV-01); cada obrigatório vazio traz a sua mensagem (INOV-09, parametrizado pelos seis); só espaços conta como vazio (INOV-10); espaços nas pontas saem do `cleaned_data` (INOV-02); `resultado` vazio é aceito (INOV-14); `autor`, `status` e `data_criacao` enviados nos dados não aparecem em `cleaned_data` nem na instância (INOV-06); rótulos trazem "(obrigatório)" só nos seis (INOV-32)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 144 testes passam (+12, com parametrização)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o formulario de cadastro de inovacao`
+
+**Status**: ✅ Complete — 144 passed (+12)
 
 ---
 
