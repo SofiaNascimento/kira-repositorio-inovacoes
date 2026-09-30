@@ -1,5 +1,7 @@
 """Testes e2e da tela de cadastro de inovacao (/inovacoes/nova/)."""
 
+from unittest import mock
+
 import pytest
 from django.utils import timezone
 from pytest_django.asserts import assertRedirects
@@ -201,3 +203,33 @@ def test_segundo_envio_identico_e_recusado_como_duplicado(logado, dados):
     assert resposta.status_code == 200
     assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
     assert Inovacao.objects.count() == 1
+
+
+def test_corrida_com_o_mesmo_titulo_responde_erro_no_campo_e_nao_500(logado, dados, criar_inovacao):
+    """INOV-25: os dois envios passam na validacao antes de qualquer um gravar.
+
+    Neutralizar a validacao reproduz a janela: o save() bate na constraint real
+    do PostgreSQL, como faria o segundo de dois envios simultaneos.
+    """
+    criar_inovacao(titulo=dados["titulo"])
+    with mock.patch.object(Inovacao, "validate_constraints", lambda self, exclude=None: None):
+        resposta = logado.post(NOVA, dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
+    assert RESUMO in _trecho_do_alerta(resposta.content.decode())
+    assert Inovacao.objects.count() == 1
+
+
+def test_outra_violacao_de_integridade_nao_vira_titulo_duplicado(logado, dados):
+    """So a constraint de titulo e tratada; o resto sobe e vira 500."""
+    salvar = Inovacao.save
+
+    def salvar_com_status_invalido(self, *args, **kwargs):
+        self.status = "APROVADA"
+        return salvar(self, *args, **kwargs)
+
+    logado.raise_request_exception = False
+    with mock.patch.object(Inovacao, "save", salvar_com_status_invalido):
+        resposta = logado.post(NOVA, dados)
+    assert resposta.status_code == 500
+    assert not Inovacao.objects.exists()

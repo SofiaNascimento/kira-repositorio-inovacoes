@@ -528,7 +528,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T15: Corrida entre dois envios com o mesmo título
+### T15: Corrida entre dois envios com o mesmo título ✅
 
 **What**: `form_valid` grava em `transaction.atomic()` e converte em erro de campo só o `IntegrityError` da constraint de título.
 **Where**: `inovacoes/views.py`
@@ -543,15 +543,17 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `IntegrityError` com `constraint_name == "inovacao_titulo_unico_por_unidade"` → `form.add_error("titulo", <mensagem da constraint>)` e `form_invalid` (200); qualquer outro `IntegrityError` sobe
-- [ ] Testes e2e: com `Inovacao.validate_constraints` neutralizado por `mock.patch` e um registro igual já no banco, o POST responde 200 com a mensagem de duplicado no título, o resumo, e segue existindo um único registro (INOV-25); um `IntegrityError` de outra constraint sobe (com `raise_request_exception = False`, 500) em vez de virar "título duplicado"
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 187 testes passam (+2)
+- [x] `IntegrityError` com `constraint_name == "inovacao_titulo_unico_por_unidade"` → `form.add_error("titulo", <mensagem da constraint>)` e `form_invalid` (200); qualquer outro `IntegrityError` sobe
+- [x] Testes e2e: com `Inovacao.validate_constraints` neutralizado por `mock.patch` e um registro igual já no banco, o POST responde 200 com a mensagem de duplicado no título, o resumo, e segue existindo um único registro (INOV-25); um `IntegrityError` de outra constraint sobe (com `raise_request_exception = False`, 500) em vez de virar "título duplicado"
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 187 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `fix(inovacoes): trata a corrida entre cadastros com o mesmo titulo`
+
+**Status**: ✅ Complete — 187 passed (+2); o ramo "outra violação" usa a CheckConstraint real de status
 
 ---
 
