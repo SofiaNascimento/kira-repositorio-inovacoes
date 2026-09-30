@@ -60,16 +60,17 @@
 
 ## Handoff
 
-- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Pausa em 2026-09-27 entre o Design e o Tasks, sem trabalho a meio caminho.
-- **Phase / Task**: Specify ✅ (spec aprovada) · Design ✅ (aprovado em 2026-09-27, abordagem A: uma app `inovacoes`) · Tasks ⏳ não iniciado · Execute ⏳. Nenhum código da F2 escrito.
-- **Completed**: `spec.md` (43 requisitos INOV-01 … INOV-43, fase `Tasks`/`Pending`; `validate_spec.py` → 0 erros), `context.md` e `design.md`.
+- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Execute em andamento desde 2026-09-29, inline (sem sub-agentes).
+- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ (21 tasks, aprovadas em 2026-09-29) · Execute ⏳ — Fase 1 concluída; próxima é a Fase 2 (T3–T7, modelo de domínio).
+- **Completed**: T1 (mixin `AcessoSomenteAdministradorMixin` extraído em `contas/admin.py`), T2 (app `inovacoes` criada e registrada). AD-007 registrada em `## Decisions`.
 - **In-progress** (file:line): nenhum.
-- **Pendência do Design**: registrar a **AD-007** em `## Decisions` (todo `ModelAdmin` do projeto só abre para `ADMINISTRADOR`, herdando `contas.admin.AcessoSomenteAdministradorMixin`; trade-off: grupos e permissões de modelo deixam de valer no admin). Aprovada com o design; o texto completo está em `design.md` › Tech Decisions. Ficou fora do log porque a pausa pediu para não tocar em `## Decisions`. Fazer isso antes do Tasks.
-- **Next step**: (1) anexar a AD-007; (2) rodar o Tasks da F2 a partir do `design.md`. Primeira task prevista: extrair o mixin de `contas/admin.py:34-50` sem mudar comportamento, com `contas/tests/test_admin_perfil.py` e `test_admin.py` verdes como gate.
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`), hoje em execução; comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
+- **Next step**: T3 — modelos `Unidade` e `Categoria` em `inovacoes/models.py`, com a migration `0001_initial`.
+- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py`). Teste no navegador exige `DJANGO_DEBUG=True`.
 - **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida).
-- **Uncommitted files**: nenhum (`design.md`, os ajustes de status em `spec.md` e este Handoff entram no commit da pausa).
-- **Branch**: `main`. O `origin/main` estava igual à `main` antes deste commit (push feito pelo autor); só o commit da pausa fica local.
+- **Uncommitted files**: nenhum.
+- **Branch**: `main`, à frente de `origin/main` pelos commits desta sessão (nenhum push feito).
+
+**Desvio registrado no `tasks.md`:** quatro migrations em vez de duas (uma por task de modelo); esquema final igual ao do design.
 
 **Decisões da discussão da F2 (2026-09-27):** listas mantidas só pelo `ADMINISTRADOR` no admin, com unidades provisórias; título único ignora maiúsculas/minúsculas e conta acentos; contato responsável pré-preenchido e editável; RF15 entra como P3; arquitetura A (uma app `inovacoes`).
 
@@ -77,4 +78,4 @@
 
 **Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
 
-**Estado verificado em 2026-09-27**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo. F1: UAT 24/24 PASS (`autenticacao/validation.md`).
+**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **84 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.

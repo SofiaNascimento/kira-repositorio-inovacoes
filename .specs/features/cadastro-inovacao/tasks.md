@@ -135,7 +135,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T2: Criar a app `inovacoes`
+### T2: Criar a app `inovacoes` ✅
 
 **What**: Gerar a app `inovacoes` e registrá-la no projeto.
 **Where**: `config/settings.py`
@@ -150,16 +150,18 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] `inovacoes/` com `apps.py` (`verbose_name = "Inovações"`), `models.py`, `admin.py`, `migrations/__init__.py` e `tests/__init__.py`; sem `tests.py` nem `views.py` de exemplo
-- [ ] `"inovacoes"` em `INSTALLED_APPS`, depois de `contas`
-- [ ] `.venv/bin/python manage.py check` sem erro
-- [ ] Gate check passa (build)
-- [ ] Test count: 84 testes passam
+- [x] `inovacoes/` com `apps.py` (`verbose_name = "Inovações"`), `models.py`, `admin.py`, `migrations/__init__.py` e `tests/__init__.py`; sem `tests.py` nem `views.py` de exemplo
+- [x] `"inovacoes"` em `INSTALLED_APPS`, depois de `contas`
+- [x] `.venv/bin/python manage.py check` sem erro
+- [x] Gate check passa (build)
+- [x] Test count: 84 testes passam
 
 **Tests**: none
 **Gate**: build
 
 **Commit**: `chore(inovacoes): cria a app de inovacoes`
+
+**Status**: ✅ Complete — build gate verde, 84 passed
 
 ---
 
