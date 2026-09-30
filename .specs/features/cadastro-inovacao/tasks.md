@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Approved (2026-09-29) — execução inline
+**Status**: Implementada (21/21) — aguardando o Verifier
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
@@ -703,7 +703,7 @@ T18 → T19 → T20 → T21
 
 ---
 
-### T21: Banco indisponível durante o cadastro
+### T21: Banco indisponível durante o cadastro ✅
 
 **What**: Prova de que a queda do PostgreSQL no cadastro cai na página 500 do projeto, sem gravar nem vazar.
 **Where**: `inovacoes/tests/test_views_erro_500.py`
@@ -718,14 +718,16 @@ T18 → T19 → T20 → T21
 
 **Done when**:
 
-- [ ] Testes e2e com `Inovacao.save` forçado a levantar `OperationalError` com detalhes de conexão falsos e `raise_request_exception = False`: o POST válido responde 500 com `500.html` e nenhuma inovação existe no banco; o HTML não contém host, usuário, senha, `OperationalError` nem `Traceback` (INOV-42)
-- [ ] Gate check passa (build) — fechamento da feature
-- [ ] Test count: 203 testes passam (+2)
+- [x] Testes e2e com `Inovacao.save` forçado a levantar `OperationalError` com detalhes de conexão falsos e `raise_request_exception = False`: o POST válido responde 500 com `500.html` e nenhuma inovação existe no banco; o HTML não contém host, usuário, senha, `OperationalError` nem `Traceback` (INOV-42)
+- [x] Gate check passa (build) — fechamento da feature
+- [x] Test count: 203 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): cobre o cadastro com o banco indisponivel`
+
+**Status**: ✅ Complete — 203 passed (+2), build gate verde
 
 ---
 

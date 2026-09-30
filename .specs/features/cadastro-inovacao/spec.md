@@ -296,53 +296,53 @@ sete campos, ligado ao campo pelo `aria-describedby`.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| INOV-01 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-02 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-03 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-04 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-05 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-06 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-07 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-08 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | In Tasks |
-| INOV-09 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-10 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-11 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-12 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-13 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-14 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | In Tasks |
-| INOV-15 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-16 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-17 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-18 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-19 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-20 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-21 | P1: Unidade e categoria só de listas controladas | Execute | In Tasks |
-| INOV-22 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-23 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-24 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-25 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-26 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-27 | P1: Título único dentro da mesma unidade | Execute | In Tasks |
-| INOV-28 | P1: Feedback claro sobre o resultado | Execute | In Tasks |
-| INOV-29 | P1: Feedback claro sobre o resultado | Execute | In Tasks |
-| INOV-30 | P1: Feedback claro sobre o resultado | Execute | In Tasks |
-| INOV-31 | P1: Formulário acessível por teclado e leitor de tela | Execute | In Tasks |
-| INOV-32 | P1: Formulário acessível por teclado e leitor de tela | Execute | In Tasks |
-| INOV-33 | P1: Formulário acessível por teclado e leitor de tela | Execute | In Tasks |
-| INOV-34 | P1: Formulário acessível por teclado e leitor de tela | Execute | In Tasks |
-| INOV-35 | P1: Formulário acessível por teclado e leitor de tela | Execute | In Tasks |
-| INOV-36 | P2: Cancelar sem salvar | Execute | In Tasks |
-| INOV-37 | P2: Cancelar sem salvar | Execute | In Tasks |
-| INOV-38 | P2: Ponto de entrada e contato pré-preenchido | Execute | In Tasks |
-| INOV-39 | P2: Ponto de entrada e contato pré-preenchido | Execute | In Tasks |
-| INOV-40 | P2: Ponto de entrada e contato pré-preenchido | Execute | In Tasks |
-| INOV-41 | P3: Ajuda contextual nos campos | Execute | In Tasks |
-| INOV-42 | Edge case: banco indisponível | Execute | In Tasks |
-| INOV-43 | Edge case: duplo envio | Execute | In Tasks |
+| INOV-01 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-02 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-03 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-04 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-05 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-06 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-07 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-08 | P1: Cadastrar uma inovação com autor, data e status automáticos | Execute | Implementing |
+| INOV-09 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-10 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-11 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-12 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-13 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-14 | P1: Validar e recuperar de erros sem perder o que foi digitado | Execute | Implementing |
+| INOV-15 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-16 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-17 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-18 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-19 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-20 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-21 | P1: Unidade e categoria só de listas controladas | Execute | Implementing |
+| INOV-22 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-23 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-24 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-25 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-26 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-27 | P1: Título único dentro da mesma unidade | Execute | Implementing |
+| INOV-28 | P1: Feedback claro sobre o resultado | Execute | Implementing |
+| INOV-29 | P1: Feedback claro sobre o resultado | Execute | Implementing |
+| INOV-30 | P1: Feedback claro sobre o resultado | Execute | Implementing |
+| INOV-31 | P1: Formulário acessível por teclado e leitor de tela | Execute | Implementing |
+| INOV-32 | P1: Formulário acessível por teclado e leitor de tela | Execute | Implementing |
+| INOV-33 | P1: Formulário acessível por teclado e leitor de tela | Execute | Implementing |
+| INOV-34 | P1: Formulário acessível por teclado e leitor de tela | Execute | Implementing |
+| INOV-35 | P1: Formulário acessível por teclado e leitor de tela | Execute | Implementing |
+| INOV-36 | P2: Cancelar sem salvar | Execute | Implementing |
+| INOV-37 | P2: Cancelar sem salvar | Execute | Implementing |
+| INOV-38 | P2: Ponto de entrada e contato pré-preenchido | Execute | Implementing |
+| INOV-39 | P2: Ponto de entrada e contato pré-preenchido | Execute | Implementing |
+| INOV-40 | P2: Ponto de entrada e contato pré-preenchido | Execute | Implementing |
+| INOV-41 | P3: Ajuda contextual nos campos | Execute | Implementing |
+| INOV-42 | Edge case: banco indisponível | Execute | Implementing |
+| INOV-43 | Edge case: duplo envio | Execute | Implementing |
 
 **ID format:** `INOV-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 43 total, 43 mapeados para tasks (`tasks.md`, T1–T21), 0 verificados.
+**Coverage:** 43 total, 43 mapeados e implementados (`tasks.md`, T1–T21), 0 verificados (aguardando o Verifier).
 
 ---
 
