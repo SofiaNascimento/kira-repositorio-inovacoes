@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Complete — verificada (PASS na iteração 2, `validation.md`)
+**Status**: Em UAT — PASS na iteração 2 (`validation.md`); T24 corrige o primeiro achado do UAT (2026-10-02)
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
@@ -107,6 +107,14 @@ Gaps do Verifier em `validation.md` (FAIL de 2026-09-29): dois mutantes sobreviv
 
 ```
 T22 → T23
+```
+
+### Phase 7: Correções do UAT
+
+Achados do UAT no navegador (2026-10-02).
+
+```
+T24
 ```
 
 ---
@@ -797,10 +805,40 @@ T22 → T23
 
 ---
 
+### T24: Login do admin abre para o visitante anônimo (achado do UAT) ✅
+
+**What**: `AcessoSomenteAdministradorMixin` trata o `AnonymousUser` como não administrador. O login do admin monta a lista de apps com o visitante anônimo e chamava `request.user.is_administrador`, que o `AnonymousUser` não tem: `GET /admin/login/` respondia 500. O defeito vem da F1 (`c28430c`) e foi achado no UAT, item de criação das contas.
+**Where**: `contas/admin.py`, `contas/tests/test_admin_perfil.py`
+**Depends on**: T23
+**Reuses**: Mixin da T1 (AD-007)
+**Requirement**: AUTH-21 (o redirecionamento ao login do admin precisa levar a uma tela que abre); INOV-20 e INOV-21 continuam como estavam
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] Novo teste e2e: anônimo em `/admin/` é redirecionado a `/admin/login/?next=/admin/`, que responde 200 com o campo `username`; o teste falha antes da correção
+- [x] Os cinco `has_*_permission` do mixin passam por `_is_administrador`, que exige `is_authenticated` antes de consultar o perfil
+- [x] Os testes de admin existentes passam sem alteração
+- [x] Gate check passa (build)
+- [x] Test count: 206 testes passam (+1)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `fix(contas): abre o login do admin para o visitante anonimo`
+
+**Status**: ✅ Complete — 206 passed (+1), build gate verde
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4 → T5 → T6 → T7
@@ -808,6 +846,7 @@ Phase 3:  T8 → T9 → T10 → T11 → T12
 Phase 4:  T13 → T14 → T15 → T16 → T17
 Phase 5:  T18 → T19 → T20 → T21
 Phase 6:  T22 → T23
+Phase 7:  T24
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -818,6 +857,7 @@ T7  → T8
 T12 → T13
 T17 → T18
 T21 → T22
+T23 → T24
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.

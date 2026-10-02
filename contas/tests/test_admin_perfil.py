@@ -122,6 +122,18 @@ def test_usuario_sem_staff_e_mandado_ao_login_do_admin(client, terceiro):
     assert resposta["Location"].startswith("/admin/login/")
 
 
+def test_anonimo_ve_o_login_do_admin(client, db):
+    """AUTH-21: o redirecionamento leva a uma tela de login que abre.
+
+    O login do admin monta a lista de apps com o AnonymousUser, que nao tem
+    perfil; o mixin nao pode quebrar nesse caminho (achado do UAT).
+    """
+    resposta = client.get("/admin/", follow=True)
+    assert resposta.redirect_chain == [("/admin/login/?next=/admin/", 302)]
+    assert resposta.status_code == 200
+    assert b'name="username"' in resposta.content
+
+
 # POST forjado: o campo perfil nao esta no formulario de quem nao e
 # administrador, mas nada impede alguem de envia-lo na mao.
 

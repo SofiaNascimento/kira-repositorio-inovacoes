@@ -16,20 +16,25 @@ class AcessoSomenteAdministradorMixin:
     # decide quem abre as telas do admin. Um ADMINISTRADOR promovido nao e
     # superusuario; um USUARIO com is_staff recebe 403 em todas elas, e um
     # POST de alteracao nem chega ao formulario (AUTH-21).
+    def _is_administrador(self, request):
+        # O login do admin monta a lista de apps com o AnonymousUser, que nao
+        # tem perfil: anonimo nunca e administrador.
+        return request.user.is_authenticated and request.user.is_administrador
+
     def has_module_permission(self, request):
-        return request.user.is_administrador
+        return self._is_administrador(request)
 
     def has_view_permission(self, request, obj=None):
-        return request.user.is_administrador
+        return self._is_administrador(request)
 
     def has_add_permission(self, request):
-        return request.user.is_administrador
+        return self._is_administrador(request)
 
     def has_change_permission(self, request, obj=None):
-        return request.user.is_administrador
+        return self._is_administrador(request)
 
     def has_delete_permission(self, request, obj=None):
-        return request.user.is_administrador
+        return self._is_administrador(request)
 
 
 @admin.register(Usuario)

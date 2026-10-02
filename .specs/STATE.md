@@ -70,6 +70,8 @@
 - **Uncommitted files**: nenhum (só este Handoff, que entra no commit da pausa).
 - **Branch**: `main`. O `origin/main` estava igual à `main` antes deste commit (push feito pelo autor); só o commit da pausa fica local.
 
+**UAT em andamento (2026-10-02):** migrations `inovacoes 0001–0004` aplicadas no banco local (listas iniciais presentes). Primeiro achado: `GET /admin/login/` anônimo respondia 500 (`AnonymousUser` sem `is_administrador` no `AcessoSomenteAdministradorMixin`, defeito da F1 em `c28430c`); corrigido na **T24** (`tasks.md`, Phase 7), 206 passed. Verifier da iteração 3 pendente para fechar a T24.
+
 **Desvio registrado no `tasks.md`:** quatro migrations em vez de duas (uma por task de modelo); esquema final igual ao do design.
 
 **Decisões da discussão da F2 (2026-09-27):** listas mantidas só pelo `ADMINISTRADOR` no admin, com unidades provisórias; título único ignora maiúsculas/minúsculas e conta acentos; contato responsável pré-preenchido e editável; RF15 entra como P3; arquitetura A (uma app `inovacoes`).
