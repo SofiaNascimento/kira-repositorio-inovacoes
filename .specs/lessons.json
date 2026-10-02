@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 9,
+  "next_id": 11,
   "lessons": [
     {
       "id": "L-001",
@@ -148,6 +148,42 @@
       ],
       "created": "2026-09-30T00:34:12Z",
       "last_seen": "2026-09-30T00:34:12Z"
+    },
+    {
+      "id": "L-009",
+      "key": "ac_gap::guard every permission hook that reads a custom attribute of request user with is authenticated and test the hook s page as an anonymous visitor because django calls admin hooks with anonymoususer on the login page",
+      "text": "Guard every permission hook that reads a custom attribute of request.user with is_authenticated, and test the hook's page as an anonymous visitor, because Django calls admin hooks with AnonymousUser on the login page",
+      "signal": "ac_gap",
+      "scope": "admin",
+      "status": "candidate",
+      "features": [
+        "cadastro-inovacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "UAT achado 1; contas/admin.py:22; contas/tests/test_admin_perfil.py:125 (admin)"
+      ],
+      "created": "2026-10-02T13:43:06Z",
+      "last_seen": "2026-10-02T13:43:06Z"
+    },
+    {
+      "id": "L-010",
+      "key": "spec_precision_gap::when an ac promises a redirect to a login page state and test that the target page opens with 200 for a visitor without a session",
+      "text": "When an AC promises a redirect to a login page, state and test that the target page opens with 200 for a visitor without a session",
+      "signal": "spec_precision_gap",
+      "scope": "auth",
+      "status": "candidate",
+      "features": [
+        "cadastro-inovacao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "AUTH-21 (autenticacao/spec.md:196); validation.md iteracao 3, Sugestao 1 (auth)"
+      ],
+      "created": "2026-10-02T13:43:06Z",
+      "last_seen": "2026-10-02T13:43:06Z"
     }
   ]
 }

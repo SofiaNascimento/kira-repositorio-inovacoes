@@ -62,6 +62,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md mutante T4; INOV-11; inovacoes/tests/test_views_cadastro.py:170 (forms)
 - last seen: 2026-09-30T00:34:12Z
 
+### L-009 - Guard every permission hook that reads a custom attribute of request.user with is_authenticated, and test the hook's page as an anonymous visitor, because Django calls admin hooks with AnonymousUser on the login page
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `admin` · harmful: 0
+- features: cadastro-inovacao
+- evidence: UAT achado 1; contas/admin.py:22; contas/tests/test_admin_perfil.py:125 (admin)
+- last seen: 2026-10-02T13:43:06Z
+
+### L-010 - When an AC promises a redirect to a login page, state and test that the target page opens with 200 for a visitor without a session
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `auth` · harmful: 0
+- features: cadastro-inovacao
+- evidence: AUTH-21 (autenticacao/spec.md:196); validation.md iteracao 3, Sugestao 1 (auth)
+- last seen: 2026-10-02T13:43:06Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

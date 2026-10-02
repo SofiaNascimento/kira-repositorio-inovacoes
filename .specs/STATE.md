@@ -70,7 +70,7 @@
 - **Uncommitted files**: nenhum (só este Handoff, que entra no commit da pausa).
 - **Branch**: `main`. O `origin/main` estava igual à `main` antes deste commit (push feito pelo autor); só o commit da pausa fica local.
 
-**UAT em andamento (2026-10-02):** migrations `inovacoes 0001–0004` aplicadas no banco local (listas iniciais presentes). Primeiro achado: `GET /admin/login/` anônimo respondia 500 (`AnonymousUser` sem `is_administrador` no `AcessoSomenteAdministradorMixin`, defeito da F1 em `c28430c`); corrigido na **T24** (`tasks.md`, Phase 7), 206 passed. Verifier da iteração 3 pendente para fechar a T24.
+**UAT em andamento (2026-10-02):** migrations `inovacoes 0001–0004` aplicadas no banco local (listas iniciais presentes). Primeiro achado: `GET /admin/login/` anônimo respondia 500 (`AnonymousUser` sem `is_administrador` no `AcessoSomenteAdministradorMixin`, defeito da F1 em `c28430c`); corrigido na **T24** (`tasks.md`, Phase 7), 206 passed. Verifier da iteração 3: **PASS** (206 passed; sensor 4/4 não equivalentes mortos). Lições candidatas L-009 e L-010. Gap aberto: AUTH-21 não diz que o login do admin abre para o anônimo (sugestão: AC nova na F1).
 
 **Desvio registrado no `tasks.md`:** quatro migrations em vez de duas (uma por task de modelo); esquema final igual ao do design.
 
