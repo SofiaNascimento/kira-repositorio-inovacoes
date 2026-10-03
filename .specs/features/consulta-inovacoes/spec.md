@@ -325,7 +325,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CONS-01 | P1: Ver a lista de inovações | - | Pending |
+| CONS-01 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-02 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-03 | P1: Ver a lista de inovações | - | Pending |
 | CONS-04 | P1: Ver a lista de inovações | - | Pending |
@@ -357,14 +357,14 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-30 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-31 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-32 | P1: Filtrar por categoria, unidade e status | - | Pending |
-| CONS-33 | P1: Contagem e estados vazios claros | - | Pending |
-| CONS-34 | P1: Contagem e estados vazios claros | - | Pending |
+| CONS-33 | P1: Contagem e estados vazios claros | Execute | Implementing |
+| CONS-34 | P1: Contagem e estados vazios claros | Execute | Implementing |
 | CONS-35 | P1: Contagem e estados vazios claros | - | Pending |
 | CONS-36 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-37 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
-| CONS-38 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-39 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
-| CONS-40 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-40 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-41 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-43 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 13 implementando (Execute), 40 pendentes.
+**Coverage:** 53 total, 18 implementando (Execute), 35 pendentes.
 
 ---
 

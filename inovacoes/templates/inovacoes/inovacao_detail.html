@@ -28,6 +28,5 @@
     <dd>{{ inovacao.contato }}</dd>
   </dl>
 
-  {# Literal ate a T4 criar a rota inovacoes:lista. #}
-  <p><a href="/inovacoes/">Voltar para a lista de inovações</a></p>
+  <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

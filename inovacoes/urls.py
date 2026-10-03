@@ -1,10 +1,11 @@
 from django.urls import path
 
-from inovacoes.views import InovacaoCreateView, InovacaoDetailView
+from inovacoes.views import InovacaoCreateView, InovacaoDetailView, InovacaoListView
 
 app_name = "inovacoes"
 
 urlpatterns = [
+    path("", InovacaoListView.as_view(), name="lista"),
     path("nova/", InovacaoCreateView.as_view(), name="nova"),
     path("<int:pk>/", InovacaoDetailView.as_view(), name="detalhe"),
 ]

@@ -3,7 +3,7 @@ from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, ListView
 
 from inovacoes.forms import InovacaoForm
 from inovacoes.models import Inovacao
@@ -66,3 +66,14 @@ class InovacaoDetailView(DetailView):
             # CONS-15: 404 proprio da inovacao, igual com e sem DEBUG. Um
             # templates/404.html global nao serviria a qualquer URL inexistente.
             return render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).
+class InovacaoListView(ListView):
+    """Listagem de todas as inovacoes, para qualquer perfil (RF03, CONS-08)."""
+
+    template_name = "inovacoes/inovacao_list.html"
+    context_object_name = "inovacoes"
+
+    def get_queryset(self):
+        return Inovacao.objects.para_listagem()

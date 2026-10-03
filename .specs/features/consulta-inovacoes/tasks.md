@@ -223,7 +223,7 @@ T21 → T22
 
 ---
 
-### T4: Listagem (`InovacaoListView`, rota, tabela, contagem e repositório vazio)
+### T4: Listagem (`InovacaoListView`, rota, tabela, contagem e repositório vazio) ✅
 
 **What**: A rota `/inovacoes/` com a tabela resumida, a contagem e a mensagem de repositório vazio, ainda sem busca nem filtros.
 **Where**: `inovacoes/views.py`
@@ -238,17 +238,19 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `InovacaoListView` com `template_name = "inovacoes/inovacao_list.html"`, `context_object_name = "inovacoes"`, `get_queryset()` = `Inovacao.objects.para_listagem()`; sem decorator
-- [ ] `inovacoes/urls.py`: `path("", …, name="lista")`; os links "Voltar para a lista de inovações" da T2 e da T3 passam a `{% url 'inovacoes:lista' %}`
-- [ ] `inovacao_list.html`: `h1` "Inovações"; com resultado: "1 inovação encontrada" / "N inovações encontradas" (`paginator.count` quando paginado, senão `inovacoes|length`) e `<table>` com `<caption>Inovações cadastradas</caption>`, `<th scope="col">` Título / Categoria / Unidade / Status, título como link para o detalhe, status por `get_status_display`; sem resultado e sem filtro: "Nenhuma inovação cadastrada ainda." + link "Cadastrar inovação" → `/inovacoes/nova/`, sem `<table>`
-- [ ] Testes e2e em `inovacoes/tests/test_views_lista.py`: 200 e uma linha por inovação com título, categoria, unidade e rótulo do status (CONS-01, CONS-40); ordem decrescente com desempate por id (CONS-02); link do título == `get_absolute_url()` (CONS-06); `USUARIO` e `ADMINISTRADOR` veem inovações de autores e unidades diferentes (CONS-08, parametrizado); anônimo em `/inovacoes/?q=caixa` → `/entrar/?next=/inovacoes/%3Fq%3Dcaixa` com a query string preservada (CONS-07; o `next` exato segue o `redirect_to_login` do Django); singular e plural da contagem (CONS-33); banco sem inovação → mensagem, link e nenhuma `<table>` (CONS-34); `caption` e os quatro `th[scope=col]` (CONS-38)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 236 testes passam (+12)
+- [x] `InovacaoListView` com `template_name = "inovacoes/inovacao_list.html"`, `context_object_name = "inovacoes"`, `get_queryset()` = `Inovacao.objects.para_listagem()`; sem decorator
+- [x] `inovacoes/urls.py`: `path("", …, name="lista")`; os links "Voltar para a lista de inovações" da T2 e da T3 passam a `{% url 'inovacoes:lista' %}`
+- [x] `inovacao_list.html`: `h1` "Inovações"; com resultado: "1 inovação encontrada" / "N inovações encontradas" (`paginator.count` quando paginado, senão `inovacoes|length`) e `<table>` com `<caption>Inovações cadastradas</caption>`, `<th scope="col">` Título / Categoria / Unidade / Status, título como link para o detalhe, status por `get_status_display`; sem resultado e sem filtro: "Nenhuma inovação cadastrada ainda." + link "Cadastrar inovação" → `/inovacoes/nova/`, sem `<table>`
+- [x] Testes e2e em `inovacoes/tests/test_views_lista.py`: 200 e uma linha por inovação com título, categoria, unidade e rótulo do status (CONS-01, CONS-40); ordem decrescente com desempate por id (CONS-02); link do título == `get_absolute_url()` (CONS-06); `USUARIO` e `ADMINISTRADOR` veem inovações de autores e unidades diferentes (CONS-08, parametrizado); anônimo em `/inovacoes/?q=caixa` → `/entrar/?next=/inovacoes/%3Fq%3Dcaixa` com a query string preservada (CONS-07; o `next` exato segue o `redirect_to_login` do Django); singular e plural da contagem (CONS-33); banco sem inovação → mensagem, link e nenhuma `<table>` (CONS-34); `caption` e os quatro `th[scope=col]` (CONS-38)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 236 testes passam (+12)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a listagem de inovacoes`
+
+**Status**: ✅ Complete — 236 passed (+11); 11 testes no lugar dos 12 estimados (parametrizado conta como um por perfil); o next do anonimo e /entrar/?next=/inovacoes/%3Fq%3Dcaixa, afirmado pelo Location literal
 
 ---
 

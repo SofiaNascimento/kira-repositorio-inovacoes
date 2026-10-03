@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Inovações{% endblock %}
+
+{% block conteudo %}
+  <h1>Inovações</h1>
+
+  {% if inovacoes %}
+    {# CONS-33: o total vale para todas as paginas. #}
+    <p>
+      {% if paginator %}{% with total=paginator.count %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}
+      {% else %}{% with total=inovacoes|length %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}{% endif %}
+    </p>
+
+    {# CONS-38: legenda e cabecalhos de coluna; CONS-40: status sempre por texto. #}
+    <table>
+      <caption>Inovações cadastradas</caption>
+      <thead>
+        <tr>
+          <th scope="col">Título</th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Unidade</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for inovacao in inovacoes %}
+          <tr>
+            <td><a href="{{ inovacao.get_absolute_url }}">{{ inovacao.titulo }}</a></td>
+            <td>{{ inovacao.categoria.nome }}</td>
+            <td>{{ inovacao.unidade.nome }}</td>
+            <td>{{ inovacao.get_status_display }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    {# CONS-34: repositorio vazio, sem tabela. #}
+    <p>Nenhuma inovação cadastrada ainda.</p>
+    <p><a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a></p>
+  {% endif %}
+{% endblock %}
