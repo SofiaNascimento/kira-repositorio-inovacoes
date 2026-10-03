@@ -64,13 +64,13 @@
 - **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ · Execute ✅ (T1–T24) · Verifier ✅ PASS na iteração 3 · UAT ✅ (2026-10-03).
 - **Completed**: T1–T24. UAT registrado em `validation.md`, seção *Interactive UAT Results*; o Success Criterion de teclado da `spec.md` foi marcado pelos itens 17 e 18. Nenhum achado novo no UAT além do P2 (corrigido na T24).
 - **In-progress** (file:line): nenhum.
-- **Next step**: (1) decidir a **Sugestão 1** do Verifier — AC nova na F1 para o visitante anônimo no login do admin, apontando para `contas/tests/test_admin_perfil.py:125` (`autenticacao/spec.md:196`); (2) aplicar a **Sugestão 2** — linha da T24 nas tabelas de Granularity, Diagram-Definition Cross-Check e Test Co-location do `tasks.md`; (3) Specify da F3 (consulta-inovacoes).
+- **Next step**: Specify da F3 (consulta-inovacoes). As duas sugestões do Verifier foram aplicadas em 2026-10-03: **AUTH-28** (visitante anônimo no login do admin) entrou nos edge cases da F1, com rastreabilidade na spec, no design, no `tasks.md` e no `validation.md` da F1, e a docstring de `contas/tests/test_admin_perfil.py:126` passou a citá-la; a T24 entrou nas três tabelas de conferência do `tasks.md` da F2.
 - **Testes pendentes**: nenhum. 206 passed em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
 - **Banco local**: migrations `inovacoes 0001–0004`; 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff ligado no UAT). 4 inovações do UAT: `Processo RH` e `Procésso RH` (Filial Leste, maria), `PROCESSO RH` (Filial Norte, maria), `Checklist de compras` (Sede, joao). Senhas fora do repositório.
-- **Uncommitted files**: nenhum (este Handoff entra no commit do registro do UAT).
-- **Branch**: `main`. O `origin/main` está em `9e7823d` (push de 2026-10-03); o commit do registro do UAT fica só local. Push só com pedido explícito.
+- **Uncommitted files**: nenhum.
+- **Branch**: `main`. O `origin/main` está em `9e7823d` (push de 2026-10-03); os commits do registro do UAT e da AUTH-28 ficam só locais. Push só com pedido explícito.
 
 **Decisões desta sessão (2026-10-03)**, feature-local, sem AD nova: o UAT aceitou dados adaptados pelo usuário (títulos e unidades diferentes do roteiro) quando o critério do item era o mesmo; a conferência no banco substituiu os dados do roteiro como evidência.
 

@@ -307,6 +307,7 @@ AD-004 determina — o perfil é um atributo do usuário, não uma entidade.
 | PostgreSQL indisponível (AUTH-26) | `OperationalError` não capturada → handler 500; `DEBUG=False` em produção | Página 500 própria, sem string de conexão nem traceback |
 | Perfil fora do enum (AUTH-18) | `CheckConstraint` → `IntegrityError`; `full_clean()` no admin antecipa como `ValidationError` | Erro de validação no admin; gravação direta é rejeitada pelo banco |
 | Não administrador tentando alterar perfil (AUTH-21) | `has_change_permission` falso → `PermissionDenied` no `change_view` | 403 |
+| Visitante anônimo no admin (AUTH-28) | `AcessoSomenteAdministradorMixin` trata o anônimo como não administrador (`is_authenticated` antes do perfil) → redirect ao login do admin | Tela de login do admin, com `next` preservado |
 | Sessão expirada (AUTH-15) | Cookie inválido → requisição anônima → middleware redireciona | Volta ao login com `next` preservado |
 
 ---
@@ -380,5 +381,6 @@ de premissas da spec que só apareceram ao detalhar a implementação.
 | AUTH-25 | `usuario_email_unico_ci` |
 | AUTH-26 | Handler 500 + `DEBUG=False` |
 | AUTH-27 | Receiver de `user_login_failed` |
+| AUTH-28 | `AcessoSomenteAdministradorMixin._is_administrador` exige `is_authenticated` (AD-007; acrescentado na T24 da F2) |
 
 Nenhum requisito da spec ficou sem componente.

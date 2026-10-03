@@ -225,6 +225,7 @@ Proposta. O Verifier **não** edita `spec.md`.
 | AUTH-25 | Implementing | ✅ Verified |
 | AUTH-26 | Implementing | ✅ Verified |
 | AUTH-27 | Implementing | ✅ Verified |
+| AUTH-28 | — | ✅ Verified na validação da F2, iteração 3 (`cadastro-inovacao/validation.md`): `contas/tests/test_admin_perfil.py:132-134`. AC acrescentada em 2026-10-03, depois deste relatório |
 
 ---
 

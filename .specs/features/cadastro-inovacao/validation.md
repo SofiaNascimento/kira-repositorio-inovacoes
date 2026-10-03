@@ -222,7 +222,7 @@ Fora do roteiro por desenho, cobertos por teste automatizado: limites de 150/500
 | Matches patterns | ✅ O teste novo segue os vizinhos do mesmo arquivo (cliente do Django, `redirect_chain` e `status_code` afirmados por valor) |
 | Spec-anchored outcome check (asserted values match spec) | ✅ 43/43 da F2; T24 com ⚠️ spec-precision gap (anônimo fora da AUTH-21) |
 | Per-layer Coverage Expectation met | ✅ `/inovacoes/nova/`: happy, edge e erro; modelo e form com 1:1 nas ACs; admin: os três perfis e agora o anônimo |
-| Every test maps to a spec requirement - no unclaimed tests | ✅ O teste novo cita AUTH-21 e o achado do UAT na docstring (`test_admin_perfil.py:126-130`) |
+| Every test maps to a spec requirement - no unclaimed tests | ✅ O teste novo cita o achado do UAT na docstring (`test_admin_perfil.py:126-130`); citava AUTH-21 e, desde 2026-10-03, cita a AUTH-28 |
 | Documented guidelines followed: `tasks.md` (Test Coverage Matrix) | ✅ |
 
 ---
@@ -258,12 +258,14 @@ Nenhum obrigatório. Duas sugestões, sem bloquear o PASS:
 - **Root cause**: a AUTH-21 (`autenticacao/spec.md:196`) descreve só o USUARIO autenticado. Nada na spec dizia que o login do admin precisa abrir para quem chega sem sessão, e foi por aí que o 500 passou pela F1 e pelas duas iterações da F2.
 - **Fix task**: acrescentar à F1 uma AC do tipo "WHEN a visitor without a session opens any Django admin URL THEN the system SHALL redirect to `/admin/login/?next=<url>` and that page SHALL respond 200 with the login form", e apontar `test_admin_perfil.py:125` para ela.
 - **Priority**: Minor (o comportamento já está provado; falta o texto)
+- **Aplicada em 2026-10-03**: virou a **AUTH-28** em `autenticacao/spec.md` (edge cases), com rastreabilidade na spec, no design e no `tasks.md` da F1; a docstring de `test_admin_perfil.py:126` cita a AUTH-28.
 
 ### Sugestão 2: tabelas de conferência do `tasks.md`
 
 - **Root cause**: a T24 entrou no Phase Execution Map, mas não nas tabelas de Granularity, Diagram-Definition Cross-Check e Test Co-location.
 - **Fix task**: acrescentar a linha da T24 nas três tabelas.
 - **Priority**: Cosmetic
+- **Aplicada em 2026-10-03**: a T24 está nas três tabelas.
 
 ---
 
@@ -275,6 +277,7 @@ Proposta. O Verifier **não** edita `spec.md`.
 | ----------- | --------------- | ---------- |
 | INOV-01 … INOV-43 | Verified | ✅ Verified (mantido) |
 | AUTH-21 (F1) | Verified | ✅ Verified (o ramo de redirecionamento agora tem o login aberto provado; ⚠️ texto sem o anônimo) |
+| AUTH-28 (F1, nova em 2026-10-03) | — | ✅ Verified (`test_admin_perfil.py:132-134`; fecha o spec-precision gap acima) |
 
 ---
 
@@ -300,4 +303,4 @@ Proposta. O Verifier **não** edita `spec.md`.
 
 **UAT**: ✅ concluído em 2026-10-03, 21/21 itens aprovados (seção *Interactive UAT Results*).
 
-**Next steps**: decidir a Sugestão 1 (AC do anônimo na F1) e aplicar a Sugestão 2; depois, Specify da F3.
+**Next steps**: Sugestões 1 e 2 aplicadas em 2026-10-03 (AUTH-28 na F1; T24 nas tabelas do `tasks.md`). Próximo: Specify da F3.

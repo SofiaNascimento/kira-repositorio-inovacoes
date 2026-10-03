@@ -811,7 +811,7 @@ T24
 **Where**: `contas/admin.py`, `contas/tests/test_admin_perfil.py`
 **Depends on**: T23
 **Reuses**: Mixin da T1 (AD-007)
-**Requirement**: AUTH-21 (o redirecionamento ao login do admin precisa levar a uma tela que abre); INOV-20 e INOV-21 continuam como estavam
+**Requirement**: AUTH-28 (acrescentada à F1 em 2026-10-03 a partir deste achado; antes, lida como parte da AUTH-21); INOV-20 e INOV-21 continuam como estavam
 
 **Tools**:
 
@@ -885,6 +885,7 @@ começar.
 | T15, T16, T17 | 1 método cada em `inovacoes/views.py` | ✅ Granular |
 | T18, T21, T22, T23 | 1 arquivo de teste (o código já existe) | ✅ Granular |
 | T20 | 1 trecho do `base.html` | ✅ Granular |
+| T24 | 1 helper em `contas/admin.py` + o teste que o prova | ✅ Granular |
 
 **Nota sobre T12 e T13:** o `campo.html` não tem efeito sem o `template_name` aplicado no form, e a
 ajuda não tem onde aparecer sem o template; uma view Django não é testável sem rota e template. Separar
@@ -924,6 +925,7 @@ handler 500). A task é a evidência das ACs; se a evidência acusar falta, o aj
 | T21 | T20 | T20 → T21 | ✅ Match |
 | T22 | T21 | T21 → T22 (arco de fronteira) | ✅ Match |
 | T23 | T22 | T22 → T23 | ✅ Match |
+| T24 | T23 | T23 → T24 (arco de fronteira) | ✅ Match |
 
 Nenhuma dependência aponta para fase posterior.
 
@@ -956,6 +958,7 @@ Nenhuma dependência aponta para fase posterior.
 | T21 | Views (só testes) | e2e | e2e | ✅ OK |
 | T22 | Views (só testes) | e2e | e2e | ✅ OK |
 | T23 | Views (só testes) | e2e | e2e | ✅ OK |
+| T24 | Admin (`contas/admin.py`) | e2e | e2e | ✅ OK |
 
 Nenhuma violação. O único `Tests: none` (T2) é scaffold, que a matriz cobre pelo gate de build.
 

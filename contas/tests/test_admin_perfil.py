@@ -123,7 +123,7 @@ def test_usuario_sem_staff_e_mandado_ao_login_do_admin(client, terceiro):
 
 
 def test_anonimo_ve_o_login_do_admin(client, db):
-    """AUTH-21: o redirecionamento leva a uma tela de login que abre.
+    """AUTH-28: o anonimo vai para o login do admin, e essa tela abre.
 
     O login do admin monta a lista de apps com o AnonymousUser, que nao tem
     perfil; o mixin nao pode quebrar nesse caminho (achado do UAT).

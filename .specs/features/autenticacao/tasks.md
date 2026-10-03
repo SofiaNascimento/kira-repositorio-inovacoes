@@ -1214,5 +1214,6 @@ indiretamente pelos testes e2e das views que os consomem.
 | AUTH-25 | T9 |
 | AUTH-26 | T4, T22 |
 | AUTH-27 | T18 |
+| AUTH-28 | T24 da F2 (`cadastro-inovacao/tasks.md`) |
 
-27 requisitos, 27 mapeados, 0 órfãos.
+28 requisitos, 28 mapeados, 0 órfãos. A AUTH-28 foi acrescentada depois da F1; a task que a implementa vive na F2.

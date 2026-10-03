@@ -71,7 +71,7 @@ Escopo Large ⇒ varredura completa: cada dimensão vira requisito ou recebe `N/
 | Input validation & bounds | AUTH-04 (campos vazios), AUTH-18 (valor de perfil fora do enum), AUTH-25 (e-mail duplicado) |
 | Failure / partial-failure states | AUTH-03 (credencial inválida), AUTH-23 (conta inativa), AUTH-26 (banco indisponível) |
 | Idempotency / retry / duplicate handling | AUTH-12 (usuário já autenticado pede a tela de login → redireciona em vez de duplicar sessão). Retry de login não tem efeito colateral a deduplicar: cada POST é independente e não cria registro. |
-| Auth boundaries & rate limits | Boundaries: AUTH-09, AUTH-11, AUTH-21, AUTH-22. Rate limits: **N/A because** throttling ficou fora do escopo por decisão registrada; mitigação por mensagem genérica (AUTH-03) e log (AUTH-27). |
+| Auth boundaries & rate limits | Boundaries: AUTH-09, AUTH-11, AUTH-21, AUTH-22, AUTH-28. Rate limits: **N/A because** throttling ficou fora do escopo por decisão registrada; mitigação por mensagem genérica (AUTH-03) e log (AUTH-27). |
 | Concurrency / ordering | **N/A because** sessões são independentes por navegador e o Django serializa o acesso à sessão; F1 não tem operação concorrente sobre um mesmo recurso mutável. |
 | Data lifecycle / expiry | AUTH-13 (logout encerra), AUTH-14 (cookie revogado é anônimo), AUTH-15 (expiração por inatividade) |
 | Observability | AUTH-27 (log de tentativa malsucedida, sem senha) |
@@ -208,6 +208,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 - **AUTH-25** — IF an account is created with an e-mail that differs from an existing one only by letter case THEN the system SHALL reject the creation with a uniqueness validation error.
 - **AUTH-26** — IF the database is unreachable while a login attempt is being processed THEN the system SHALL return an error page, SHALL NOT open a session and SHALL NOT expose the connection details to the visitor.
 - **AUTH-27** — WHEN a login attempt fails THEN the system SHALL write a log entry carrying the timestamp and the submitted identifier, and SHALL NOT carry the submitted password.
+- **AUTH-28** — WHEN a visitor without a session opens any Django admin URL THEN the system SHALL redirect to `/admin/login/?next=<url>`, and that page SHALL respond HTTP 200 with the login form.
 
 ---
 
@@ -242,10 +243,12 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | AUTH-25 | Edge case: e-mail duplicado por caixa | Execute | Verified |
 | AUTH-26 | Edge case: banco indisponível | Execute | Verified |
 | AUTH-27 | Edge case: log de tentativa malsucedida | Execute | Verified |
+| AUTH-28 | Edge case: visitante anônimo no admin | Execute | Verified |
 
 **ID format:** `AUTH-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 27 total, 27 mapeados para tasks, 27 verificados (`validation.md`, iteração 3).
+**Coverage:** 28 total, 28 mapeados para tasks, 28 verificados (AUTH-01…27 em `validation.md`, iteração 3; AUTH-28 na validação da F2, iteração 3).
+AUTH-28 entrou em 2026-10-03, depois que o UAT achou o 500 no login do admin para o visitante anônimo. A correção e o teste são da T24 da F2 (`8f329ea`).
 ⚠️ AUTH-19: a cláusula "every other feature SHALL use it" é regra de processo, sem resultado testável. Verificada por auditoria de código (grep): nenhuma comparação direta do campo fora do ponto de consulta.
 
 ---
@@ -255,7 +258,7 @@ o 403; autenticar como `ADMINISTRADOR`, promover uma conta e confirmar a altera�
 | Origem | Requirement IDs |
 | ------ | --------------- |
 | RF01 | AUTH-01 … AUTH-05, AUTH-13, AUTH-14, AUTH-23, AUTH-24 |
-| RN04 | AUTH-09, AUTH-10, AUTH-11, AUTH-12 |
+| RN04 | AUTH-09, AUTH-10, AUTH-11, AUTH-12, AUTH-28 |
 | RN11 | AUTH-21, AUTH-22 |
 | RNF02 | AUTH-05, AUTH-06, AUTH-07, AUTH-08, AUTH-15, AUTH-26, AUTH-27 |
 | RNF07 | AUTH-16 … AUTH-20 (base do perfil consumida pela F4) |
