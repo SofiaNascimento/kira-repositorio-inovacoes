@@ -60,11 +60,11 @@
 
 ## Handoff
 
-- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. **Concluída** em 2026-10-03: UAT interativo da F1+F2 com 21/21 itens aprovados.
-- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ · Execute ✅ (T1–T24) · Verifier ✅ PASS na iteração 3 · UAT ✅ (2026-10-03).
-- **Completed**: T1–T24. UAT registrado em `validation.md`, seção *Interactive UAT Results*; o Success Criterion de teclado da `spec.md` foi marcado pelos itens 17 e 18. Nenhum achado novo no UAT além do P2 (corrigido na T24).
+- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. F2 concluída em 2026-10-03 (UAT 21/21).
+- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design pendente.
+- **Completed**: discussão das quatro áreas cinzentas (busca, listagem, detalhe/pós-cadastro, filtros/demo); `validate_spec.py` limpo.
 - **In-progress** (file:line): nenhum.
-- **Next step**: Specify da F3 (consulta-inovacoes). As duas sugestões do Verifier foram aplicadas em 2026-10-03: **AUTH-28** (visitante anônimo no login do admin) entrou nos edge cases da F1, com rastreabilidade na spec, no design, no `tasks.md` e no `validation.md` da F1, e a docstring de `contas/tests/test_admin_perfil.py:126` passou a citá-la; a T24 entrou nas três tabelas de conferência do `tasks.md` da F2.
+- **Next step**: Design da F3, que precisa decidir e registrar como AD o mecanismo da busca sem acento (`unaccent` × texto normalizado, ver RNF06).
 - **Testes pendentes**: nenhum. 206 passed em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
