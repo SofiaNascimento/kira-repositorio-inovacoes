@@ -69,10 +69,10 @@
 ## Handoff
 
 - **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. F2 concluída em 2026-10-03 (UAT 21/21).
-- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks pendente.
+- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks ✅ aprovado em 2026-10-03 (`tasks.md`, T1–T22 em 5 fases; parte A = T1–T11, parte B = T12–T22, numa única feature) · Execute pendente.
 - **Completed**: discussão das quatro áreas cinzentas (busca, listagem, detalhe/pós-cadastro, filtros/demo); `validate_spec.py` limpo.
 - **In-progress** (file:line): nenhum.
-- **Next step**: fase Tasks da F3 (`tasks.md`).
+- **Next step**: Execute da F3 a partir da T1, oferecendo sub-agentes (4 lotes: Fase 1, Fase 2, Fase 3, Fases 4+5). Linha de base: 206 testes.
 - **Testes pendentes**: nenhum. 206 passed em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
