@@ -284,7 +284,7 @@ T21 → T22
 
 ---
 
-### T6: Cadastro termina no detalhe
+### T6: Cadastro termina no detalhe ✅
 
 **What**: O `InovacaoCreateView` redireciona ao detalhe da inovação criada, onde aparece a mensagem de sucesso.
 **Where**: `inovacoes/views.py`
@@ -299,16 +299,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `success_url` e o comentário "PROVISORIO" saem de `InovacaoCreateView`; nada mais muda na view
-- [ ] `inovacoes/tests/test_views_cadastro.py:62,117,232,238` passam a afirmar o redirect para `/inovacoes/<id da nova>/` (CONS-49); `:284` afirma a cadeia `[("/inovacoes/<id>/", 302)]` e a mensagem no `role="status"` do detalhe (CONS-50); `:292` recarrega o detalhe e afirma que a mensagem sumiu (INOV-29 mantida)
-- [ ] `.specs/features/cadastro-inovacao/spec.md`: INOV-03 ganha a nota "alterado pela F3 (CONS-49): o destino passa a ser o detalhe da inovação criada"; mesma nota na linha da INOV-03 em *Cobertura dos requisitos* do `design.md` da F2
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 243 testes passam (+0: seis testes reapontados, nenhum removido)
+- [x] `success_url` e o comentário "PROVISORIO" saem de `InovacaoCreateView`; nada mais muda na view
+- [x] `inovacoes/tests/test_views_cadastro.py:62,117,232,238` passam a afirmar o redirect para `/inovacoes/<id da nova>/` (CONS-49); `:284` afirma a cadeia `[("/inovacoes/<id>/", 302)]` e a mensagem no `role="status"` do detalhe (CONS-50); `:292` recarrega o detalhe e afirma que a mensagem sumiu (INOV-29 mantida)
+- [x] `.specs/features/cadastro-inovacao/spec.md`: INOV-03 ganha a nota "alterado pela F3 (CONS-49): o destino passa a ser o detalhe da inovação criada"; mesma nota na linha da INOV-03 em *Cobertura dos requisitos* do `design.md` da F2
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 243 testes passam (+0: seis testes reapontados, nenhum removido)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): leva o cadastro ao detalhe da inovacao criada`
+
+**Status**: ✅ Complete — 245 passed (+0); seis testes reapontados (INOV-03 x5 casos, INOV-28, INOV-29) sem remoção; o teste da INOV-29 agora recarrega o detalhe e confirma antes que a mensagem estava lá. Estimativa de 243 do Done when estava defasada: a base já era 245
 
 ---
 

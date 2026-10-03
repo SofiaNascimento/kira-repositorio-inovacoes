@@ -112,7 +112,7 @@ para que outras unidades possam encontrá-la e reaproveitá-la.
 
 1. **INOV-01** — WHEN an authenticated user requests `/inovacoes/nova/` THEN the system SHALL respond with HTTP 200 and a form with exactly these editable fields: título, unidade de origem, categoria, problema/dor, solução aplicada, resultado/impacto and contato responsável.
 2. **INOV-02** — WHEN an authenticated user submits the form with every required field valid THEN the system SHALL persist exactly one new Inovacao holding the submitted values, with leading and trailing spaces removed from every text field.
-3. **INOV-03** — WHEN a registration succeeds THEN the system SHALL respond with HTTP 302 to the internal home page.
+3. **INOV-03** — WHEN a registration succeeds THEN the system SHALL respond with HTTP 302 to the internal home page. *(Alterado pela F3 (CONS-49): o destino passa a ser o detalhe da inovação criada.)*
 4. **INOV-04** — WHEN a registration succeeds THEN the system SHALL set the new Inovacao's autor to the account of the user who submitted the form.
 5. **INOV-05** — WHEN a registration succeeds THEN the system SHALL set the new Inovacao's status to `Em teste` and its data de criação to the server's current date and time.
 6. **INOV-06** — IF the submitted request carries values for autor, status or data de criação THEN the system SHALL ignore them and apply the values defined by INOV-04 and INOV-05.

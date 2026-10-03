@@ -57,9 +57,12 @@ def test_envio_valido_grava_uma_inovacao_com_os_valores_sem_espacos(logado, dado
     assert str(inovacao.categoria_id) == dados["categoria"]
 
 
-def test_envio_valido_redireciona_a_home(logado, dados):
-    """INOV-03: redirect depois do POST; recarregar nao reenvia."""
-    assertRedirects(logado.post(NOVA, dados), "/", fetch_redirect_response=False)
+def test_envio_valido_redireciona_ao_detalhe_da_nova_inovacao(logado, dados):
+    """INOV-03, alterado pela CONS-49: redirect ao detalhe apos o POST; recarregar nao reenvia."""
+    resposta = logado.post(NOVA, dados)
+    assertRedirects(
+        resposta, f"/inovacoes/{Inovacao.objects.get().pk}/", fetch_redirect_response=False
+    )
 
 
 def test_autor_e_a_conta_logada(logado, dados, autor):
@@ -114,8 +117,10 @@ def test_qualquer_perfil_cadastra(client, dados, perfil):
         username=f"c-{perfil}", email=f"{perfil}@x.com", perfil=perfil
     )
     client.force_login(conta)
-    assertRedirects(client.post(NOVA, dados), "/", fetch_redirect_response=False)
-    assert Inovacao.objects.get().autor == conta
+    resposta = client.post(NOVA, dados)
+    nova = Inovacao.objects.get()
+    assertRedirects(resposta, f"/inovacoes/{nova.pk}/", fetch_redirect_response=False)
+    assert nova.autor == conta
 
 
 @pytest.mark.django_db
@@ -229,13 +234,18 @@ def test_mesmo_titulo_em_outra_unidade_e_aceito(logado, dados, criar_inovacao):
     dados.update(
         {"titulo": "Controle de Caixa", "unidade": str(Unidade.objects.get(nome="Sede").pk)}
     )
-    assertRedirects(logado.post(NOVA, dados), "/", fetch_redirect_response=False)
+    resposta = logado.post(NOVA, dados)
+    nova = Inovacao.objects.order_by("-id").first()
+    assertRedirects(resposta, f"/inovacoes/{nova.pk}/", fetch_redirect_response=False)
     assert Inovacao.objects.count() == 2
 
 
 def test_segundo_envio_identico_e_recusado_como_duplicado(logado, dados):
     """INOV-43: duplo clique grava uma vez so."""
-    assertRedirects(logado.post(NOVA, dados), "/", fetch_redirect_response=False)
+    primeira = logado.post(NOVA, dados)
+    assertRedirects(
+        primeira, f"/inovacoes/{Inovacao.objects.get().pk}/", fetch_redirect_response=False
+    )
     resposta = logado.post(NOVA, dados)
     assert resposta.status_code == 200
     assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
@@ -278,18 +288,20 @@ def _regiao_de_status(html):
 
 
 def test_cadastro_bem_sucedido_confirma_com_o_titulo_salvo(logado, dados):
-    """INOV-28: na pagina do redirect, dentro do role=status."""
+    """INOV-28, na pagina do redirect (CONS-50): o detalhe, dentro do role=status."""
     dados["titulo"] = "  Conciliação bancária automática  "
     resposta = logado.post(NOVA, dados, follow=True)
-    assert resposta.redirect_chain == [("/", 302)]
+    assert resposta.redirect_chain == [(f"/inovacoes/{Inovacao.objects.get().pk}/", 302)]
     regiao = _regiao_de_status(resposta.content.decode())
     assert "Inovação “Conciliação bancária automática” cadastrada com sucesso." in regiao
 
 
 def test_mensagem_de_sucesso_nao_reaparece_ao_recarregar(logado, dados):
-    """INOV-29."""
-    logado.post(NOVA, dados, follow=True)
-    html = logado.get("/").content.decode()
+    """INOV-29, com o detalhe como pagina do redirect (CONS-49)."""
+    primeira = logado.post(NOVA, dados, follow=True)
+    assert "cadastrada com sucesso" in primeira.content.decode()
+    detalhe = primeira.redirect_chain[-1][0]
+    html = logado.get(detalhe).content.decode()
     assert "cadastrada com sucesso" not in html
 
 

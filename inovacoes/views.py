@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, ListView
 
 from inovacoes.forms import InovacaoForm
@@ -22,8 +21,6 @@ class InovacaoCreateView(CreateView):
 
     form_class = InovacaoForm
     template_name = "inovacoes/inovacao_form.html"
-    # PROVISORIO: a home interna e o destino ate a F3 trazer a pagina de detalhe.
-    success_url = reverse_lazy("nucleo:home")
 
     def get_initial(self):
         # INOV-39: pre-preenchido e editavel; o responsavel nem sempre e o autor.

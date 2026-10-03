@@ -373,15 +373,15 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-46 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-47 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-49 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
-| CONS-50 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
+| CONS-49 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
+| CONS-50 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
 | CONS-51 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
 | CONS-52 | P3: Ajuda contextual nos filtros | - | Pending |
 | CONS-53 | Edge case: banco indisponível | - | Pending |
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 21 implementando (Execute), 32 pendentes.
+**Coverage:** 53 total, 23 implementando (Execute), 30 pendentes.
 
 ---
 

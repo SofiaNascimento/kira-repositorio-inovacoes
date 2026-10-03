@@ -391,7 +391,7 @@ class Inovacao(models.Model):
 | ----------- | --------------- |
 | INOV-01 | `InovacaoForm.Meta.fields` (ordem) + `InovacaoCreateView` GET |
 | INOV-02 | `ModelForm` + `CharField(strip=True)` + `form.save()` |
-| INOV-03 | `InovacaoCreateView.form_valid` → redirect `nucleo:home` |
+| INOV-03 | `InovacaoCreateView.form_valid` → redirect `nucleo:home` *(alterado pela F3 (CONS-49): o destino passa a ser o detalhe da inovação criada)* |
 | INOV-04 | `form_valid`: `instance.autor = request.user` |
 | INOV-05 | `default=StatusInovacao.EM_TESTE` + `auto_now_add` |
 | INOV-06 | `autor`, `status` e `data_criacao` fora de `Meta.fields` |
