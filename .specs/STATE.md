@@ -69,11 +69,11 @@
 ## Handoff
 
 - **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. F2 concluída em 2026-10-03 (UAT 21/21).
-- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks ✅ aprovado em 2026-10-03 (`tasks.md`, T1–T22 em 5 fases; parte A = T1–T11, parte B = T12–T22, numa única feature) · Execute 🔄 lote 1 (Fase 1, T1–T5) ✅ em 2026-10-03; lote 2 (Fase 2, T6–T11) em andamento.
-- **Completed**: T1–T5 (`1b4daf3`, `060decd`, `46e285c`, `023464a`, `11c2ee5`); build gate verde com 245 testes. Desvios registrados: T5 `?page=0` → página 1 (`inovacoes/views.py`, SPEC_DEVIATION, design atualizado); teste de fuso da T2 usa 02:30 UTC.
+- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks ✅ aprovado em 2026-10-03 (`tasks.md`, T1–T22 em 5 fases; parte A = T1–T11, parte B = T12–T22, numa única feature) · Execute 🔄 parte A concluída (lotes 1 e 2, T1–T11) em 2026-10-03; parte B (T12–T22) pendente, aguardando a conferência manual da parte A pelo usuário.
+- **Completed**: T1–T11. Lote 1: `1b4daf3`, `060decd`, `46e285c`, `023464a`, `11c2ee5`. Lote 2: `d585e72`, `d9088b7`, `5c98282`, `238e7fa`, `5848a80`, `c2c94ec`. Build gate verde com 259 testes. Desvios: T5 `?page=0` → página 1 (SPEC_DEVIATION em `inovacoes/views.py`); teste de fuso da T2 com 02:30 UTC; T8 reapontou também `contas/tests/test_controle_acesso.py:98` (AUTH-11 → `GET /inovacoes/`), autorizado pelo usuário depois de bloqueio.
 - **In-progress** (file:line): nenhum.
-- **Next step**: lote 2 (Fase 2, T6–T11): cadastro → detalhe, cancelar → lista, `/` → lista, link no cabeçalho, acessibilidade e 500 da parte A.
-- **Testes pendentes**: nenhum. 245 passed em 2026-10-03.
+- **Next step**: conferência manual da parte A pelo usuário; depois lote 3 (Fase 3, T12–T16, Opus) e lote 4 (Fases 4+5, T17–T22). No fechamento: anotar "alterado pela F3" nas linhas do `design.md` da F2 que citam a home (`:78`, `:182`, `:197`, `:427`, `:428`); o `validation.md` da F2 fica como registro histórico.
+- **Testes pendentes**: nenhum. 259 passed em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
 - **Banco local**: migrations `inovacoes 0001–0004`; 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff ligado no UAT). 4 inovações do UAT: `Processo RH` e `Procésso RH` (Filial Leste, maria), `PROCESSO RH` (Filial Norte, maria), `Checklist de compras` (Sede, joao). Senhas fora do repositório.
