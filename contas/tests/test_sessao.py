@@ -46,7 +46,7 @@ def test_requisicao_dentro_da_janela_renova_por_mais_oito_horas(cliente_autentic
     Session.objects.filter(pk=_sessao(cliente_autenticado).pk).update(
         expire_date=timezone.now() + timedelta(hours=1)
     )
-    assert cliente_autenticado.get("/").status_code == 200
+    assert cliente_autenticado.get("/inovacoes/").status_code == 200
 
     expira = _sessao(cliente_autenticado).expire_date
     assert timezone.now() + OITO_HORAS - FOLGA <= expira <= timezone.now() + OITO_HORAS

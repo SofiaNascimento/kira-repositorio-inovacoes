@@ -17,7 +17,7 @@ def _navegacao_principal(html):
     return cabecalho[inicio : cabecalho.index("</nav>", inicio)]
 
 
-@pytest.mark.parametrize("pagina", ["/", "/inovacoes/nova/"])
+@pytest.mark.parametrize("pagina", ["/inovacoes/", "/inovacoes/nova/"])
 def test_cabecalho_autenticado_leva_ao_cadastro(client, autor, pagina):
     client.force_login(autor)
     html = client.get(pagina).content.decode()

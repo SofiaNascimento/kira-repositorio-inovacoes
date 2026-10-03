@@ -90,9 +90,10 @@ def test_login_com_next_leva_ao_destino_original(client, ana):
 @pytest.mark.django_db
 @pytest.mark.parametrize("perfil", [Usuario.Perfil.USUARIO, Usuario.Perfil.ADMINISTRADOR])
 def test_qualquer_perfil_autenticado_acessa_a_consulta(client, perfil):
-    """AUTH-11: o acesso as telas de consulta nao depende do perfil."""
+    """AUTH-11 (alterado pela CONS-09: a tela de consulta e a listagem): o
+    acesso as telas de consulta nao depende do perfil."""
     conta = Usuario.objects.create_user(
         username=f"conta-{perfil}", email=f"{perfil}@x.com", perfil=perfil
     )
     client.force_login(conta)
-    assert client.get("/").status_code == 200
+    assert client.get("/inovacoes/").status_code == 200

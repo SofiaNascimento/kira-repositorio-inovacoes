@@ -78,6 +78,7 @@ afrouxados. A contagem total nunca cai.
 | `contas/tests/test_views_home.py:21,28` | T8 | `GET /` 200 → `GET /` segue até `/inovacoes/` (200), com usuário e logout lá |
 | `contas/tests/test_sessao.py:49` | T8 | renova a sessão com `GET /inovacoes/` |
 | `inovacoes/tests/test_views_cabecalho.py:20` | T8 | parâmetro `"/"` → `"/inovacoes/"` |
+| `contas/tests/test_controle_acesso.py:98` | T8 | GET "/" 200 → GET "/inovacoes/" 200 (AUTH-11) |
 
 ---
 
@@ -344,7 +345,7 @@ T21 → T22
 
 ---
 
-### T8: `/` vira a listagem e a home provisória sai
+### T8: `/` vira a listagem e a home provisória sai ✅
 
 **What**: A rota `""` (`nucleo:home`) passa a ser um `RedirectView` para `inovacoes:lista`; `HomeInternaView` e `nucleo/home.html` são removidos.
 **Where**: `nucleo/urls.py`
@@ -359,18 +360,21 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `path("", RedirectView.as_view(pattern_name="inovacoes:lista", permanent=False), name="home")`
-- [ ] `nucleo/views.py` fica sem `HomeInternaView` (arquivo mantido vazio de views, ou removido se nada mais o importa); `nucleo/templates/nucleo/home.html` removido
-- [ ] Testes e2e: autenticado em `/` → 302 para `/inovacoes/` (CONS-09); POST de login válido sem `next`, com `follow=True`, termina em `/inovacoes/` com 200 (CONS-11)
-- [ ] Reapontados: `contas/tests/test_views_home.py:21,28` seguem o redirect e afirmam 200, o username e o formulário de logout na listagem (AUTH-01, AUTH-13); `contas/tests/test_sessao.py:49` renova com `GET /inovacoes/`; `inovacoes/tests/test_views_cabecalho.py:20` troca `"/"` por `"/inovacoes/"`
-- [ ] Sem alteração e verdes: `contas/tests/test_controle_acesso.py` (a varredura ainda enxerga `/`), `contas/tests/test_views_login.py` (o login ainda redireciona para `/`), `contas/tests/test_sessao.py:39`
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: 245 testes passam (+2)
+- [x] `path("", RedirectView.as_view(pattern_name="inovacoes:lista", permanent=False), name="home")`
+- [x] `nucleo/views.py` fica sem `HomeInternaView` (arquivo mantido vazio de views, ou removido se nada mais o importa); `nucleo/templates/nucleo/home.html` removido
+- [x] Testes e2e: autenticado em `/` → 302 para `/inovacoes/` (CONS-09); POST de login válido sem `next`, com `follow=True`, termina em `/inovacoes/` com 200 (CONS-11)
+- [x] Reapontados: `contas/tests/test_views_home.py:21,28` seguem o redirect e afirmam 200, o username e o formulário de logout na listagem (AUTH-01, AUTH-13); `contas/tests/test_sessao.py:49` renova com `GET /inovacoes/`; `inovacoes/tests/test_views_cabecalho.py:20` troca `"/"` por `"/inovacoes/"`
+- [x] Reapontado (AUTH-11): `contas/tests/test_controle_acesso.py:98` usa `GET /inovacoes/` (200, os dois perfis)
+- [x] Sem alteração e verdes: `contas/tests/test_controle_acesso.py` (a varredura e as linhas 68/77; a varredura ainda enxerga `/`), `contas/tests/test_views_login.py` (o login ainda redireciona para `/`), `contas/tests/test_sessao.py:39`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 245 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(nucleo): redireciona a raiz para a listagem de inovacoes`
+
+**Status**: ✅ Complete — 247 passed (+2); testes novos da CONS-09 e da CONS-11 em contas/tests/test_views_home.py; HomeInternaView, nucleo/views.py e nucleo/home.html removidos. Ajuste do Done when: contas/tests/test_controle_acesso.py:98 (AUTH-11) também foi reapontado para GET /inovacoes/, autorizado pelo usuário depois do bloqueio (o item o listava como inalterado). Build gate verde
 
 ---
 
