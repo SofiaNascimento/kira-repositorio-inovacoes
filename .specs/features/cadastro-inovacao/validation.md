@@ -170,11 +170,43 @@ Além de repetir V2b e T4, o conjunto é novo: nenhuma das outras 19 mutações 
 
 ## Interactive UAT Results
 
-O Verifier roda sem usuário; o UAT é conduzido pelo orquestrador. Achado registrado até aqui:
+O Verifier roda sem usuário; o UAT é conduzido pelo orquestrador. **Status (2026-10-02): em andamento, pausado depois da preparação; itens 1–21 pendentes.**
+
+**Preparação**
 
 | # | Test | Result | Details |
 | - | ---- | ------ | ------- |
-| 1 | Criação das contas pelo admin (abrir `/admin/` sem sessão) | ❌ Issue → corrigido na T24 | `GET /admin/login/` respondia HTTP 500 (`AttributeError` em `AnonymousUser.is_administrador`) - Severity: Blocker. Corrigido em `8f329ea`; prova em `contas/tests/test_admin_perfil.py:132-134` |
+| P1 | `migrate` no banco local | ✅ Pass | `inovacoes 0001–0004` aplicadas; 5 unidades e 5 categorias da carga presentes |
+| P2 | Abrir `/admin/` sem sessão para criar as contas | ❌ Issue → corrigido na T24 | `GET /admin/login/` respondia HTTP 500 (`AttributeError` em `AnonymousUser.is_administrador`) - Severity: Blocker. Corrigido em `8f329ea`; prova em `contas/tests/test_admin_perfil.py:132-134` |
+| P3 | Contas de teste pelo admin | ⚠️ Parcial | `maria` (USUARIO, "Maria Silva") e `joao` (ADMINISTRADOR, sem nome, `is_staff` ligado sozinho) criadas. Falta marcar **Membro da equipe** na `maria`: sem `is_staff`, os itens 8 e 21 dão 302 para o login em vez de 403 |
+
+**Roteiro** (contas `maria` e `joao`; esperado conforme as ACs citadas)
+
+| # | Test | Esperado | Result |
+| - | ---- | -------- | ------ |
+| 1 | Anônimo abre `/inovacoes/nova/` | Login com `?next=/inovacoes/nova/` (INOV-07) | ⏳ |
+| 2 | Entra como `maria` nesse login | Cai em `/inovacoes/nova/` (AUTH-10) | ⏳ |
+| 3 | Sai e entra com `MARIA@kira.local` | Home "Olá, maria" (AUTH-02) | ⏳ |
+| 4 | Senha errada | Só "Usuário ou senha inválidos." (AUTH-03) | ⏳ |
+| 5 | Senha vazia | Erro no campo; identificador preservado (AUTH-04) | ⏳ |
+| 6 | Logado, abre `/entrar/` | Vai para a home (AUTH-12) | ⏳ |
+| 7 | Sair; Voltar e recarregar | "Sessão encerrada."; página interna manda ao login (AUTH-13, AUTH-14) | ⏳ |
+| 8 | `maria` em `/admin/contas/usuario/` | 403 (AUTH-22) | ⏳ |
+| 9 | Cabeçalho logado | Link "Cadastrar inovação" (INOV-38) | ⏳ |
+| 10 | Abre o formulário | 7 campos; selects com "Selecione…" e listas em ordem alfabética; ajuda em cada campo (INOV-01, 15, 41) | ⏳ |
+| 11 | Contato | "Maria Silva (maria@kira.local)", editável (INOV-39) | ⏳ |
+| 12 | Apaga o contato e envia vazio | Resumo no topo + as seis mensagens de campo; nada gravado (INOV-09, 13, 30) | ⏳ |
+| 13 | Título, unidade e categoria preenchidos; Problema só com espaços | Erro em Problema; os demais preservados (INOV-10, 11) | ⏳ |
+| 14 | Salva "Triagem de chamados" na Sede, Resultado vazio | Home com "Inovação “Triagem de chamados” cadastrada com sucesso."; some no F5; banco com autor `maria`, `EM_TESTE`, data (INOV-03–05, 14, 28, 29) | ⏳ |
+| 15 | "TRIAGEM DE CHAMADOS" na Sede | Recusado com a mensagem da INOV-22 | ⏳ |
+| 16 | Mesmo título na Filial Norte; "Triagem de chamádos" na Sede | Ambos aceitos (INOV-24, 27) | ⏳ |
+| 17 | Só teclado: Tab do topo, setas nos selects, Enter | Ordem de foco = ordem visual; foco visível; envio funciona (INOV-34, 35; Success Criterion de teclado) | ⏳ |
+| 18 | Só teclado: erro visível; Tab até "Cancelar" + Enter | Erro junto ao campo; volta à home sem salvar (INOV-33, 37; Success Criterion de teclado) | ⏳ |
+| 19 | `joao` cadastra uma inovação | Igual à `maria`; contato "joao (joao@kira.local)" (INOV-08, 39) | ⏳ |
+| 20 | `joao` no admin de Unidades e Categorias | Lista, inclui, renomeia; excluir "Sede" em uso é recusado (INOV-19, 21) | ⏳ |
+| 21 | `maria` em `/admin/inovacoes/unidade/` | 403 (INOV-20) | ⏳ |
+
+Fora do roteiro por desenho, cobertos por teste automatizado: limites de 150/5000 caracteres (o `maxlength` do HTML impede digitar além), banco indisponível (INOV-42) e envios concorrentes (INOV-25, 43).
 
 ---
 

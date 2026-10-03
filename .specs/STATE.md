@@ -60,28 +60,25 @@
 
 ## Handoff
 
-- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Concluída e verificada em 2026-09-29; pausa em 2026-09-29 sem trabalho a meio caminho.
-- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ · Execute ✅ (T1–T23) · Verifier ✅ (FAIL na iteração 1, corrigido em T22–T23; **PASS na iteração 2**: 43/43 ACs, sensor 20/21 com 1 mutante equivalente; `validate_state.py` 0 erros) · UAT interativo ⏳ não iniciado.
-- **Completed**: T1–T23 (detalhe em `tasks.md`); AD-007 registrada; artefatos da F2 alinhados ao implementado (commit `0d3419d`: status de `design.md` e `context.md`, migrations reais no design, Goals e Success Criteria da `spec.md`).
-- **In-progress** (file:line): nenhum. Único item aberto da spec: o Success Criterion "preenchido e enviado só com teclado" (`.specs/features/cadastro-inovacao/spec.md`, seção Success Criteria), que depende do UAT; o HTML já está provado por `inovacoes/tests/test_views_acessibilidade.py`.
-- **Next step**: UAT da F1+F2 no navegador pelo roteiro de 21 itens passado ao usuário (contas `maria` e `joao` a criar; itens 17–18 fecham o critério de teclado). Antes, `.venv/bin/python manage.py migrate`: o banco local ainda não tem `inovacoes 0001–0004`. Depois, Specify da F3 (consulta-inovacoes).
-- **Blockers**: nenhum. Ambiente: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/` (`.venv/bin/pytest`, `.venv/bin/python manage.py runserver`). O `.env` já traz `DJANGO_DEBUG=True`, necessário para o login funcionar em `http://`.
-- **Banco local de desenvolvimento**: só o superusuário `admin` (`admin@kira.local`, `ADMINISTRADOR`); senha fora do repositório (`changepassword admin` se perdida). Nenhum dado da F2 ainda (migrations não aplicadas).
-- **Uncommitted files**: nenhum (só este Handoff, que entra no commit da pausa).
-- **Branch**: `main`. O `origin/main` estava igual à `main` antes deste commit (push feito pelo autor); só o commit da pausa fica local.
+- **Feature**: cadastro-inovacao (F2) — `.specs/features/cadastro-inovacao/`. Pausa em 2026-10-02 no meio do **UAT interativo da F1+F2**, sem código a meio caminho.
+- **Phase / Task**: Specify ✅ · Design ✅ · Tasks ✅ · Execute ✅ (T1–T24) · Verifier ✅ **PASS na iteração 3** (206 passed; sensor 4/4 não equivalentes mortos, 3 equivalentes; `validate_state.py` 0 erros) · UAT ⏳ preparação feita, **itens 1–21 pendentes**.
+- **Completed**: T1–T23 (F2 original); **T24** (`8f329ea`) — primeiro achado do UAT: `GET /admin/login/` anônimo dava 500 porque `AcessoSomenteAdministradorMixin` lia `is_administrador` do `AnonymousUser`; agora `_is_administrador` exige `is_authenticated` (`contas/admin.py:19-22`), provado por `contas/tests/test_admin_perfil.py:125`. Validação da iteração 3 em `6277031`.
+- **In-progress** (file:line): nenhum código. O roteiro do UAT (21 itens, esperado e AC de cada um) e o progresso estão em `.specs/features/cadastro-inovacao/validation.md`, seção *Interactive UAT Results*: é a fonte para retomar, não a conversa.
+- **Next step**: (1) subir o servidor no terminal do usuário (`.venv/bin/python manage.py runserver`; o que rodava em segundo plano foi encerrado pelo limite de 2 h); (2) no admin, marcar **Membro da equipe** na `maria` (hoje `is_staff=False`; sem isso os itens 8 e 21 dão 302 em vez de 403); (3) seguir o roteiro do item 1 ao 21 e registrar cada resultado no `validation.md`. Itens 17–18 fecham o Success Criterion de teclado da `spec.md`; achados viram T25+ com nova rodada do Verifier.
+- **Testes pendentes**: nenhum automatizado (206 passed, gate de build verde em 2026-10-02). Pendente só a verificação manual: os 21 itens do UAT, incluindo o percurso real por teclado (INOV-34/35) e o efeito visual do `:focus-visible`.
+- **Blockers**: nenhum.
+- **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
+- **Banco local**: migrations `inovacoes 0001–0004` aplicadas, 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, `is_staff` ligado), `maria` (USUARIO, "Maria Silva", `is_staff` **desligado**). Nenhuma inovação cadastrada ainda. Senhas fora do repositório.
+- **Uncommitted files**: nenhum (este Handoff e o roteiro no `validation.md` entram no commit da pausa).
+- **Branch**: `main`, **4 commits à frente** do `origin/main` (`8f329ea`, `6277031` e o da pausa, além do `eb58569` da pausa anterior), nenhum enviado. Push só com pedido explícito.
 
-**UAT em andamento (2026-10-02):** migrations `inovacoes 0001–0004` aplicadas no banco local (listas iniciais presentes). Primeiro achado: `GET /admin/login/` anônimo respondia 500 (`AnonymousUser` sem `is_administrador` no `AcessoSomenteAdministradorMixin`, defeito da F1 em `c28430c`); corrigido na **T24** (`tasks.md`, Phase 7), 206 passed. Verifier da iteração 3: **PASS** (206 passed; sensor 4/4 não equivalentes mortos). Lições candidatas L-009 e L-010. Gap aberto: AUTH-21 não diz que o login do admin abre para o anônimo (sugestão: AC nova na F1).
+**Pendências abertas para decidir depois do UAT:**
+- **Sugestão 1 do Verifier (spec-precision gap):** a AUTH-21 (`autenticacao/spec.md:196`) não diz que o login do admin abre para o visitante sem sessão. Proposta: AC nova na F1 apontando para `test_admin_perfil.py:125`. Aguarda o usuário.
+- **Sugestão 2 (cosmética):** a T24 falta nas tabelas de Granularity, Diagram-Definition Cross-Check e Test Co-location do `tasks.md`.
+- Depois do UAT: Specify da F3 (consulta-inovacoes).
 
-**Desvio registrado no `tasks.md`:** quatro migrations em vez de duas (uma por task de modelo); esquema final igual ao do design.
+**Decisões desta sessão (2026-10-02)**, feature-local, sem AD nova: a correção do anônimo fica dentro da AD-007 (o mixin continua sendo a regra única; anônimo nunca é administrador); o roteiro do UAT passa a viver no `validation.md`; o UAT vai até o fim antes de mexer na spec da F1.
 
-**Decisões da discussão da F2 (2026-09-27):** listas mantidas só pelo `ADMINISTRADOR` no admin, com unidades provisórias; título único ignora maiúsculas/minúsculas e conta acentos; contato responsável pré-preenchido e editável; RF15 entra como P3; arquitetura A (uma app `inovacoes`).
-
-**Decisões da sessão de 2026-09-29:** execução inline da F2; o Success Criterion de teclado fica desmarcado até o UAT.
-
-**Decisões da sessão de 2026-09-26:** README fica vazio; `.DS_Store` fora do versionamento; execução inline; AUTH-22 cumprida como escrita (telas de usuário do admin só para `ADMINISTRADOR`, T26).
+**Lições candidatas**: L-007, L-008 (sessão anterior); **L-009** (hook de permissão que lê atributo próprio do `request.user` precisa de `is_authenticated` e de teste anônimo) e **L-010** (AC que promete redirecionar ao login precisa provar que o destino abre com 200), em `.specs/LESSONS.md`.
 
 **Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
-
-**Lições candidatas novas**: L-007 (atribuição de autoria com mais de uma conta) e L-008 (preservação de valor com erro em outro campo), em `.specs/LESSONS.md`.
-
-**Estado verificado em 2026-09-29**: `.venv/bin/pytest -q` → **205 passed**; `makemigrations --check --dry-run` → "No changes detected"; ruff limpo.
