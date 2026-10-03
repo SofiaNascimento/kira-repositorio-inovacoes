@@ -331,18 +331,18 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-04 | P1: Ver a lista de inovações | - | Pending |
 | CONS-05 | P1: Ver a lista de inovações | - | Pending |
 | CONS-06 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-07 | P1: Ver a lista de inovações | - | Pending |
-| CONS-08 | P1: Ver a lista de inovações | - | Pending |
+| CONS-07 | P1: Ver a lista de inovações | Execute | Implementing |
+| CONS-08 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-09 | P1: Ver a lista de inovações | - | Pending |
 | CONS-10 | P1: Ver a lista de inovações | - | Pending |
 | CONS-11 | P1: Ver a lista de inovações | - | Pending |
-| CONS-12 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
-| CONS-13 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
-| CONS-14 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
+| CONS-12 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
+| CONS-13 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
+| CONS-14 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
 | CONS-15 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
-| CONS-16 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
-| CONS-17 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
-| CONS-18 | P1: Ver o detalhe de uma inovação e falar com o responsável | - | Pending |
+| CONS-16 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
+| CONS-17 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
+| CONS-18 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
 | CONS-19 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-20 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-21 | P1: Buscar por palavra-chave | - | Pending |
@@ -366,7 +366,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-39 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-40 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-41 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
-| CONS-42 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-43 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-44 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-45 | P2: Desempenho com o conjunto de demonstração | - | Pending |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 3 implementando (Execute), 50 pendentes.
+**Coverage:** 53 total, 12 implementando (Execute), 41 pendentes.
 
 ---
 

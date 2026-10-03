@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView
 
 from inovacoes.forms import InovacaoForm
 from inovacoes.models import Inovacao
@@ -48,3 +48,12 @@ class InovacaoCreateView(CreateView):
         # INOV-28: diz o que aconteceu e com qual registro (RF12).
         messages.success(self.request, f"Inovação “{self.object.titulo}” cadastrada com sucesso.")
         return HttpResponseRedirect(self.get_success_url())
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).
+class InovacaoDetailView(DetailView):
+    """Detalhe de uma inovacao com o contato responsavel (RF04, RN06)."""
+
+    queryset = Inovacao.objects.select_related("unidade", "categoria", "autor")
+    context_object_name = "inovacao"
+    template_name = "inovacoes/inovacao_detail.html"

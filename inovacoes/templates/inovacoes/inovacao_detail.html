@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}{{ inovacao.titulo }}{% endblock %}
+
+{% block conteudo %}
+  <h1>{{ inovacao.titulo }}</h1>
+
+  {# CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
+  <p>Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }}</p>
+
+  {# CONS-42: campos numa lista de descricao; o escape automatico cobre a CONS-17. #}
+  <dl>
+    <dt>Título</dt>
+    <dd>{{ inovacao.titulo }}</dd>
+    <dt>Unidade de origem</dt>
+    <dd>{{ inovacao.unidade.nome }}</dd>
+    <dt>Categoria</dt>
+    <dd>{{ inovacao.categoria.nome }}</dd>
+    <dt>Problema ou dor</dt>
+    <dd>{{ inovacao.problema|linebreaksbr }}</dd>
+    <dt>Solução aplicada</dt>
+    <dd>{{ inovacao.solucao|linebreaksbr }}</dd>
+    <dt>Resultado ou impacto</dt>
+    <dd>{{ inovacao.resultado|linebreaksbr|default:"Não informado" }}</dd>
+    <dt>Status</dt>
+    <dd>{{ inovacao.get_status_display }}</dd>
+    <dt>Contato responsável</dt>
+    <dd>{{ inovacao.contato }}</dd>
+  </dl>
+
+  {# Literal ate a T4 criar a rota inovacoes:lista. #}
+  <p><a href="/inovacoes/">Voltar para a lista de inovações</a></p>
+{% endblock %}

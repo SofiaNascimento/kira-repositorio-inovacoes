@@ -161,7 +161,7 @@ T21 → T22
 
 ---
 
-### T2: Página de detalhe (`InovacaoDetailView`, rota e template)
+### T2: Página de detalhe (`InovacaoDetailView`, rota e template) ✅
 
 **What**: A rota `/inovacoes/<id>/` mostrando os oito campos numa `<dl>`, a linha "Cadastrada por" e o link de volta.
 **Where**: `inovacoes/views.py`
@@ -176,18 +176,20 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `InovacaoDetailView` com `queryset = Inovacao.objects.select_related("unidade", "categoria", "autor")`, `context_object_name = "inovacao"`; sem decorator
-- [ ] `inovacoes/urls.py`: `path("<int:pk>/", …, name="detalhe")`
-- [ ] `inovacoes/templates/inovacoes/inovacao_detail.html`: `h1` = título; "Cadastrada por <nome ou username> em dd/mm/aaaa"; `<dl>` com `<dt>`/`<dd>` para Título, Unidade de origem, Categoria, Problema ou dor, Solução aplicada, Resultado ou impacto, Status, Contato responsável; `linebreaksbr` nos três textos longos; `default:"Não informado"` no resultado; link "Voltar para a lista de inovações" → `/inovacoes/` (literal até a T4 criar `inovacoes:lista`; a T4 troca por `{% url %}`)
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: 200 com `h1` e os oito pares `dt`/`dd` na ordem (CONS-12, CONS-42); "Cadastrada por Ana Souza em <data>" e, para conta sem nome, "Cadastrada por bruno em …" (CONS-13); `data_criacao` em 03:30 UTC aparece com a data do dia anterior em `America/Sao_Paulo` (CONS-13, fuso); resultado vazio → "Não informado" (CONS-14); problema com `\n` → `<br>` (CONS-16); `<b>x</b>` na solução sai como `&lt;b&gt;x&lt;/b&gt;` (CONS-17); link de volta (CONS-18); `get_absolute_url()` == `/inovacoes/<id>/`; `USUARIO` abre a inovação de outro autor (CONS-08); anônimo → `/entrar/?next=/inovacoes/<id>/` (CONS-07)
-- [ ] A varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/1/`
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 221 testes passam (+12)
+- [x] `InovacaoDetailView` com `queryset = Inovacao.objects.select_related("unidade", "categoria", "autor")`, `context_object_name = "inovacao"`; sem decorator
+- [x] `inovacoes/urls.py`: `path("<int:pk>/", …, name="detalhe")`
+- [x] `inovacoes/templates/inovacoes/inovacao_detail.html`: `h1` = título; "Cadastrada por <nome ou username> em dd/mm/aaaa"; `<dl>` com `<dt>`/`<dd>` para Título, Unidade de origem, Categoria, Problema ou dor, Solução aplicada, Resultado ou impacto, Status, Contato responsável; `linebreaksbr` nos três textos longos; `default:"Não informado"` no resultado; link "Voltar para a lista de inovações" → `/inovacoes/` (literal até a T4 criar `inovacoes:lista`; a T4 troca por `{% url %}`)
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: 200 com `h1` e os oito pares `dt`/`dd` na ordem (CONS-12, CONS-42); "Cadastrada por Ana Souza em <data>" e, para conta sem nome, "Cadastrada por bruno em …" (CONS-13); `data_criacao` em 03:30 UTC aparece com a data do dia anterior em `America/Sao_Paulo` (CONS-13, fuso); resultado vazio → "Não informado" (CONS-14); problema com `\n` → `<br>` (CONS-16); `<b>x</b>` na solução sai como `&lt;b&gt;x&lt;/b&gt;` (CONS-17); link de volta (CONS-18); `get_absolute_url()` == `/inovacoes/<id>/`; `USUARIO` abre a inovação de outro autor (CONS-08); anônimo → `/entrar/?next=/inovacoes/<id>/` (CONS-07)
+- [x] A varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/1/`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 221 testes passam (+12)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a pagina de detalhe da inovacao`
+
+**Status**: ✅ Complete — 222 passed (+13); 13 testes no lugar dos 12 estimados (perfil parametrizado em dois); o teste de fuso usa 02:30 UTC (23:30 do dia anterior em America/Sao_Paulo, UTC-3), pois 03:30 UTC ainda e o mesmo dia; get_absolute_url() (T1) provado aqui
 
 ---
 
