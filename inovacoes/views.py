@@ -75,5 +75,19 @@ class InovacaoListView(ListView):
     template_name = "inovacoes/inovacao_list.html"
     context_object_name = "inovacoes"
 
+    paginate_by = 20
+
     def get_queryset(self):
         return Inovacao.objects.para_listagem()
+
+    # SPEC_DEVIATION: o design chama get_page() com o valor cru de ?page=.
+    # Reason: get_page() manda page=0 para a ultima pagina; a T5 pede a primeira.
+    def paginate_queryset(self, queryset, page_size):
+        # CONS-05: o ListView padrao daria 404 para pagina invalida.
+        paginator = self.get_paginator(queryset, page_size)
+        try:
+            numero = max(int(self.request.GET.get("page", 1)), 1)
+        except ValueError:
+            numero = 1
+        pagina = paginator.get_page(numero)
+        return (paginator, pagina, pagina.object_list, pagina.has_other_pages())

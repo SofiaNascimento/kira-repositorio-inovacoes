@@ -254,7 +254,7 @@ T21 → T22
 
 ---
 
-### T5: Paginação tolerante
+### T5: Paginação tolerante ✅
 
 **What**: 20 por página com "Anterior", "Próxima" e "Página X de Y", e página inválida levando à 1 ou à última.
 **Where**: `inovacoes/views.py`
@@ -269,16 +269,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `paginate_by = 20`; `paginate_queryset()` sobrescrito para `paginator.get_page(self.request.GET.get("page"))`, devolvendo `(paginator, page, page.object_list, page.has_other_pages())`
-- [ ] `inovacao_list.html`: com `is_paginated`, `<nav aria-label="Paginação">` com "Anterior" só se `has_previous`, "Página X de Y" e "Próxima" só se `has_next`, ambos via `{% querystring page=… %}`; a contagem usa `paginator.count`
-- [ ] Testes e2e: 25 inovações → página 1 com 20 linhas, "Página 1 de 2", só "Próxima"; página 2 com 5, só "Anterior"; 20 inovações → sem `<nav>` de paginação (CONS-03); `?page=abc` e `?page=0` → 200 na página 1; `?page=99` → 200 na última (CONS-05); contagem "25 inovações encontradas" nas duas páginas (CONS-33); `nav[aria-label="Paginação"]` (CONS-39)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 243 testes passam (+7)
+- [x] `paginate_by = 20`; `paginate_queryset()` sobrescrito para `paginator.get_page(self.request.GET.get("page"))`, devolvendo `(paginator, page, page.object_list, page.has_other_pages())`
+- [x] `inovacao_list.html`: com `is_paginated`, `<nav aria-label="Paginação">` com "Anterior" só se `has_previous`, "Página X de Y" e "Próxima" só se `has_next`, ambos via `{% querystring page=… %}`; a contagem usa `paginator.count`
+- [x] Testes e2e: 25 inovações → página 1 com 20 linhas, "Página 1 de 2", só "Próxima"; página 2 com 5, só "Anterior"; 20 inovações → sem `<nav>` de paginação (CONS-03); `?page=abc` e `?page=0` → 200 na página 1; `?page=99` → 200 na última (CONS-05); contagem "25 inovações encontradas" nas duas páginas (CONS-33); `nav[aria-label="Paginação"]` (CONS-39)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 243 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): pagina a listagem de inovacoes`
+
+**Status**: ✅ Complete — 245 passed (+9); testes parametrizados (abc/0 e páginas 1/2) somam mais casos que os 7 estimados. Ajuste do Done when: paginate_queryset não chama get_page() com o valor cru, porque get_page(0) devolve a última página; usa max(int(page), 1) para que page=0 caia na primeira, como a T5 pede (registrado no design.md com SPEC_DEVIATION no código). Build gate (ruff, format, makemigrations, pytest) verde no fim da Phase 1; o bloco de código do design.md foi reformatado para o ruff format --check passar
 
 ---
 

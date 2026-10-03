@@ -209,7 +209,7 @@ LIMIT 20;
 - **Interfaces**:
   - `template_name = "inovacoes/inovacao_list.html"`, `paginate_by = 20`, `context_object_name = "inovacoes"`.
   - `get_queryset()`: `self.form = BuscaForm(self.request.GET)` (sempre vinculado, para repopular os controles; CONS-25, CONS-29). Se o form for inválido, devolve `Inovacao.objects.none()` (CONS-24, CONS-30). Se for válido, devolve `para_listagem().buscar(q).filtrar(categoria=…, unidade=…, status=…)`.
-  - `paginate_queryset(queryset, page_size)`: sobrescrito para `paginator.get_page(self.request.GET.get("page"))`, devolvendo `(paginator, page, page.object_list, page.has_other_pages())` (CONS-05).
+  - `paginate_queryset(queryset, page_size)`: sobrescrito para `paginator.get_page(numero)`, devolvendo `(paginator, page, page.object_list, page.has_other_pages())` (CONS-05). Ajuste da T5: `numero = max(int(GET["page"]), 1)` (não inteiro → 1), porque `get_page()` manda `page=0` para a última página e a T5 pede a primeira (a spec não define o zero).
   - `get_context_data()`: acrescenta `form` e `filtros_ativos`, verdadeiro quando `q` (sem espaços nas pontas), `categoria`, `unidade` ou `status` vêm não vazios no GET (CONS-32, CONS-34, CONS-35).
 - **Dependencies**: `BuscaForm`, `InovacaoQuerySet`.
 - **Reuses**: `ListView`; AD-006 (sem decorator).
@@ -237,8 +237,8 @@ LIMIT 20;
 
 ```python
 urlpatterns = [
-    path("", InovacaoListView.as_view(), name="lista"),          # /inovacoes/
-    path("nova/", InovacaoCreateView.as_view(), name="nova"),    # /inovacoes/nova/
+    path("", InovacaoListView.as_view(), name="lista"),  # /inovacoes/
+    path("nova/", InovacaoCreateView.as_view(), name="nova"),  # /inovacoes/nova/
     path("<int:pk>/", InovacaoDetailView.as_view(), name="detalhe"),  # /inovacoes/<id>/
 ]
 ```

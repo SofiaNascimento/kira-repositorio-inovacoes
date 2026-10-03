@@ -327,9 +327,9 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | -------------- | ----- | ----- | ------ |
 | CONS-01 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-02 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-03 | P1: Ver a lista de inovações | - | Pending |
+| CONS-03 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-04 | P1: Ver a lista de inovações | - | Pending |
-| CONS-05 | P1: Ver a lista de inovações | - | Pending |
+| CONS-05 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-06 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-07 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-08 | P1: Ver a lista de inovações | Execute | Implementing |
@@ -363,7 +363,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-36 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-37 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-39 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-39 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-40 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-41 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 18 implementando (Execute), 35 pendentes.
+**Coverage:** 53 total, 21 implementando (Execute), 32 pendentes.
 
 ---
 

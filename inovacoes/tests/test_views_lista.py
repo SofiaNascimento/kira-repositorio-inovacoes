@@ -140,3 +140,78 @@ def test_tabela_tem_caption_e_quatro_cabecalhos_de_coluna(logado, criar_inovacao
     assert "<caption>Inovações cadastradas</caption>" in html
     cabecalhos = re.findall(r'<th scope="col">(.*?)</th>', html, re.S)
     assert [c.strip() for c in cabecalhos] == ["Título", "Categoria", "Unidade", "Status"]
+
+
+@pytest.fixture
+def vinte_e_cinco(criar_inovacao):
+    """Titulos I00 a I24, criados em ordem: a mais nova (I24) abre a pagina 1."""
+    for numero in range(25):
+        criar_inovacao(titulo=f"I{numero:02d}")
+
+
+def _paginacao(html):
+    achado = re.search(r'<nav aria-label="Paginação">(.*?)</nav>', html, re.S)
+    return achado.group(1) if achado else None
+
+
+def test_primeira_pagina_tem_20_linhas_pagina_x_de_y_e_so_proxima(logado, vinte_e_cinco):
+    """CONS-03."""
+    html = logado.get(LISTA).content.decode()
+    titulos = [linha[0] for linha in _linhas(html)]
+    assert titulos == [f"I{n:02d}" for n in range(24, 4, -1)]
+    nav = _paginacao(html)
+    assert "Página 1 de 2" in nav
+    assert re.search(r'<a href="\?page=2">\s*Próxima\s*</a>', nav)
+    assert "Anterior" not in nav
+
+
+def test_ultima_pagina_tem_o_restante_e_so_anterior(logado, vinte_e_cinco):
+    """CONS-03."""
+    html = logado.get(f"{LISTA}?page=2").content.decode()
+    titulos = [linha[0] for linha in _linhas(html)]
+    assert titulos == [f"I{n:02d}" for n in range(4, -1, -1)]
+    nav = _paginacao(html)
+    assert "Página 2 de 2" in nav
+    assert re.search(r'<a href="\?page=1">\s*Anterior\s*</a>', nav)
+    assert "Próxima" not in nav
+
+
+def test_vinte_inovacoes_cabem_numa_pagina_sem_navegacao(logado, criar_inovacao):
+    """CONS-03: com uma pagina so, nao ha <nav> de paginacao."""
+    for numero in range(20):
+        criar_inovacao(titulo=f"I{numero:02d}")
+    html = logado.get(LISTA).content.decode()
+    assert len(_linhas(html)) == 20
+    assert _paginacao(html) is None
+    assert "Página 1 de" not in html
+
+
+@pytest.mark.parametrize("pagina", ["abc", "0"])
+def test_pagina_invalida_mostra_a_primeira(logado, vinte_e_cinco, pagina):
+    """CONS-05: nao inteiro cai na pagina 1; o zero tambem (Done-when da T5), com 200."""
+    resposta = logado.get(f"{LISTA}?page={pagina}")
+    assert resposta.status_code == 200
+    assert "Página 1 de 2" in _paginacao(resposta.content.decode())
+
+
+def test_pagina_alem_da_ultima_mostra_a_ultima(logado, vinte_e_cinco):
+    """CONS-05."""
+    resposta = logado.get(f"{LISTA}?page=99")
+    assert resposta.status_code == 200
+    html = resposta.content.decode()
+    assert "Página 2 de 2" in _paginacao(html)
+    assert len(_linhas(html)) == 5
+
+
+@pytest.mark.parametrize("pagina", ["1", "2"])
+def test_contagem_e_o_total_de_todas_as_paginas(logado, vinte_e_cinco, pagina):
+    """CONS-33."""
+    html = logado.get(f"{LISTA}?page={pagina}").content.decode()
+    assert "25 inovações encontradas" in html
+
+
+def test_paginacao_fica_num_nav_rotulado(logado, vinte_e_cinco):
+    """CONS-39."""
+    html = logado.get(LISTA).content.decode()
+    assert html.count('<nav aria-label="Paginação">') == 1
+    assert _paginacao(html) is not None

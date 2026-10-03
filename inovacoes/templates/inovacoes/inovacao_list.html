@@ -34,6 +34,19 @@
         {% endfor %}
       </tbody>
     </table>
+
+    {# CONS-39: os links de pagina ficam num nav rotulado. #}
+    {% if is_paginated %}
+      <nav aria-label="Paginação">
+        {% if page_obj.has_previous %}
+          <a href="{% querystring page=page_obj.previous_page_number %}">Anterior</a>
+        {% endif %}
+        <span>Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+          <a href="{% querystring page=page_obj.next_page_number %}">Próxima</a>
+        {% endif %}
+      </nav>
+    {% endif %}
   {% else %}
     {# CONS-34: repositorio vazio, sem tabela. #}
     <p>Nenhuma inovação cadastrada ainda.</p>
