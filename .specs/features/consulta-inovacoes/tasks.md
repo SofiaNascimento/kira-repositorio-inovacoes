@@ -314,7 +314,7 @@ T21 → T22
 
 ---
 
-### T7: "Cancelar" do cadastro leva à listagem
+### T7: "Cancelar" do cadastro leva à listagem ✅
 
 **What**: O link "Cancelar" do formulário de cadastro aponta para `/inovacoes/`.
 **Where**: `inovacoes/templates/inovacoes/inovacao_form.html`
@@ -329,16 +329,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `href="{% url 'inovacoes:lista' %}"` no "Cancelar"
-- [ ] `inovacoes/tests/test_views_cadastro.py:330` e o teste da INOV-37 passam a afirmar `href="/inovacoes/"` e que seguir o link leva à listagem (200) sem gravar nada (CONS-51)
-- [ ] `.specs/features/cadastro-inovacao/spec.md`: INOV-36 e INOV-37 ganham a nota "alvo alterado pela F3 (CONS-51): `/inovacoes/`"
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 243 testes passam (+0: dois testes reapontados)
+- [x] `href="{% url 'inovacoes:lista' %}"` no "Cancelar"
+- [x] `inovacoes/tests/test_views_cadastro.py:330` e o teste da INOV-37 passam a afirmar `href="/inovacoes/"` e que seguir o link leva à listagem (200) sem gravar nada (CONS-51)
+- [x] `.specs/features/cadastro-inovacao/spec.md`: INOV-36 e INOV-37 ganham a nota "alvo alterado pela F3 (CONS-51): `/inovacoes/`"
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 243 testes passam (+0: dois testes reapontados)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): leva o cancelar do cadastro a listagem`
+
+**Status**: ✅ Complete — 245 passed (+0); dois testes reapontados (INOV-36 e INOV-37), o da INOV-37 também afirma o template da listagem; estimativa de 243 do Done when defasada (base 245)
 
 ---
 

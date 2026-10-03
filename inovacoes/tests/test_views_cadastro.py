@@ -336,18 +336,19 @@ def _link_cancelar(html):
     return links[0]
 
 
-def test_formulario_tem_link_cancelar_para_a_home(logado):
-    """INOV-36: um link, nao um botao do formulario."""
+def test_formulario_tem_link_cancelar_para_a_listagem(logado):
+    """INOV-36, alterado pela CONS-51: um link, nao um botao, para /inovacoes/."""
     atributos = _link_cancelar(logado.get(NOVA).content.decode())
-    assert re.search(r'\bhref="/"', atributos)
+    assert re.search(r'\bhref="/inovacoes/"', atributos)
 
 
-def test_cancelar_leva_a_home_sem_gravar_nem_pedir_confirmacao(logado):
-    """INOV-37: o link e um GET comum, sem script de confirmacao."""
+def test_cancelar_leva_a_listagem_sem_gravar_nem_pedir_confirmacao(logado):
+    """INOV-37, alterado pela CONS-51: GET comum, sem confirmacao, que chega a listagem."""
     atributos = _link_cancelar(logado.get(NOVA).content.decode())
     assert "onclick" not in atributos
     href = re.search(r'\bhref="([^"]*)"', atributos).group(1)
     resposta = logado.get(href)
     assert resposta.status_code == 200
-    assertTemplateUsed(resposta, "nucleo/home.html")
+    assert href == "/inovacoes/"
+    assertTemplateUsed(resposta, "inovacoes/inovacao_list.html")
     assert not Inovacao.objects.exists()

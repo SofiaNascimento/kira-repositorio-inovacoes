@@ -243,8 +243,8 @@ gravar nada.
 
 **Acceptance Criteria**:
 
-1. **INOV-36** — The system SHALL display in the form a link labeled "Cancelar" pointing to the internal home page.
-2. **INOV-37** — WHEN the user follows the "Cancelar" link THEN the system SHALL navigate to the internal home page without persisting any Inovacao and without asking for confirmation.
+1. **INOV-36** — The system SHALL display in the form a link labeled "Cancelar" pointing to the internal home page. *(Alvo alterado pela F3 (CONS-51): `/inovacoes/`.)*
+2. **INOV-37** — WHEN the user follows the "Cancelar" link THEN the system SHALL navigate to the internal home page without persisting any Inovacao and without asking for confirmation. *(Alvo alterado pela F3 (CONS-51): `/inovacoes/`.)*
 
 **Independent Test**: preencher parte do formulário, clicar em "Cancelar", chegar à home e confirmar
 que nenhum registro foi criado.
