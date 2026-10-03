@@ -407,7 +407,7 @@ T21 → T22
 
 ---
 
-### T10: Listagem e detalhe acessíveis por teclado
+### T10: Listagem e detalhe acessíveis por teclado ✅
 
 **What**: A evidência de que lista e detalhe usam só controles nativos, sem `tabindex` positivo e com foco visível; o ajuste entra aqui se a evidência acusar falta.
 **Where**: `inovacoes/tests/test_views_acessibilidade_consulta.py`
@@ -422,15 +422,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] Testes e2e para `/inovacoes/` (com paginação ativa) e `/inovacoes/<id>/`: nenhum `tabindex` com valor positivo; todo elemento interativo é `a[href]`, `button`, `input`, `select` ou `textarea`; a regra `:focus-visible` com `outline` está na folha de estilo da página (CONS-41)
-- [ ] Na T18 este arquivo ganha a página com o formulário de busca; o teste é escrito para varrer a página inteira, então a T18 só acrescenta parâmetros
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 253 testes passam (+4)
+- [x] Testes e2e para `/inovacoes/` (com paginação ativa) e `/inovacoes/<id>/`: nenhum `tabindex` com valor positivo; todo elemento interativo é `a[href]`, `button`, `input`, `select` ou `textarea`; a regra `:focus-visible` com `outline` está na folha de estilo da página (CONS-41)
+- [x] Na T18 este arquivo ganha a página com o formulário de busca; o teste é escrito para varrer a página inteira, então a T18 só acrescenta parâmetros
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 253 testes passam (+4)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a navegacao por teclado na listagem e no detalhe`
+
+**Status**: ✅ Complete — 257 passed (+6); três testes (tabindex, controles nativos, :focus-visible) parametrizados em lista paginada e detalhe; a evidência não acusou falta, nenhum ajuste de implementação. Estimativa de 253 defasada
 
 ---
 
