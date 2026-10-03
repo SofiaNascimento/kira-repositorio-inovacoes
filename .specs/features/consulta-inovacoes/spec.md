@@ -326,11 +326,11 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
 | CONS-01 | P1: Ver a lista de inovações | - | Pending |
-| CONS-02 | P1: Ver a lista de inovações | - | Pending |
+| CONS-02 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-03 | P1: Ver a lista de inovações | - | Pending |
 | CONS-04 | P1: Ver a lista de inovações | - | Pending |
 | CONS-05 | P1: Ver a lista de inovações | - | Pending |
-| CONS-06 | P1: Ver a lista de inovações | - | Pending |
+| CONS-06 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-07 | P1: Ver a lista de inovações | - | Pending |
 | CONS-08 | P1: Ver a lista de inovações | - | Pending |
 | CONS-09 | P1: Ver a lista de inovações | - | Pending |
@@ -372,7 +372,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-45 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-46 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-47 | P2: Desempenho com o conjunto de demonstração | - | Pending |
-| CONS-48 | P2: Desempenho com o conjunto de demonstração | - | Pending |
+| CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
 | CONS-49 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
 | CONS-50 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
 | CONS-51 | P2: Cadastro e cancelamento levam à consulta | - | Pending |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 0 mapeados para tasks, 53 pendentes.
+**Coverage:** 53 total, 3 implementando (Execute), 50 pendentes.
 
 ---
 

@@ -130,7 +130,7 @@ T21 → T22
 
 ## Task Breakdown
 
-### T1: `InovacaoQuerySet.para_listagem()` e `Inovacao.get_absolute_url()`
+### T1: `InovacaoQuerySet.para_listagem()` e `Inovacao.get_absolute_url()` ✅
 
 **What**: O manager `objects = InovacaoQuerySet.as_manager()` com `para_listagem()` (ordem, `select_related`, `only`) e a URL canônica do detalhe.
 **Where**: `inovacoes/models.py`
@@ -145,17 +145,19 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `InovacaoQuerySet(models.QuerySet)` com `para_listagem()` = `select_related("unidade", "categoria").only("id", "titulo", "status", "data_criacao", "unidade__nome", "categoria__nome").order_by("-data_criacao", "-id")`
-- [ ] `Inovacao.objects = InovacaoQuerySet.as_manager()`; nenhum `Meta.ordering` novo no model
-- [ ] `get_absolute_url()` → `reverse("inovacoes:detalhe", args=[self.pk])`. A rota nasce na T2, então o teste da URL entra lá (merge forward); esta task prova a ordem e o carregamento
-- [ ] Testes de integração em `inovacoes/tests/test_consultas.py`: três inovações com `data_criacao` forçada (`update()` direto) saem em ordem decrescente; duas com a mesma `data_criacao` saem por id decrescente (CONS-02); ler `unidade.nome` e `categoria.nome` de todas as linhas de `para_listagem()` executa 1 consulta (`django_assert_num_queries(1)`)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 209 testes passam (+3)
+- [x] `InovacaoQuerySet(models.QuerySet)` com `para_listagem()` = `select_related("unidade", "categoria").only("id", "titulo", "status", "data_criacao", "unidade__nome", "categoria__nome").order_by("-data_criacao", "-id")`
+- [x] `Inovacao.objects = InovacaoQuerySet.as_manager()`; nenhum `Meta.ordering` novo no model
+- [x] `get_absolute_url()` → `reverse("inovacoes:detalhe", args=[self.pk])`. A rota nasce na T2, então o teste da URL entra lá (merge forward); esta task prova a ordem e o carregamento
+- [x] Testes de integração em `inovacoes/tests/test_consultas.py`: três inovações com `data_criacao` forçada (`update()` direto) saem em ordem decrescente; duas com a mesma `data_criacao` saem por id decrescente (CONS-02); ler `unidade.nome` e `categoria.nome` de todas as linhas de `para_listagem()` executa 1 consulta (`django_assert_num_queries(1)`)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 209 testes passam (+3)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o queryset de listagem de inovacoes`
+
+**Status**: ✅ Complete — 209 passed (+3); get_absolute_url() fica para a T2 (a rota nasce lá), como previsto
 
 ---
 

@@ -3,6 +3,7 @@ from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
 from django.db.models import Q
 from django.db.models.functions import Lower
+from django.urls import reverse
 
 
 class StatusInovacao(models.TextChoices):
@@ -54,6 +55,18 @@ class Categoria(ItemDeLista):
         verbose_name_plural = "categorias"
 
 
+class InovacaoQuerySet(models.QuerySet):
+    """Unico ponto que sabe como consultar e ordenar inovacoes (AD-002)."""
+
+    def para_listagem(self):
+        # CONS-02: mais recentes primeiro, id desempata. Uma consulta so, sem N+1.
+        return (
+            self.select_related("unidade", "categoria")
+            .only("id", "titulo", "status", "data_criacao", "unidade__nome", "categoria__nome")
+            .order_by("-data_criacao", "-id")
+        )
+
+
 class Inovacao(models.Model):
     """A entidade central do dominio (RF02).
 
@@ -81,6 +94,8 @@ class Inovacao(models.Model):
     )
     data_criacao = models.DateTimeField("data de criação", auto_now_add=True)
 
+    objects = InovacaoQuerySet.as_manager()
+
     class Meta:
         verbose_name = "inovação"
         verbose_name_plural = "inovações"
@@ -105,6 +120,10 @@ class Inovacao(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    def get_absolute_url(self):
+        # CONS-06: URL canonica do detalhe; o CreateView a usa como destino (CONS-49).
+        return reverse("inovacoes:detalhe", args=[self.pk])
 
     def validate_constraints(self, exclude=None):
         """Leva o erro de titulo duplicado para o campo titulo (INOV-22).
