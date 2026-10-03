@@ -334,7 +334,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-07 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-08 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-09 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-10 | P1: Ver a lista de inovações | - | Pending |
+| CONS-10 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-11 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-12 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
 | CONS-13 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 26 implementando (Execute), 27 pendentes.
+**Coverage:** 53 total, 27 implementando (Execute), 26 pendentes.
 
 ---
 

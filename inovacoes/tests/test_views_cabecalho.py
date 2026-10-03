@@ -29,3 +29,27 @@ def test_cabecalho_anonimo_nao_mostra_o_link(client):
     html = client.get("/entrar/").content.decode()
     assert not LINK.search(html)
     assert "Cadastrar inovação" not in _cabecalho(html)
+
+
+LINK_INOVACOES = re.compile(r'<a href="/inovacoes/">\s*Inovações\s*</a>')
+
+
+@pytest.mark.parametrize("pagina", ["/inovacoes/", "/inovacoes/nova/", "/inovacoes/{id}/"])
+def test_cabecalho_autenticado_leva_a_listagem_antes_do_cadastro(
+    client, autor, criar_inovacao, pagina
+):
+    """CONS-10: link "Inovações" -> /inovacoes/ em toda pagina, antes de "Cadastrar inovação"."""
+    client.force_login(autor)
+    html = client.get(pagina.format(id=criar_inovacao().pk)).content.decode()
+    navegacao = _navegacao_principal(html)
+    link = LINK_INOVACOES.search(navegacao)
+    assert link
+    assert link.start() < LINK.search(navegacao).start()
+
+
+@pytest.mark.django_db
+def test_cabecalho_anonimo_nao_mostra_o_link_de_inovacoes(client):
+    """CONS-10: o link so existe com usuario autenticado."""
+    html = client.get("/entrar/").content.decode()
+    assert not LINK_INOVACOES.search(html)
+    assert 'href="/inovacoes/"' not in _cabecalho(html)

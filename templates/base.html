@@ -19,6 +19,7 @@
     {% if user.is_authenticated %}
       {# INOV-38: o cadastro e alcancavel de qualquer pagina interna. #}
       <nav aria-label="Principal">
+        <a href="{% url 'inovacoes:lista' %}">Inovações</a>
         <a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>
       </nav>
       {# LogoutView so aceita POST: sair e um formulario, nao um link. #}

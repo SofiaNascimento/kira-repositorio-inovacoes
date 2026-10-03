@@ -378,7 +378,7 @@ T21 → T22
 
 ---
 
-### T9: Link "Inovações" no cabeçalho
+### T9: Link "Inovações" no cabeçalho ✅
 
 **What**: O `<nav aria-label="Principal">` ganha "Inovações" → `/inovacoes/`, antes de "Cadastrar inovação".
 **Where**: `templates/base.html`
@@ -393,15 +393,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `<a href="{% url 'inovacoes:lista' %}">Inovações</a>` antes do link de cadastro
-- [ ] Testes e2e em `inovacoes/tests/test_views_cabecalho.py`: autenticado vê o link em `/inovacoes/`, `/inovacoes/nova/` e `/inovacoes/<id>/` (parametrizado), antes de "Cadastrar inovação" (CONS-10); anônimo em `/entrar/` não vê o link
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 249 testes passam (+4)
+- [x] `<a href="{% url 'inovacoes:lista' %}">Inovações</a>` antes do link de cadastro
+- [x] Testes e2e em `inovacoes/tests/test_views_cabecalho.py`: autenticado vê o link em `/inovacoes/`, `/inovacoes/nova/` e `/inovacoes/<id>/` (parametrizado), antes de "Cadastrar inovação" (CONS-10); anônimo em `/entrar/` não vê o link
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 249 testes passam (+4)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(nucleo): adiciona o link de inovacoes ao cabecalho`
+
+**Status**: ✅ Complete — 251 passed (+4); três páginas parametrizadas (lista, cadastro, detalhe) e o anônimo; estimativa de 249 do Done when defasada
 
 ---
 
