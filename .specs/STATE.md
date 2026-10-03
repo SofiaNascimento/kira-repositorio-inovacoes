@@ -58,13 +58,21 @@
 - **Date**: 2026-09-27
 - **Status**: active
 
+### AD-008
+- **Decision**: A busca textual ignora caixa e acentos por meio da coluna `Inovacao.texto_busca`, derivada de título, problema e solução por `inovacoes.busca.normalizar` e mantida por `Inovacao.save()`; nenhuma extensão do PostgreSQL é usada.
+- **Reason**: A CONS-20 exige busca sem acento, e a F2 recusou depender da extensão `unaccent` no deploy (RNF06). Normalizar o termo e o texto pela mesma função Python dá uma regra única, testável sem banco e independente da collation.
+- **Trade-off**: Dado derivado no banco e uma regra de escrita: toda gravação de título, problema ou solução precisa passar por `Inovacao.save()`; `QuerySet.update()`, `bulk_create` e `bulk_update` nesses campos deixam a busca errada. O `LIKE '%…%'` não usa índice; para volumes muito maiores que o do MVP, o caminho é `pg_trgm`, que exigiria supersedir esta decisão.
+- **Scope**: F3 (busca), F4 (edição grava por `save()`), F6 (se reaproveitar `buscar()`) e qualquer carga ou script que grave inovações.
+- **Date**: 2026-10-03
+- **Status**: active
+
 ## Handoff
 
 - **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. F2 concluída em 2026-10-03 (UAT 21/21).
-- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design pendente.
+- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks pendente.
 - **Completed**: discussão das quatro áreas cinzentas (busca, listagem, detalhe/pós-cadastro, filtros/demo); `validate_spec.py` limpo.
 - **In-progress** (file:line): nenhum.
-- **Next step**: Design da F3, que precisa decidir e registrar como AD o mecanismo da busca sem acento (`unaccent` × texto normalizado, ver RNF06).
+- **Next step**: fase Tasks da F3 (`tasks.md`).
 - **Testes pendentes**: nenhum. 206 passed em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
