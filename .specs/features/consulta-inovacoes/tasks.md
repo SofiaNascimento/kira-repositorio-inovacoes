@@ -157,7 +157,7 @@ T21 → T22
 
 **Commit**: `feat(inovacoes): adiciona o queryset de listagem de inovacoes`
 
-**Status**: ✅ Complete — 209 passed (+3); get_absolute_url() fica para a T2 (a rota nasce lá), como previsto
+**Status**: ✅ Complete — 209 passed (+3); get_absolute_url() implementado aqui, mas o teste da URL entra na T2 (a rota nasce lá), como previsto
 
 ---
 
@@ -193,7 +193,7 @@ T21 → T22
 
 ---
 
-### T3: "Inovação não encontrada" com 404 próprio
+### T3: "Inovação não encontrada" com 404 próprio ✅
 
 **What**: Id sem inovação responde 404 com a página própria da inovação, igual com e sem `DEBUG`.
 **Where**: `inovacoes/views.py`
@@ -208,16 +208,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `InovacaoDetailView.get()` captura `Http404` e devolve `render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)`
-- [ ] `inovacoes/templates/inovacoes/inovacao_nao_encontrada.html`: `h1` "Inovação não encontrada." e link "Voltar para a lista de inovações" → `/inovacoes/`
-- [ ] Testes e2e: `/inovacoes/999999/` autenticado → 404, template usado, texto e link (CONS-15); o mesmo com `settings.DEBUG = True` (sem página técnica); `/inovacoes/abc/` → 404 sem a mensagem de inovação (rota não casa, fora da CONS-15)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 224 testes passam (+3)
+- [x] `InovacaoDetailView.get()` captura `Http404` e devolve `render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)`
+- [x] `inovacoes/templates/inovacoes/inovacao_nao_encontrada.html`: `h1` "Inovação não encontrada." e link "Voltar para a lista de inovações" → `/inovacoes/`
+- [x] Testes e2e: `/inovacoes/999999/` autenticado → 404, template usado, texto e link (CONS-15); o mesmo com `settings.DEBUG = True` (sem página técnica); `/inovacoes/abc/` → 404 sem a mensagem de inovação (rota não casa, fora da CONS-15)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 224 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): responde 404 proprio para inovacao inexistente`
+
+**Status**: ✅ Complete — 225 passed (+3); 404 renderizado pela view, igual com DEBUG ligado
 
 ---
 

@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from django.http import HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
@@ -57,3 +58,11 @@ class InovacaoDetailView(DetailView):
     queryset = Inovacao.objects.select_related("unidade", "categoria", "autor")
     context_object_name = "inovacao"
     template_name = "inovacoes/inovacao_detail.html"
+
+    def get(self, request, *args, **kwargs):
+        try:
+            return super().get(request, *args, **kwargs)
+        except Http404:
+            # CONS-15: 404 proprio da inovacao, igual com e sem DEBUG. Um
+            # templates/404.html global nao serviria a qualquer URL inexistente.
+            return render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)

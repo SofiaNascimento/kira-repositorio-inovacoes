@@ -5,7 +5,7 @@ import re
 
 import pytest
 from django.utils.html import escape
-from pytest_django.asserts import assertRedirects
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
 from inovacoes.models import Inovacao, StatusInovacao
@@ -150,3 +150,31 @@ def test_anonimo_vai_para_o_login_com_next_do_detalhe(client, criar_inovacao):
     caminho = f"/inovacoes/{inovacao.pk}/"
     resposta = client.get(caminho)
     assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+
+
+def _afirma_pagina_nao_encontrada(resposta):
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    html = resposta.content.decode()
+    assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", html)
+    assert re.search(r'<a href="/inovacoes/">\s*Voltar para a lista de inovações\s*</a>', html)
+
+
+def test_id_sem_inovacao_responde_404_com_pagina_propria(logado):
+    """CONS-15."""
+    _afirma_pagina_nao_encontrada(logado.get("/inovacoes/999999/"))
+
+
+def test_id_sem_inovacao_responde_o_mesmo_404_com_debug_ligado(logado, settings):
+    """CONS-15: sem a pagina tecnica do Django, igual a producao."""
+    settings.DEBUG = True
+    resposta = logado.get("/inovacoes/999999/")
+    _afirma_pagina_nao_encontrada(resposta)
+    assert "URLconf" not in resposta.content.decode()
+
+
+def test_id_nao_numerico_nao_mostra_a_mensagem_de_inovacao(logado):
+    """Fora da CONS-15: a rota nao casa e o 404 e o padrao do Django."""
+    resposta = logado.get("/inovacoes/abc/")
+    assert resposta.status_code == 404
+    assert "Inovação não encontrada." not in resposta.content.decode()
