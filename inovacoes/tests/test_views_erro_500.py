@@ -1,6 +1,6 @@
-"""Testes e2e da pagina 500 com o banco fora do ar durante o cadastro.
+"""Testes e2e da pagina 500 com o banco fora do ar no cadastro, na listagem e no detalhe.
 
-INOV-42. O pytest-django roda com DEBUG=False, como em producao.
+INOV-42 e CONS-53. O pytest-django roda com DEBUG=False, como em producao.
 """
 
 import pytest
@@ -8,7 +8,8 @@ from django.conf import settings
 from django.db import OperationalError
 from pytest_django.asserts import assertTemplateUsed
 
-from inovacoes.models import Inovacao
+from inovacoes.models import Inovacao, InovacaoQuerySet
+from inovacoes.views import InovacaoDetailView
 
 DETALHE_DA_CONEXAO = (
     'connection to server at "db.interno.kira" (10.0.0.7), port 5433 failed: '
@@ -62,3 +63,32 @@ def test_pagina_500_do_cadastro_nao_expoe_detalhes_da_conexao(banco_fora_do_ar, 
     ]
     for trecho in proibidos:
         assert trecho not in html, trecho
+
+
+@pytest.mark.parametrize(
+    ("alvo", "atributo", "url"),
+    [
+        (InovacaoQuerySet, "para_listagem", "/inovacoes/"),
+        (InovacaoDetailView, "get_object", "/inovacoes/{id}/"),
+    ],
+    ids=["listagem", "detalhe"],
+)
+def test_banco_indisponivel_na_consulta_devolve_500_sem_detalhes(
+    monkeypatch, client, autor, criar_inovacao, alvo, atributo, url
+):
+    """CONS-53: pagina 500 do projeto, sem host, usuario, senha nem traceback."""
+
+    def falhar(*args, **kwargs):
+        raise OperationalError(DETALHE_DA_CONEXAO)
+
+    url = url.format(id=criar_inovacao().pk)
+    monkeypatch.setattr(alvo, atributo, falhar)
+    client.force_login(autor)
+    client.raise_request_exception = False
+    resposta = client.get(url)
+    assert resposta.status_code == 500
+    assertTemplateUsed(resposta, "500.html")
+    html = resposta.content.decode()
+    for trecho in ["db.interno.kira", "kira_app", "s3gr3d0-do-banco", "Traceback"]:
+        assert trecho not in html, trecho
+    assert DETALHE_DA_CONEXAO not in html

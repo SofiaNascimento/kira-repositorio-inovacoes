@@ -436,7 +436,7 @@ T21 → T22
 
 ---
 
-### T11: Banco indisponível na listagem e no detalhe
+### T11: Banco indisponível na listagem e no detalhe ✅
 
 **What**: A evidência de que `OperationalError` na consulta vira a página 500 do projeto sem detalhes de conexão.
 **Where**: `inovacoes/tests/test_views_erro_500.py`
@@ -451,14 +451,16 @@ T21 → T22
 
 **Done when**:
 
-- [ ] Testes e2e: com `InovacaoQuerySet.para_listagem` e com `InovacaoDetailView.get_object` forçados a lançar `OperationalError(DETALHE_DA_CONEXAO)`, `GET /inovacoes/` e `GET /inovacoes/<id>/` → 500, `500.html` usado, nenhum trecho de `DETALHE_DA_CONEXAO` no corpo (CONS-53, parametrizado)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a parte A)
-- [ ] Test count: 255 testes passam (+2)
+- [x] Testes e2e: com `InovacaoQuerySet.para_listagem` e com `InovacaoDetailView.get_object` forçados a lançar `OperationalError(DETALHE_DA_CONEXAO)`, `GET /inovacoes/` e `GET /inovacoes/<id>/` → 500, `500.html` usado, nenhum trecho de `DETALHE_DA_CONEXAO` no corpo (CONS-53, parametrizado)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a parte A)
+- [x] Test count: 255 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): prova a pagina 500 na consulta com o banco fora do ar`
+
+**Status**: ✅ Complete — 259 passed (+2); parametrizado em listagem e detalhe; a evidência não acusou falta, nenhum ajuste de implementação. Build gate (ruff, format, makemigrations, pytest) verde: fecha a Fase 2 e a parte A. Estimativa de 255 defasada
 
 ---
 

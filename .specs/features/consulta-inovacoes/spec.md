@@ -377,11 +377,11 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-50 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
 | CONS-51 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
 | CONS-52 | P3: Ajuda contextual nos filtros | - | Pending |
-| CONS-53 | Edge case: banco indisponível | - | Pending |
+| CONS-53 | Edge case: banco indisponível | Execute | Implementing |
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 28 implementando (Execute), 25 pendentes.
+**Coverage:** 53 total, 29 implementando (Execute), 24 pendentes.
 
 ---
 
