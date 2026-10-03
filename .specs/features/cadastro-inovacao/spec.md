@@ -3,7 +3,7 @@
 **Fontes:** `docs/requisitos.md` (RF02, RF12, RF13, RF14, RF15, RN01, RN02, RN03, RN06, RN07, RN08, RN10, RNF01, RNF05, RNF09; seção 5, Estrutura de Dados) · `docs/mapa-de-features.md` (F2) · `docs/modelagem-uml.md` (classes Inovacao, Unidade, Categoria, StatusInovacao)
 **Decisões vinculantes:** AD-002 (MVT sem Service Layer) · AD-003 (PostgreSQL, integridade no banco) · AD-005 (autor via `settings.AUTH_USER_MODEL`) · AD-006 (acesso negado por padrão)
 **Reusa da F1:** `contas.Usuario` como autor · `is_administrador` como ponto único de consulta do perfil (AUTH-19) · página 500 sem vazamento (AUTH-26) · região de mensagens `role="status"` do `templates/base.html`
-**Status:** Aprovada pelo usuário em 2026-09-27 (assumptions confirmadas na aprovação) · implementada e verificada em 2026-09-29 (`validation.md`, iteração 2)
+**Status:** Aprovada pelo usuário em 2026-09-27 (assumptions confirmadas na aprovação) · implementada e verificada em 2026-09-29 (`validation.md`, iteração 2) · PASS na iteração 3 (2026-10-02) · UAT concluído em 2026-10-03
 **Contexto da discussão:** `.specs/features/cadastro-inovacao/context.md`
 
 > **Nota de notação:** como na F1, os critérios de aceite estão em EARS em inglês (WHEN / WHILE /
@@ -379,6 +379,7 @@ sete campos, ligado ao campo pelo `aria-describedby`.
       nenhum registro novo existe no banco.
 - [x] Uma tentativa de gravar dois títulos iguais em caixa diferente na mesma unidade falha tanto
       pelo formulário quanto por inserção direta no banco.
-- [ ] O formulário é preenchido e enviado só com teclado, e todo campo tem rótulo associado.
+- [x] O formulário é preenchido e enviado só com teclado, e todo campo tem rótulo associado.
       Rótulos, `required`, ordem de foco e `:focus-visible` estão provados no HTML
-      (`inovacoes/tests/test_views_acessibilidade.py`); o percurso real com teclado fica para o UAT.
+      (`inovacoes/tests/test_views_acessibilidade.py`); o percurso real com teclado passou no UAT
+      de 2026-10-03 (itens 17 e 18 do `validation.md`).

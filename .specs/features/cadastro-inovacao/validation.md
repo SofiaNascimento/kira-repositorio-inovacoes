@@ -170,7 +170,7 @@ Além de repetir V2b e T4, o conjunto é novo: nenhuma das outras 19 mutações 
 
 ## Interactive UAT Results
 
-O Verifier roda sem usuário; o UAT é conduzido pelo orquestrador. **Status (2026-10-02): em andamento, pausado depois da preparação; itens 1–21 pendentes.**
+O Verifier roda sem usuário; o UAT é conduzido pelo orquestrador. **Status (2026-10-03): concluído. 21/21 itens aprovados; nenhum achado novo além do P2 (T24).** Os dados do roteiro foram adaptados pelo usuário onde indicado; o critério de cada item é o mesmo.
 
 **Preparação**
 
@@ -178,33 +178,35 @@ O Verifier roda sem usuário; o UAT é conduzido pelo orquestrador. **Status (20
 | - | ---- | ------ | ------- |
 | P1 | `migrate` no banco local | ✅ Pass | `inovacoes 0001–0004` aplicadas; 5 unidades e 5 categorias da carga presentes |
 | P2 | Abrir `/admin/` sem sessão para criar as contas | ❌ Issue → corrigido na T24 | `GET /admin/login/` respondia HTTP 500 (`AttributeError` em `AnonymousUser.is_administrador`) - Severity: Blocker. Corrigido em `8f329ea`; prova em `contas/tests/test_admin_perfil.py:132-134` |
-| P3 | Contas de teste pelo admin | ⚠️ Parcial | `maria` (USUARIO, "Maria Silva") e `joao` (ADMINISTRADOR, sem nome, `is_staff` ligado sozinho) criadas. Falta marcar **Membro da equipe** na `maria`: sem `is_staff`, os itens 8 e 21 dão 302 para o login em vez de 403 |
+| P3 | Contas de teste pelo admin | ✅ Pass | `maria` (USUARIO, "Maria Silva") e `joao` (ADMINISTRADOR, sem nome) criadas. Em 2026-10-03 o `joao` marcou **Membro da equipe** na `maria` antes dos itens 8 e 21; o banco confirma `maria` USUARIO com `is_staff=True` |
 
 **Roteiro** (contas `maria` e `joao`; esperado conforme as ACs citadas)
 
 | # | Test | Esperado | Result |
 | - | ---- | -------- | ------ |
-| 1 | Anônimo abre `/inovacoes/nova/` | Login com `?next=/inovacoes/nova/` (INOV-07) | ⏳ |
-| 2 | Entra como `maria` nesse login | Cai em `/inovacoes/nova/` (AUTH-10) | ⏳ |
-| 3 | Sai e entra com `MARIA@kira.local` | Home "Olá, maria" (AUTH-02) | ⏳ |
-| 4 | Senha errada | Só "Usuário ou senha inválidos." (AUTH-03) | ⏳ |
-| 5 | Senha vazia | Erro no campo; identificador preservado (AUTH-04) | ⏳ |
-| 6 | Logado, abre `/entrar/` | Vai para a home (AUTH-12) | ⏳ |
-| 7 | Sair; Voltar e recarregar | "Sessão encerrada."; página interna manda ao login (AUTH-13, AUTH-14) | ⏳ |
-| 8 | `maria` em `/admin/contas/usuario/` | 403 (AUTH-22) | ⏳ |
-| 9 | Cabeçalho logado | Link "Cadastrar inovação" (INOV-38) | ⏳ |
-| 10 | Abre o formulário | 7 campos; selects com "Selecione…" e listas em ordem alfabética; ajuda em cada campo (INOV-01, 15, 41) | ⏳ |
-| 11 | Contato | "Maria Silva (maria@kira.local)", editável (INOV-39) | ⏳ |
-| 12 | Apaga o contato e envia vazio | Resumo no topo + as seis mensagens de campo; nada gravado (INOV-09, 13, 30) | ⏳ |
-| 13 | Título, unidade e categoria preenchidos; Problema só com espaços | Erro em Problema; os demais preservados (INOV-10, 11) | ⏳ |
-| 14 | Salva "Triagem de chamados" na Sede, Resultado vazio | Home com "Inovação “Triagem de chamados” cadastrada com sucesso."; some no F5; banco com autor `maria`, `EM_TESTE`, data (INOV-03–05, 14, 28, 29) | ⏳ |
-| 15 | "TRIAGEM DE CHAMADOS" na Sede | Recusado com a mensagem da INOV-22 | ⏳ |
-| 16 | Mesmo título na Filial Norte; "Triagem de chamádos" na Sede | Ambos aceitos (INOV-24, 27) | ⏳ |
-| 17 | Só teclado: Tab do topo, setas nos selects, Enter | Ordem de foco = ordem visual; foco visível; envio funciona (INOV-34, 35; Success Criterion de teclado) | ⏳ |
-| 18 | Só teclado: erro visível; Tab até "Cancelar" + Enter | Erro junto ao campo; volta à home sem salvar (INOV-33, 37; Success Criterion de teclado) | ⏳ |
-| 19 | `joao` cadastra uma inovação | Igual à `maria`; contato "joao (joao@kira.local)" (INOV-08, 39) | ⏳ |
-| 20 | `joao` no admin de Unidades e Categorias | Lista, inclui, renomeia; excluir "Sede" em uso é recusado (INOV-19, 21) | ⏳ |
-| 21 | `maria` em `/admin/inovacoes/unidade/` | 403 (INOV-20) | ⏳ |
+| 1 | Anônimo abre `/inovacoes/nova/` | Login com `?next=/inovacoes/nova/` (INOV-07) | ✅ Pass |
+| 2 | Entra como `maria` nesse login | Cai em `/inovacoes/nova/` (AUTH-10) | ✅ Pass |
+| 3 | Sai e entra com `MARIA@kira.local` | Home "Olá, maria" (AUTH-02) | ✅ Pass |
+| 4 | Senha errada | Só "Usuário ou senha inválidos." (AUTH-03) | ✅ Pass |
+| 5 | Senha vazia | Erro no campo; identificador preservado (AUTH-04) | ✅ Pass |
+| 6 | Logado, abre `/entrar/` | Vai para a home (AUTH-12) | ✅ Pass |
+| 7 | Sair; Voltar e recarregar | "Sessão encerrada."; página interna manda ao login (AUTH-13, AUTH-14) | ✅ Pass |
+| 8 | `maria` em `/admin/contas/usuario/` | 403 (AUTH-22) | ✅ Pass. 403 depois do P3. Antes do P3 a `maria` caía no login do admin, o comportamento esperado para quem não tem `is_staff` |
+| 9 | Cabeçalho logado | Link "Cadastrar inovação" (INOV-38) | ✅ Pass |
+| 10 | Abre o formulário | 7 campos; selects com "Selecione…" e listas em ordem alfabética; ajuda em cada campo (INOV-01, 15, 41) | ✅ Pass |
+| 11 | Contato | "Maria Silva (maria@kira.local)", editável (INOV-39) | ✅ Pass |
+| 12 | Apaga o contato e envia vazio | Resumo no topo + as seis mensagens de campo; nada gravado (INOV-09, 13, 30) | ✅ Pass |
+| 13 | Título, unidade e categoria preenchidos; Problema só com espaços | Erro em Problema; os demais preservados (INOV-10, 11) | ✅ Pass |
+| 14 | Salva "Triagem de chamados" na Sede, Resultado vazio | Home com "Inovação “Triagem de chamados” cadastrada com sucesso."; some no F5; banco com autor `maria`, `EM_TESTE`, data (INOV-03–05, 14, 28, 29) | ✅ Pass. Dados adaptados: "Processo RH" na Filial Leste, Resultado vazio. Banco: autor `maria`, `Em teste`, data `2026-10-03 16:04 UTC` |
+| 15 | "TRIAGEM DE CHAMADOS" na Sede | Recusado com a mensagem da INOV-22 | ✅ Pass. Feito com "PROCESSO RH" na Filial Leste; recusado, nada gravado |
+| 16 | Mesmo título na Filial Norte; "Triagem de chamádos" na Sede | Ambos aceitos (INOV-24, 27) | ✅ Pass. "PROCESSO RH" aceito na Filial Norte; "Procésso RH" aceito na Filial Leste. Ambos no banco |
+| 17 | Só teclado: Tab do topo, setas nos selects, Enter | Ordem de foco = ordem visual; foco visível; envio funciona (INOV-34, 35; Success Criterion de teclado) | ✅ Pass. Fecha o Success Criterion de teclado |
+| 18 | Só teclado: erro visível; Tab até "Cancelar" + Enter | Erro junto ao campo; volta à home sem salvar (INOV-33, 37; Success Criterion de teclado) | ✅ Pass. Fecha o Success Criterion de teclado |
+| 19 | `joao` cadastra uma inovação | Igual à `maria`; contato "joao (joao@kira.local)" (INOV-08, 39) | ✅ Pass. "Checklist de compras" na Sede; banco: autor `joao`, contato "joao (joao@kira.local)", `Em teste` |
+| 20 | `joao` no admin de Unidades e Categorias | Lista, inclui, renomeia; excluir "Sede" em uso é recusado (INOV-19, 21) | ✅ Pass. Unidades e categorias listadas em ordem alfabética; "Filial Teste" e "Categoria Teste" incluídas, renomeadas e excluídas; excluir a Sede (em uso pela inovação do `joao`) foi recusado e a Sede continua. Banco volta às 5 + 5 da carga |
+| 21 | `maria` em `/admin/inovacoes/unidade/` | 403 (INOV-20) | ✅ Pass. 403 |
+
+Conferência final no banco (2026-10-03): 4 inovações (`Processo RH`/Filial Leste/maria, `PROCESSO RH`/Filial Norte/maria, `Checklist de compras`/Sede/joao, `Procésso RH`/Filial Leste/maria), todas `Em teste`; listas com as 5 unidades e 5 categorias da carga; gate com 206 passed.
 
 Fora do roteiro por desenho, cobertos por teste automatizado: limites de 150/5000 caracteres (o `maxlength` do HTML impede digitar além), banco indisponível (INOV-42) e envios concorrentes (INOV-25, 43).
 
@@ -296,4 +298,6 @@ Proposta. O Verifier **não** edita `spec.md`.
 
 **Issues found**: nenhum bloqueante. Spec-precision gap na AUTH-21 (Sugestão 1) e tabelas do `tasks.md` sem a T24 (Sugestão 2).
 
-**Next steps**: o orquestrador segue com o UAT interativo e decide se abre a Sugestão 1 como ajuste de spec da F1.
+**UAT**: ✅ concluído em 2026-10-03, 21/21 itens aprovados (seção *Interactive UAT Results*).
+
+**Next steps**: decidir a Sugestão 1 (AC do anônimo na F1) e aplicar a Sugestão 2; depois, Specify da F3.

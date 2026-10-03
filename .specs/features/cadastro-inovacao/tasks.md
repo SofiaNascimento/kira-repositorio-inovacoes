@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/cadastro-inovacao/spec.md`
 **Design**: `.specs/features/cadastro-inovacao/design.md`
-**Status**: Em UAT — PASS na iteração 2 (`validation.md`); T24 corrige o primeiro achado do UAT (2026-10-02)
+**Status**: ✅ Concluída — PASS na iteração 3 (`validation.md`); UAT concluído em 2026-10-03 (21/21); T24 corrigiu o único achado do UAT
 
 **Stack fixado**: Django 5.2 LTS · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1.
 
