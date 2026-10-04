@@ -87,7 +87,16 @@ class InovacaoListView(ListView):
         )
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(form=self.form, **kwargs)
+        # CONS-32, CONS-35: pelo GET cru, e nao pelo form, para valer tambem com erro.
+        # A busca so com espacos nao conta (CONS-21).
+        busca = self.request.GET
+        ativos = (
+            busca.get("q", "").strip(),
+            busca.get("categoria"),
+            busca.get("unidade"),
+            busca.get("status"),
+        )
+        return super().get_context_data(form=self.form, filtros_ativos=any(ativos), **kwargs)
 
     # SPEC_DEVIATION: o design chama get_page() com o valor cru de ?page=.
     # Reason: get_page() manda page=0 para a ultima pagina; a T5 pede a primeira.

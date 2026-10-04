@@ -19,6 +19,8 @@
         {{ campo.as_field_group }}
       {% endfor %}
       <button type="submit">Buscar</button>
+      {# CONS-32: so quando ha algo a limpar. #}
+      {% if filtros_ativos %}<a href="{% url 'inovacoes:lista' %}">Limpar filtros</a>{% endif %}
     </form>
   </div>
 
@@ -66,6 +68,10 @@
         {% endif %}
       </nav>
     {% endif %}
+  {% elif filtros_ativos %}
+    {# CONS-35: consulta sem resultado, sem tabela vazia. #}
+    <p>Nenhuma inovação encontrada para a busca e os filtros informados.</p>
+    <p><a href="{% url 'inovacoes:lista' %}">Limpar filtros</a></p>
   {% else %}
     {# CONS-34: repositorio vazio, sem tabela. #}
     <p>Nenhuma inovação cadastrada ainda.</p>

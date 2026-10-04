@@ -292,3 +292,70 @@ def test_consulta_valida_nao_mostra_o_alerta_nem_marca_controle_invalido(logado,
     html = logado.get(LISTA, {"q": "caixa", "status": "EM_TESTE"}).content.decode()
     assert 'role="alert"' not in html
     assert "aria-invalid" not in html
+
+
+MENSAGEM_VAZIO_COM_FILTRO = "Nenhuma inovação encontrada para a busca e os filtros informados."
+MENSAGEM_REPOSITORIO_VAZIO = "Nenhuma inovação cadastrada ainda."
+LIMPAR = re.compile(r'<a href="/inovacoes/">\s*Limpar filtros\s*</a>')
+
+
+def test_sem_parametros_nao_mostra_limpar_filtros(logado, criar_inovacao):
+    """CONS-32: nada a limpar."""
+    criar_inovacao()
+    assert "Limpar filtros" not in logado.get(LISTA).content.decode()
+
+
+def test_busca_so_com_espacos_nao_conta_como_ativa_e_lista_tudo(logado, criar_inovacao):
+    """CONS-21, CONS-32: espacos nas pontas nao ativam nada."""
+    criar_inovacao(titulo="Uma")
+    criar_inovacao(titulo="Duas")
+    resposta = logado.get(LISTA, {"q": "   "})
+    assert "Limpar filtros" not in resposta.content.decode()
+    assert _titulos(resposta) == ["Duas", "Uma"]
+
+
+@pytest.mark.parametrize("parametro", ["q", "categoria", "unidade", "status"])
+def test_qualquer_busca_ou_filtro_ativo_mostra_limpar_filtros_para_a_lista_sem_query(
+    logado, tres, parametro
+):
+    """CONS-32: o link aponta para /inovacoes/ sem parametros."""
+    valores = {
+        "q": "conciliacao",
+        "categoria": tres["financeiro"].pk,
+        "unidade": tres["sede"].pk,
+        "status": "VALIDADA",
+    }
+    html = logado.get(LISTA, {parametro: valores[parametro]}).content.decode()
+    assert LIMPAR.search(html)
+
+
+def test_consulta_sem_resultado_diz_o_que_houve_e_oferece_limpar_sem_tabela(logado, tres):
+    """CONS-35: com inovacoes no banco, a busca "inexistente" nao acha nenhuma."""
+    html = logado.get(LISTA, {"q": "inexistente"}).content.decode()
+    assert "<table" not in html
+    assert MENSAGEM_REPOSITORIO_VAZIO not in html
+    posicao = html.index(MENSAGEM_VAZIO_COM_FILTRO)
+    assert LIMPAR.search(html, posicao)
+
+
+def test_filtro_sem_resultado_tambem_cai_no_estado_vazio_com_filtro(logado, tres):
+    """CONS-35: filtro combinado sem correspondencia (Filial Norte + Validada)."""
+    html = logado.get(LISTA, {"unidade": tres["norte"].pk, "status": "VALIDADA"}).content.decode()
+    assert MENSAGEM_VAZIO_COM_FILTRO in html
+    assert "<table" not in html
+
+
+def test_banco_vazio_com_busca_mostra_a_mensagem_de_filtro_e_nao_a_do_repositorio(logado):
+    """CONS-35, CONS-34: filtro ativo vence o repositorio vazio."""
+    html = logado.get(LISTA, {"q": "x"}).content.decode()
+    assert MENSAGEM_VAZIO_COM_FILTRO in html
+    assert MENSAGEM_REPOSITORIO_VAZIO not in html
+    assert "<table" not in html
+
+
+def test_banco_vazio_sem_parametros_continua_com_a_mensagem_do_repositorio(logado):
+    """CONS-34: sem regressao."""
+    html = logado.get(LISTA).content.decode()
+    assert MENSAGEM_REPOSITORIO_VAZIO in html
+    assert MENSAGEM_VAZIO_COM_FILTRO not in html
+    assert "Limpar filtros" not in html

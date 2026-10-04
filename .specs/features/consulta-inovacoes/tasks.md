@@ -704,7 +704,7 @@ T21 → T22
 
 ---
 
-### T20: "Limpar filtros" e consulta sem resultado
+### T20: "Limpar filtros" e consulta sem resultado ✅
 
 **What**: O link "Limpar filtros" quando há busca ou filtro ativo, e a mensagem de vazio com filtro.
 **Where**: `inovacoes/templates/inovacoes/inovacao_list.html`
@@ -719,16 +719,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `get_context_data()` expõe `filtros_ativos` (algum de `q` sem espaços nas pontas, `categoria`, `unidade`, `status` não vazio no GET); o template mostra `<a href="{% url 'inovacoes:lista' %}">Limpar filtros</a>` só nesse caso
-- [ ] Ramo "filtro ativo e nenhum resultado": "Nenhuma inovação encontrada para a busca e os filtros informados." + "Limpar filtros", sem `<table>`
-- [ ] Testes e2e: sem parâmetros → sem "Limpar filtros"; `?q=+++` (só espaços) → sem "Limpar filtros" e lista completa; `?status=VALIDADA` → link presente apontando para `/inovacoes/` sem query (CONS-32); `?q=inexistente` com inovações no banco → mensagem, link e nenhuma `<table>` (CONS-35); banco vazio com `?q=x` → mensagem da CONS-35, e não a da CONS-34; banco vazio sem parâmetros → continua a da CONS-34
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 4)
-- [ ] Test count: 331 testes passam (+6)
+- [x] `get_context_data()` expõe `filtros_ativos` (algum de `q` sem espaços nas pontas, `categoria`, `unidade`, `status` não vazio no GET); o template mostra `<a href="{% url 'inovacoes:lista' %}">Limpar filtros</a>` só nesse caso
+- [x] Ramo "filtro ativo e nenhum resultado": "Nenhuma inovação encontrada para a busca e os filtros informados." + "Limpar filtros", sem `<table>`
+- [x] Testes e2e: sem parâmetros → sem "Limpar filtros"; `?q=+++` (só espaços) → sem "Limpar filtros" e lista completa; `?status=VALIDADA` → link presente apontando para `/inovacoes/` sem query (CONS-32); `?q=inexistente` com inovações no banco → mensagem, link e nenhuma `<table>` (CONS-35); banco vazio com `?q=x` → mensagem da CONS-35, e não a da CONS-34; banco vazio sem parâmetros → continua a da CONS-34
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 4)
+- [x] Test count: 331 testes passam (+6)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona limpar filtros e estado vazio da busca`
+
+**Status**: ✅ Complete — 368 passed (+10); 10 casos no lugar dos 6 estimados: cada um dos quatro parâmetros ativa o link (parametrizado), mais o filtro combinado sem correspondência (Filial Norte + Validada). O link do estado vazio é afirmado depois da mensagem; com busca ou filtro ativo e resultado, o link fica só junto ao formulário, e no vazio aparece também sob a mensagem (dois links, como no design). `filtros_ativos` lê o GET cru, e não o form, para valer também com erro. Build gate (ruff, format, makemigrations, pytest) verde: fecha a Fase 4. Estimativa de 331 defasada
 
 ---
 
