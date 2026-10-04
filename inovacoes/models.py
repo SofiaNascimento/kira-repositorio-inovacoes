@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse
 
-from inovacoes.busca import texto_de_busca
+from inovacoes.busca import palavras, texto_de_busca
 
 
 class StatusInovacao(models.TextChoices):
@@ -67,6 +67,17 @@ class InovacaoQuerySet(models.QuerySet):
             .only("id", "titulo", "status", "data_criacao", "unidade__nome", "categoria__nome")
             .order_by("-data_criacao", "-id")
         )
+
+    def buscar(self, termo):
+        """CONS-19 a CONS-23: toda palavra do termo aparece no texto de busca.
+
+        Um filter por palavra (E). O lookup contains escapa %, _ e \\ do LIKE,
+        entao eles casam como texto (CONS-23). Termo em branco nao filtra.
+        """
+        qs = self
+        for palavra in palavras(termo or ""):
+            qs = qs.filter(texto_busca__contains=palavra)
+        return qs
 
 
 # Campos de que texto_busca deriva (AD-008).

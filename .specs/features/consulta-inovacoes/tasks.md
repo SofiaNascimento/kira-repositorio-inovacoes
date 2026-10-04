@@ -556,7 +556,7 @@ T21 → T22
 
 ---
 
-### T15: `InovacaoQuerySet.buscar()`
+### T15: `InovacaoQuerySet.buscar()` ✅
 
 **What**: A busca por palavras: cada palavra normalizada precisa aparecer em `texto_busca`.
 **Where**: `inovacoes/models.py`
@@ -571,15 +571,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `buscar(termo)`: um `.filter(texto_busca__contains=palavra)` por palavra; termo `None`, vazio ou em branco devolve o queryset intacto
-- [ ] Testes de integração em `inovacoes/tests/test_consultas.py`: "conciliacao planilha" acha a inovação com "Conciliação" no título e "planilha" no problema, e não acha a que tem só uma das duas (CONS-19); "caix" acha "Caixa" (trecho); "SOLUÇÃO" acha "solucao" e "solucao" acha "Solução" (CONS-20); termo em branco devolve todas (CONS-21); palavra só no resultado, só no contato, só no nome da categoria ou só no nome da unidade não acha (CONS-22, parametrizado); "100%" acha só a que contém "100%" e não a que contém "1000"; "a_b" não acha "axb"; `\` literal (CONS-23)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 283 testes passam (+13)
+- [x] `buscar(termo)`: um `.filter(texto_busca__contains=palavra)` por palavra; termo `None`, vazio ou em branco devolve o queryset intacto
+- [x] Testes de integração em `inovacoes/tests/test_consultas.py`: "conciliacao planilha" acha a inovação com "Conciliação" no título e "planilha" no problema, e não acha a que tem só uma das duas (CONS-19); "caix" acha "Caixa" (trecho); "SOLUÇÃO" acha "solucao" e "solucao" acha "Solução" (CONS-20); termo em branco devolve todas (CONS-21); palavra só no resultado, só no contato, só no nome da categoria ou só no nome da unidade não acha (CONS-22, parametrizado); "100%" acha só a que contém "100%" e não a que contém "1000"; "a_b" não acha "axb"; `\` literal (CONS-23)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 283 testes passam (+13)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a busca por palavras sem acento`
+
+**Status**: ✅ Complete — 300 passed (+17); 17 casos no lugar dos 13 estimados: os três campos da busca parametrizados (CONS-19) e None/vazio/espaços (CONS-21). Os testes partem de textos neutros, porque o problema e a solução padrão do conftest falam de caixa e planilha. CONS-22 tem controle positivo (a mesma inovação é achada pelo título). CONS-23 com pares literal × curinga: "100%" não acha "1000", "a_b" não acha "axb", "c:\\temp" não acha "c:temp"; com LIKE sem escape (extra) os três falham. Mutações OR no lugar de E e termo sem normalizar também derrubam os testes. Estimativa de 283 defasada
 
 ---
 
