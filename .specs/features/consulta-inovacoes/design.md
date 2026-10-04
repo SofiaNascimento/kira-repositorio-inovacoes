@@ -197,7 +197,7 @@ LIMIT 20;
   - `categoria = ModelChoiceField(Categoria.objects.all(), required=False, empty_label="Todas as categorias", label="Categoria")`, com `invalid_choice` → "Selecione uma categoria da lista.".
   - `unidade = ModelChoiceField(Unidade.objects.all(), required=False, empty_label="Todas as unidades", label="Unidade")`, com `invalid_choice` → "Selecione uma unidade da lista.".
   - `status = ChoiceField(choices=[("", "Todos os status"), *StatusInovacao.choices], required=False, label="Status")`, com `invalid_choice` → "Selecione um status da lista.".
-  - `help_text` de cada campo com os textos da tabela de Assumptions (CONS-52). `label_suffix = ""`. `template_name = "inovacoes/campo.html"` em cada campo, como no `InovacaoForm`.
+  - `help_text` de cada campo com os textos da tabela de Assumptions (CONS-52). `label_suffix = ""` passado ao `__init__` com `kwargs.setdefault` (ajuste da T17: o `Form.__init__` sobrescreve o atributo de classe com ":", então só o argumento vale). `template_name = "inovacoes/campo.html"` em cada campo, como no `InovacaoForm`.
   - Nomes dos parâmetros na URL: `q`, `categoria` (pk), `unidade` (pk), `status` (valor do enum), `page`.
 - **Dependencies**: `Categoria`, `Unidade`, `StatusInovacao`.
 - **Reuses**: `MENSAGEM_TAMANHO`, `campo.html` e o padrão de `error_messages` do `InovacaoForm`.

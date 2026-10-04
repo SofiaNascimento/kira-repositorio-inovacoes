@@ -614,7 +614,7 @@ T21 → T22
 
 ---
 
-### T17: `BuscaForm`
+### T17: `BuscaForm` ✅
 
 **What**: O formulário GET com busca, categoria, unidade e status, com mensagens e ajuda da spec.
 **Where**: `inovacoes/forms.py`
@@ -629,15 +629,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] Campos `q` (`CharField`, `required=False`, `max_length=100`, `strip=True`, `SearchInput`), `categoria` e `unidade` (`ModelChoiceField`, `required=False`, `empty_label` "Todas as categorias"/"Todas as unidades"), `status` (`ChoiceField` com `("", "Todos os status")` + `StatusInovacao.choices`), com rótulos "Buscar", "Categoria", "Unidade", "Status", `label_suffix = ""`, `help_text` da tabela de Assumptions e `template_name = "inovacoes/campo.html"`
-- [ ] Testes de integração em `inovacoes/tests/test_forms_busca.py`: form vazio é válido e devolve `q=""`, `None`, `None`, `""`; 101 caracteres → "Use no máximo 100 caracteres (você digitou 101)." e 100 é aceito (CONS-24); opções de categoria e unidade = "Todas …" + registros em ordem alfabética; opções de status na ordem do ciclo após "Todos os status" (CONS-26); pk inexistente, pk não numérico e status `"X"` → as três mensagens da spec (CONS-30, parametrizado); cada controle tem `<label for>` com o `id` do controle (CONS-36); cada um dos quatro textos de ajuda abaixo do controle e no `aria-describedby` (CONS-52)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 305 testes passam (+13)
+- [x] Campos `q` (`CharField`, `required=False`, `max_length=100`, `strip=True`, `SearchInput`), `categoria` e `unidade` (`ModelChoiceField`, `required=False`, `empty_label` "Todas as categorias"/"Todas as unidades"), `status` (`ChoiceField` com `("", "Todos os status")` + `StatusInovacao.choices`), com rótulos "Buscar", "Categoria", "Unidade", "Status", `label_suffix = ""`, `help_text` da tabela de Assumptions e `template_name = "inovacoes/campo.html"`
+- [x] Testes de integração em `inovacoes/tests/test_forms_busca.py`: form vazio é válido e devolve `q=""`, `None`, `None`, `""`; 101 caracteres → "Use no máximo 100 caracteres (você digitou 101)." e 100 é aceito (CONS-24); opções de categoria e unidade = "Todas …" + registros em ordem alfabética; opções de status na ordem do ciclo após "Todos os status" (CONS-26); pk inexistente, pk não numérico e status `"X"` → as três mensagens da spec (CONS-30, parametrizado); cada controle tem `<label for>` com o `id` do controle (CONS-36); cada um dos quatro textos de ajuda abaixo do controle e no `aria-describedby` (CONS-52)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 305 testes passam (+13)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o formulario de busca e filtros`
+
+**Status**: ✅ Complete — 331 passed (+22); 22 casos no lugar dos 13 estimados: campos parametrizados (rótulo e ajuda × 4, mensagens fora da lista × 5). Opções de categoria e unidade testadas com um registro criado depois da carga e alfabeticamente antes, para provar a ordem por nome e não por id. SPEC_DEVIATION de forma: o `label_suffix = ""` vai no `__init__` (`kwargs.setdefault`), porque o `Form.__init__` sobrescreve o atributo de classe com ":". Estimativa de 305 defasada
 
 ---
 

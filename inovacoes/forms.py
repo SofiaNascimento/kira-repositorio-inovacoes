@@ -1,7 +1,7 @@
 from django import forms
 from django.core.validators import MaxLengthValidator
 
-from inovacoes.models import Inovacao
+from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
 
 # INOV-12: titulo e contato herdam 150 do model; os textos longos ganham um
 # teto no form. TextField nao impoe max_length, e o form e o unico caminho de
@@ -88,3 +88,53 @@ class InovacaoForm(forms.ModelForm):
             campo.max_length = LIMITE_TEXTO_LONGO
             campo.validators.append(MaxLengthValidator(LIMITE_TEXTO_LONGO))
             campo.widget.attrs["maxlength"] = str(LIMITE_TEXTO_LONGO)
+
+
+class BuscaForm(forms.Form):
+    """Parametros GET da listagem: busca, categoria, unidade e status (RF05, RF06).
+
+    Sempre vinculado ao request.GET: repopula os controles (CONS-25, CONS-29) e
+    recusa valor inexistente em vez de ignora-lo (CONS-30).
+    """
+
+    q = forms.CharField(
+        label="Buscar",
+        required=False,
+        max_length=100,
+        strip=True,
+        widget=forms.SearchInput,
+        help_text="Procura em título, problema e solução. Ex.: planilha conciliação",
+        error_messages={"max_length": MENSAGEM_TAMANHO},
+    )
+    categoria = forms.ModelChoiceField(
+        Categoria.objects.all(),
+        label="Categoria",
+        required=False,
+        empty_label="Todas as categorias",
+        help_text="Área de back office. Ex.: Financeiro",
+        error_messages={"invalid_choice": "Selecione uma categoria da lista."},
+    )
+    unidade = forms.ModelChoiceField(
+        Unidade.objects.all(),
+        label="Unidade",
+        required=False,
+        empty_label="Todas as unidades",
+        help_text="Sede ou filial que criou a solução. Ex.: Filial Norte",
+        error_messages={"invalid_choice": "Selecione uma unidade da lista."},
+    )
+    status = forms.ChoiceField(
+        label="Status",
+        required=False,
+        choices=[("", "Todos os status"), *StatusInovacao.choices],
+        help_text="Estágio da solução. Ex.: Disponível para replicação",
+        error_messages={"invalid_choice": "Selecione um status da lista."},
+    )
+
+    def __init__(self, *args, **kwargs):
+        # SPEC_DEVIATION: o design pede `label_suffix = ""` como atributo de classe.
+        # Reason: o Form.__init__ o sobrescreve com ":"; so o argumento do __init__ vale.
+        kwargs.setdefault("label_suffix", "")
+        super().__init__(*args, **kwargs)
+        # A ajuda vai abaixo do controle (CONS-52); o padrao do Django a poe acima.
+        for campo in self.fields.values():
+            campo.template_name = "inovacoes/campo.html"

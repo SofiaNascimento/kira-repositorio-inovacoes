@@ -348,19 +348,19 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-21 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-22 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-23 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-24 | P1: Buscar por palavra-chave | - | Pending |
+| CONS-24 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-25 | P1: Buscar por palavra-chave | - | Pending |
-| CONS-26 | P1: Filtrar por categoria, unidade e status | - | Pending |
+| CONS-26 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-27 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-28 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-29 | P1: Filtrar por categoria, unidade e status | - | Pending |
-| CONS-30 | P1: Filtrar por categoria, unidade e status | - | Pending |
+| CONS-30 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-31 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-32 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-33 | P1: Contagem e estados vazios claros | Execute | Implementing |
 | CONS-34 | P1: Contagem e estados vazios claros | Execute | Implementing |
 | CONS-35 | P1: Contagem e estados vazios claros | - | Pending |
-| CONS-36 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-36 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-37 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
 | CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-39 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
@@ -376,12 +376,12 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-49 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
 | CONS-50 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
 | CONS-51 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
-| CONS-52 | P3: Ajuda contextual nos filtros | - | Pending |
+| CONS-52 | P3: Ajuda contextual nos filtros | Execute | Implementing |
 | CONS-53 | Edge case: banco indisponível | Execute | Implementing |
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 36 implementando (Execute), 17 pendentes.
+**Coverage:** 53 total, 41 implementando (Execute), 12 pendentes.
 
 ---
 
