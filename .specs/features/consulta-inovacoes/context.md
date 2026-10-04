@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-10-03
 **Spec:** `.specs/features/consulta-inovacoes/spec.md`
-**Status:** Ready for design (spec aprovada em 2026-10-03)
+**Status:** Feature implementada e verificada (2026-10-03, `validation.md`, PASS)
 
 ---
 

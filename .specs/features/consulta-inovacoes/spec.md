@@ -5,7 +5,7 @@
 **Reusa da F2:** modelo `inovacoes.Inovacao` sem campos novos de domínio · `Unidade`, `Categoria` e `StatusInovacao` como fonte das opções dos filtros (RN07) · mensagens da INOV-12 e INOV-17 · padrões de acessibilidade INOV-31 a INOV-35 e INOV-41
 **Reusa da F1:** página 500 sem vazamento (AUTH-26) · região de mensagens `role="status"` do `templates/base.html`
 **Altera a F2:** INOV-03 (destino após cadastro) e INOV-36/INOV-37 (destino do "Cancelar") — ver CONS-49 a CONS-51
-**Status:** Aprovada pelo usuário em 2026-10-03 (assumptions confirmadas na aprovação)
+**Status:** Aprovada pelo usuário em 2026-10-03 (assumptions confirmadas na aprovação) · implementada e verificada em 2026-10-03 (`validation.md`, iteração 1, PASS)
 **Contexto da discussão:** `.specs/features/consulta-inovacoes/context.md`
 
 > **Nota de notação:** como na F1 e na F2, os critérios de aceite estão em EARS em inglês (WHEN /
@@ -22,15 +22,15 @@ chegar ao contato de quem responde pela solução.
 
 ## Goals
 
-- [ ] Qualquer usuário autenticado, dos dois perfis, vê todas as inovações cadastradas numa lista
+- [x] Qualquer usuário autenticado, dos dois perfis, vê todas as inovações cadastradas numa lista
       resumida com título, categoria, unidade e status, e abre o detalhe de qualquer uma com todos os
       campos e o contato responsável.
-- [ ] Uma busca por palavras encontra toda inovação que contém essas palavras em título, problema ou
+- [x] Uma busca por palavras encontra toda inovação que contém essas palavras em título, problema ou
       solução, sem distinguir maiúsculas, minúsculas nem acentos, e nenhuma que não as contenha.
-- [ ] Os filtros de categoria, unidade e status funcionam isolados, combinados entre si e combinados
+- [x] Os filtros de categoria, unidade e status funcionam isolados, combinados entre si e combinados
       com a busca.
-- [ ] Com 500 inovações carregadas, a listagem e a busca combinada respondem em até 2 segundos.
-- [ ] Toda consulta sem resultado e o repositório vazio exibem uma mensagem que diz o que aconteceu e
+- [x] Com 500 inovações carregadas, a listagem e a busca combinada respondem em até 2 segundos.
+- [x] Toda consulta sem resultado e o repositório vazio exibem uma mensagem que diz o que aconteceu e
       o que fazer a seguir.
 
 ## Out of Scope
@@ -325,63 +325,63 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| CONS-01 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-02 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-03 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-04 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-05 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-06 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-07 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-08 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-09 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-10 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-11 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-12 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-13 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-14 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-15 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-16 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-17 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-18 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-19 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-20 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-21 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-22 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-23 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-24 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-25 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-26 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-27 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-28 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-29 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-30 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-31 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-32 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-33 | P1: Contagem e estados vazios claros | Execute | Implementing |
-| CONS-34 | P1: Contagem e estados vazios claros | Execute | Implementing |
-| CONS-35 | P1: Contagem e estados vazios claros | Execute | Implementing |
-| CONS-36 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-37 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-39 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-40 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-41 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-43 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-44 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-45 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-46 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-47 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
-| CONS-49 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
-| CONS-50 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
-| CONS-51 | P2: Cadastro e cancelamento levam à consulta | Execute | Implementing |
-| CONS-52 | P3: Ajuda contextual nos filtros | Execute | Implementing |
-| CONS-53 | Edge case: banco indisponível | Execute | Implementing |
+| CONS-01 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-02 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-03 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-04 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-05 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-06 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-07 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-08 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-09 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-10 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-11 | P1: Ver a lista de inovações | Execute | Verified |
+| CONS-12 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-13 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-14 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-15 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-16 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-17 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-18 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Verified |
+| CONS-19 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-20 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-21 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-22 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-23 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-24 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-25 | P1: Buscar por palavra-chave | Execute | Verified |
+| CONS-26 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-27 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-28 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-29 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-30 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-31 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-32 | P1: Filtrar por categoria, unidade e status | Execute | Verified |
+| CONS-33 | P1: Contagem e estados vazios claros | Execute | Verified |
+| CONS-34 | P1: Contagem e estados vazios claros | Execute | Verified |
+| CONS-35 | P1: Contagem e estados vazios claros | Execute | Verified |
+| CONS-36 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-37 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-39 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-40 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-41 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-43 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
+| CONS-44 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-45 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-46 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-47 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-49 | P2: Cadastro e cancelamento levam à consulta | Execute | Verified |
+| CONS-50 | P2: Cadastro e cancelamento levam à consulta | Execute | Verified |
+| CONS-51 | P2: Cadastro e cancelamento levam à consulta | Execute | Verified |
+| CONS-52 | P3: Ajuda contextual nos filtros | Execute | Verified |
+| CONS-53 | Edge case: banco indisponível | Execute | Verified |
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 53 implementando (Execute), 0 pendentes.
+**Coverage:** 53 total, 53 mapeados para tasks, 53 verificados (`validation.md`, iteração 1, PASS).
 
 ---
 
@@ -410,12 +410,16 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 ## Success Criteria
 
-- [ ] Um `USUARIO` e um `ADMINISTRADOR` veem a mesma listagem, com inovações de todos os autores, e
+- [x] Um `USUARIO` e um `ADMINISTRADOR` veem a mesma listagem, com inovações de todos os autores, e
       abrem o detalhe de qualquer uma com o contato responsável.
-- [ ] A busca "conciliacao planilha" encontra a inovação "Conciliação bancária" cujo problema cita
+- [x] A busca "conciliacao planilha" encontra a inovação "Conciliação bancária" cujo problema cita
       "planilha" e não encontra uma que cita "planilha" só no resultado.
-- [ ] Com o conjunto de demonstração carregado, filtrar por categoria + unidade + status + busca
+- [x] Com o conjunto de demonstração carregado, filtrar por categoria + unidade + status + busca
       devolve exatamente os registros que satisfazem os quatro critérios, em até 2 s de servidor.
-- [ ] Repositório vazio e consulta sem resultado mostram cada um sua mensagem, com o próximo passo.
+- [x] Repositório vazio e consulta sem resultado mostram cada um sua mensagem, com o próximo passo.
 - [ ] Busca, filtros, paginação e detalhe são operados só com teclado, com rótulos associados e foco
       visível.
+      Listagem e detalhe: percurso real com teclado aprovado na conferência da parte A (passos 17
+      e 18, 2026-10-03); busca, filtros e paginação aguardam a conferência da parte B. A estrutura
+      (`tabindex`, controles nativos, `:focus-visible`, rótulos) está provada em
+      `inovacoes/tests/test_views_acessibilidade_consulta.py` e `test_forms_busca.py`.

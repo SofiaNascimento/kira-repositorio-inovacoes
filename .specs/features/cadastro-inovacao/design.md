@@ -46,7 +46,7 @@ graph TD
     C2 -->|válido| S["form_valid: autor = request.user<br/>save() em transaction.atomic"]
     S -->|IntegrityError da constraint de título| R200
     S -->|ok| MSG["messages.success<br/>'Inovação “…” cadastrada com sucesso.'"]
-    MSG --> H["302 → home interna (/)"]
+    MSG --> H["302 → home interna (/)<br/>(F3: detalhe da inovação, CONS-49)"]
 
     A[ADMINISTRADOR] -->|/admin/inovacoes/| ADM[UnidadeAdmin / CategoriaAdmin]
     ADM --> PERM{"is_administrador?"}
@@ -75,7 +75,7 @@ graph TD
 | `CheckConstraint` sobre `TextChoices` no nível de módulo | `contas/models.py:7-17, 58-61` | O mesmo padrão para `StatusInovacao` (a lição da T8: o enum fica fora da classe para a `Meta` enxergá-lo). |
 | Região de mensagens `role="status"` e `:focus-visible` | `templates/base.html` | Mensagem de sucesso (INOV-28) e foco visível (INOV-35) sem CSS novo. |
 | Página 500 sem vazamento | `templates/500.html` (AUTH-26) | Banco indisponível no cadastro (INOV-42). |
-| `HomeInternaView` | `nucleo/views.py` | Destino do redirect e do "Cancelar" até a F3 existir (INOV-03, INOV-36). |
+| `HomeInternaView` | `nucleo/views.py` | Destino do redirect e do "Cancelar" até a F3 existir (INOV-03, INOV-36). *Removida pela F3 (CONS-09): `/` redireciona à listagem; destinos trocados pela CONS-49 e pela CONS-51.* |
 
 ### Componentes do Django a aproveitar
 
@@ -179,7 +179,7 @@ graph TD
        `inovacao_titulo_unico_por_unidade`, faz `form.add_error("titulo", <mensagem>)` e devolve
        `form_invalid` com 200 (INOV-25). Qualquer outro `IntegrityError` sobe (vira 500);
     4. `messages.success(request, f"Inovação “{titulo}” cadastrada com sucesso.")` e redirect 302
-       para `nucleo:home` (INOV-03, INOV-28).
+       para `nucleo:home` (INOV-03, INOV-28). *Alterado pela F3 (CONS-49): detalhe da inovação criada.*
   - sem decorator: protegida pelo middleware (AD-006, INOV-07).
 - **Dependencies**: `InovacaoForm`, `django.contrib.messages`, `django.db.transaction`
 - **Reuses**: `CreateView`.
@@ -193,7 +193,7 @@ graph TD
   - `<form method="post" novalidate>` com `{% csrf_token %}` e `{{ campo.as_field_group }}` por campo.
     O `novalidate` desliga a validação nativa do navegador para que as mensagens em português do
     servidor (RF13) sejam as que o usuário vê; o atributo `required` continua no HTML (INOV-32).
-  - `<button type="submit">Salvar</button>` e `<a href="{% url 'nucleo:home' %}">Cancelar</a>`
+  - `<button type="submit">Salvar</button>` e `<a href="{% url 'nucleo:home' %}">Cancelar</a>` *(alterado pela F3 (CONS-51): `{% url 'inovacoes:lista' %}`)*
     (INOV-36, INOV-37)
   - só controles nativos, sem `tabindex` (INOV-34)
 - **`inovacoes/templates/inovacoes/campo.html`** — cópia de `django/forms/field.html` com a ordem
@@ -358,7 +358,7 @@ class Inovacao(models.Model):
 | **O contato pré-preenchido pode passar de 150 caracteres** | `InovacaoCreateView.get_initial` | `first_name` e `last_name` têm até 150 cada e o e-mail até 254; nesse caso extremo o envio falha na INOV-12 | Aceito: o usuário vê a mensagem de tamanho no campo e edita (é o comportamento da spec). Não se trunca em silêncio. |
 | **A data migration afeta os testes** | `inovacoes/migrations/0004_listas_iniciais.py` | O pytest-django aplica as migrations, então os 10 itens existem em todo teste. Um teste que cria "Sede" colide com `unidade_nome_unico_ci` | Os testes usam os itens da carga inicial ou nomes próprios de teste. O teste da INOV-18 afirma exatamente os 10 nomes. |
 | **O template de campo é cópia do Django** | `inovacoes/templates/inovacoes/campo.html` | Numa atualização do Django, a cópia pode divergir do original (por exemplo, `fieldset`) | Os testes afirmam o resultado (ordem controle → ajuda, `aria-describedby` com os dois ids), e não o template. Uma divergência quebra teste, não passa em silêncio. |
-| **A home interna segue como andaime** | `nucleo/views.py` | O destino pós-cadastro e o "Cancelar" apontam para uma tela provisória | Declarado na spec e no Handoff. A F3 troca os dois destinos. |
+| **A home interna segue como andaime** | `nucleo/views.py` | O destino pós-cadastro e o "Cancelar" apontam para uma tela provisória | Declarado na spec e no Handoff. A F3 troca os dois destinos. *Resolvido pela F3 (CONS-49, CONS-51, CONS-09).* |
 
 ---
 
@@ -424,8 +424,8 @@ class Inovacao(models.Model):
 | INOV-33 | `aria-invalid` e `aria-describedby` do Django 5.2 |
 | INOV-34 | Template só com controles nativos, sem `tabindex` |
 | INOV-35 | `:focus-visible` do `base.html` |
-| INOV-36 | Link "Cancelar" no template |
-| INOV-37 | Link GET para a home: não submete o form |
+| INOV-36 | Link "Cancelar" no template *(alvo alterado pela F3 (CONS-51): `/inovacoes/`)* |
+| INOV-37 | Link GET para a home: não submete o form *(alvo alterado pela F3 (CONS-51): a listagem)* |
 | INOV-38 | `<nav>` no `base.html` |
 | INOV-39 | `InovacaoCreateView.get_initial` |
 | INOV-40 | `contato` editável no form |

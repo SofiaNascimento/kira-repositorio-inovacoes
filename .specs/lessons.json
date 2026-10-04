@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 11,
+  "next_id": 16,
   "lessons": [
     {
       "id": "L-001",
@@ -184,6 +184,96 @@
       ],
       "created": "2026-10-02T13:43:06Z",
       "last_seen": "2026-10-02T13:43:06Z"
+    },
+    {
+      "id": "L-011",
+      "key": "spec_precision_gap::when an ac bounds a numeric query parameter state the outcome for zero and negative values not only for non numeric and above range values",
+      "text": "When an AC bounds a numeric query parameter, state the outcome for zero and negative values, not only for non-numeric and above-range values",
+      "signal": "spec_precision_gap",
+      "scope": "routes",
+      "status": "candidate",
+      "features": [
+        "consulta-inovacoes"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md SPG-1 / CONS-05 (inovacoes/views.py:101-107) (routes)"
+      ],
+      "created": "2026-10-04T03:09:55Z",
+      "last_seen": "2026-10-04T03:09:55Z"
+    },
+    {
+      "id": "L-012",
+      "key": "spec_precision_gap::when an ac limits the length of a text input that is trimmed state whether the limit counts before or after trimming and test the boundary with edge whitespace",
+      "text": "When an AC limits the length of a text input that is trimmed, state whether the limit counts before or after trimming and test the boundary with edge whitespace",
+      "signal": "spec_precision_gap",
+      "scope": "forms",
+      "status": "candidate",
+      "features": [
+        "consulta-inovacoes"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md SPG-2 / CONS-24 (inovacoes/forms.py:100-108) (forms)"
+      ],
+      "created": "2026-10-04T03:09:55Z",
+      "last_seen": "2026-10-04T03:09:55Z"
+    },
+    {
+      "id": "L-013",
+      "key": "spec_deviation::before designing an ac around a framework helper check the helper on every boundary value because django paginator get page sends page 0 to the last page",
+      "text": "Before designing an AC around a framework helper, check the helper on every boundary value, because Django Paginator.get_page sends page 0 to the last page",
+      "signal": "spec_deviation",
+      "scope": "routes",
+      "status": "candidate",
+      "features": [
+        "consulta-inovacoes"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SPEC_DEVIATION inovacoes/views.py:101 (T5) (routes)"
+      ],
+      "created": "2026-10-04T03:09:55Z",
+      "last_seen": "2026-10-04T03:09:55Z"
+    },
+    {
+      "id": "L-014",
+      "key": "spec_deviation::set label suffix on a django form through the init keyword because form init overwrites a class level label suffix",
+      "text": "Set label_suffix on a Django Form through the __init__ keyword, because Form.__init__ overwrites a class-level label_suffix",
+      "signal": "spec_deviation",
+      "scope": "forms",
+      "status": "candidate",
+      "features": [
+        "consulta-inovacoes"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SPEC_DEVIATION inovacoes/forms.py:134 (T17) (forms)"
+      ],
+      "created": "2026-10-04T03:09:55Z",
+      "last_seen": "2026-10-04T03:09:55Z"
+    },
+    {
+      "id": "L-015",
+      "key": "spec_deviation::when a task changes what a route returns grep every test that requests that route before listing any of them as unchanged",
+      "text": "When a task changes what a route returns, grep every test that requests that route before listing any of them as unchanged",
+      "signal": "spec_deviation",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "consulta-inovacoes"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "tasks.md T8 Done when; contas/tests/test_controle_acesso.py:98 (tests)"
+      ],
+      "created": "2026-10-04T03:09:55Z",
+      "last_seen": "2026-10-04T03:09:55Z"
     }
   ]
 }

@@ -74,6 +74,36 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: AUTH-21 (autenticacao/spec.md:196); validation.md iteracao 3, Sugestao 1 (auth)
 - last seen: 2026-10-02T13:43:06Z
 
+### L-011 - When an AC bounds a numeric query parameter, state the outcome for zero and negative values, not only for non-numeric and above-range values
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `routes` · harmful: 0
+- features: consulta-inovacoes
+- evidence: validation.md SPG-1 / CONS-05 (inovacoes/views.py:101-107) (routes)
+- last seen: 2026-10-04T03:09:55Z
+
+### L-012 - When an AC limits the length of a text input that is trimmed, state whether the limit counts before or after trimming and test the boundary with edge whitespace
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
+- features: consulta-inovacoes
+- evidence: validation.md SPG-2 / CONS-24 (inovacoes/forms.py:100-108) (forms)
+- last seen: 2026-10-04T03:09:55Z
+
+### L-013 - Before designing an AC around a framework helper, check the helper on every boundary value, because Django Paginator.get_page sends page 0 to the last page
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `routes` · harmful: 0
+- features: consulta-inovacoes
+- evidence: SPEC_DEVIATION inovacoes/views.py:101 (T5) (routes)
+- last seen: 2026-10-04T03:09:55Z
+
+### L-014 - Set label_suffix on a Django Form through the __init__ keyword, because Form.__init__ overwrites a class-level label_suffix
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
+- features: consulta-inovacoes
+- evidence: SPEC_DEVIATION inovacoes/forms.py:134 (T17) (forms)
+- last seen: 2026-10-04T03:09:55Z
+
+### L-015 - When a task changes what a route returns, grep every test that requests that route before listing any of them as unchanged
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: consulta-inovacoes
+- evidence: tasks.md T8 Done when; contas/tests/test_controle_acesso.py:98 (tests)
+- last seen: 2026-10-04T03:09:55Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

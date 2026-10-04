@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/consulta-inovacoes/spec.md`
 **Design**: `.specs/features/consulta-inovacoes/design.md`
-**Status**: Approved (2026-10-03) — recorte A/B aprovado dentro de uma única feature; Test Coverage Matrix e Gate Check Commands confirmados
+**Status**: ✅ Concluída — T1–T22 implementadas; PASS na iteração 1 do Verifier (`validation.md`, 2026-10-03). Recorte A/B numa única feature; conferência manual da parte A 20/20
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 e da F2.
 

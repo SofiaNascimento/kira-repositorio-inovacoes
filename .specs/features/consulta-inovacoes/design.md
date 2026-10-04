@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/consulta-inovacoes/spec.md`
 **Context**: `.specs/features/consulta-inovacoes/context.md`
-**Status**: Approved (2026-10-03)
+**Status**: Approved (2026-10-03) — implementado e verificado (2026-10-03, `validation.md`, PASS)
 
 **Abordagem escolhida (com o usuário):** A — coluna normalizada. `Inovacao` ganha o campo interno
 `texto_busca`, com título, problema e solução sem acento e em minúsculas, calculado pela aplicação no

@@ -68,20 +68,20 @@
 
 ## Handoff
 
-- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. F2 concluída em 2026-10-03 (UAT 21/21).
-- **Phase / Task**: Specify ✅ aprovado em 2026-10-03 (`spec.md` com CONS-01 a CONS-53, `context.md` da discussão) · Design ✅ aprovado em 2026-10-03 (`design.md`, abordagem A: coluna normalizada; AD-008 registrada) · Tasks ✅ aprovado em 2026-10-03 (`tasks.md`, T1–T22 em 5 fases; parte A = T1–T11, parte B = T12–T22, numa única feature) · Execute 🔄 parte A concluída (lotes 1 e 2, T1–T11) em 2026-10-03; conferência manual da parte A pelo usuário: 20/20 passos OK (2026-10-03) · parte B: lote 3 (Fase 3, T12–T16) ✅; lote 4 (Fases 4+5, T17–T22) em andamento.
-- **Completed**: T1–T11. Lote 1: `1b4daf3`, `060decd`, `46e285c`, `023464a`, `11c2ee5`. Lote 2: `d585e72`, `d9088b7`, `5c98282`, `238e7fa`, `5848a80`, `c2c94ec`. Lote 3: `431a7af`, `f8a55ee`, `c8ed62b`, `08f526e`, `c99d2ef`. Build gate verde com 309 testes. Desvios: T5 `?page=0` → página 1 (SPEC_DEVIATION em `inovacoes/views.py`); teste de fuso da T2 com 02:30 UTC; T8 reapontou também `contas/tests/test_controle_acesso.py:98` (AUTH-11 → `GET /inovacoes/`), autorizado pelo usuário depois de bloqueio.
+- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. **Implementada e verificada** em 2026-10-03: Verifier PASS na iteração 1 (`validation.md`), 380 testes.
+- **Phase / Task**: Specify ✅ · Design ✅ (AD-008) · Tasks ✅ · Execute ✅ (T1–T22, 4 lotes de sub-agentes) · Verifier ✅ PASS · conferência manual da parte A ✅ (20/20) · conferência manual da parte B ⏳ pendente.
+- **Completed**: T1–T22. Commits de código `1b4daf3` … `41fd0b8`. Sensor: 20 mutações, 19 mortas, 1 equivalente (M7). Desvios: T5 `?page=0` → página 1; T17 `label_suffix` via `__init__`; T8 reapontou também `contas/tests/test_controle_acesso.py:98` (AUTH-11), autorizado pelo usuário.
 - **In-progress** (file:line): nenhum.
-- **Next step**: lote 4 (Fases 4+5, T17–T22); depois Verifier. Banco local `kira` precisa de `migrate` (0005, 0006) antes da conferência manual da parte B. No fechamento: anotar "alterado pela F3" nas linhas do `design.md` da F2 que citam a home (`:78`, `:182`, `:197`, `:427`, `:428`); o `validation.md` da F2 fica como registro histórico.
-- **Testes pendentes**: nenhum. 309 passed em 2026-10-03.
+- **Next step**: conferência manual da parte B no navegador (busca, filtros, paginação com a carga de demonstração). Antes: `.venv/bin/python manage.py migrate` (0005, 0006) e `.venv/bin/python manage.py carregar_demonstracao` no banco `kira`. Depois, F4 (edicao-exclusao).
+- **Testes pendentes**: nenhum. 380 passed em 2026-10-03.
 - **Blockers**: nenhum.
-- **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**.
-- **Banco local**: migrations `inovacoes 0001–0004`; 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff ligado no UAT). 4 inovações do UAT da F2: `Processo RH` e `Procésso RH` (Filial Leste, maria), `PROCESSO RH` (Filial Norte, maria), `Checklist de compras` (Sede, joao); mais 1 criada pela maria na conferência da parte A da F3 (passo 11, com `<b>teste</b>` na solução). Senhas fora do repositório.
+- **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**. Servidor: `DJANGO_DEBUG=True .venv/bin/python manage.py runserver`.
+- **Banco local**: migrations `inovacoes 0001–0004` aplicadas; **0005 e 0006 ainda não**. 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff). 5 inovações: as 4 do UAT da F2 (`Processo RH`, `Procésso RH`, `PROCESSO RH`, `Checklist de compras`) e 1 criada pela maria na conferência da parte A da F3. Senhas fora do repositório.
 - **Uncommitted files**: nenhum.
-- **Branch**: `main`. O `origin/main` está em `9e7823d` (push de 2026-10-03); os commits do registro do UAT e da AUTH-28 ficam só locais. Push só com pedido explícito.
+- **Branch**: `main`. Commits da F3 só locais; push só com pedido explícito.
 
-**Decisões desta sessão (2026-10-03)**, feature-local, sem AD nova: o UAT aceitou dados adaptados pelo usuário (títulos e unidades diferentes do roteiro) quando o critério do item era o mesmo; a conferência no banco substituiu os dados do roteiro como evidência.
+**Spec-precision gaps da F3 (não bloqueiam)**: SPG-1 `page` ≤ 0 (CONS-05); SPG-2 limite de 100 caracteres conta depois de aparar os espaços (CONS-24). Ver `validation.md`.
 
-**Lições candidatas**: L-007, L-008, L-009, L-010 em `.specs/LESSONS.md` (sem mudança nesta sessão).
+**Lições candidatas**: L-007 a L-010 (anteriores) e L-011 a L-015 (Verifier da F3) em `.specs/LESSONS.md`.
 
-**Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades.
+**Ideias adiadas em aberto**: F1 (`autenticacao/context.md`) — recuperação de senha, tela própria de gestão de usuários, `maxlength` 254 no campo de login. F2 (`cadastro-inovacao/context.md`) — comparação de título sem acentos, lista real de unidades. F3 (`consulta-inovacoes/context.md`) — ordenação escolhida pelo usuário, destaque do termo, voltar ao detalhe preservando filtros, `label_suffix` sem efeito no `InovacaoForm` (rótulos do cadastro com ":").
