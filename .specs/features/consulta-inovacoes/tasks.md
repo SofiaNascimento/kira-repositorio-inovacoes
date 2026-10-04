@@ -527,7 +527,7 @@ T21 → T22
 
 ---
 
-### T14: Preencher `texto_busca` nas inovações existentes
+### T14: Preencher `texto_busca` nas inovações existentes ✅
 
 **What**: A data migration `0006` que calcula `texto_busca` das linhas gravadas antes da `0005`.
 **Where**: `inovacoes/migrations/0006_preenche_texto_busca.py`
@@ -542,15 +542,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `RunPython(preencher, migrations.RunPython.noop)`; `preencher` usa o model histórico e uma **cópia local** da normalização (não importa `inovacoes.busca`), com comentário explicando por quê
-- [ ] Teste de integração em `inovacoes/tests/test_migracoes.py`: migra até `0005`, cria uma inovação com "Conciliação" pelo model histórico (com `texto_busca` vazio), migra até `0006` e afirma `texto_busca == inovacoes.busca.texto_de_busca(...)` com a função atual; a reversão para `0005` não falha
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: 270 testes passam (+2)
+- [x] `RunPython(preencher, migrations.RunPython.noop)`; `preencher` usa o model histórico e uma **cópia local** da normalização (não importa `inovacoes.busca`), com comentário explicando por quê
+- [x] Teste de integração em `inovacoes/tests/test_migracoes.py`: migra até `0005`, cria uma inovação com "Conciliação" pelo model histórico (com `texto_busca` vazio), migra até `0006` e afirma `texto_busca == inovacoes.busca.texto_de_busca(...)` com a função atual; a reversão para `0005` não falha
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 270 testes passam (+2)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): preenche o texto de busca das inovacoes existentes`
+
+**Status**: ✅ Complete — 283 passed (+2); o teste volta o banco de teste a 0005 com MigrationExecutor (o test_migracoes.py não tinha esse padrão; ele nasce aqui), cria duas linhas pelo model histórico com texto_busca vazio, migra para 0006 e compara com inovacoes.busca.texto_de_busca; a fixture devolve o banco aos leaf nodes no fim, e a transação do teste desfaz o resto. O segundo teste reverte para 0005 e confirma que o texto gravado fica (noop). Mutações na cópia local (lower no lugar de casefold) e no laço (só a primeira linha) derrubam o teste. design.md ajustado: seção Migrations e risco da cópia passam a citar a 0006. Build gate verde
 
 ---
 

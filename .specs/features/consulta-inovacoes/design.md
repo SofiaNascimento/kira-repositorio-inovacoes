@@ -272,7 +272,9 @@ da CONS-15, que fala de id sem inovação.
 
 ### Migrations
 
-- **`inovacoes/migrations/0005_inovacao_texto_busca.py`**: `AddField("inovacao", "texto_busca", TextField(editable=False, default=""))` + `RunPython(preencher, migrations.RunPython.noop)`. A função `preencher` percorre `Inovacao` pelo model histórico, que não tem o `save()` customizado, e grava `texto_busca` com uma **cópia local** da normalização. A migration não importa `inovacoes.busca`: se a função mudar no futuro, a migration antiga continua reproduzindo o que fazia.
+- **`inovacoes/migrations/0005_inovacao_texto_busca.py`** (T13): `AddField("inovacao", "texto_busca", TextField(editable=False, default=""))`, gerada por `makemigrations`.
+- **`inovacoes/migrations/0006_preenche_texto_busca.py`** (T14): `RunPython(preencher, migrations.RunPython.noop)`. A função `preencher` percorre `Inovacao` pelo model histórico, que não tem o `save()` customizado, e grava `texto_busca` com uma **cópia local** da normalização. A migration não importa `inovacoes.busca`: se a função mudar no futuro, a migration antiga continua reproduzindo o que fazia.
+- *Ajuste do Tasks:* o design previa as duas operações numa única `0005`; como o campo e o preenchimento nascem em tasks separadas, cada uma gerou a sua. O esquema final é o mesmo.
 
 ---
 
@@ -333,7 +335,7 @@ alterado e depois de `save(update_fields=["titulo"])`.
 | **`only()` + acesso a campo adiado no template** | `para_listagem()` | Se o template da lista ler `problema`, cada linha dispara uma consulta extra (N+1 escondido) | O teste da CONS-48 pega isso. O template da lista só lê título, status, unidade e categoria. |
 | **Medição de tempo em teste pode oscilar** | teste das CONS-46/CONS-47 | Uma máquina carregada pode gerar falso negativo | O limite da spec é 2 s, e a medição local esperada fica na casa das dezenas de milissegundos. O teste mede só a requisição (`perf_counter` em volta de `client.get`), sem a carga. O comando roda uma vez por módulo, numa fixture `django_db_setup`/`scope="module"`, ou por função, se o custo for aceitável. Decidido na task. |
 | **Collation e `casefold()` divergentes** | `inovacoes/busca.py` | O banco não participa da normalização: o termo e a coluna são normalizados pela mesma função Python, então a collation do deploy não afeta a busca | Nenhuma ação. Anotado porque a F2 registrou o risco de collation para a ordem das listas, que continua valendo para os selects dos filtros. |
-| **A cópia da normalização na migration pode divergir de `inovacoes.busca`** | `0005_inovacao_texto_busca.py` | Linhas antigas preenchidas por uma regra e novas por outra, se `busca.py` mudar | Teste de migração: aplica `0004`, cria uma linha pelo model histórico, migra para `0005` e afirma `texto_busca == texto_de_busca(...)` com a função atual. Uma divergência quebra o teste. |
+| **A cópia da normalização na migration pode divergir de `inovacoes.busca`** | `0006_preenche_texto_busca.py` | Linhas antigas preenchidas por uma regra e novas por outra, se `busca.py` mudar | Teste de migração: volta a `0005`, cria linhas pelo model histórico (com `texto_busca` vazio), migra para `0006` e afirma `texto_busca == texto_de_busca(...)` com a função atual. Uma divergência quebra o teste. |
 | **O 404 de `DEBUG=True` mostra a página técnica** | `InovacaoDetailView` | Em desenvolvimento, a página de "não encontrada" seria a do Django | O 404 é renderizado pela própria view com `render(..., status=404)`, igual com e sem `DEBUG`. |
 
 ---
