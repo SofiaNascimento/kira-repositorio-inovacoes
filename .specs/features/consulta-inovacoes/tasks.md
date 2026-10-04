@@ -764,7 +764,7 @@ T21 → T22
 
 ---
 
-### T22: Desempenho de listagem e busca (RNF08)
+### T22: Desempenho de listagem e busca (RNF08) ✅
 
 **What**: A medição de até 2 s com o conjunto de demonstração e a prova de que a listagem não tem N+1.
 **Where**: `inovacoes/tests/test_desempenho.py`
@@ -779,16 +779,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] Fixture que roda `call_command("carregar_demonstracao")`; o tempo medido é só o do `client.get` (`time.perf_counter`), sem a carga
-- [ ] Testes e2e: `GET /inovacoes/` autenticado < 2,0 s e 200 com "500 inovações encontradas" (CONS-46); `GET /inovacoes/` com duas palavras do vocabulário + categoria + unidade + status < 2,0 s, 200 e ao menos um resultado (CONS-47); o número de consultas de `GET /inovacoes/` com 1 inovação é igual ao com 20 (CONS-48)
-- [ ] Se algum ajuste de consulta for necessário para passar, ele entra nesta task e é descrito no commit
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a feature)
-- [ ] Test count: 339 testes passam (+3)
+- [x] Fixture que roda `call_command("carregar_demonstracao")`; o tempo medido é só o do `client.get` (`time.perf_counter`), sem a carga
+- [x] Testes e2e: `GET /inovacoes/` autenticado < 2,0 s e 200 com "500 inovações encontradas" (CONS-46); `GET /inovacoes/` com duas palavras do vocabulário + categoria + unidade + status < 2,0 s, 200 e ao menos um resultado (CONS-47); o número de consultas de `GET /inovacoes/` com 1 inovação é igual ao com 20 (CONS-48)
+- [x] Se algum ajuste de consulta for necessário para passar, ele entra nesta task e é descrito no commit
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a feature)
+- [x] Test count: 339 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): mede listagem e busca com o conjunto de demonstracao`
+
+**Status**: ✅ Complete — 380 passed (+3); 3 casos, como estimado. Medido só no `client.get`: listagem 0,015 s; busca de duas palavras + categoria + unidade + status 0,006 s; consultas por GET de `/inovacoes/` com 1 e com 20 inovações: 9 e 9. Nenhum ajuste de consulta foi necessário. O trio do CONS-47 vem da distribuição da CONS-44 (`i % 5 == 2`, `(i // 5) % 5 == 1`, `i % 3 == 1`, afirmado não vazio) e o resultado esperado é calculado sem `buscar()` nem `filtrar()`. Mutações (sem `select_related`; filtro de status ignorado) derrubam os testes. Build gate verde: fecha a feature. Estimativa de 339 defasada
 
 ---
 
