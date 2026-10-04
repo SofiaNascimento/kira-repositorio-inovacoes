@@ -495,7 +495,7 @@ T21 → T22
 
 ---
 
-### T13: Coluna `texto_busca` mantida pelo `save()` (AD-008)
+### T13: Coluna `texto_busca` mantida pelo `save()` (AD-008) ✅
 
 **What**: O campo `texto_busca` e o `save()` que o recalcula, inclusive com `update_fields`.
 **Where**: `inovacoes/models.py`
@@ -510,18 +510,20 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `texto_busca = models.TextField(editable=False, default="")` com comentário citando a AD-008
-- [ ] `save()` recalcula antes do `super().save()`; se `update_fields` contém `titulo`, `problema` ou `solucao`, acrescenta `"texto_busca"`
-- [ ] Migration `0005_inovacao_texto_busca` gerada por `makemigrations` (só `AddField`)
-- [ ] `InovacaoForm` continua com os mesmos sete campos (o campo é `editable=False`); `inovacoes/tests/test_forms.py` passa sem alteração
-- [ ] Testes de integração em `inovacoes/tests/test_models.py`: após `create()`, `texto_busca == texto_de_busca(...)`; após mudar `problema` e `save()`, idem; após `save(update_fields=["titulo"])`, o valor relido do banco reflete o título novo; `save(update_fields=["status"])` não toca `texto_busca`; resultado e contato **não** entram na coluna (CONS-22)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: 268 testes passam (+5)
+- [x] `texto_busca = models.TextField(editable=False, default="")` com comentário citando a AD-008
+- [x] `save()` recalcula antes do `super().save()`; se `update_fields` contém `titulo`, `problema` ou `solucao`, acrescenta `"texto_busca"`
+- [x] Migration `0005_inovacao_texto_busca` gerada por `makemigrations` (só `AddField`)
+- [x] `InovacaoForm` continua com os mesmos sete campos (o campo é `editable=False`); `inovacoes/tests/test_forms.py` passa sem alteração
+- [x] Testes de integração em `inovacoes/tests/test_models.py`: após `create()`, `texto_busca == texto_de_busca(...)`; após mudar `problema` e `save()`, idem; após `save(update_fields=["titulo"])`, o valor relido do banco reflete o título novo; `save(update_fields=["status"])` não toca `texto_busca`; resultado e contato **não** entram na coluna (CONS-22)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 268 testes passam (+5)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): mantem o texto de busca normalizado da inovacao`
+
+**Status**: ✅ Complete — 281 passed (+9); 9 testes no lugar dos 5 estimados: update_fields parametrizado nos três campos da busca e em tupla/frozenset (o save() copia o iterável para um set, sem mutar o do chamador). O teste de update_fields=["status"] afirma que a coluna segue o título gravado, e não o da memória. Migration 0005 gerada por makemigrations (só AddField). test_forms.py inalterado e verde; Model.full_clean() não acusa texto_busca vazio porque Field.validate ignora campos editable=False. Mutações (sem acrescentar texto_busca, acrescentar sempre, resultado no lugar da solução) derrubam os testes. Build gate verde. Estimativa de 268 defasada
 
 ---
 

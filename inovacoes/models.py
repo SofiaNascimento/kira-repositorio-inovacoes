@@ -5,6 +5,8 @@ from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse
 
+from inovacoes.busca import texto_de_busca
+
 
 class StatusInovacao(models.TextChoices):
     """Enumeracao StatusInovacao do diagrama de classes (RN03).
@@ -67,6 +69,10 @@ class InovacaoQuerySet(models.QuerySet):
         )
 
 
+# Campos de que texto_busca deriva (AD-008).
+CAMPOS_DA_BUSCA = {"titulo", "problema", "solucao"}
+
+
 class Inovacao(models.Model):
     """A entidade central do dominio (RF02).
 
@@ -93,6 +99,10 @@ class Inovacao(models.Model):
         verbose_name="autor",
     )
     data_criacao = models.DateTimeField("data de criação", auto_now_add=True)
+    # AD-008: titulo + problema + solucao sem acento e em minusculas, mantido
+    # pelo save(). Toda escrita desses tres campos precisa passar pelo save():
+    # update(), bulk_create e bulk_update deixam a busca errada.
+    texto_busca = models.TextField(editable=False, default="")
 
     objects = InovacaoQuerySet.as_manager()
 
@@ -120,6 +130,15 @@ class Inovacao(models.Model):
 
     def __str__(self):
         return self.titulo
+
+    def save(self, *args, update_fields=None, **kwargs):
+        self.texto_busca = texto_de_busca(self.titulo, self.problema, self.solucao)
+        if update_fields is not None:
+            # Copia: nao altera o iteravel de quem chamou.
+            update_fields = set(update_fields)
+            if update_fields & CAMPOS_DA_BUSCA:
+                update_fields.add("texto_busca")
+        super().save(*args, update_fields=update_fields, **kwargs)
 
     def get_absolute_url(self):
         # CONS-06: URL canonica do detalhe; o CreateView a usa como destino (CONS-49).
