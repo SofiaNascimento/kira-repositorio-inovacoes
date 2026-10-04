@@ -10,7 +10,7 @@ import pytest
 from inovacoes.tests.test_views_acessibilidade import PAPEIS_DE_CONTROLE, Pagina
 
 NATIVOS = {"a", "button", "input", "select", "textarea"}
-PAGINAS = ["lista_paginada", "detalhe"]
+PAGINAS = ["lista_paginada", "lista_com_busca", "detalhe"]
 
 
 @pytest.fixture
@@ -20,6 +20,9 @@ def pagina(request, client, autor, criar_inovacao):
         for n in range(21):
             criar_inovacao(titulo=f"Inovacao {n}")
         url = "/inovacoes/"
+    elif request.param == "lista_com_busca":
+        criar_inovacao(titulo="Caixa x", status="VALIDADA")
+        url = "/inovacoes/?q=x&status=VALIDADA"
     else:
         url = f"/inovacoes/{criar_inovacao().pk}/"
     html = client.get(url).content.decode()

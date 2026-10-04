@@ -643,7 +643,7 @@ T21 → T22
 
 ---
 
-### T18: Busca e filtros na listagem
+### T18: Busca e filtros na listagem ✅
 
 **What**: A listagem passa a ler o `BuscaForm`, aplicar `buscar()` e `filtrar()` e renderizar o formulário dentro de `role="search"`.
 **Where**: `inovacoes/views.py`
@@ -658,17 +658,19 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `get_queryset()`: `self.form = BuscaForm(self.request.GET)`; válido → `para_listagem().buscar(q).filtrar(...)`; `get_context_data()` expõe `form`
-- [ ] `inovacao_list.html`: `<div role="search">` com `<form method="get" action="{% url 'inovacoes:lista' %}">`, os quatro campos por `as_field_group` e `<button type="submit">Buscar</button>`; nenhum `onchange`/script
-- [ ] Testes e2e em `inovacoes/tests/test_views_busca.py`: `?q=CONCILIACAO+planilha` lista só a inovação esperada (CONS-19, CONS-20); o campo mostra o termo enviado (CONS-25); `?categoria=<pk>`, `?unidade=<pk>`, `?status=VALIDADA` isolados (CONS-27); combinações com e sem `q` (CONS-28); o `option` enviado sai `selected` (CONS-29); um único `form[method=get]` com botão "Buscar" e nenhum atributo `on*` nos `select` (CONS-31); o form está dentro de `[role=search]` (CONS-37); com 25 resultados para `?q=x&status=EM_TESTE`, o link "Próxima" carrega `q=x`, `status=EM_TESTE` e `page=2` (CONS-04)
-- [ ] `inovacoes/tests/test_views_acessibilidade_consulta.py` (T10) passa a varrer também `/inovacoes/?q=x&status=VALIDADA` (CONS-41)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 318 testes passam (+13)
+- [x] `get_queryset()`: `self.form = BuscaForm(self.request.GET)`; válido → `para_listagem().buscar(q).filtrar(...)`; `get_context_data()` expõe `form`
+- [x] `inovacao_list.html`: `<div role="search">` com `<form method="get" action="{% url 'inovacoes:lista' %}">`, os quatro campos por `as_field_group` e `<button type="submit">Buscar</button>`; nenhum `onchange`/script
+- [x] Testes e2e em `inovacoes/tests/test_views_busca.py`: `?q=CONCILIACAO+planilha` lista só a inovação esperada (CONS-19, CONS-20); o campo mostra o termo enviado (CONS-25); `?categoria=<pk>`, `?unidade=<pk>`, `?status=VALIDADA` isolados (CONS-27); combinações com e sem `q` (CONS-28); o `option` enviado sai `selected` (CONS-29); um único `form[method=get]` com botão "Buscar" e nenhum atributo `on*` nos `select` (CONS-31); o form está dentro de `[role=search]` (CONS-37); com 25 resultados para `?q=x&status=EM_TESTE`, o link "Próxima" carrega `q=x`, `status=EM_TESTE` e `page=2` (CONS-04)
+- [x] `inovacoes/tests/test_views_acessibilidade_consulta.py` (T10) passa a varrer também `/inovacoes/?q=x&status=VALIDADA` (CONS-41)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 318 testes passam (+13)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): aplica busca e filtros na listagem`
+
+**Status**: ✅ Complete — 345 passed (+14); 11 casos novos em `test_views_busca.py` (filtros isolados parametrizados) mais o parâmetro `lista_com_busca` na varredura de acessibilidade (a fixture ganhou um ramo para escolher a URL). CONS-04 com 25 resultados, ruído fora do filtro de status e fora da busca, e o par Próxima/Anterior com `q`, categoria, unidade, status e `page` comparados por `parse_qs`. A view já devolve `none()` com o form inválido (necessário para não quebrar sem `cleaned_data`); o alerta e a cobertura de teste ficam na T19. Estimativa de 318 defasada
 
 ---
 

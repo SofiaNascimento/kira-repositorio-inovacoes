@@ -328,7 +328,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-01 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-02 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-03 | P1: Ver a lista de inovações | Execute | Implementing |
-| CONS-04 | P1: Ver a lista de inovações | - | Pending |
+| CONS-04 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-05 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-06 | P1: Ver a lista de inovações | Execute | Implementing |
 | CONS-07 | P1: Ver a lista de inovações | Execute | Implementing |
@@ -349,19 +349,19 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-22 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-23 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-24 | P1: Buscar por palavra-chave | Execute | Implementing |
-| CONS-25 | P1: Buscar por palavra-chave | - | Pending |
+| CONS-25 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-26 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-27 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-28 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-29 | P1: Filtrar por categoria, unidade e status | - | Pending |
+| CONS-29 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-30 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
-| CONS-31 | P1: Filtrar por categoria, unidade e status | - | Pending |
+| CONS-31 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-32 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-33 | P1: Contagem e estados vazios claros | Execute | Implementing |
 | CONS-34 | P1: Contagem e estados vazios claros | Execute | Implementing |
 | CONS-35 | P1: Contagem e estados vazios claros | - | Pending |
 | CONS-36 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-37 | P1: Consulta acessível por teclado e leitor de tela | - | Pending |
+| CONS-37 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-38 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-39 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-40 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 41 implementando (Execute), 12 pendentes.
+**Coverage:** 53 total, 46 implementando (Execute), 7 pendentes.
 
 ---
 

@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import CreateView, DetailView, ListView
 
-from inovacoes.forms import InovacaoForm
+from inovacoes.forms import BuscaForm, InovacaoForm
 from inovacoes.models import Inovacao
 
 CONSTRAINT_TITULO = "inovacao_titulo_unico_por_unidade"
@@ -75,7 +75,19 @@ class InovacaoListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return Inovacao.objects.para_listagem()
+        # Sempre vinculado ao GET: repopula os controles (CONS-25, CONS-29).
+        self.form = BuscaForm(self.request.GET)
+        consulta = Inovacao.objects.para_listagem()
+        if not self.form.is_valid():
+            # CONS-24, CONS-30: parametro invalido nao lista nada.
+            return consulta.none()
+        dados = self.form.cleaned_data
+        return consulta.buscar(dados["q"]).filtrar(
+            categoria=dados["categoria"], unidade=dados["unidade"], status=dados["status"]
+        )
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(form=self.form, **kwargs)
 
     # SPEC_DEVIATION: o design chama get_page() com o valor cru de ?page=.
     # Reason: get_page() manda page=0 para a ultima pagina; a T5 pede a primeira.

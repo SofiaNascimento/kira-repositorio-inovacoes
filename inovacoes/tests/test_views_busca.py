@@ -1,0 +1,230 @@
+"""Testes e2e da busca e dos filtros na listagem (/inovacoes/?q=...&categoria=...)."""
+
+import html as html_lib
+import re
+from html.parser import HTMLParser
+from urllib.parse import parse_qs, urlsplit
+
+import pytest
+
+from inovacoes.models import Categoria, StatusInovacao, Unidade
+from inovacoes.tests.test_views_lista import LISTA, _linhas
+
+
+@pytest.fixture
+def logado(client, autor):
+    client.force_login(autor)
+    return client
+
+
+def _titulos(resposta):
+    assert resposta.status_code == 200
+    html = resposta.content.decode()
+    # Sem resultado a pagina nao tem tabela (CONS-34, CONS-35).
+    return sorted(linha[0] for linha in _linhas(html)) if "<tbody>" in html else []
+
+
+@pytest.fixture
+def tres(criar_inovacao):
+    """Financeiro/Sede/Validada, Financeiro/Filial Norte/Em teste, RH/Sede/Validada."""
+    financeiro = Categoria.objects.get(nome="Financeiro")
+    rh = Categoria.objects.get(nome="RH")
+    sede = Unidade.objects.get(nome="Sede")
+    norte = Unidade.objects.get(nome="Filial Norte")
+    criar_inovacao(
+        titulo="Primeira",
+        categoria=financeiro,
+        unidade=sede,
+        status=StatusInovacao.VALIDADA,
+        problema="Conciliacao sem ferramenta.",
+    )
+    criar_inovacao(
+        titulo="Segunda",
+        categoria=financeiro,
+        unidade=norte,
+        status=StatusInovacao.EM_TESTE,
+        problema="Relatorio mensal manual.",
+    )
+    criar_inovacao(
+        titulo="Terceira",
+        categoria=rh,
+        unidade=sede,
+        status=StatusInovacao.VALIDADA,
+        problema="Admissao em papel.",
+    )
+    return {"financeiro": financeiro, "rh": rh, "sede": sede, "norte": norte}
+
+
+def test_busca_por_varias_palavras_sem_acento_e_sem_caixa_lista_so_a_esperada(
+    logado, criar_inovacao
+):
+    """CONS-19, CONS-20: todas as palavras, caixa e acento ignorados."""
+    criar_inovacao(titulo="Conciliação bancária", problema="Planilha manual de lançamentos.")
+    criar_inovacao(titulo="Só planilha", problema="Apenas uma planilha.")
+    criar_inovacao(titulo="Controle de caixa")
+    resposta = logado.get(LISTA, {"q": "CONCILIACAO planilha"})
+    assert _titulos(resposta) == ["Conciliação bancária"]
+    assert "1 inovação encontrada" in resposta.content.decode()
+
+
+def test_campo_de_busca_mostra_o_termo_enviado(logado, criar_inovacao):
+    """CONS-25: o valor volta no controle, com a grafia digitada."""
+    criar_inovacao()
+    html = logado.get(LISTA, {"q": "CONCILIACAO planilha"}).content.decode()
+    entrada = re.search(r'<input[^>]*name="q"[^>]*>', html).group(0)
+    assert 'value="CONCILIACAO planilha"' in entrada
+
+
+@pytest.mark.parametrize(
+    ("parametro", "esperado"),
+    [
+        ("categoria=financeiro", ["Primeira", "Segunda"]),
+        ("unidade=sede", ["Primeira", "Terceira"]),
+        ("status=VALIDADA", ["Primeira", "Terceira"]),
+    ],
+)
+def test_cada_filtro_isolado_lista_so_os_que_tem_o_valor(logado, tres, parametro, esperado):
+    """CONS-27."""
+    nome, valor = parametro.split("=")
+    if nome != "status":
+        valor = tres[valor].pk
+    assert _titulos(logado.get(LISTA, {nome: valor})) == esperado
+
+
+def test_filtros_combinados_listam_so_os_que_satisfazem_todos(logado, tres):
+    """CONS-28: dois, tres e tres mais a busca."""
+    dois = {"categoria": tres["financeiro"].pk, "unidade": tres["sede"].pk}
+    assert _titulos(logado.get(LISTA, dois)) == ["Primeira"]
+    tres_filtros = {**dois, "status": "VALIDADA"}
+    assert _titulos(logado.get(LISTA, tres_filtros)) == ["Primeira"]
+    assert _titulos(logado.get(LISTA, {**tres_filtros, "q": "conciliacao"})) == ["Primeira"]
+    assert _titulos(logado.get(LISTA, {**tres_filtros, "q": "admissao"})) == []
+    assert _titulos(logado.get(LISTA, {"unidade": tres["sede"].pk, "q": "admissao"})) == [
+        "Terceira"
+    ]
+
+
+def _selecionadas(html, nome):
+    """Valores das <option selected> do <select name=...>."""
+    select = re.search(rf'<select[^>]*name="{nome}"[^>]*>(.*?)</select>', html, re.S).group(1)
+    return re.findall(r'<option value="([^"]*)"[^>]*\bselected\b', select)
+
+
+def test_valores_enviados_continuam_selecionados_nos_controles(logado, tres):
+    """CONS-29: categoria, unidade e status."""
+    html = logado.get(
+        LISTA,
+        {"categoria": tres["rh"].pk, "unidade": tres["norte"].pk, "status": "EM_TESTE"},
+    ).content.decode()
+    assert _selecionadas(html, "categoria") == [str(tres["rh"].pk)]
+    assert _selecionadas(html, "unidade") == [str(tres["norte"].pk)]
+    assert _selecionadas(html, "status") == ["EM_TESTE"]
+
+
+class Estrutura(HTMLParser):
+    """Forms, botoes e atributos on* da pagina, com o ancestral role=search."""
+
+    def __init__(self):
+        super().__init__()
+        self.pilha = []
+        self.forms = []  # (atributos, dentro de role=search?)
+        self.botoes = []  # (atributos, texto, dentro de um form?)
+        self.atributos_on = []
+        self.scripts = 0
+        self._botao = None
+
+    def handle_starttag(self, tag, attrs):
+        atributos = dict(attrs)
+        self.atributos_on += [(tag, a) for a in atributos if a.startswith("on")]
+        if tag == "script":
+            self.scripts += 1
+        if tag == "form":
+            busca = any(a.get("role") == "search" for t, a in self.pilha)
+            self.forms.append((atributos, busca))
+        if tag == "button":
+            self._botao = [atributos, "", any(t == "form" for t, _ in self.pilha)]
+        if tag not in {"input", "meta", "link", "br", "img", "hr"}:
+            self.pilha.append((tag, atributos))
+
+    def handle_endtag(self, tag):
+        if tag == "button" and self._botao:
+            self.botoes.append(tuple(self._botao))
+            self._botao = None
+        for i in range(len(self.pilha) - 1, -1, -1):
+            if self.pilha[i][0] == tag:
+                del self.pilha[i:]
+                break
+
+    def handle_data(self, data):
+        if self._botao:
+            self._botao[1] += data
+
+
+@pytest.fixture
+def estrutura(logado, criar_inovacao):
+    criar_inovacao()
+    parser = Estrutura()
+    parser.feed(logado.get(LISTA).content.decode())
+    return parser
+
+
+def test_um_unico_formulario_get_com_o_botao_buscar_e_sem_aplicar_ao_mudar(estrutura):
+    """CONS-31: um form GET, botao "Buscar", nenhum on* nem script na pagina."""
+    gets = [a for a, _ in estrutura.forms if a.get("method") == "get"]
+    assert len(gets) == 1
+    assert gets[0]["action"] == "/inovacoes/"
+    submits = [
+        texto.strip()
+        for atributos, texto, em_form in estrutura.botoes
+        if em_form and atributos.get("type") == "submit"
+    ]
+    assert "Buscar" in submits
+    assert estrutura.atributos_on == []
+    assert estrutura.scripts == 0
+
+
+def test_formulario_de_busca_fica_dentro_de_role_search(estrutura):
+    """CONS-37."""
+    (busca,) = [dentro for atributos, dentro in estrutura.forms if atributos.get("method") == "get"]
+    assert busca is True
+
+
+def test_quatro_controles_ficam_dentro_do_form_de_busca(logado):
+    """CONS-31: busca e os tres filtros viajam juntos, no mesmo form."""
+    html = logado.get(LISTA).content.decode()
+    form = re.search(r'<form method="get".*?</form>', html, re.S).group(0)
+    for nome in ("q", "categoria", "unidade", "status"):
+        assert f'name="{nome}"' in form
+
+
+def test_proxima_e_anterior_carregam_busca_filtros_e_pagina(logado, criar_inovacao):
+    """CONS-04: com busca e filtros ativos, os links de pagina os repetem."""
+    financeiro = Categoria.objects.get(nome="Financeiro")
+    sede = Unidade.objects.get(nome="Sede")
+    for n in range(25):
+        criar_inovacao(titulo=f"Tarefa {n:02d}", categoria=financeiro, unidade=sede)
+    criar_inovacao(titulo="Sem a palavra buscada", categoria=financeiro, unidade=sede)
+    for n in range(2):
+        criar_inovacao(titulo=f"Tarefa validada {n}", status=StatusInovacao.VALIDADA)
+    parametros = {
+        "q": "tarefa",
+        "categoria": str(financeiro.pk),
+        "unidade": str(sede.pk),
+        "status": "EM_TESTE",
+    }
+    html = logado.get(LISTA, parametros).content.decode()
+    assert "25 inovações encontradas" in html
+    nav = re.search(r'<nav aria-label="Paginação">(.*?)</nav>', html, re.S).group(1)
+    proxima = re.search(r'<a href="([^"]*)">\s*Próxima\s*</a>', nav).group(1)
+    assert parse_qs(urlsplit(html_lib.unescape(proxima)).query) == {
+        **{k: [v] for k, v in parametros.items()},
+        "page": ["2"],
+    }
+    pagina_2 = logado.get(LISTA + html_lib.unescape(proxima))
+    assert len(_linhas(pagina_2.content.decode())) == 5
+    nav_2 = re.search(r'<nav aria-label="Paginação">(.*?)</nav>', pagina_2.content.decode(), re.S)
+    anterior = re.search(r'<a href="([^"]*)">\s*Anterior\s*</a>', nav_2.group(1)).group(1)
+    assert parse_qs(urlsplit(html_lib.unescape(anterior)).query) == {
+        **{k: [v] for k, v in parametros.items()},
+        "page": ["1"],
+    }

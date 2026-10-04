@@ -5,6 +5,16 @@
 {% block conteudo %}
   <h1>Inovações</h1>
 
+  {# CONS-31, CONS-37: um form GET, enviado so pelo botao; nada muda ao trocar um select. #}
+  <div role="search">
+    <form method="get" action="{% url 'inovacoes:lista' %}">
+      {% for campo in form %}
+        {{ campo.as_field_group }}
+      {% endfor %}
+      <button type="submit">Buscar</button>
+    </form>
+  </div>
+
   {% if inovacoes %}
     {# CONS-33: o total vale para todas as paginas. #}
     <p>
