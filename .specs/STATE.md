@@ -68,17 +68,20 @@
 
 ## Handoff
 
-- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. **Implementada e verificada** em 2026-10-03: Verifier PASS na iteração 1 (`validation.md`), 380 testes.
-- **Phase / Task**: Specify ✅ · Design ✅ (AD-008) · Tasks ✅ · Execute ✅ (T1–T22, 4 lotes de sub-agentes) · Verifier ✅ PASS · conferência manual da parte A ✅ (20/20) · conferência manual da parte B ⏳ pendente.
-- **Completed**: T1–T22. Commits de código `1b4daf3` … `41fd0b8`. Sensor: 20 mutações, 19 mortas, 1 equivalente (M7). Desvios: T5 `?page=0` → página 1; T17 `label_suffix` via `__init__`; T8 reapontou também `contas/tests/test_controle_acesso.py:98` (AUTH-11), autorizado pelo usuário.
-- **In-progress** (file:line): nenhum.
-- **Next step**: conferência manual da parte B no navegador (busca, filtros, paginação com a carga de demonstração). Antes: `.venv/bin/python manage.py migrate` (0005, 0006) e `.venv/bin/python manage.py carregar_demonstracao` no banco `kira`. Depois, F4 (edicao-exclusao).
-- **Testes pendentes**: nenhum. 380 passed em 2026-10-03.
+- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. **Implementada e verificada** em 2026-10-03: Verifier PASS na iteração 1 (`validation.md`).
+- **Phase / Task**: Specify ✅ · Design ✅ (AD-008) · Tasks ✅ · Execute ✅ (T1–T22) · Verifier ✅ PASS · conferência manual da parte A ✅ (20/20) · **conferência manual da parte B ⏳ não iniciada** (pausa em 2026-10-03, logo após o roteiro de 20 passos ser entregue ao usuário).
+- **Completed**: T1–T22 (código `1b4daf3` … `41fd0b8`) e o fechamento dos artefatos (`37f4186`). Sensor: 20 mutações, 19 mortas, 1 equivalente (M7). Desvios registrados: T5 `?page=0` → página 1 (SPEC_DEVIATION em `inovacoes/views.py`); T17 `label_suffix` via `__init__` (SPEC_DEVIATION em `inovacoes/forms.py`); T8 reapontou também `contas/tests/test_controle_acesso.py:98` (AUTH-11), autorizado pelo usuário.
+- **In-progress** (file:line): nenhum. Nenhum código em andamento.
+- **Next step**: retomar a conferência manual da parte B. Preparação, no banco `kira`: `.venv/bin/python manage.py migrate` (aplica 0005 e 0006) e `.venv/bin/python manage.py carregar_demonstracao` (500 inovações da conta `demo`). Depois seguir o roteiro de 20 passos (busca, filtros, paginação, parâmetros inválidos, teclado, idempotência da carga); o roteiro está no fim da conversa de 2026-10-03 e pode ser regenerado a partir da spec (CONS-04, 19–32, 35–37, 41, 43–45). Ao aprovar: marcar o Success Criterion de teclado da `spec.md` e registrar a conferência no `validation.md` (seção de UAT, como na F2). Em seguida, F4 (edicao-exclusao).
+- **Pergunta em aberto ao usuário**: no estado vazio com filtro (CONS-35), "Limpar filtros" aparece duas vezes (ao lado do botão e sob a mensagem), como o design descreve. Manter ou deixar um só?
+- **Testes pendentes**: nenhum. 380 passed (`.venv/bin/pytest -q`) e build gate verde em 2026-10-03.
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**. Servidor: `DJANGO_DEBUG=True .venv/bin/python manage.py runserver`.
-- **Banco local**: migrations `inovacoes 0001–0004` aplicadas; **0005 e 0006 ainda não**. 5 unidades e 5 categorias da carga. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff). 5 inovações: as 4 do UAT da F2 (`Processo RH`, `Procésso RH`, `PROCESSO RH`, `Checklist de compras`) e 1 criada pela maria na conferência da parte A da F3. Senhas fora do repositório.
-- **Uncommitted files**: nenhum.
-- **Branch**: `main`. Commits da F3 só locais; push só com pedido explícito.
+- **Banco local (`kira`, conferido na pausa)**: migrations `inovacoes 0001–0004` aplicadas; **0005 e 0006 pendentes**; carga de demonstração **não** rodada (sem conta `demo`). 5 unidades e 5 categorias. Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff). 5 inovações: as 4 do UAT da F2 (`Processo RH`, `Procésso RH`, `PROCESSO RH`, `Checklist de compras`) e 1 criada pela maria na conferência da parte A (passo 11, com `<b>teste</b>` na solução). Senhas fora do repositório.
+- **Uncommitted files**: nenhum (após o commit desta pausa).
+- **Branch**: `main`. `origin/main` em `c6184fb`; 30 commits locais da F3 (Specify → validação) sem push. Push só com pedido explícito.
+
+**Decisões desta sessão (2026-10-03)**: a única de nível de projeto é a **AD-008** (busca sem acento por `texto_busca` mantida pelo `save()`), já no log. As demais são feature-locais e estão nos artefatos da F3: recorte A/B numa única feature (`tasks.md`), `?page=0` → página 1 e `label_suffix` no `__init__` (`design.md`, SPEC_DEVIATION), reapontamento do teste da AUTH-11 (`tasks.md` T8).
 
 **Spec-precision gaps da F3 (não bloqueiam)**: SPG-1 `page` ≤ 0 (CONS-05); SPG-2 limite de 100 caracteres conta depois de aparar os espaços (CONS-24). Ver `validation.md`.
 
