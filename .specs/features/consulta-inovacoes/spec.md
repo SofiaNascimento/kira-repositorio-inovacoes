@@ -343,9 +343,9 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-16 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
 | CONS-17 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
 | CONS-18 | P1: Ver o detalhe de uma inovação e falar com o responsável | Execute | Implementing |
-| CONS-19 | P1: Buscar por palavra-chave | - | Pending |
-| CONS-20 | P1: Buscar por palavra-chave | - | Pending |
-| CONS-21 | P1: Buscar por palavra-chave | - | Pending |
+| CONS-19 | P1: Buscar por palavra-chave | Execute | Implementing |
+| CONS-20 | P1: Buscar por palavra-chave | Execute | Implementing |
+| CONS-21 | P1: Buscar por palavra-chave | Execute | Implementing |
 | CONS-22 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-23 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-24 | P1: Buscar por palavra-chave | - | Pending |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 29 implementando (Execute), 24 pendentes.
+**Coverage:** 53 total, 32 implementando (Execute), 21 pendentes.
 
 ---
 

@@ -464,7 +464,7 @@ T21 → T22
 
 ---
 
-### T12: Normalização de texto para busca (`inovacoes/busca.py`)
+### T12: Normalização de texto para busca (`inovacoes/busca.py`) ✅
 
 **What**: As funções puras `normalizar`, `palavras` e `texto_de_busca`.
 **Where**: `inovacoes/busca.py`
@@ -479,17 +479,19 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `normalizar(texto)`: NFKD, descarta `unicodedata.combining`, `casefold()`
-- [ ] `palavras(termo)`: `normalizar(termo).split()`
-- [ ] `texto_de_busca(titulo, problema, solucao)`: os três normalizados unidos por `"\n"`
-- [ ] Testes unit (`@pytest.mark.unit`) em `inovacoes/tests/test_busca.py`: `"SOLUÇÃO"` → `"solucao"`; `"Conciliação"`, `"AÇÃO"`, `"pão"`, `"Über"` (CONS-20); `"Straße"` → `"strasse"` (`casefold`); `palavras("  Planilha   CAIXA ")` == `["planilha", "caixa"]`; `palavras("")` e `palavras("   ")` == `[]` (CONS-21); `texto_de_busca` separa os campos por `\n` e nenhuma palavra de `palavras()` contém `\n` (CONS-19)
-- [ ] Gate check passa: `.venv/bin/pytest -q -m unit`
-- [ ] Test count: 263 testes passam (+8)
+- [x] `normalizar(texto)`: NFKD, descarta `unicodedata.combining`, `casefold()`
+- [x] `palavras(termo)`: `normalizar(termo).split()`
+- [x] `texto_de_busca(titulo, problema, solucao)`: os três normalizados unidos por `"\n"`
+- [x] Testes unit (`@pytest.mark.unit`) em `inovacoes/tests/test_busca.py`: `"SOLUÇÃO"` → `"solucao"`; `"Conciliação"`, `"AÇÃO"`, `"pão"`, `"Über"` (CONS-20); `"Straße"` → `"strasse"` (`casefold`); `palavras("  Planilha   CAIXA ")` == `["planilha", "caixa"]`; `palavras("")` e `palavras("   ")` == `[]` (CONS-21); `texto_de_busca` separa os campos por `\n` e nenhuma palavra de `palavras()` contém `\n` (CONS-19)
+- [x] Gate check passa: `.venv/bin/pytest -q -m unit`
+- [x] Test count: 263 testes passam (+8)
 
 **Tests**: unit
 **Gate**: quick
 
 **Commit**: `feat(inovacoes): adiciona a normalizacao de texto para busca`
+
+**Status**: ✅ Complete — 272 passed (+13); 13 casos unit (quick gate: 25 unit) no lugar dos 8 estimados: acentos parametrizados (inclusive texto em forma decomposta NFD), palavras() normalizando o termo e termo em branco parametrizado. Mutações casefold→lower, separador `\n` → espaço e sem descarte de combinantes derrubam os testes. Estimativa de 263 defasada (base 259)
 
 ---
 
