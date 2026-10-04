@@ -674,7 +674,7 @@ T21 → T22
 
 ---
 
-### T19: Parâmetros inválidos na busca
+### T19: Parâmetros inválidos na busca ✅
 
 **What**: Busca longa ou filtro inexistente mostram o erro no campo e o resumo em `role="alert"`, e não listam nada.
 **Where**: `inovacoes/templates/inovacoes/inovacao_list.html`
@@ -689,16 +689,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `get_queryset()` devolve `Inovacao.objects.none()` com o form inválido (o ramo é da view; o `Where` nomeia o template, onde está a maior parte da mudança)
-- [ ] Template: com `form.errors`, `<div role="alert"><p>Não foi possível buscar. Corrija os campos indicados.</p></div>` antes dos resultados, sem contagem, sem tabela e sem as mensagens de vazio
-- [ ] Testes e2e: `?q=<101 caracteres>` → 200, a mensagem de tamanho junto ao campo, o alerta e nenhuma linha, mesmo com inovações que casariam com os 100 primeiros caracteres (CONS-24); `?categoria=999999`, `?unidade=abc`, `?status=X` → mensagem do campo, alerta, nenhuma linha (CONS-30, parametrizado); o controle com erro tem `aria-invalid="true"` e `aria-describedby` contendo o id do erro (CONS-43); nenhuma das duas mensagens de vazio aparece
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 325 testes passam (+7)
+- [x] `get_queryset()` devolve `Inovacao.objects.none()` com o form inválido (o ramo é da view; o `Where` nomeia o template, onde está a maior parte da mudança)
+- [x] Template: com `form.errors`, `<div role="alert"><p>Não foi possível buscar. Corrija os campos indicados.</p></div>` antes dos resultados, sem contagem, sem tabela e sem as mensagens de vazio
+- [x] Testes e2e: `?q=<101 caracteres>` → 200, a mensagem de tamanho junto ao campo, o alerta e nenhuma linha, mesmo com inovações que casariam com os 100 primeiros caracteres (CONS-24); `?categoria=999999`, `?unidade=abc`, `?status=X` → mensagem do campo, alerta, nenhuma linha (CONS-30, parametrizado); o controle com erro tem `aria-invalid="true"` e `aria-describedby` contendo o id do erro (CONS-43); nenhuma das duas mensagens de vazio aparece
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 325 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): trata parametros invalidos na busca`
+
+**Status**: ✅ Complete — 358 passed (+13); 13 casos no lugar dos 7 estimados: os quatro parâmetros inválidos parametrizados em três testes (mensagem no campo + alerta + sem linha; sem contagem nem vazio; aria-invalid + aria-describedby) e um controle sem erro. As duas inovações do fixture casariam se o parâmetro inválido fosse ignorado (inclusive o título com os 100 primeiros caracteres da busca longa). O alerta fica antes do formulário, como no resumo da INOV-30; o ramo `none()` da view já veio na T18. Estimativa de 325 defasada
 
 ---
 

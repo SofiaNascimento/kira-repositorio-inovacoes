@@ -228,3 +228,67 @@ def test_proxima_e_anterior_carregam_busca_filtros_e_pagina(logado, criar_inovac
         **{k: [v] for k, v in parametros.items()},
         "page": ["1"],
     }
+
+
+ALERTA = "Não foi possível buscar. Corrija os campos indicados."
+INVALIDOS = [
+    (
+        {"q": "a" * 100 + "b"},
+        "q",
+        "Use no máximo 100 caracteres (você digitou 101).",
+    ),
+    ({"categoria": "999999"}, "categoria", "Selecione uma categoria da lista."),
+    ({"unidade": "abc"}, "unidade", "Selecione uma unidade da lista."),
+    ({"status": "X"}, "status", "Selecione um status da lista."),
+]
+
+
+@pytest.fixture
+def invalida(request, logado, criar_inovacao):
+    """Resposta a um parametro invalido, com inovacoes que casariam se ele fosse ignorado."""
+    parametros, campo, mensagem = request.param
+    # O titulo casa com os 100 primeiros caracteres da busca longa; as demais
+    # consultas, se o parametro invalido fosse ignorado, listariam tudo.
+    criar_inovacao(titulo="a" * 100)
+    criar_inovacao(titulo="Outra")
+    resposta = logado.get(LISTA, parametros)
+    return resposta, resposta.content.decode(), campo, mensagem
+
+
+@pytest.mark.parametrize("invalida", INVALIDOS, indirect=True)
+def test_parametro_invalido_mostra_200_mensagem_no_campo_alerta_e_nenhuma_linha(invalida):
+    """CONS-24, CONS-30."""
+    resposta, html, campo, mensagem = invalida
+    assert resposta.status_code == 200
+    erro = re.search(rf'id="id_{campo}_error"[^>]*>(.*?)</ul>', html, re.S).group(1)
+    assert mensagem in erro
+    assert re.search(rf'<div role="alert">\s*<p>{re.escape(ALERTA)}</p>\s*</div>', html)
+    assert "<table" not in html
+    assert "<tbody" not in html
+
+
+@pytest.mark.parametrize("invalida", INVALIDOS, indirect=True)
+def test_parametro_invalido_nao_mostra_contagem_nem_mensagem_de_vazio(invalida):
+    """CONS-30: form invalido nao e "nenhuma encontrada" nem "nenhuma cadastrada"."""
+    _, html, _, _ = invalida
+    conteudo = html[html.index("<h1") :]
+    assert "encontrada" not in conteudo
+    assert "Nenhuma inovação" not in conteudo
+
+
+@pytest.mark.parametrize("invalida", INVALIDOS, indirect=True)
+def test_controle_com_erro_fica_invalido_e_ligado_a_mensagem(invalida):
+    """CONS-43: aria-invalid="true" e o id do erro no aria-describedby."""
+    _, html, campo, _ = invalida
+    controle = re.search(rf'<[^>]*\bid="id_{campo}"[^>]*>', html).group(0)
+    assert 'aria-invalid="true"' in controle
+    descrito_por = re.search(r'aria-describedby="([^"]*)"', controle).group(1).split()
+    assert f"id_{campo}_error" in descrito_por
+
+
+def test_consulta_valida_nao_mostra_o_alerta_nem_marca_controle_invalido(logado, criar_inovacao):
+    """CONS-30, CONS-43: o alerta so existe com erro."""
+    criar_inovacao()
+    html = logado.get(LISTA, {"q": "caixa", "status": "EM_TESTE"}).content.decode()
+    assert 'role="alert"' not in html
+    assert "aria-invalid" not in html

@@ -5,6 +5,13 @@
 {% block conteudo %}
   <h1>Inovações</h1>
 
+  {# CONS-30 (RF12): resumo antes dos campos, anunciado pelo leitor de tela. #}
+  {% if form.errors %}
+    <div role="alert">
+      <p>Não foi possível buscar. Corrija os campos indicados.</p>
+    </div>
+  {% endif %}
+
   {# CONS-31, CONS-37: um form GET, enviado so pelo botao; nada muda ao trocar um select. #}
   <div role="search">
     <form method="get" action="{% url 'inovacoes:lista' %}">
@@ -15,7 +22,9 @@
     </form>
   </div>
 
-  {% if inovacoes %}
+  {% if form.errors %}
+    {# CONS-24, CONS-30: form invalido nao e "nenhuma encontrada"; so o alerta e os erros. #}
+  {% elif inovacoes %}
     {# CONS-33: o total vale para todas as paginas. #}
     <p>
       {% if paginator %}{% with total=paginator.count %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}
