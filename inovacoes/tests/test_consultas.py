@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 
-from inovacoes.models import Categoria, Inovacao, Unidade
+from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
 
 
 def _forcar_data(inovacao, data):
@@ -143,3 +143,104 @@ def test_curingas_do_like_valem_como_texto(criar_inovacao, termo, com_o_literal,
     criar_inovacao(**{**NEUTRO, "titulo": sem_o_literal})
 
     assert _achadas(termo) == {alvo.pk}
+
+
+# Filtros (CONS-27, CONS-28) sobre as listas da carga inicial (0004).
+
+
+@pytest.fixture
+def tres_inovacoes(criar_inovacao):
+    """Financeiro/Sede/Validada, Financeiro/Filial Norte/Em teste, RH/Sede/Validada."""
+    financeiro = Categoria.objects.get(nome="Financeiro")
+    rh = Categoria.objects.get(nome="RH")
+    sede = Unidade.objects.get(nome="Sede")
+    norte = Unidade.objects.get(nome="Filial Norte")
+    primeira = criar_inovacao(
+        **{**NEUTRO, "titulo": "Conciliação bancária"},
+        categoria=financeiro,
+        unidade=sede,
+        status=StatusInovacao.VALIDADA,
+    )
+    segunda = criar_inovacao(
+        **{**NEUTRO, "titulo": "Reembolso de despesas"},
+        categoria=financeiro,
+        unidade=norte,
+        status=StatusInovacao.EM_TESTE,
+    )
+    terceira = criar_inovacao(
+        **{**NEUTRO, "titulo": "Admissão digital"},
+        categoria=rh,
+        unidade=sede,
+        status=StatusInovacao.VALIDADA,
+    )
+    return {
+        "inovacoes": (primeira, segunda, terceira),
+        "financeiro": financeiro,
+        "sede": sede,
+    }
+
+
+def _pks(queryset):
+    return set(queryset.values_list("pk", flat=True))
+
+
+@pytest.mark.parametrize(
+    ("filtro", "esperadas"),
+    [("categoria", (0, 1)), ("unidade", (0, 2)), ("status", (0, 2))],
+)
+def test_um_filtro_lista_so_as_inovacoes_com_aquele_valor(tres_inovacoes, filtro, esperadas):
+    """CONS-27: Financeiro -> 1a e 2a; Sede -> 1a e 3a; Validada -> 1a e 3a."""
+    valor = {
+        "categoria": tres_inovacoes["financeiro"],
+        "unidade": tres_inovacoes["sede"],
+        "status": StatusInovacao.VALIDADA,
+    }[filtro]
+    inovacoes = tres_inovacoes["inovacoes"]
+
+    resultado = _pks(Inovacao.objects.filtrar(**{filtro: valor}))
+
+    assert resultado == {inovacoes[i].pk for i in esperadas}
+
+
+def test_categoria_e_unidade_juntas_restringem_as_duas(tres_inovacoes):
+    """CONS-28: Financeiro + Sede -> so a primeira."""
+    resultado = Inovacao.objects.filtrar(
+        categoria=tres_inovacoes["financeiro"], unidade=tres_inovacoes["sede"]
+    )
+    assert _pks(resultado) == {tres_inovacoes["inovacoes"][0].pk}
+
+
+def test_os_tres_filtros_juntos(tres_inovacoes):
+    """CONS-28: Financeiro + Sede + Validada -> so a primeira."""
+    resultado = Inovacao.objects.filtrar(
+        categoria=tres_inovacoes["financeiro"],
+        unidade=tres_inovacoes["sede"],
+        status=StatusInovacao.VALIDADA,
+    )
+    assert _pks(resultado) == {tres_inovacoes["inovacoes"][0].pk}
+
+
+@pytest.mark.parametrize(("termo", "esperadas"), [("conciliacao", {0}), ("admissao", set())])
+def test_os_tres_filtros_com_a_busca(tres_inovacoes, termo, esperadas):
+    """CONS-28: a palavra da primeira acha a primeira; a da terceira, que e de RH, nada."""
+    resultado = Inovacao.objects.buscar(termo).filtrar(
+        categoria=tres_inovacoes["financeiro"],
+        unidade=tres_inovacoes["sede"],
+        status=StatusInovacao.VALIDADA,
+    )
+    assert _pks(resultado) == {tres_inovacoes["inovacoes"][i].pk for i in esperadas}
+
+
+def test_unidade_status_e_busca_juntos(tres_inovacoes):
+    """CONS-28 (teste independente da spec): Sede + Validada + palavra da terceira -> a terceira."""
+    resultado = Inovacao.objects.filtrar(
+        unidade=tres_inovacoes["sede"], status=StatusInovacao.VALIDADA
+    ).buscar("admissao")
+    assert _pks(resultado) == {tres_inovacoes["inovacoes"][2].pk}
+
+
+def test_filtrar_sem_valores_nao_restringe(tres_inovacoes):
+    """CONS-27, CONS-28: categoria None, unidade None e status "" sao ignorados."""
+    resultado = Inovacao.objects.filtrar(categoria=None, unidade=None, status="")
+    assert _pks(resultado) == {i.pk for i in tres_inovacoes["inovacoes"]}
+    assert _pks(Inovacao.objects.filtrar()) == {i.pk for i in tres_inovacoes["inovacoes"]}

@@ -351,8 +351,8 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-24 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-25 | P1: Buscar por palavra-chave | - | Pending |
 | CONS-26 | P1: Filtrar por categoria, unidade e status | - | Pending |
-| CONS-27 | P1: Filtrar por categoria, unidade e status | - | Pending |
-| CONS-28 | P1: Filtrar por categoria, unidade e status | - | Pending |
+| CONS-27 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
+| CONS-28 | P1: Filtrar por categoria, unidade e status | Execute | Implementing |
 | CONS-29 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-30 | P1: Filtrar por categoria, unidade e status | - | Pending |
 | CONS-31 | P1: Filtrar por categoria, unidade e status | - | Pending |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 34 implementando (Execute), 19 pendentes.
+**Coverage:** 53 total, 36 implementando (Execute), 17 pendentes.
 
 ---
 

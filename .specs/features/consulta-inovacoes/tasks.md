@@ -585,7 +585,7 @@ T21 → T22
 
 ---
 
-### T16: `InovacaoQuerySet.filtrar()`
+### T16: `InovacaoQuerySet.filtrar()` ✅
 
 **What**: Os filtros por categoria, unidade e status, isolados ou combinados, e com a busca.
 **Where**: `inovacoes/models.py`
@@ -600,15 +600,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `filtrar(*, categoria=None, unidade=None, status="")`: cada valor informado restringe; `None` e `""` são ignorados
-- [ ] Testes de integração com três inovações (Financeiro/Sede/Validada, Financeiro/Filial Norte/Em teste, RH/Sede/Validada): só categoria → 2; só unidade → 2; só status → 2 (CONS-27, parametrizado); categoria + unidade → 1; os três → 1; os três + `buscar()` com palavra da primeira → 1 e com palavra da terceira → 0; `filtrar()` sem argumentos → 3 (CONS-28)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 3)
-- [ ] Test count: 292 testes passam (+9)
+- [x] `filtrar(*, categoria=None, unidade=None, status="")`: cada valor informado restringe; `None` e `""` são ignorados
+- [x] Testes de integração com três inovações (Financeiro/Sede/Validada, Financeiro/Filial Norte/Em teste, RH/Sede/Validada): só categoria → 2; só unidade → 2; só status → 2 (CONS-27, parametrizado); categoria + unidade → 1; os três → 1; os três + `buscar()` com palavra da primeira → 1 e com palavra da terceira → 0; `filtrar()` sem argumentos → 3 (CONS-28)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 3)
+- [x] Test count: 292 testes passam (+9)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona os filtros combinados de inovacoes`
+
+**Status**: ✅ Complete — 309 passed (+9); três inovações sobre Financeiro, RH, Sede e Filial Norte da carga 0004, buscadas pelo nome. Além do Done when, um caso do teste independente da spec (Sede + Validada + palavra da terceira → a terceira). Mutações (status ignorado, status vazio filtrando, OR no lugar de E) derrubam os testes. Build gate (ruff, format, makemigrations, pytest) verde: fecha a Fase 3. Estimativa de 292 defasada
 
 ---
 

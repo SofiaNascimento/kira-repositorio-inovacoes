@@ -79,6 +79,17 @@ class InovacaoQuerySet(models.QuerySet):
             qs = qs.filter(texto_busca__contains=palavra)
         return qs
 
+    def filtrar(self, *, categoria=None, unidade=None, status=""):
+        """CONS-27, CONS-28: cada filtro informado restringe; os vazios sao ignorados."""
+        filtros = {}
+        if categoria is not None:
+            filtros["categoria"] = categoria
+        if unidade is not None:
+            filtros["unidade"] = unidade
+        if status:
+            filtros["status"] = status
+        return self.filter(**filtros)
+
 
 # Campos de que texto_busca deriva (AD-008).
 CAMPOS_DA_BUSCA = {"titulo", "problema", "solucao"}
