@@ -734,7 +734,7 @@ T21 → T22
 
 ---
 
-### T21: Comando `carregar_demonstracao`
+### T21: Comando `carregar_demonstracao` ✅
 
 **What**: O management command que cria, de forma idempotente, as 500 inovações de demonstração da conta `demo`.
 **Where**: `inovacoes/management/commands/carregar_demonstracao.py`
@@ -749,16 +749,18 @@ T21 → T22
 
 **Done when**:
 
-- [ ] `inovacoes/management/__init__.py` e `inovacoes/management/commands/__init__.py` criados
-- [ ] Comando em `transaction.atomic()`: `get_or_create` da conta `demo` (`demo@demonstracao.invalid`, perfil `USUARIO`, `set_unusable_password()` só na criação); `CommandError` se houver menos de 5 unidades ou 5 categorias; `i` de 1 a 500 com título `f"Demonstração {i:03d}"`, `unidades[i % 5]`, `categorias[(i // 5) % 5]`, `StatusInovacao.values[i % 3]`, problema e solução de um vocabulário fixo com acentos por `random.Random(i)`; cria só os títulos ausentes, com `save()` um a um; imprime "N inovações de demonstração criadas (500 no total)."
-- [ ] Testes de integração em `inovacoes/tests/test_carregar_demonstracao.py` (`call_command`): 500 inovações "Demonstração 001" … "Demonstração 500" da conta `demo` com perfil `USUARIO` e `has_usable_password()` falso; cada unidade, categoria e status em ≥ 20 (CONS-44); toda inovação criada tem `texto_busca` preenchido; segunda execução → ainda 500 e uma conta `demo`, saída "0 inovações de demonstração criadas" (CONS-45); com uma unidade a menos → `CommandError` e nenhuma inovação gravada
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 336 testes passam (+5)
+- [x] `inovacoes/management/__init__.py` e `inovacoes/management/commands/__init__.py` criados
+- [x] Comando em `transaction.atomic()`: `get_or_create` da conta `demo` (`demo@demonstracao.invalid`, perfil `USUARIO`, `set_unusable_password()` só na criação); `CommandError` se houver menos de 5 unidades ou 5 categorias; `i` de 1 a 500 com título `f"Demonstração {i:03d}"`, `unidades[i % 5]`, `categorias[(i // 5) % 5]`, `StatusInovacao.values[i % 3]`, problema e solução de um vocabulário fixo com acentos por `random.Random(i)`; cria só os títulos ausentes, com `save()` um a um; imprime "N inovações de demonstração criadas (500 no total)."
+- [x] Testes de integração em `inovacoes/tests/test_carregar_demonstracao.py` (`call_command`): 500 inovações "Demonstração 001" … "Demonstração 500" da conta `demo` com perfil `USUARIO` e `has_usable_password()` falso; cada unidade, categoria e status em ≥ 20 (CONS-44); toda inovação criada tem `texto_busca` preenchido; segunda execução → ainda 500 e uma conta `demo`, saída "0 inovações de demonstração criadas" (CONS-45); com uma unidade a menos → `CommandError` e nenhuma inovação gravada
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 336 testes passam (+5)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a carga de demonstracao com 500 inovacoes`
+
+**Status**: ✅ Complete — 377 passed (+9); 9 casos no lugar dos 5 estimados (mensagem final, textos variados e acentuados, recriação só dos ausentes com o mesmo conteúdo, e o `CommandError` parametrizado para unidade e categoria, sem gravar inovação nem conta). `texto_busca` de cada linha é comparado com `texto_de_busca()`, o que derruba `bulk_create` (AD-008). O vocabulário tem 16 termos e cada texto sorteia 4 por `Random(i)`. A verificação de 5 unidades e 5 categorias vem antes da conta `demo`, sem efeito observável diferente do design. Estimativa de 336 defasada
 
 ---
 

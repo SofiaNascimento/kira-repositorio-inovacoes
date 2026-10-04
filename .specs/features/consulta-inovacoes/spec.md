@@ -368,8 +368,8 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-41 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
 | CONS-43 | P1: Consulta acessível por teclado e leitor de tela | Execute | Implementing |
-| CONS-44 | P2: Desempenho com o conjunto de demonstração | - | Pending |
-| CONS-45 | P2: Desempenho com o conjunto de demonstração | - | Pending |
+| CONS-44 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
+| CONS-45 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
 | CONS-46 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-47 | P2: Desempenho com o conjunto de demonstração | - | Pending |
 | CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Implementing |
@@ -381,7 +381,7 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 
 **ID format:** `CONS-NN`
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
-**Coverage:** 53 total, 49 implementando (Execute), 4 pendentes.
+**Coverage:** 53 total, 51 implementando (Execute), 2 pendentes.
 
 ---
 
