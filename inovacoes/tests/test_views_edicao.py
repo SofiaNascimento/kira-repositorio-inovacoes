@@ -362,6 +362,19 @@ def test_edicao_com_titulo_e_problema_vazios_mostra_as_mensagens_e_preserva_o_re
     assert _linha(inovacao) == antes
 
 
+def test_edicao_com_solucao_so_com_espacos_e_recusada(client, autor, inovacao, dados):
+    """EDEX-09 (INOV-10), EDEX-10: campo obrigatorio so com espacos conta como vazio."""
+    antes = _linha(inovacao)
+    dados["solucao"] = "   "
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"solucao": ["Descreva a solução aplicada."]}
+    html = resposta.content.decode()
+    assert "Descreva a solução aplicada." in _mensagem_do_campo(html, "solucao")
+    assert RESUMO in _trecho_do_alerta(html)
+    assert _linha(inovacao) == antes
+
+
 def test_edicao_com_unidade_inexistente_e_recusada(client, autor, inovacao, dados):
     """EDEX-09 (INOV-17): POST adulterado com unidade fora da lista."""
     antes = _linha(inovacao)
@@ -464,6 +477,37 @@ def test_busca_acha_pelo_texto_novo_e_nao_pelo_texto_substituido(client, autor, 
     logado.post(_editar(inovacao), dados)
     assert _titulos_da_busca(logado, "divergencias") == [dados["titulo"]]
     assert _titulos_da_busca(logado, "manual") == []
+
+
+@pytest.mark.parametrize(
+    ("campo", "texto_novo", "palavra_nova", "palavra_antiga"),
+    [
+        ("titulo", "Painel de Tesouraria", "tesouraria", "controle"),
+        ("solucao", "Aplicativo com alerta automatico.", "aplicativo", "planilha"),
+    ],
+)
+def test_busca_acompanha_a_troca_do_titulo_e_da_solucao(
+    client, autor, inovacao, unidade, categoria, campo, texto_novo, palavra_nova, palavra_antiga
+):
+    """EDEX-11: so o campo trocado muda; a palavra antiga existia apenas nele."""
+    salvos = {
+        "titulo": inovacao.titulo,
+        "unidade": str(unidade.pk),
+        "categoria": str(categoria.pk),
+        "problema": inovacao.problema,
+        "solucao": inovacao.solucao,
+        "resultado": inovacao.resultado,
+        "contato": inovacao.contato,
+    }
+    logado = _entrar(client, autor)
+    assert _titulos_da_busca(logado, palavra_antiga) == ["Controle de Caixa"]
+    assert _titulos_da_busca(logado, palavra_nova) == []
+    salvos[campo] = texto_novo
+    resposta = logado.post(_editar(inovacao), salvos)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    titulo = Inovacao.objects.get(pk=inovacao.pk).titulo
+    assert _titulos_da_busca(logado, palavra_nova) == [titulo]
+    assert _titulos_da_busca(logado, palavra_antiga) == []
 
 
 # --- Inovacao excluida durante a edicao (T7) ------------------------------------

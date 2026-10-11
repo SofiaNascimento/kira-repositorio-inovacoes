@@ -597,7 +597,7 @@ T15 → T16 → T17 → T18
 
 ---
 
-### T17: Campo só com espaços e busca por título e solução na edição (Fix 3)
+### T17: Campo só com espaços e busca por título e solução na edição (Fix 3) ✅
 
 **What**: As cláusulas da EDEX-09 (INOV-10) e da EDEX-11 (título e solução) ganham teste na rota de edição.
 **Where**: `inovacoes/tests/test_views_edicao.py`
@@ -612,15 +612,17 @@ T15 → T16 → T17 → T18
 
 **Done when**:
 
-- [ ] Edição com `solucao="   "` → 200, "Descreva a solução aplicada." no campo e a linha intacta (EDEX-09 via INOV-10, EDEX-10)
-- [ ] Trocar o título e, em outro caso, a solução: a busca acha pela palavra nova e não acha pela palavra só do texto antigo (EDEX-11; parametrizado com o caso do problema que já existe, sem enfraquecê-lo)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~486 testes passam (+3)
+- [x] Edição com `solucao="   "` → 200, "Descreva a solução aplicada." no campo e a linha intacta (EDEX-09 via INOV-10, EDEX-10)
+- [x] Trocar o título e, em outro caso, a solução: a busca acha pela palavra nova e não acha pela palavra só do texto antigo (EDEX-11; parametrizado com o caso do problema que já existe, sem enfraquecê-lo)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~486 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova o campo so com espacos e a busca apos editar titulo e solucao`
+
+**Status**: ✅ Complete — 486 passed (+3); o teste do problema (EDEX-11) ficou intacto, e o título e a solução ganharam um teste parametrizado próprio que troca só o campo-alvo (os demais com os valores salvos), para que a palavra antiga só some por causa dele. A pré-condição afirma que a palavra antiga acha e a nova não acha antes da edição
 
 ---
 
