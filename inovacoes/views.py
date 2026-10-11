@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, ListView
 
 from inovacoes.forms import BuscaForm, InovacaoForm
@@ -57,6 +58,15 @@ class InovacaoCreateView(GravacaoComTituloUnicoMixin, CreateView):
         usuario = self.request.user
         nome = usuario.get_full_name() or usuario.get_username()
         return {"contato": f"{nome} ({usuario.email})"}
+
+    def get_context_data(self, **kwargs):
+        # O template do formulario serve ao cadastro e a edicao (EDEX-01).
+        return super().get_context_data(
+            titulo_pagina="Cadastrar inovação",
+            rotulo_botao="Salvar",
+            url_cancelar=reverse("inovacoes:lista"),
+            **kwargs,
+        )
 
     def gravar(self, form):
         # INOV-04: o autor vem da sessao, nunca do formulario.

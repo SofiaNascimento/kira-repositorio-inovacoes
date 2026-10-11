@@ -169,7 +169,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T3: Template do formulário parametrizado
+### T3: Template do formulário parametrizado ✅
 
 **What**: `inovacao_form.html` passa a ler título da página, texto do botão e alvo do "Cancelar" do contexto; o cadastro os fornece com os valores atuais.
 **Where**: `inovacoes/templates/inovacoes/inovacao_form.html`
@@ -184,16 +184,18 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `{% block title %}` e `h1` = `{{ titulo_pagina }}`; botão = `{{ rotulo_botao }}`; "Cancelar" → `{{ url_cancelar }}`; resumo da INOV-30 e o loop de campos inalterados
-- [ ] `InovacaoCreateView.get_context_data` passa `"Cadastrar inovação"`, `"Salvar"` e `reverse("inovacoes:lista")`
-- [ ] Teste e2e novo em `inovacoes/tests/test_views_cadastro.py`: `<title>` começa com "Cadastrar inovação" e o `h1` é "Cadastrar inovação" (o `<title>` não tinha prova); os testes existentes do botão "Salvar" e do "Cancelar" (`href="/inovacoes/"`) passam sem alteração
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~390 testes passam (+1)
+- [x] `{% block title %}` e `h1` = `{{ titulo_pagina }}`; botão = `{{ rotulo_botao }}`; "Cancelar" → `{{ url_cancelar }}`; resumo da INOV-30 e o loop de campos inalterados
+- [x] `InovacaoCreateView.get_context_data` passa `"Cadastrar inovação"`, `"Salvar"` e `reverse("inovacoes:lista")`
+- [x] Teste e2e novo em `inovacoes/tests/test_views_cadastro.py`: `<title>` começa com "Cadastrar inovação" e o `h1` é "Cadastrar inovação" (o `<title>` não tinha prova); os testes existentes do botão "Salvar" e do "Cancelar" (`href="/inovacoes/"`) passam sem alteração
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~390 testes passam (+1)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `refactor(inovacoes): parametriza titulo, botao e cancelar do formulario`
+
+**Status**: ✅ Complete — 390 passed (+1); não existia teste do texto do botão "Salvar", então o teste novo também afirma o único botão do formulário (o cabeçalho tem o "Sair"); os testes do "Cancelar" (INOV-36, INOV-37) passam sem alteração. Build gate verde. EDEX-01 e EDEX-16 seguem Pending até a T4
 
 ---
 

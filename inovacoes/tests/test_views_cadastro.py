@@ -352,3 +352,15 @@ def test_cancelar_leva_a_listagem_sem_gravar_nem_pedir_confirmacao(logado):
     assert href == "/inovacoes/"
     assertTemplateUsed(resposta, "inovacoes/inovacao_list.html")
     assert not Inovacao.objects.exists()
+
+
+def test_titulo_h1_e_botao_do_cadastro_no_template_parametrizado(logado):
+    """Base da EDEX-01 e da EDEX-43: o template agora vem do contexto, e o cadastro
+    mantem o titulo "Cadastrar inovação" e o botao "Salvar"."""
+    html = logado.get(NOVA).content.decode()
+    titulo = re.search(r"<title>(.*?)</title>", html, re.S).group(1).strip()
+    assert titulo.startswith("Cadastrar inovação")
+    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html, re.S) == ["Cadastrar inovação"]
+    # O cabecalho tem o botao "Sair"; so o formulario do cadastro interessa.
+    formulario = re.search(r"<form[^>]*novalidate[^>]*>(.*?)</form>", html, re.S).group(1)
+    assert re.findall(r"<button[^>]*>(.*?)</button>", formulario, re.S) == ["Salvar"]

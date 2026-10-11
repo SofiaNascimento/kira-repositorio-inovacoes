@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Cadastrar inovação{% endblock %}
+{% block title %}{{ titulo_pagina }}{% endblock %}
 
 {% block conteudo %}
-  <h1>Cadastrar inovação</h1>
+  <h1>{{ titulo_pagina }}</h1>
 
   {# INOV-30 (RF12): resumo antes do primeiro campo, anunciado pelo leitor de tela. #}
   {% if form.errors %}
@@ -20,8 +20,8 @@
       {{ campo.as_field_group }}
     {% endfor %}
 
-    <button type="submit">Salvar</button>
-    {# INOV-37: cancelar nao grava nada; um link comum, sem confirmacao (RN12 nao se aplica). #}
-    <a href="{% url 'inovacoes:lista' %}">Cancelar</a>
+    <button type="submit">{{ rotulo_botao }}</button>
+    {# INOV-37, EDEX-16: cancelar nao grava nada; um link comum, sem confirmacao (RN12 nao se aplica). #}
+    <a href="{{ url_cancelar }}">Cancelar</a>
   </form>
 {% endblock %}
