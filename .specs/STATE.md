@@ -76,12 +76,12 @@
 
 ## Handoff
 
-- **Feature**: edicao-exclusao (F4) — `.specs/features/edicao-exclusao/`. **Em andamento**: Specify ✅ (aprovada, `90f5249`) · Design ✅ (aprovado em 2026-10-11, AD-009) · Tasks ⏳ · Execute ⏳. A F3 (consulta-inovacoes) está concluída: Verifier PASS e conferência manual 40/40 (`validation.md`).
-- **Phase / Task**: F4 entre Design e Tasks. Abordagem do design: `Inovacao.pode_ser_alterada_por` + `AlteracaoDeInovacaoMixin` (checagem no `dispatch()`, 404 antes de 403), `GravacaoComTituloUnicoMixin` extraído do cadastro, `select_for_update` na edição, `DeleteView` padrão para a confirmação.
-- **Completed**: F3 inteira (T1–T22, validação `37f4186`, conferência da parte B `2c0828b`). F4: spec (`90f5249`), context e design (commit desta atualização).
+- **Feature**: edicao-exclusao (F4) — `.specs/features/edicao-exclusao/`. **Em andamento**: Specify ✅ (aprovada, `90f5249`) · Design ✅ (aprovado em 2026-10-11, AD-009) · Tasks ✅ (14 tasks aprovadas em 2026-10-11) · Execute ⏳. A F3 (consulta-inovacoes) está concluída: Verifier PASS e conferência manual 40/40 (`validation.md`).
+- **Phase / Task**: F4 pronta para o Execute: T1–T14 em 4 fases, 2 lotes de 7 (Fases 1+2, Fases 3+4); nenhuma iniciada. Abordagem do design: `Inovacao.pode_ser_alterada_por` + `AlteracaoDeInovacaoMixin` (checagem no `dispatch()`, 404 antes de 403), `GravacaoComTituloUnicoMixin` extraído do cadastro, `select_for_update` na edição, `DeleteView` padrão.
+- **Completed**: F3 inteira. F4: spec (`90f5249`), design + AD-009 (`9ef9cc0`), tasks (commit desta atualização).
 - **Decisões do usuário na F4 (feature-locais, em `edicao-exclusao/context.md`)**: ações só no detalhe; 403 com página própria; confirmação por página com botão; exclusão definitiva; status fora da edição (F5); a última gravação vence. Projeto: AD-009.
 - **In-progress** (file:line): nenhum.
-- **Next step**: fase Tasks da F4 (`tasks.md`, `validate_tasks.py`). Lições confirmadas: nenhuma (15 candidatas, não usadas como guia); no Verifier da F4, registrar lições repetidas com o texto exato da candidata existente para que sejam promovidas.
+- **Next step**: Execute da F4. Antes: ler `references/implement.md`, rodar `validate_tasks.py` e **oferecer** sub-agentes (2 lotes). Linha de base 380 testes; nenhum teste da F2/F3 pode mudar nas refatorações T2–T4. Lições: nenhuma confirmada; no Verifier, registrar lições repetidas com o texto exato da candidata existente.
 - **Testes pendentes**: nenhum. 380 passed em 2026-10-11 (nenhum código da F4 ainda).
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**. Servidor: `DJANGO_DEBUG=True .venv/bin/python manage.py runserver`. Em roteiros, URL de teste vai na **barra de endereço**, não no campo de busca.
