@@ -6,6 +6,7 @@ precisa negar o terceiro, salvo a allowlist de leitura.
 """
 
 import pytest
+from django.test import Client
 from django.urls import URLPattern, URLResolver, get_resolver, reverse
 
 from inovacoes.models import Inovacao
@@ -68,3 +69,17 @@ def test_terceiro_recebe_403_e_nada_muda(
     assert resposta.status_code == 403
     assert Inovacao.objects.values().get(pk=inovacao.pk) == antes
     assert Inovacao.objects.count() == 1
+
+
+@pytest.mark.parametrize("acao", ["editar", "excluir"])
+def test_post_sem_token_csrf_e_recusado_e_nada_muda(autor, criar_inovacao, envio_valido, acao):
+    """EDEX-45: o proprio autor, sem token CSRF, recebe 403 e nada muda nem e apagado."""
+    inovacao = criar_inovacao()
+    antes = Inovacao.objects.values().get(pk=inovacao.pk)
+    cliente = Client(enforce_csrf_checks=True)
+    cliente.force_login(autor)
+    resposta = cliente.post(f"/inovacoes/{inovacao.pk}/{acao}/", envio_valido)
+    assert resposta.status_code == 403
+    # O autor pode alterar: a recusa e do CSRF, nao a pagina de acesso negado.
+    assert "Você não tem permissão para alterar esta inovação." not in resposta.content.decode()
+    assert Inovacao.objects.values().get(pk=inovacao.pk) == antes

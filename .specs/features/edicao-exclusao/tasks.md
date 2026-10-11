@@ -500,7 +500,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T14: CSRF na edição e na exclusão
+### T14: CSRF na edição e na exclusão ✅
 
 **What**: Evidência da EDEX-45: POST sem token CSRF válido responde 403 e não altera nem apaga.
 **Where**: `inovacoes/tests/test_controle_autoria.py`
@@ -515,14 +515,16 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] Autor logado num `Client(enforce_csrf_checks=True)`, POST sem token em `/editar/` → 403 e linha igual; em `/excluir/` → 403 e inovação no banco
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 4 e a feature)
-- [ ] Test count: ~463 testes passam (+2)
+- [x] Autor logado num `Client(enforce_csrf_checks=True)`, POST sem token em `/editar/` → 403 e linha igual; em `/excluir/` → 403 e inovação no banco
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 4 e a feature)
+- [x] Test count: ~463 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): prova a protecao csrf na edicao e na exclusao`
+
+**Status**: ✅ Complete — 470 passed (+2); nenhum ajuste de código: o CsrfViewMiddleware recusa antes da view. O teste parametrizado (editar, excluir) usa o próprio autor, então o 403 só pode vir do CSRF, e afirma que não é a página de acesso negado. Build gate verde, fecha a Fase 4
 
 ---
 
