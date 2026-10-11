@@ -109,7 +109,7 @@ T11 → T12 → T13 → T14
 
 ## Task Breakdown
 
-### T1: `Inovacao.pode_ser_alterada_por` — a regra de autoria
+### T1: `Inovacao.pode_ser_alterada_por` — a regra de autoria ✅
 
 **What**: O método do modelo que diz se uma conta pode editar ou excluir a inovação (RN05, RNF07, AD-009).
 **Where**: `inovacoes/models.py`
@@ -124,16 +124,18 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `pode_ser_alterada_por(self, usuario) -> bool` = `usuario.is_authenticated and (usuario.is_administrador or self.autor_id == usuario.pk)`, com comentário citando RN05 e AD-009
-- [ ] `inovacoes/tests/conftest.py` ganha as fixtures `terceiro` (`USUARIO`, username `bruno`, sem nome) e `administrador` (`ADMINISTRADOR`, username `carla`), que as tasks seguintes usam
-- [ ] Testes de integração em `inovacoes/tests/test_permissoes.py`: autor `USUARIO` → True; autor `ADMINISTRADOR` → True; terceiro `USUARIO` → False; terceiro `ADMINISTRADOR` → True; `AnonymousUser()` → False sem `AttributeError`; `USUARIO` terceiro com `is_staff=True` e com `is_superuser=True` → False (AD-009: o perfil é o único critério); `ADMINISTRADOR` terceiro rebaixado a `USUARIO` e recarregado do banco → False (EDEX-25); a chamada com a inovação carregada executa 0 consultas (`django_assert_num_queries(0)`)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~389 testes passam (+9)
+- [x] `pode_ser_alterada_por(self, usuario) -> bool` = `usuario.is_authenticated and (usuario.is_administrador or self.autor_id == usuario.pk)`, com comentário citando RN05 e AD-009
+- [x] `inovacoes/tests/conftest.py` ganha as fixtures `terceiro` (`USUARIO`, username `bruno`, sem nome) e `administrador` (`ADMINISTRADOR`, username `carla`), que as tasks seguintes usam
+- [x] Testes de integração em `inovacoes/tests/test_permissoes.py`: autor `USUARIO` → True; autor `ADMINISTRADOR` → True; terceiro `USUARIO` → False; terceiro `ADMINISTRADOR` → True; `AnonymousUser()` → False sem `AttributeError`; `USUARIO` terceiro com `is_staff=True` e com `is_superuser=True` → False (AD-009: o perfil é o único critério); `ADMINISTRADOR` terceiro rebaixado a `USUARIO` e recarregado do banco → False (EDEX-25); a chamada com a inovação carregada executa 0 consultas (`django_assert_num_queries(0)`)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~389 testes passam (+9)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a regra de autoria para alterar inovacoes`
+
+**Status**: ✅ Complete — 389 passed (+9); is_staff e is_superuser parametrizados num teste só; o teste de zero consultas recarrega a inovação do banco para não usar o autor em cache
 
 ---
 

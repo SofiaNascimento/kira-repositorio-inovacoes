@@ -40,3 +40,17 @@ def criar_inovacao(autor, unidade, categoria):
         return Inovacao.objects.create(**dados)
 
     return criar
+
+
+# F4: as duas outras contas da regra de autoria (RN05, AD-009).
+@pytest.fixture
+def terceiro(db):
+    """USUARIO que nao e o autor e nao tem nome: o caso central do RNF07."""
+    return Usuario.objects.create_user(username="bruno", email="bruno@x.com")
+
+
+@pytest.fixture
+def administrador(db):
+    return Usuario.objects.create_user(
+        username="carla", email="carla@x.com", perfil=Usuario.Perfil.ADMINISTRADOR
+    )

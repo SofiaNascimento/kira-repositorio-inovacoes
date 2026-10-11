@@ -166,6 +166,17 @@ class Inovacao(models.Model):
         # CONS-06: URL canonica do detalhe; o CreateView a usa como destino (CONS-49).
         return reverse("inovacoes:detalhe", args=[self.pk])
 
+    def pode_ser_alterada_por(self, usuario) -> bool:
+        """RN05, AD-009: so o autor ou um ADMINISTRADOR edita ou exclui.
+
+        O perfil e o unico criterio: is_staff e is_superuser nao contam. Le
+        autor_id, e nao autor, para nao consultar o banco. A guarda de
+        is_authenticated cobre o AnonymousUser, que nao tem is_administrador.
+        """
+        return usuario.is_authenticated and (
+            usuario.is_administrador or self.autor_id == usuario.pk
+        )
+
     def validate_constraints(self, exclude=None):
         """Leva o erro de titulo duplicado para o campo titulo (INOV-22).
 
