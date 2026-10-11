@@ -264,12 +264,12 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-06 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-07 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-08 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-09 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-10 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-11 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-12 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-13 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-14 | P1: Editar uma inovação que cadastrei | Specify | Pending |
+| EDEX-09 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-10 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-11 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-12 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-13 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-14 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-15 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-16 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-17 | P1: Curadoria pelo administrador | Execute | Implementing |

@@ -2,6 +2,7 @@
 
 import datetime
 import re
+from unittest import mock
 
 import pytest
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
@@ -310,3 +311,155 @@ def test_anonimo_que_envia_a_edicao_vai_ao_login_e_nada_muda(client, inovacao, d
     resposta = client.post(caminho, dados)
     assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
     assert _linha(inovacao) == antes
+
+
+# --- Validacao e unicidade de titulo (T6) --------------------------------------
+
+RESUMO = "Não foi possível salvar a inovação. Corrija os campos indicados."
+MENSAGEM_DUPLICADO = "Já existe uma inovação com este título nesta unidade. Escolha outro título."
+
+
+def _trecho_do_alerta(html):
+    inicio = html.index('role="alert"')
+    return html[inicio : html.index("</div>", inicio)]
+
+
+def _valor_do_input(html, campo):
+    tag = html[html.rindex("<", 0, html.index(f'id="id_{campo}"')) :]
+    tag = tag[: tag.index(">")]
+    return re.search(r'\bvalue="([^"]*)"', tag).group(1)
+
+
+def _mensagem_do_campo(html, campo):
+    erro = html[html.index(f'id="id_{campo}_error"') :]
+    return erro[: erro.index("</ul>")]
+
+
+def test_edicao_com_titulo_e_problema_vazios_mostra_as_mensagens_e_preserva_o_resto(
+    client, autor, inovacao, dados
+):
+    """EDEX-09, EDEX-10: mensagens da INOV-09, resumo da INOV-30, valores enviados
+    de volta (INOV-11) e nada gravado."""
+    antes = _linha(inovacao)
+    dados.update({"titulo": "", "problema": ""})
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {
+        "titulo": ["Informe o título da inovação."],
+        "problema": ["Descreva o problema ou dor."],
+    }
+    html = resposta.content.decode()
+    assert "Informe o título da inovação." in _mensagem_do_campo(html, "titulo")
+    assert "Descreva o problema ou dor." in _mensagem_do_campo(html, "problema")
+    assert RESUMO in _trecho_do_alerta(html)
+    assert html.index('role="alert"') < html.index('id="id_titulo"')
+    assert _valor_do_input(html, "contato") == dados["contato"]
+    assert f'<option value="{dados["unidade"]}" selected>' in html
+    assert f'<option value="{dados["categoria"]}" selected>' in html
+    for campo in ["solucao", "resultado"]:
+        assert f">\n{dados[campo]}</textarea>" in html
+    assert _linha(inovacao) == antes
+
+
+def test_edicao_com_unidade_inexistente_e_recusada(client, autor, inovacao, dados):
+    """EDEX-09 (INOV-17): POST adulterado com unidade fora da lista."""
+    antes = _linha(inovacao)
+    dados["unidade"] = "999999"
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"unidade": ["Selecione uma unidade da lista."]}
+    assert _linha(inovacao) == antes
+
+
+def test_edicao_com_titulo_longo_demais_e_recusada(client, autor, inovacao, dados):
+    """EDEX-09 (INOV-12): 151 caracteres no titulo."""
+    antes = _linha(inovacao)
+    dados["titulo"] = "x" * 151
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {
+        "titulo": ["Use no máximo 150 caracteres (você digitou 151)."]
+    }
+    assert _linha(inovacao) == antes
+
+
+@pytest.mark.parametrize("titulo", ["Controle de Caixa", "CONTROLE DE CAIXA"])
+def test_salvar_com_o_proprio_titulo_e_aceito(client, autor, inovacao, unidade, dados, titulo):
+    """EDEX-12: o mesmo titulo, com ou sem mudanca de caixa, na mesma unidade."""
+    dados.update({"titulo": titulo, "unidade": str(unidade.pk)})
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    assert Inovacao.objects.get(pk=inovacao.pk).titulo == titulo
+
+
+def test_titulo_de_outra_inovacao_da_unidade_e_recusado(
+    client, autor, inovacao, unidade, criar_inovacao, dados
+):
+    """EDEX-13: caixa diferente nao escapa da unicidade."""
+    criar_inovacao(titulo="Planilha de Compras")
+    antes = _linha(inovacao)
+    dados.update({"titulo": "planilha de COMPRAS", "unidade": str(unidade.pk)})
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
+    assert MENSAGEM_DUPLICADO in _mensagem_do_campo(resposta.content.decode(), "titulo")
+    assert _linha(inovacao) == antes
+
+
+def test_titulo_de_inovacao_de_outra_unidade_e_aceito(
+    client, autor, inovacao, criar_inovacao, dados
+):
+    """INOV-24 na edicao (por EDEX-13): a unicidade e por unidade."""
+    sede = Unidade.objects.get(nome="Sede")
+    criar_inovacao(titulo="Planilha de Compras", unidade=sede)
+    dados["titulo"] = "Planilha de Compras"
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    assert Inovacao.objects.get(pk=inovacao.pk).titulo == "Planilha de Compras"
+
+
+def test_titulo_que_difere_so_no_acento_e_aceito(
+    client, autor, inovacao, unidade, criar_inovacao, dados
+):
+    """INOV-27 na edicao (por EDEX-13): acentos contam."""
+    criar_inovacao(titulo="Solução de Caixa")
+    dados.update({"titulo": "Solucao de Caixa", "unidade": str(unidade.pk)})
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    assert Inovacao.objects.get(pk=inovacao.pk).titulo == "Solucao de Caixa"
+
+
+def test_corrida_no_titulo_da_edicao_responde_erro_no_campo_e_nao_500(
+    client, autor, inovacao, unidade, criar_inovacao, dados
+):
+    """EDEX-14: as duas gravacoes passam pela validacao antes de qualquer uma gravar.
+
+    Neutralizar a validacao reproduz a janela, como nos testes da INOV-25: o
+    save() bate na constraint real do PostgreSQL.
+    """
+    criar_inovacao(titulo="Planilha de Compras")
+    antes = _linha(inovacao)
+    dados.update({"titulo": "Planilha de Compras", "unidade": str(unidade.pk)})
+    with mock.patch.object(Inovacao, "validate_constraints", lambda self, exclude=None: None):
+        resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 200
+    assert resposta.context["form"].errors == {"titulo": [MENSAGEM_DUPLICADO]}
+    assert RESUMO in _trecho_do_alerta(resposta.content.decode())
+    assert _linha(inovacao) == antes
+    assert Inovacao.objects.filter(titulo="Planilha de Compras").count() == 1
+
+
+def _titulos_da_busca(client, termo):
+    resposta = client.get("/inovacoes/", {"q": termo})
+    assert resposta.status_code == 200
+    return [i.titulo for i in resposta.context["inovacoes"]]
+
+
+def test_busca_acha_pelo_texto_novo_e_nao_pelo_texto_substituido(client, autor, inovacao, dados):
+    """EDEX-11: a edicao passa pelo Inovacao.save(), que refaz o texto de busca (AD-008)."""
+    logado = _entrar(client, autor)
+    assert _titulos_da_busca(logado, "manual") == ["Controle de Caixa"]
+    dados["problema"] = "Divergências descobertas tarde demais."
+    logado.post(_editar(inovacao), dados)
+    assert _titulos_da_busca(logado, "divergencias") == [dados["titulo"]]
+    assert _titulos_da_busca(logado, "manual") == []

@@ -261,7 +261,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T6: Validação e unicidade de título na edição
+### T6: Validação e unicidade de título na edição ✅
 
 **What**: A edição rejeita dados inválidos com as mensagens do cadastro, aceita o próprio título, recusa o título de outra inovação da unidade, trata a corrida sem 500 e mantém a busca coerente.
 **Where**: `inovacoes/tests/test_views_edicao.py`
@@ -276,15 +276,17 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] Testes e2e: título e problema vazios → 200, as mensagens da INOV-09 em cada campo e o resumo "Não foi possível salvar a inovação. Corrija os campos indicados." em `role="alert"` (EDEX-09); os demais campos voltam com o valor enviado e a linha no banco fica igual (EDEX-09, EDEX-10); unidade inexistente → "Selecione uma unidade da lista." (EDEX-09); título com 151 caracteres → "Use no máximo 150 caracteres (você digitou 151)." (EDEX-09); salvar com o mesmo título e com o título só em caixa diferente → aceito (EDEX-12, parametrizado); título de outra inovação da mesma unidade, em caixa diferente → recusado com a mensagem da INOV-22 (EDEX-13); título de inovação de outra unidade → aceito; título que difere só por acento → aceito (INOV-27); `IntegrityError` da constraint simulado na gravação → 200 com a mensagem da EDEX-13, nunca 500 (EDEX-14); trocar o problema e buscar pela palavra nova acha a inovação e pela palavra só do texto antigo não acha (`/inovacoes/?q=…`, EDEX-11)
-- [ ] Se algum teste falhar, o ajuste entra nesta task, na view ou no mixin
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~420 testes passam (+11)
+- [x] Testes e2e: título e problema vazios → 200, as mensagens da INOV-09 em cada campo e o resumo "Não foi possível salvar a inovação. Corrija os campos indicados." em `role="alert"` (EDEX-09); os demais campos voltam com o valor enviado e a linha no banco fica igual (EDEX-09, EDEX-10); unidade inexistente → "Selecione uma unidade da lista." (EDEX-09); título com 151 caracteres → "Use no máximo 150 caracteres (você digitou 151)." (EDEX-09); salvar com o mesmo título e com o título só em caixa diferente → aceito (EDEX-12, parametrizado); título de outra inovação da mesma unidade, em caixa diferente → recusado com a mensagem da INOV-22 (EDEX-13); título de inovação de outra unidade → aceito; título que difere só por acento → aceito (INOV-27); `IntegrityError` da constraint simulado na gravação → 200 com a mensagem da EDEX-13, nunca 500 (EDEX-14); trocar o problema e buscar pela palavra nova acha a inovação e pela palavra só do texto antigo não acha (`/inovacoes/?q=…`, EDEX-11)
+- [x] Se algum teste falhar, o ajuste entra nesta task, na view ou no mixin
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~420 testes passam (+11)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a validacao e a unicidade de titulo na edicao`
+
+**Status**: ✅ Complete — 419 passed (+10); nenhum ajuste de código: a F2, a T2 e o UpdateView já cumpriam as ACs. A corrida da EDEX-14 é simulada neutralizando validate_constraints, como na INOV-25; a busca da EDEX-11 usa o context da listagem
 
 ---
 
