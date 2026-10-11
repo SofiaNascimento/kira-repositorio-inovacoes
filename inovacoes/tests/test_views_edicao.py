@@ -1,12 +1,13 @@
 """Testes e2e da tela de edicao de inovacao (/inovacoes/<id>/editar/)."""
 
+import datetime
 import re
 
 import pytest
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao
+from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
 
 CAMPOS = ["titulo", "unidade", "categoria", "problema", "solucao", "resultado", "contato"]
 NEGADO = "Você não tem permissão para alterar esta inovação."
@@ -155,3 +156,157 @@ def test_anonimo_vai_ao_login_com_next_da_edicao(client, criar_inovacao):
     caminho = _editar(inovacao)
     resposta = client.get(caminho)
     assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+
+
+# --- Gravacao (POST) ----------------------------------------------------------
+
+CAMPOS_DE_TEXTO = ["titulo", "problema", "solucao", "resultado", "contato"]
+DATA_ORIGINAL = datetime.datetime(2026, 9, 1, 15, 0, tzinfo=datetime.UTC)
+
+
+@pytest.fixture
+def inovacao(criar_inovacao):
+    """Inovacao da Ana com data de criacao fixa, para provar que ela nao muda."""
+    criada = criar_inovacao()
+    Inovacao.objects.filter(pk=criada.pk).update(data_criacao=DATA_ORIGINAL)
+    criada.refresh_from_db()
+    return criada
+
+
+@pytest.fixture
+def dados(unidade, categoria):
+    """Envio valido com valores diferentes dos salvos em todos os campos de texto."""
+    outra_unidade = Unidade.objects.create(nome="Teste Outra Unidade")
+    outra_categoria = Categoria.objects.create(nome="Teste Outra Categoria")
+    return {
+        "titulo": "Conciliação de caixa diária",
+        "unidade": str(outra_unidade.pk),
+        "categoria": str(outra_categoria.pk),
+        "problema": "Diferenças de caixa descobertas só no fim do mês.",
+        "solucao": "Conferência diária com planilha compartilhada.",
+        "resultado": "Diferenças achadas no mesmo dia.",
+        "contato": "Setor Financeiro (fin@x.com)",
+    }
+
+
+def _linha(inovacao):
+    """Todos os campos gravados da inovacao, para comparar campo a campo."""
+    return Inovacao.objects.values().get(pk=inovacao.pk)
+
+
+def _regiao_de_status(html):
+    inicio = html.index('role="status"')
+    return html[inicio : html.index("</div>", inicio)]
+
+
+def _afirma_gravado(inovacao, dados):
+    gravada = Inovacao.objects.get(pk=inovacao.pk)
+    for campo in CAMPOS_DE_TEXTO:
+        assert getattr(gravada, campo) == dados[campo].strip()
+    assert str(gravada.unidade_id) == dados["unidade"]
+    assert str(gravada.categoria_id) == dados["categoria"]
+    return gravada
+
+
+def test_envio_valido_atualiza_a_mesma_inovacao_sem_espacos_nas_pontas(
+    client, autor, inovacao, dados
+):
+    """EDEX-04: mesma linha, valores aparados, nenhuma inovacao nova."""
+    enviados = {k: f"  {v}  " if k in CAMPOS_DE_TEXTO else v for k, v in dados.items()}
+    _entrar(client, autor).post(_editar(inovacao), enviados)
+    assert Inovacao.objects.count() == 1
+    _afirma_gravado(inovacao, dados)
+
+
+def test_envio_valido_redireciona_ao_detalhe(client, autor, inovacao, dados):
+    """EDEX-05."""
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+
+
+def test_edicao_bem_sucedida_confirma_com_o_titulo_salvo(client, autor, inovacao, dados):
+    """EDEX-06: no detalhe, dentro do role=status, com o titulo salvo (aparado)."""
+    dados["titulo"] = "  Conciliação de caixa diária  "
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados, follow=True)
+    assert resposta.redirect_chain == [(f"/inovacoes/{inovacao.pk}/", 302)]
+    regiao = _regiao_de_status(resposta.content.decode())
+    assert "Inovação “Conciliação de caixa diária” atualizada com sucesso." in regiao
+
+
+def test_mensagem_da_edicao_nao_reaparece_ao_recarregar(client, autor, inovacao, dados):
+    """EDEX-07."""
+    logado = _entrar(client, autor)
+    primeira = logado.post(_editar(inovacao), dados, follow=True)
+    assert "atualizada com sucesso" in primeira.content.decode()
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert "atualizada com sucesso" not in html
+
+
+def test_autor_status_e_data_forjados_na_edicao_sao_ignorados(
+    client, autor, terceiro, inovacao, dados
+):
+    """EDEX-08."""
+    dados.update(
+        {
+            "autor": str(terceiro.pk),
+            "status": StatusInovacao.VALIDADA,
+            "data_criacao": "2020-01-01 10:00",
+        }
+    )
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    assert resposta.status_code == 302
+    gravada = _afirma_gravado(inovacao, dados)
+    assert gravada.autor_id == autor.pk
+    assert gravada.status == StatusInovacao.EM_TESTE
+    assert gravada.data_criacao == DATA_ORIGINAL
+
+
+def test_administrador_edita_a_inovacao_de_outro_autor_e_mantem_autor_e_data(
+    client, administrador, autor, inovacao, dados
+):
+    """EDEX-18: aplica EDEX-04 a EDEX-06 e o detalhe segue com o autor e a data originais."""
+    resposta = _entrar(client, administrador).post(_editar(inovacao), dados, follow=True)
+    assert resposta.redirect_chain == [(f"/inovacoes/{inovacao.pk}/", 302)]
+    gravada = _afirma_gravado(inovacao, dados)
+    assert gravada.autor_id == autor.pk
+    assert gravada.data_criacao == DATA_ORIGINAL
+    html = resposta.content.decode()
+    assert "Inovação “Conciliação de caixa diária” atualizada com sucesso." in _regiao_de_status(
+        html
+    )
+    # 15:00 UTC de 01/09 e 12:00 de 01/09 em America/Sao_Paulo.
+    assert "Cadastrada por Ana Souza em 01/09/2026" in html
+
+
+def test_autor_administrador_grava_a_edicao(client, administrador, criar_inovacao, dados):
+    """EDEX-19: o autor ADMINISTRADOR grava como o autor USUARIO."""
+    inovacao = criar_inovacao(autor=administrador)
+    resposta = _entrar(client, administrador).post(_editar(inovacao), dados)
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    assert _afirma_gravado(inovacao, dados).autor_id == administrador.pk
+
+
+def test_duas_edicoes_em_sequencia_mantem_a_ultima(client, autor, administrador, inovacao, dados):
+    """EDEX-15: a ultima gravacao vence; nao ha checagem de versao."""
+    _entrar(client, autor).post(_editar(inovacao), dados)
+    segunda = dict(dados, titulo="Caixa conferido toda tarde", problema="Outro problema.")
+    _entrar(client, administrador).post(_editar(inovacao), segunda)
+    _afirma_gravado(inovacao, segunda)
+
+
+def test_terceiro_que_envia_a_edicao_recebe_403_e_nada_muda(client, terceiro, inovacao, dados):
+    """EDEX-22: o POST forjado de um USUARIO que nao e o autor nao grava nenhum campo."""
+    antes = _linha(inovacao)
+    resposta = _entrar(client, terceiro).post(_editar(inovacao), dados)
+    _afirma_acesso_negado(resposta, inovacao)
+    assert _linha(inovacao) == antes
+    assert Inovacao.objects.count() == 1
+
+
+def test_anonimo_que_envia_a_edicao_vai_ao_login_e_nada_muda(client, inovacao, dados):
+    """EDEX-26 (POST)."""
+    antes = _linha(inovacao)
+    caminho = _editar(inovacao)
+    resposta = client.post(caminho, dados)
+    assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+    assert _linha(inovacao) == antes

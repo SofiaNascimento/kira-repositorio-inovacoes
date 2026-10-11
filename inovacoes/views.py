@@ -132,6 +132,8 @@ class InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, 
 
     form_class = InovacaoForm
     template_name = "inovacoes/inovacao_form.html"
+    # EDEX-05, EDEX-06: sem success_url, o UpdateView volta ao get_absolute_url().
+    mensagem_de_sucesso = "Inovação “{titulo}” atualizada com sucesso."
 
     def get_context_data(self, **kwargs):
         return super().get_context_data(

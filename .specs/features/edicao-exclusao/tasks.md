@@ -232,7 +232,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T5: Gravação da edição (POST válido) e POST negado
+### T5: Gravação da edição (POST válido) e POST negado ✅
 
 **What**: O POST válido da edição atualiza a mesma inovação e termina no detalhe com a mensagem; o POST de terceiro e o do anônimo não alteram nada.
 **Where**: `inovacoes/views.py`
@@ -247,15 +247,17 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `InovacaoUpdateView.mensagem_de_sucesso = "Inovação “{titulo}” atualizada com sucesso."`; nenhum `success_url` (usa `get_absolute_url()`)
-- [ ] Testes e2e em `inovacoes/tests/test_views_edicao.py`: POST válido com espaços nas pontas atualiza a mesma linha, com os valores aparados, e `Inovacao.objects.count()` não muda (EDEX-04); resposta 302 para `/inovacoes/<id>/` (EDEX-05); seguindo o redirect, "Inovação “<título novo>” atualizada com sucesso." dentro de `role="status"` (EDEX-06); recarregar o detalhe não mostra a mensagem (EDEX-07); POST com `autor`, `status` e `data_criacao` forjados mantém os três (EDEX-08); `administrador` edita a inovação do `autor`: valores mudam, autor e `data_criacao` iguais e o detalhe diz "Cadastrada por Ana Souza em <data original>" (EDEX-18); autor `ADMINISTRADOR` grava (EDEX-19); duas edições em sequência → valem as da segunda (EDEX-15); **`terceiro` faz POST com dados válidos → 403 e todos os campos da linha iguais aos de antes, comparados campo a campo (EDEX-22)**; anônimo faz POST → login e linha intacta (EDEX-26)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~409 testes passam (+10)
+- [x] `InovacaoUpdateView.mensagem_de_sucesso = "Inovação “{titulo}” atualizada com sucesso."`; nenhum `success_url` (usa `get_absolute_url()`)
+- [x] Testes e2e em `inovacoes/tests/test_views_edicao.py`: POST válido com espaços nas pontas atualiza a mesma linha, com os valores aparados, e `Inovacao.objects.count()` não muda (EDEX-04); resposta 302 para `/inovacoes/<id>/` (EDEX-05); seguindo o redirect, "Inovação “<título novo>” atualizada com sucesso." dentro de `role="status"` (EDEX-06); recarregar o detalhe não mostra a mensagem (EDEX-07); POST com `autor`, `status` e `data_criacao` forjados mantém os três (EDEX-08); `administrador` edita a inovação do `autor`: valores mudam, autor e `data_criacao` iguais e o detalhe diz "Cadastrada por Ana Souza em <data original>" (EDEX-18); autor `ADMINISTRADOR` grava (EDEX-19); duas edições em sequência → valem as da segunda (EDEX-15); **`terceiro` faz POST com dados válidos → 403 e todos os campos da linha iguais aos de antes, comparados campo a campo (EDEX-22)**; anônimo faz POST → login e linha intacta (EDEX-26)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~409 testes passam (+10)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): grava a edicao e nega o envio de terceiros`
+
+**Status**: ✅ Complete — 409 passed (+10); a inovação dos testes tem data_criacao fixa (01/09/2026 15:00 UTC) para provar que a data não muda; a recusa do terceiro compara Inovacao.objects.values() antes e depois
 
 ---
 
