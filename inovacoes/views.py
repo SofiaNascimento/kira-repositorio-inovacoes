@@ -3,7 +3,7 @@ from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from inovacoes.forms import BuscaForm, InovacaoForm
 from inovacoes.models import Inovacao
@@ -14,6 +14,40 @@ CONSTRAINT_TITULO = "inovacao_titulo_unico_por_unidade"
 def _mensagem_de_titulo_duplicado():
     (constraint,) = (c for c in Inovacao._meta.constraints if c.name == CONSTRAINT_TITULO)
     return constraint.get_violation_error_message()
+
+
+def _inovacao_nao_encontrada(request):
+    # CONS-15: 404 proprio da inovacao, igual com e sem DEBUG. Um
+    # templates/404.html global nao serviria a qualquer URL inexistente.
+    return render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)
+
+
+class AlteracaoDeInovacaoMixin:
+    """AD-009: toda view que altera uma Inovacao herda este mixin.
+
+    Busca a inovacao e aplica a regra de autoria no dispatch(), antes de
+    qualquer metodo HTTP: o POST negado nunca chega ao form_valid.
+    """
+
+    queryset = Inovacao.objects.select_related("unidade", "categoria")
+    context_object_name = "inovacao"
+
+    def dispatch(self, request, *args, **kwargs):
+        # EDEX-27, EDEX-28: id inexistente primeiro (404), depois a autoria (403).
+        try:
+            self.object = super().get_object()
+        except Http404:
+            return _inovacao_nao_encontrada(request)
+        if not self.object.pode_ser_alterada_por(request.user):
+            # EDEX-20 a EDEX-23: pagina propria; o 403.html global e do admin.
+            return render(
+                request, "inovacoes/acesso_negado.html", {"inovacao": self.object}, status=403
+            )
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        # O get()/post() das views genericas pedem de novo o que o dispatch() buscou.
+        return self.object
 
 
 class GravacaoComTituloUnicoMixin:
@@ -86,9 +120,27 @@ class InovacaoDetailView(DetailView):
         try:
             return super().get(request, *args, **kwargs)
         except Http404:
-            # CONS-15: 404 proprio da inovacao, igual com e sem DEBUG. Um
-            # templates/404.html global nao serviria a qualquer URL inexistente.
-            return render(request, "inovacoes/inovacao_nao_encontrada.html", status=404)
+            return _inovacao_nao_encontrada(request)
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, EDEX-26).
+class InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, UpdateView):
+    """Edicao dos sete campos do cadastro pelo autor ou por um administrador (RF07).
+
+    Sem get_initial(): o formulario parte dos valores salvos (EDEX-02).
+    """
+
+    form_class = InovacaoForm
+    template_name = "inovacoes/inovacao_form.html"
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(
+            titulo_pagina="Editar inovação",
+            rotulo_botao="Salvar alterações",
+            # EDEX-16: cancelar volta ao detalhe sem gravar.
+            url_cancelar=self.object.get_absolute_url(),
+            **kwargs,
+        )
 
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).

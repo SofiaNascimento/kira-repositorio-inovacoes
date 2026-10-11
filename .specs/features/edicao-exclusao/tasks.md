@@ -199,7 +199,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T4: Tela de edição com o mixin de autoria (GET)
+### T4: Tela de edição com o mixin de autoria (GET) ✅
 
 **What**: A rota `editar`, o `AlteracaoDeInovacaoMixin` (404 → 403 no `dispatch()`), a página de acesso negado e o GET da `InovacaoUpdateView`.
 **Where**: `inovacoes/views.py`
@@ -214,19 +214,21 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `_inovacao_nao_encontrada(request)` extraída; `InovacaoDetailView.get()` passa a usá-la (testes da CONS-15 sem alteração)
-- [ ] `AlteracaoDeInovacaoMixin` como no design: `queryset` com `select_related("unidade", "categoria")`, `context_object_name = "inovacao"`, `dispatch()` com 404 e depois 403 (`render(..., "inovacoes/acesso_negado.html", {"inovacao": ...}, status=403)`), `get_object()` reaproveitando o `self.object`
-- [ ] `inovacoes/templates/inovacoes/acesso_negado.html`: `<title>`/`h1` "Acesso negado", os dois textos da EDEX-20 e o link "Voltar para a inovação" → detalhe
-- [ ] `InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, UpdateView)` com `form_class = InovacaoForm`, o template parametrizado e o contexto "Editar inovação" / "Salvar alterações" / `get_absolute_url()`; `path("<int:pk>/editar/", ..., name="editar")` em `inovacoes/urls.py`
-- [ ] Testes e2e em `inovacoes/tests/test_views_edicao.py`: autor `USUARIO` → 200, `<title>` e `h1` "Editar inovação", exatamente os sete campos e nenhum `status` (EDEX-01); os sete valores salvos pré-preenchidos, inclusive um contato diferente do pré-preenchimento da INOV-39 (EDEX-02); "Cancelar" com `href` do detalhe e, seguido, o detalhe 200 com a inovação intacta (EDEX-16); `administrador` na inovação do `autor` → 200 (EDEX-17); autor `ADMINISTRADOR` → 200 (EDEX-19); **`terceiro` → 403, template `acesso_negado.html`, os dois textos e o link "Voltar para a inovação" (EDEX-20, EDEX-21)**; administrador rebaixado a `USUARIO` → 403 na requisição seguinte (EDEX-25); id inexistente → 404 com "Inovação não encontrada." (EDEX-27); anônimo → login com `next=/inovacoes/<id>/editar/` (EDEX-26)
-- [ ] A varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/1/editar/`
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~399 testes passam (+9)
+- [x] `_inovacao_nao_encontrada(request)` extraída; `InovacaoDetailView.get()` passa a usá-la (testes da CONS-15 sem alteração)
+- [x] `AlteracaoDeInovacaoMixin` como no design: `queryset` com `select_related("unidade", "categoria")`, `context_object_name = "inovacao"`, `dispatch()` com 404 e depois 403 (`render(..., "inovacoes/acesso_negado.html", {"inovacao": ...}, status=403)`), `get_object()` reaproveitando o `self.object`
+- [x] `inovacoes/templates/inovacoes/acesso_negado.html`: `<title>`/`h1` "Acesso negado", os dois textos da EDEX-20 e o link "Voltar para a inovação" → detalhe
+- [x] `InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, UpdateView)` com `form_class = InovacaoForm`, o template parametrizado e o contexto "Editar inovação" / "Salvar alterações" / `get_absolute_url()`; `path("<int:pk>/editar/", ..., name="editar")` em `inovacoes/urls.py`
+- [x] Testes e2e em `inovacoes/tests/test_views_edicao.py`: autor `USUARIO` → 200, `<title>` e `h1` "Editar inovação", exatamente os sete campos e nenhum `status` (EDEX-01); os sete valores salvos pré-preenchidos, inclusive um contato diferente do pré-preenchimento da INOV-39 (EDEX-02); "Cancelar" com `href` do detalhe e, seguido, o detalhe 200 com a inovação intacta (EDEX-16); `administrador` na inovação do `autor` → 200 (EDEX-17); autor `ADMINISTRADOR` → 200 (EDEX-19); **`terceiro` → 403, template `acesso_negado.html`, os dois textos e o link "Voltar para a inovação" (EDEX-20, EDEX-21)**; administrador rebaixado a `USUARIO` → 403 na requisição seguinte (EDEX-25); id inexistente → 404 com "Inovação não encontrada." (EDEX-27); anônimo → login com `next=/inovacoes/<id>/editar/` (EDEX-26)
+- [x] A varredura de `contas/tests/test_controle_acesso.py` passa sem alteração e já inclui `/inovacoes/1/editar/`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~399 testes passam (+9)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a tela de edicao restrita ao autor e ao administrador`
+
+**Status**: ✅ Complete — 399 passed (+9); recusa renderizada pela view com status=403, sem PermissionDenied nem 403.html global; testes da CONS-15 sem alteração; a varredura da AD-006 já pega /inovacoes/1/editar/. O teste da EDEX-02 afirma o value do contato, porque a ajuda do campo cita "Ana Souza (ana@x.com)" como exemplo
 
 ---
 

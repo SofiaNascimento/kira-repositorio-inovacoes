@@ -256,8 +256,8 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| EDEX-01 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-02 | P1: Editar uma inovação que cadastrei | Specify | Pending |
+| EDEX-01 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
+| EDEX-02 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-03 | P1: Editar uma inovação que cadastrei | Specify | Pending |
 | EDEX-04 | P1: Editar uma inovação que cadastrei | Specify | Pending |
 | EDEX-05 | P1: Editar uma inovação que cadastrei | Specify | Pending |
@@ -271,18 +271,18 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-13 | P1: Editar uma inovação que cadastrei | Specify | Pending |
 | EDEX-14 | P1: Editar uma inovação que cadastrei | Specify | Pending |
 | EDEX-15 | P1: Editar uma inovação que cadastrei | Specify | Pending |
-| EDEX-16 | P1: Editar uma inovação que cadastrei | Specify | Pending |
+| EDEX-16 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-17 | P1: Curadoria pelo administrador | Execute | Implementing |
 | EDEX-18 | P1: Curadoria pelo administrador | Specify | Pending |
 | EDEX-19 | P1: Curadoria pelo administrador | Execute | Implementing |
-| EDEX-20 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
-| EDEX-21 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-20 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
+| EDEX-21 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-22 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
 | EDEX-23 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
 | EDEX-24 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
 | EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-26 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
-| EDEX-27 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
+| EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-28 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
 | EDEX-29 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
 | EDEX-30 | P2: Excluir uma inovação com confirmação | Specify | Pending |
