@@ -290,7 +290,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T7: Edição de inovação excluída não a recria
+### T7: Edição de inovação excluída não a recria ✅
 
 **What**: `InovacaoUpdateView.gravar()` trava a linha com `select_for_update` antes do `save()`; linha ausente responde com o 404 da CONS-15.
 **Where**: `inovacoes/views.py`
@@ -305,15 +305,17 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `gravar(form)` faz `Inovacao.objects.select_for_update().filter(pk=self.object.pk).exists()` dentro da transação; ausente → a view responde `_inovacao_nao_encontrada(request)` sem chamar `form.save()`
-- [ ] Testes e2e: POST para id inexistente → 404 com "Inovação não encontrada." (EDEX-27); abrir o formulário, apagar a inovação e enviar → 404 e `Inovacao.objects.count() == 0` (EDEX-29, sequencial); inovação apagada entre o `dispatch()` e a gravação, simulada com `monkeypatch` no `form_valid` para apagar a linha antes do `super()` → 404 e nenhuma linha recriada com o mesmo `pk` (EDEX-29, mesma requisição)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 2)
-- [ ] Test count: ~423 testes passam (+3)
+- [x] `gravar(form)` faz `Inovacao.objects.select_for_update().filter(pk=self.object.pk).exists()` dentro da transação; ausente → a view responde `_inovacao_nao_encontrada(request)` sem chamar `form.save()`
+- [x] Testes e2e: POST para id inexistente → 404 com "Inovação não encontrada." (EDEX-27); abrir o formulário, apagar a inovação e enviar → 404 e `Inovacao.objects.count() == 0` (EDEX-29, sequencial); inovação apagada entre o `dispatch()` e a gravação, simulada com `monkeypatch` no `form_valid` para apagar a linha antes do `super()` → 404 e nenhuma linha recriada com o mesmo `pk` (EDEX-29, mesma requisição)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 2)
+- [x] Test count: ~423 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `fix(inovacoes): impede que a edicao recrie uma inovacao excluida`
+
+**Status**: ✅ Complete — 422 passed (+3); gravar() levanta Http404 quando a linha travada não existe e o form_valid() da edição responde com _inovacao_nao_encontrada; nenhum DatabaseError é capturado (EDEX-44). O teste da mesma requisição falhou antes da trava (a inovação era recriada com o mesmo pk). Build gate verde, fecha a Fase 2
 
 ---
 

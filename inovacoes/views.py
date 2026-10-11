@@ -135,6 +135,21 @@ class InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, 
     # EDEX-05, EDEX-06: sem success_url, o UpdateView volta ao get_absolute_url().
     mensagem_de_sucesso = "Inovação “{titulo}” atualizada com sucesso."
 
+    def gravar(self, form):
+        # EDEX-29: o Model.save() faz INSERT quando o UPDATE nao acha a linha.
+        # Travar a linha na transacao do mixin impede recriar uma inovacao
+        # excluida depois do dispatch().
+        if not Inovacao.objects.select_for_update().filter(pk=self.object.pk).exists():
+            raise Http404
+        return super().gravar(form)
+
+    def form_valid(self, form):
+        try:
+            return super().form_valid(form)
+        except Http404:
+            # EDEX-27, EDEX-29: o 404 da CONS-15, sem gravar nada.
+            return _inovacao_nao_encontrada(self.request)
+
     def get_context_data(self, **kwargs):
         return super().get_context_data(
             titulo_pagina="Editar inovação",

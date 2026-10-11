@@ -284,7 +284,7 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-28 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
-| EDEX-29 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-29 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-30 | P2: Excluir uma inovação com confirmação | Specify | Pending |
 | EDEX-31 | P2: Excluir uma inovação com confirmação | Specify | Pending |
 | EDEX-32 | P2: Excluir uma inovação com confirmação | Specify | Pending |

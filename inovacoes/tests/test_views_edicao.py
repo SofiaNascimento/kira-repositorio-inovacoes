@@ -9,6 +9,7 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
 from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
+from inovacoes.views import InovacaoUpdateView
 
 CAMPOS = ["titulo", "unidade", "categoria", "problema", "solucao", "resultado", "contato"]
 NEGADO = "Você não tem permissão para alterar esta inovação."
@@ -463,3 +464,50 @@ def test_busca_acha_pelo_texto_novo_e_nao_pelo_texto_substituido(client, autor, 
     logado.post(_editar(inovacao), dados)
     assert _titulos_da_busca(logado, "divergencias") == [dados["titulo"]]
     assert _titulos_da_busca(logado, "manual") == []
+
+
+# --- Inovacao excluida durante a edicao (T7) ------------------------------------
+
+
+def _afirma_pagina_nao_encontrada(resposta):
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", resposta.content.decode())
+
+
+def test_envio_para_id_sem_inovacao_responde_404_com_pagina_propria(client, autor, dados):
+    """EDEX-27 (POST): o 404 da CONS-15, sem gravar nada."""
+    resposta = _entrar(client, autor).post("/inovacoes/999999/editar/", dados)
+    _afirma_pagina_nao_encontrada(resposta)
+    assert not Inovacao.objects.exists()
+
+
+def test_envio_de_inovacao_excluida_depois_de_abrir_o_formulario_responde_404(
+    client, autor, inovacao, dados
+):
+    """EDEX-29, sequencial: abrir, outra pessoa exclui, enviar."""
+    logado = _entrar(client, autor)
+    assert logado.get(_editar(inovacao)).status_code == 200
+    Inovacao.objects.filter(pk=inovacao.pk).delete()
+    _afirma_pagina_nao_encontrada(logado.post(_editar(inovacao), dados))
+    assert Inovacao.objects.count() == 0
+
+
+def test_inovacao_excluida_durante_o_envio_nao_e_recriada(
+    client, autor, inovacao, dados, monkeypatch
+):
+    """EDEX-29, mesma requisicao: a linha some entre o dispatch() e a gravacao.
+
+    Sem a trava, o Model.save() faria INSERT com o mesmo pk ao nao achar a linha.
+    """
+    form_valid = InovacaoUpdateView.form_valid
+
+    def apagar_antes_de_gravar(self, form):
+        Inovacao.objects.filter(pk=self.object.pk).delete()
+        return form_valid(self, form)
+
+    monkeypatch.setattr(InovacaoUpdateView, "form_valid", apagar_antes_de_gravar)
+    resposta = _entrar(client, autor).post(_editar(inovacao), dados)
+    _afirma_pagina_nao_encontrada(resposta)
+    assert not Inovacao.objects.filter(pk=inovacao.pk).exists()
+    assert Inovacao.objects.count() == 0
