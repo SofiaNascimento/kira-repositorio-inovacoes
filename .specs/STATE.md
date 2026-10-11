@@ -66,15 +66,23 @@
 - **Date**: 2026-10-03
 - **Status**: active
 
+### AD-009
+- **Decision**: Toda view que altera uma `Inovacao` (editar, excluir e, na F5, trocar o status) herda `inovacoes.views.AlteracaoDeInovacaoMixin`, que busca a inovação e checa `Inovacao.pode_ser_alterada_por(request.user)` no `dispatch()`. A regra "autor ou `ADMINISTRADOR`" mora só nesse método do modelo. A recusa é HTTP 403 com a página própria `inovacoes/acesso_negado.html`, renderizada pela view, nunca o `403.html` global.
+- **Reason**: A RN05 e o RNF07 exigem que um `USUARIO` nunca altere registro de terceiro, na tela e na requisição. Com a checagem espalhada por view, a próxima view de alteração (a troca de status da F5) pode esquecê-la e abrir a porta em silêncio. Um método no modelo dá uma regra única para views e templates, testável sem HTTP (AD-002), e o mixin a torna visível na declaração de cada view, como o mixin da AD-007. O `403.html` global fica de fora porque o Django admin o usa nas recusas da INOV-20 e da AUTH-22.
+- **Trade-off**: As permissões de objeto do Django (`has_perm` com `obj`, `PermissionRequiredMixin`) não são usadas, e `is_superuser`/`is_staff` não dão acesso a inovações de terceiros: o perfil é o único critério. Quem conhece o mecanismo padrão do Django vai procurá-lo e não achar. Um teste de varredura exige 403 de um terceiro `USUARIO` em toda rota de `inovacoes` com `pk`, salvo uma allowlist (o detalhe).
+- **Scope**: F4 (edicao-exclusao), F5 (ciclo-de-vida-status) e toda view futura que grave ou apague uma `Inovacao`. O detalhe usa o mesmo método para mostrar ou esconder as ações.
+- **Date**: 2026-10-11
+- **Status**: active
+
 ## Handoff
 
-- **Feature**: consulta-inovacoes (F3) — `.specs/features/consulta-inovacoes/`. **Concluída** em 2026-10-11: Verifier PASS na iteração 1 (2026-10-03) e conferência manual 40/40 (parte A 20/20 em 2026-10-03, parte B 20/20 em 2026-10-11), registrada em `validation.md`, *Interactive UAT Results*.
-- **Phase / Task**: Specify ✅ · Design ✅ (AD-008) · Tasks ✅ · Execute ✅ (T1–T22) · Verifier ✅ PASS · conferência manual ✅ (A e B). Todos os Success Criteria da `spec.md` marcados.
-- **Completed**: T1–T22 (código `1b4daf3` … `41fd0b8`), validação (`37f4186`) e o registro da conferência da parte B (commit desta atualização). Sensor: 20 mutações, 19 mortas, 1 equivalente (M7). Desvios registrados: T5 `?page=0` → página 1; T17 `label_suffix` via `__init__`; T8 reapontou `contas/tests/test_controle_acesso.py:98` (AUTH-11).
-- **Decisões do usuário na parte B (feature-locais)**: o "Limpar filtros" duplicado no estado vazio com filtro (CONS-35) fica como está. O `maxlength="100"` da busca fica; a mensagem da CONS-24 só aparece por URL montada à mão, e o aviso do limite no texto de ajuda foi para as ideias adiadas (`consulta-inovacoes/context.md`).
+- **Feature**: edicao-exclusao (F4) — `.specs/features/edicao-exclusao/`. **Em andamento**: Specify ✅ (aprovada, `90f5249`) · Design ✅ (aprovado em 2026-10-11, AD-009) · Tasks ⏳ · Execute ⏳. A F3 (consulta-inovacoes) está concluída: Verifier PASS e conferência manual 40/40 (`validation.md`).
+- **Phase / Task**: F4 entre Design e Tasks. Abordagem do design: `Inovacao.pode_ser_alterada_por` + `AlteracaoDeInovacaoMixin` (checagem no `dispatch()`, 404 antes de 403), `GravacaoComTituloUnicoMixin` extraído do cadastro, `select_for_update` na edição, `DeleteView` padrão para a confirmação.
+- **Completed**: F3 inteira (T1–T22, validação `37f4186`, conferência da parte B `2c0828b`). F4: spec (`90f5249`), context e design (commit desta atualização).
+- **Decisões do usuário na F4 (feature-locais, em `edicao-exclusao/context.md`)**: ações só no detalhe; 403 com página própria; confirmação por página com botão; exclusão definitiva; status fora da edição (F5); a última gravação vence. Projeto: AD-009.
 - **In-progress** (file:line): nenhum.
-- **Next step**: iniciar a **F4 (edicao-exclusao)** pelo Specify. Antes, carregar as lições confirmadas (`lessons.py list --status confirmed`) e reler AD-004, AD-006, AD-007 e AD-008 (a edição grava por `save()`). Opcional, a qualquer momento: Sugestões 1 e 2 do `validation.md` da F3 (fechar SPG-1/SPG-2; CONS-36/52 afirmados na página).
-- **Testes pendentes**: nenhum. 380 passed (`.venv/bin/pytest -q`) em 2026-10-11.
+- **Next step**: fase Tasks da F4 (`tasks.md`, `validate_tasks.py`). Lições confirmadas: nenhuma (15 candidatas, não usadas como guia); no Verifier da F4, registrar lições repetidas com o texto exato da candidata existente para que sejam promovidas.
+- **Testes pendentes**: nenhum. 380 passed em 2026-10-11 (nenhum código da F4 ainda).
 - **Blockers**: nenhum.
 - **Ambiente**: PostgreSQL 16 na porta **5433** (`/opt/homebrew/opt/postgresql@16/bin/pg_ctl -D /opt/homebrew/var/postgresql@16 -o "-p 5433" -l /tmp/pg16.log start`); comandos pelo `.venv/`. No zsh interativo, não colar comandos com comentário `#` (vira argumento). DBeaver: `localhost:5433`, banco `kira`, usuário `ruan.santos`, senha vazia, **auto-commit ligado**. Servidor: `DJANGO_DEBUG=True .venv/bin/python manage.py runserver`. Em roteiros, URL de teste vai na **barra de endereço**, não no campo de busca.
 - **Banco local (`kira`, 2026-10-11)**: migrations `inovacoes 0001–0006` aplicadas. 5 unidades e 5 categorias. 505 inovações: 500 da carga de demonstração (conta `demo`, USUARIO, sem senha utilizável) e as 5 dos UATs anteriores (`Processo RH`, `PROCESSO RH`, `Procésso RH`, `Checklist de compras`, `Teste` com `<b>teste</b>` na solução). Contas: `admin` (ADMINISTRADOR, superusuário), `joao` (ADMINISTRADOR, sem nome, staff), `maria` (USUARIO, "Maria Silva", staff), `demo`. Senhas fora do repositório.

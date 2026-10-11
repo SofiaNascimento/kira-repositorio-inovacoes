@@ -76,3 +76,5 @@ Assumptions da spec.
   nenhum RF pede).
 - Exclusão lógica com recuperação pelo administrador.
 - Detecção de edição concorrente por versão do registro.
+- Página própria, em português, para a recusa de CSRF (hoje é a padrão do Django, em inglês; ocorre
+  quando a sessão expira com o formulário aberto). Achado no Design.
