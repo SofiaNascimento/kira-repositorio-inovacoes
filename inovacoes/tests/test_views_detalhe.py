@@ -209,10 +209,10 @@ def test_administrador_ve_o_link_editar_na_inovacao_de_outro_autor(
     assert _links(html, "Editar") == [f"/inovacoes/{inovacao.pk}/editar/"]
 
 
-def test_terceiro_nao_ve_o_link_editar(client, terceiro, criar_inovacao):
-    """EDEX-24: USUARIO que nao e o autor."""
+def test_terceiro_nao_ve_o_link_editar(client, nao_autor_usuario, criar_inovacao):
+    """EDEX-24: USUARIO que nao e o autor, inclusive com is_staff ou is_superuser (AD-009)."""
     inovacao = criar_inovacao()
-    client.force_login(terceiro)
+    client.force_login(nao_autor_usuario)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
     assert _links(html, "Editar") == []
     assert f"/inovacoes/{inovacao.pk}/editar/" not in html
@@ -246,10 +246,32 @@ def test_administrador_ve_o_link_excluir_na_inovacao_de_outro_autor(
     assert _links(html, "Excluir") == [f"/inovacoes/{inovacao.pk}/excluir/"]
 
 
-def test_terceiro_nao_ve_o_link_excluir(client, terceiro, criar_inovacao):
-    """EDEX-24: USUARIO que nao e o autor."""
+def test_terceiro_nao_ve_o_link_excluir(client, nao_autor_usuario, criar_inovacao):
+    """EDEX-24: USUARIO que nao e o autor, inclusive com is_staff ou is_superuser (AD-009)."""
     inovacao = criar_inovacao()
-    client.force_login(terceiro)
+    client.force_login(nao_autor_usuario)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
     assert _links(html, "Excluir") == []
+    assert f"/inovacoes/{inovacao.pk}/excluir/" not in html
+
+
+def test_administrador_rebaixado_deixa_de_ver_os_links_na_requisicao_seguinte(
+    client, administrador, criar_inovacao
+):
+    """EDEX-24, EDEX-25: o perfil e lido de novo a cada requisicao."""
+    inovacao = criar_inovacao()
+    client.force_login(administrador)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Editar") == [f"/inovacoes/{inovacao.pk}/editar/"]
+    assert _links(html, "Excluir") == [f"/inovacoes/{inovacao.pk}/excluir/"]
+
+    # update() nao passa pelo save(): o rebaixado mantem o is_staff (AD-009).
+    Usuario.objects.filter(pk=administrador.pk).update(perfil=Usuario.Perfil.USUARIO)
+    rebaixado = Usuario.objects.get(pk=administrador.pk)
+    assert (rebaixado.perfil, rebaixado.is_staff) == (Usuario.Perfil.USUARIO, True)
+
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Editar") == []
+    assert _links(html, "Excluir") == []
+    assert f"/inovacoes/{inovacao.pk}/editar/" not in html
     assert f"/inovacoes/{inovacao.pk}/excluir/" not in html

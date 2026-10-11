@@ -567,7 +567,7 @@ T15 → T16 → T17 → T18
 
 ---
 
-### T16: Links do detalhe escondidos de staff, superusuário e administrador rebaixado (Fix 2)
+### T16: Links do detalhe escondidos de staff, superusuário e administrador rebaixado (Fix 2) ✅
 
 **What**: Os testes que escondem "Editar" e "Excluir" passam a cobrir as mesmas três contas da T15 e o administrador rebaixado.
 **Where**: `inovacoes/tests/test_views_detalhe.py`
@@ -582,16 +582,18 @@ T15 → T16 → T17 → T18
 
 **Done when**:
 
-- [ ] Nenhum dos dois links aparece para `terceiro`, `USUARIO` com `is_staff=True` e `USUARIO` com `is_superuser=True` (parametrizado)
-- [ ] Um `ADMINISTRADOR` não autor vê os links e, depois de rebaixado a `USUARIO`, deixa de vê-los na requisição seguinte
-- [ ] Mutantes M22 e M22b (`pode_alterar` também para `is_staff` / `is_superuser`) aplicados num rascunho falham a suíte; descartados em seguida
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~483 testes passam (+5)
+- [x] Nenhum dos dois links aparece para `terceiro`, `USUARIO` com `is_staff=True` e `USUARIO` com `is_superuser=True` (parametrizado)
+- [x] Um `ADMINISTRADOR` não autor vê os links e, depois de rebaixado a `USUARIO`, deixa de vê-los na requisição seguinte
+- [x] Mutantes M22 e M22b (`pode_alterar` também para `is_staff` / `is_superuser`) aplicados num rascunho falham a suíte; descartados em seguida
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~483 testes passam (+5)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): esconde as acoes do detalhe de staff e superusuario sem perfil`
+
+**Status**: ✅ Complete — 483 passed (+5); os dois testes de link escondido usam a fixture `nao_autor_usuario` da T15 (3 contas cada); teste novo do administrador rebaixado por `update()`, que mantém o `is_staff`. M22 morta (3 falhas: `[staff]` nos dois links e o rebaixado); M22b morta (2 falhas `[superusuario]`)
 
 ---
 
