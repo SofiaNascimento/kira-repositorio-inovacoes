@@ -8,7 +8,17 @@
 
 Corroborated across multiple features. Safe to apply as guidance.
 
-_none_
+### L-003 - When an AC restricts a screen to one role, test that other roles holding framework access are denied the screen, not only that fields are hidden
+- signal: `ac_gap` · recurrence: 2 feature(s) · scope: `admin` · harmful: 0
+- features: autenticacao, edicao-exclusao
+- evidence: AUTH-22 contas/tests/test_admin_perfil.py:46 (admin) (+1 more)
+- last seen: 2026-10-11T18:10:26Z
+
+### L-005 - Assert every clause of a compound AC at the layer the AC describes; a backend test does not cover a screen-level outcome
+- signal: `ac_gap` · recurrence: 2 feature(s) · scope: `routes` · harmful: 0
+- features: autenticacao, edicao-exclusao
+- evidence: AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes) (+1 more)
+- last seen: 2026-10-11T18:10:26Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -26,22 +36,10 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md M4 contas/backends.py:32 (auth-backend)
 - last seen: 2026-09-27T03:25:06Z
 
-### L-003 - When an AC restricts a screen to one role, test that other roles holding framework access are denied the screen, not only that fields are hidden
-- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `admin` · harmful: 0
-- features: autenticacao
-- evidence: AUTH-22 contas/tests/test_admin_perfil.py:46 (admin)
-- last seen: 2026-09-27T03:25:06Z
-
 ### L-004 - Assert the error type the AC names and that the stored value stays unchanged, not just that the write fails
 - signal: `ac_gap` · recurrence: 1 feature(s) · scope: `models` · harmful: 0
 - features: autenticacao
 - evidence: AUTH-18 contas/tests/test_constraints.py:17 (models)
-- last seen: 2026-09-27T03:25:06Z
-
-### L-005 - Assert every clause of a compound AC at the layer the AC describes; a backend test does not cover a screen-level outcome
-- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `routes` · harmful: 0
-- features: autenticacao
-- evidence: AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes)
 - last seen: 2026-09-27T03:25:06Z
 
 ### L-006 - Test every admin screen a permission hook guards, including delete, not only list, add and change
@@ -103,6 +101,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: consulta-inovacoes
 - evidence: tasks.md T8 Done when; contas/tests/test_controle_acesso.py:98 (tests)
 - last seen: 2026-10-04T03:09:55Z
+
+### L-016 - Select routes for an authorization sweep by any captured URL parameter, not by a literal converter string, so a new route with another parameter name is still swept
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: edicao-exclusao
+- evidence: validation.md M24 (inovacoes/tests/test_controle_autoria.py:26) (tests)
+- last seen: 2026-10-11T18:10:26Z
 
 ## Quarantined (failed when applied - ignore)
 

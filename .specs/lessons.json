@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 16,
+  "next_id": 17,
   "lessons": [
     {
       "id": "L-001",
@@ -47,17 +47,19 @@
       "text": "When an AC restricts a screen to one role, test that other roles holding framework access are denied the screen, not only that fields are hidden",
       "signal": "ac_gap",
       "scope": "admin",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "autenticacao"
+        "autenticacao",
+        "edicao-exclusao"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "AUTH-22 contas/tests/test_admin_perfil.py:46 (admin)"
+        "AUTH-22 contas/tests/test_admin_perfil.py:46 (admin)",
+        "EDEX-20, EDEX-22, EDEX-23, EDEX-24 / AD-009 - mutants M22, M22b, M23b (inovacoes/views.py:41, :128) (admin)"
       ],
       "created": "2026-09-27T03:25:06Z",
-      "last_seen": "2026-09-27T03:25:06Z"
+      "last_seen": "2026-10-11T18:10:26Z"
     },
     {
       "id": "L-004",
@@ -83,17 +85,19 @@
       "text": "Assert every clause of a compound AC at the layer the AC describes; a backend test does not cover a screen-level outcome",
       "signal": "ac_gap",
       "scope": "routes",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "autenticacao"
+        "autenticacao",
+        "edicao-exclusao"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes)"
+        "AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes)",
+        "EDEX-09 (INOV-10), EDEX-11 (titulo, solucao) - test_views_edicao.py:339-362, :459-466 (routes)"
       ],
       "created": "2026-09-27T03:25:06Z",
-      "last_seen": "2026-09-27T03:25:06Z"
+      "last_seen": "2026-10-11T18:10:26Z"
     },
     {
       "id": "L-006",
@@ -274,6 +278,24 @@
       ],
       "created": "2026-10-04T03:09:55Z",
       "last_seen": "2026-10-04T03:09:55Z"
+    },
+    {
+      "id": "L-016",
+      "key": "surviving_mutant::select routes for an authorization sweep by any captured url parameter not by a literal converter string so a new route with another parameter name is still swept",
+      "text": "Select routes for an authorization sweep by any captured URL parameter, not by a literal converter string, so a new route with another parameter name is still swept",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "edicao-exclusao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M24 (inovacoes/tests/test_controle_autoria.py:26) (tests)"
+      ],
+      "created": "2026-10-11T18:10:26Z",
+      "last_seen": "2026-10-11T18:10:26Z"
     }
   ]
 }
