@@ -1,13 +1,13 @@
 """Testes e2e da regra de autoria em todas as rotas de alteracao (AD-009, RNF07).
 
 A varredura acha as rotas pelo resolver, como a da AD-006: toda rota nova de
-inovacoes com <int:pk> (a troca de status da F5, por exemplo) nasce coberta e
-precisa negar o terceiro, salvo a allowlist de leitura.
+inovacoes que capture parametro (a troca de status da F5, por exemplo) nasce
+coberta e precisa negar o terceiro, salvo a allowlist de leitura.
 """
 
 import pytest
 from django.test import Client
-from django.urls import URLPattern, URLResolver, get_resolver, reverse
+from django.urls import URLPattern, URLResolver, get_resolver, include, path, re_path, reverse
 
 from inovacoes.models import Inovacao
 
@@ -16,15 +16,27 @@ ROTAS_DE_LEITURA = {"inovacoes:detalhe"}
 
 
 def _rotas_com_pk(padroes, namespace=None):
-    """Nome qualificado de toda rota do namespace inovacoes cujo padrao tem <int:pk>."""
+    """Nome qualificado de toda rota do namespace inovacoes que captura parametro.
+
+    Le os parametros capturados do padrao, nao o texto: uma rota com outro
+    conversor entra na varredura, e uma com parametro que nao seja exatamente
+    pk faz a coleta falhar, para que alguem decida como cobri-la.
+    """
     for padrao in padroes:
         if isinstance(padrao, URLResolver):
             yield from _rotas_com_pk(padrao.url_patterns, padrao.namespace or namespace)
-        elif (
-            isinstance(padrao, URLPattern)
-            and namespace == "inovacoes"
-            and "<int:pk>" in str(padrao.pattern)
-        ):
+        elif isinstance(padrao, URLPattern) and namespace == "inovacoes":
+            regex = padrao.pattern.regex
+            parametros = set(getattr(padrao.pattern, "converters", {})) | set(regex.groupindex)
+            if not parametros and not regex.groups:
+                continue
+            if parametros != {"pk"} or regex.groups != 1 or padrao.name is None:
+                raise AssertionError(
+                    f"Rota de inovacoes {str(padrao.pattern)!r} (name={padrao.name!r}) captura "
+                    f"{sorted(parametros)} em {regex.groups} grupo(s): a varredura da AD-009 so "
+                    "sabe montar rotas nomeadas com exatamente o parametro pk. Renomeie o "
+                    "parametro para pk ou estenda a varredura."
+                )
             yield f"inovacoes:{padrao.name}"
 
 
@@ -36,6 +48,41 @@ def test_varredura_encontra_as_rotas_de_alteracao():
     """Sanidade: uma coleta vazia nao pode passar em silencio."""
     assert "inovacoes:detalhe" in ROTAS_COM_PK
     assert {"inovacoes:editar", "inovacoes:excluir"} <= set(ROTAS_DE_ALTERACAO)
+
+
+def _view_qualquer(request, **kwargs):
+    raise AssertionError("a coleta nao chama a view")
+
+
+def _urls_de_inovacoes(*rotas):
+    return [path("inovacoes/", include((list(rotas), "inovacoes")))]
+
+
+@pytest.mark.parametrize(
+    "rota",
+    [
+        path("<int:id>/status/", _view_qualquer, name="status"),
+        re_path(r"^(?P<inovacao>[0-9]+)/status/$", _view_qualquer, name="status"),
+        re_path(r"^([0-9]+)/status/$", _view_qualquer, name="status"),
+        path("<int:pk>/anexos/<int:anexo>/", _view_qualquer, name="anexo"),
+        path("<int:pk>/status/", _view_qualquer),
+    ],
+    ids=["outro-nome", "regex-nomeado", "regex-sem-nome", "dois-parametros", "sem-name"],
+)
+def test_coleta_falha_com_rota_que_a_varredura_nao_sabe_montar(rota):
+    """AD-009: rota de alteracao com parametro que nao e pk nao escapa em silencio."""
+    with pytest.raises(AssertionError, match="exatamente o parametro pk"):
+        list(_rotas_com_pk(_urls_de_inovacoes(rota)))
+
+
+def test_coleta_pega_o_pk_com_qualquer_conversor():
+    """AD-009: a coleta le o parametro capturado, nao o texto <int:pk>."""
+    urls = _urls_de_inovacoes(
+        path("", _view_qualquer, name="lista"),
+        path("<str:pk>/status/", _view_qualquer, name="status"),
+        re_path(r"^(?P<pk>[0-9]+)/arquivo/$", _view_qualquer, name="arquivo"),
+    )
+    assert sorted(_rotas_com_pk(urls)) == ["inovacoes:arquivo", "inovacoes:status"]
 
 
 @pytest.fixture

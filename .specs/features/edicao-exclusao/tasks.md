@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/edicao-exclusao/spec.md`
 **Design**: `.specs/features/edicao-exclusao/design.md`
-**Status**: In Progress — T1–T14 ✅; Verifier iteração 1 FAIL (lacunas só de teste) → Fase 5 (T15–T18) de correção
+**Status**: In Progress — T1–T18 ✅; Verifier iteração 1 FAIL (lacunas só de teste) → Fase 5 (T15–T18) de correção concluída; aguarda o Verifier, iteração 2
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1, F2 e F3.
 
@@ -626,7 +626,7 @@ T15 → T16 → T17 → T18
 
 ---
 
-### T18: Varredura da AD-009 independente do texto `<int:pk>` (Fix 4)
+### T18: Varredura da AD-009 independente do texto `<int:pk>` (Fix 4) ✅
 
 **What**: A coleta da varredura passa a pegar toda rota do namespace `inovacoes` que capture parâmetro e falha quando o parâmetro não é `pk`.
 **Where**: `inovacoes/tests/test_controle_autoria.py`
@@ -641,15 +641,17 @@ T15 → T16 → T17 → T18
 
 **Done when**:
 
-- [ ] A coleta usa os conversores capturados do padrão (`pattern.converters`), não o texto literal; rota de `inovacoes` com parâmetro diferente de `pk` faz a coleta falhar com mensagem clara
-- [ ] Mutante M24 (rota `<int:id>/status/` sem guarda) e mutante M18 (rota `<int:pk>/...` sem guarda) aplicados num rascunho falham a suíte; descartados em seguida
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 5)
-- [ ] Test count: ~487 testes passam (+1 ou mais)
+- [x] A coleta usa os conversores capturados do padrão (`pattern.converters`), não o texto literal; rota de `inovacoes` com parâmetro diferente de `pk` faz a coleta falhar com mensagem clara
+- [x] Mutante M24 (rota `<int:id>/status/` sem guarda) e mutante M18 (rota `<int:pk>/...` sem guarda) aplicados num rascunho falham a suíte; descartados em seguida
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 5)
+- [x] Test count: ~487 testes passam (+1 ou mais)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): coleta as rotas da varredura pelos parametros capturados`
+
+**Status**: ✅ Complete — 492 passed (+6); a coleta lê `pattern.converters` e os grupos do regex (também pega `re_path`); rota de `inovacoes` com parâmetro diferente de exatamente `pk`, com grupo sem nome ou sem `name` derruba a coleta com mensagem clara. `ROTAS_DE_LEITURA` e a sanidade mantidas; +6 testes da própria coleta (5 rotas recusadas, 1 com `<str:pk>` e `re_path` aceitos). M24 morta (erro de coleta com a mensagem); M18 morta (6 falhas `[…-inovacoes:status-…]`). Build gate verde, fecha a Fase 5
 
 ---
 
