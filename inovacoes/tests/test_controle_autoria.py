@@ -55,12 +55,15 @@ def envio_valido(unidade, categoria):
 @pytest.mark.parametrize("metodo", ["get", "post"])
 @pytest.mark.parametrize("rota", ROTAS_DE_ALTERACAO)
 def test_terceiro_recebe_403_e_nada_muda(
-    client, terceiro, criar_inovacao, envio_valido, rota, metodo
+    client, nao_autor_usuario, criar_inovacao, envio_valido, rota, metodo
 ):
-    """EDEX-20, EDEX-22, EDEX-23: USUARIO que nao e o autor, em toda rota de alteracao."""
+    """EDEX-20, EDEX-22, EDEX-23: USUARIO que nao e o autor, em toda rota de alteracao.
+
+    AD-009: vale tambem para o USUARIO com is_staff ou is_superuser.
+    """
     inovacao = criar_inovacao()
     antes = Inovacao.objects.values().get(pk=inovacao.pk)
-    client.force_login(terceiro)
+    client.force_login(nao_autor_usuario)
     caminho = reverse(rota, kwargs={"pk": inovacao.pk})
     if metodo == "post":
         resposta = client.post(caminho, envio_valido)

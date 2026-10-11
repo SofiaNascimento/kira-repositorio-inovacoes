@@ -538,7 +538,7 @@ T15 → T16 → T17 → T18
 
 ---
 
-### T15: Varredura da AD-009 também para `USUARIO` com `is_staff` e `is_superuser` (Fix 1)
+### T15: Varredura da AD-009 também para `USUARIO` com `is_staff` e `is_superuser` (Fix 1) ✅
 
 **What**: O teste de recusa da varredura passa a rodar para três contas não autoras sem perfil de administrador: `terceiro`, `USUARIO` com `is_staff=True` e `USUARIO` com `is_superuser=True`.
 **Where**: `inovacoes/tests/test_controle_autoria.py`
@@ -553,15 +553,17 @@ T15 → T16 → T17 → T18
 
 **Done when**:
 
-- [ ] A recusa é parametrizada por conta (3) × rota × método, com 403 e a linha igual campo a campo depois de cada requisição
-- [ ] Mutante M23b (`AlteracaoDeInovacaoMixin.dispatch` aceita `request.user.is_superuser`) aplicado num rascunho falha a suíte; descartado em seguida
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~478 testes passam (+8)
+- [x] A recusa é parametrizada por conta (3) × rota × método, com 403 e a linha igual campo a campo depois de cada requisição
+- [x] Mutante M23b (`AlteracaoDeInovacaoMixin.dispatch` aceita `request.user.is_superuser`) aplicado num rascunho falha a suíte; descartado em seguida
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~478 testes passam (+8)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): varre as rotas de alteracao com contas staff e superusuario`
+
+**Status**: ✅ Complete — 478 passed (+8); fixture parametrizada `nao_autor_usuario` no `conftest.py` (terceiro, USUARIO com is_staff, USUARIO com is_superuser; perfil e bandeiras conferidos no setup). M23b morta (4 falhas, todas `[superusuario-…]`); a variante com `is_staff` no mixin também morre (4 falhas `[staff-…]`)
 
 ---
 
