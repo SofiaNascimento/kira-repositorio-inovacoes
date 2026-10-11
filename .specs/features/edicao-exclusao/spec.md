@@ -336,7 +336,8 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
       de rota, método e perfil).
 - [x] Nenhum caminho apaga uma inovação sem o POST da página de confirmação.
 - [x] Depois de editar o problema, a busca acha a inovação pela palavra nova e não pela antiga.
-- [ ] Edição, confirmação e acesso negado são operados só com teclado, com rótulos associados e foco
+- [x] Edição, confirmação e acesso negado são operados só com teclado, com rótulos associados e foco
       visível.
       Estrutura provada em `inovacoes/tests/test_views_acessibilidade_alteracao.py` (EDEX-41 a
-      EDEX-43); o percurso real com teclado aguarda a conferência manual no navegador.
+      EDEX-43); percurso real com teclado aprovado na conferência manual (passos 19 e 20,
+      2026-10-11; `validation.md`, *Interactive UAT Results*).

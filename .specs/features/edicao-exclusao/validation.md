@@ -149,6 +149,37 @@ Executado num `git worktree add --detach` temporário a partir de `6791933` (scr
 
 ---
 
+## Interactive UAT Results
+
+O Verifier roda sem usuário; a conferência no navegador é conduzida pelo orquestrador. **Status (2026-10-11): concluída. 20/20 aprovados; nenhum achado no código.** Contas `maria` (USUARIO, com `is_staff`, que é o caso real do Fix 2) e `joao` (ADMINISTRADOR) em sessões separadas; `admin` só no passo 16. Ids do banco local: 1 "Processo RH" (maria, Filial Leste), 2 "PROCESSO RH" (maria, Filial Norte), 3 "Checklist de compras" (joao, Sede), 4 "Procésso RH" (maria, Filial Leste), 5 "Teste" (maria, Sede · Compras), 6 "Demonstração 001" (demo, Filial Norte · Atendimento interno).
+
+| # | Test | Esperado | Result |
+| - | ---- | -------- | ------ |
+| 1 | `maria` no detalhe da 1 | "Editar" e "Excluir" abaixo de "Cadastrada por…" (EDEX-03, EDEX-31) | ✅ Pass |
+| 2 | Abre a edição | "Editar inovação", sete campos com os valores salvos (contato `maria.teste@kira`), sem Status, botão "Salvar alterações" (EDEX-01, EDEX-02) | ✅ Pass. O usuário pediu que o status também seja editável; decidido manter fora da F4 e tratar na F5 (RF09), como no Discuss |
+| 3 | Troca o problema e salva | Detalhe com "Inovação “Processo RH” atualizada com sucesso."; some ao recarregar (EDEX-04 a EDEX-07) | ✅ Pass |
+| 4 | Busca `reembolso` e `tetestetstet` | 1 e 0 resultados (EDEX-11) | ✅ Pass |
+| 5 | Título vazio; depois "Cancelar" | Resumo + "Informe o título da inovação.", demais campos preservados; cancelar volta ao detalhe intacto (EDEX-09, EDEX-10, EDEX-16) | ✅ Pass |
+| 6 | Na 4, título `PROCESSO RH`; depois `PROCÉSSO RH` | Recusado com a mensagem da INOV-22; o próprio título em maiúsculas é aceito (EDEX-12, EDEX-13) | ✅ Pass |
+| 7 | `maria` no detalhe da 3 (do joao) | Sem "Editar" e "Excluir" (EDEX-24) | ✅ Pass |
+| 8 | `/inovacoes/3/editar/` | "Acesso negado", os dois textos e "Voltar para a inovação" → `/inovacoes/3/` (EDEX-20, EDEX-21) | ✅ Pass |
+| 9 | `/inovacoes/3/excluir/` | Acesso negado (EDEX-20) | ✅ Pass |
+| 10 | `/inovacoes/999999/editar/` e `/excluir/` | "Inovação não encontrada." (EDEX-27, EDEX-28) | ✅ Pass |
+| 11 | Excluir na 5; "Cancelar" | Confirmação com "(Sede · Compras)", botão e cancelar; cancelar mantém a inovação (EDEX-30, EDEX-32 a EDEX-34, EDEX-36) | ✅ Pass |
+| 12 | "Excluir definitivamente" | Lista com "Inovação “Teste” excluída com sucesso.", total 504; some ao recarregar (EDEX-35, EDEX-37, EDEX-40) | ✅ Pass |
+| 13 | Voltar + reenviar; abrir `/inovacoes/5/` | "Inovação não encontrada." nos dois (EDEX-38, EDEX-39) | ✅ Pass |
+| 14 | `joao` edita o contato da 2 | Links visíveis; contato novo; "Cadastrada por Maria Silva em 03/10/2026" mantido (EDEX-17, EDEX-18) | ✅ Pass |
+| 15 | `joao` exclui a 6 | Confirmação "(Filial Norte · Atendimento interno)"; total 503 (EDEX-35) | ✅ Pass |
+| 16 | `admin` rebaixa o joao; joao recarrega; restaura | Links somem e a edição dá acesso negado; reaparecem ao restaurar (EDEX-25) | ✅ Pass. Senha do `admin` redefinida pelo usuário com `changepassword` |
+| 17 | Anônimo em `/inovacoes/1/editar/`; login | Login com `next`; depois cai no formulário (EDEX-26) | ✅ Pass |
+| 18 | Cadastro de inovação nova | "Cadastrar inovação", botão "Salvar", detalhe com a mensagem da INOV-28 e os links (regressão da T2/T3) | ✅ Pass |
+| 19 | Só teclado: Editar, formulário, erro, salvar; Excluir, confirmação, Cancelar | Ordem visual e foco visível em todos os passos (EDEX-42; Success Criterion de teclado) | ✅ Pass. Fecha o Success Criterion de teclado |
+| 20 | DevTools nas três páginas | `label[for]`, `required` e "(obrigatório)", `aria-invalid` e `aria-describedby` com erro, sem `tabindex` positivo (EDEX-41, EDEX-42) | ✅ Pass |
+
+Estado do banco local ao fim: 503 inovações (a "Teste" e a "Demonstração 001" foram excluídas de verdade; `carregar_demonstracao` recriaria a 001); `joao` de volta a ADMINISTRADOR.
+
+---
+
 ## Code Quality
 
 | Principle | Status |
@@ -237,4 +268,4 @@ Proposta (o `spec.md` não foi editado pelo Verifier):
 
 **Issues found**: nenhum.
 
-**Next steps**: o orquestrador atualiza a rastreabilidade do `spec.md` e o `STATE.md`.
+**Next steps**: ~~o orquestrador atualiza a rastreabilidade do `spec.md` e o `STATE.md`~~ feito em `3fe7d10`. Conferência manual concluída em 2026-10-11, 20/20 (ver *Interactive UAT Results*).

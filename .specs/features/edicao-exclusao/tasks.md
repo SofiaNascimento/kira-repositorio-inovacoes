@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/edicao-exclusao/spec.md`
 **Design**: `.specs/features/edicao-exclusao/design.md`
-**Status**: ✅ Concluída — T1–T18 implementadas; Verifier iteração 1 FAIL (4 mutantes sobreviventes por lacuna de teste) → Fase 5 (T15–T18) → iteração 2 PASS (`validation.md`, 2026-10-11). Conferência manual no navegador pendente
+**Status**: ✅ Concluída — T1–T18 implementadas; Verifier iteração 1 FAIL (4 mutantes sobreviventes por lacuna de teste) → Fase 5 (T15–T18) → iteração 2 PASS (`validation.md`, 2026-10-11); conferência manual 20/20 (2026-10-11)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1, F2 e F3.
 
