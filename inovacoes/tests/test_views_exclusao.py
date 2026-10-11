@@ -1,0 +1,128 @@
+"""Testes e2e da confirmacao e da exclusao de inovacao (/inovacoes/<id>/excluir/)."""
+
+import re
+
+from pytest_django.asserts import assertTemplateUsed
+
+from inovacoes.models import Inovacao
+
+NEGADO = "Você não tem permissão para alterar esta inovação."
+SO_AUTOR = "Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la."
+AVISO = (
+    "Você vai excluir a inovação “Controle de Caixa” (Teste Unidade · Teste Categoria). "
+    "Esta ação não pode ser desfeita."
+)
+
+
+def _excluir(inovacao):
+    return f"/inovacoes/{inovacao.pk}/excluir/"
+
+
+def _entrar(client, conta):
+    client.force_login(conta)
+    return client
+
+
+def _formulario_de_confirmacao(html):
+    """O form POST da pagina, fora do cabecalho (que tem o form do "Sair")."""
+    formularios = re.findall(r"<form\b([^>]*)>(.*?)</form>", html, re.S)
+    com_botao = [f for f in formularios if "Excluir definitivamente" in f[1]]
+    assert len(com_botao) == 1, formularios
+    return com_botao[0]
+
+
+def _afirma_confirmacao(resposta):
+    """EDEX-30: 200, titulo "Excluir inovação" e o aviso com titulo, unidade e categoria."""
+    assert resposta.status_code == 200
+    assertTemplateUsed(resposta, "inovacoes/inovacao_confirm_delete.html")
+    html = resposta.content.decode()
+    titulo = re.search(r"<title>(.*?)</title>", html, re.S).group(1).strip()
+    assert titulo.startswith("Excluir inovação")
+    assert re.findall(r"<h1[^>]*>(.*?)</h1>", html, re.S) == ["Excluir inovação"]
+    assert AVISO in html
+
+
+def _link_cancelar(html):
+    links = re.findall(r"<a\b([^>]*)>\s*Cancelar\s*</a>", html)
+    assert len(links) == 1, links
+    return re.search(r'\bhref="([^"]*)"', links[0]).group(1)
+
+
+def test_autor_ve_a_confirmacao_com_o_aviso(client, autor, criar_inovacao):
+    """EDEX-30: autor USUARIO."""
+    inovacao = criar_inovacao()
+    _afirma_confirmacao(_entrar(client, autor).get(_excluir(inovacao)))
+
+
+def test_administrador_ve_a_confirmacao_da_inovacao_de_outro_autor(
+    client, administrador, criar_inovacao
+):
+    """EDEX-30: o administrador na inovacao da Ana."""
+    inovacao = criar_inovacao()
+    _afirma_confirmacao(_entrar(client, administrador).get(_excluir(inovacao)))
+
+
+def test_autor_administrador_ve_a_confirmacao(client, administrador, criar_inovacao):
+    """EDEX-19: o autor ADMINISTRADOR exclui como o autor USUARIO."""
+    inovacao = criar_inovacao(autor=administrador)
+    _afirma_confirmacao(_entrar(client, administrador).get(_excluir(inovacao)))
+
+
+def test_confirmacao_tem_o_botao_que_envia_post_a_propria_rota(client, autor, criar_inovacao):
+    """EDEX-32: botao "Excluir definitivamente" num form POST para /inovacoes/<id>/excluir/."""
+    inovacao = criar_inovacao()
+    html = _entrar(client, autor).get(_excluir(inovacao)).content.decode()
+    atributos, corpo = _formulario_de_confirmacao(html)
+    assert re.search(r'\bmethod="post"', atributos)
+    acao = re.search(r'\baction="([^"]*)"', atributos)
+    assert acao is None or acao.group(1) in ("", _excluir(inovacao))
+    assert 'name="csrfmiddlewaretoken"' in corpo
+    botoes = re.findall(r"<button\b([^>]*)>\s*(.*?)\s*</button>", corpo, re.S)
+    assert [texto for _, texto in botoes] == ["Excluir definitivamente"]
+    assert 'type="button"' not in botoes[0][0]
+
+
+def test_cancelar_leva_ao_detalhe_e_a_inovacao_continua(client, autor, criar_inovacao):
+    """EDEX-33, EDEX-34."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    href = _link_cancelar(logado.get(_excluir(inovacao)).content.decode())
+    assert href == f"/inovacoes/{inovacao.pk}/"
+    resposta = logado.get(href)
+    assert resposta.status_code == 200
+    assertTemplateUsed(resposta, "inovacoes/inovacao_detail.html")
+    assert Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+def test_get_na_exclusao_nunca_apaga_nem_repetido(client, autor, criar_inovacao):
+    """EDEX-36: um link seguido por engano ou pre-carregado nao exclui."""
+    inovacao = criar_inovacao()
+    antes = Inovacao.objects.values().get(pk=inovacao.pk)
+    logado = _entrar(client, autor)
+    for _ in range(3):
+        assert logado.get(_excluir(inovacao)).status_code == 200
+    assert Inovacao.objects.values().get(pk=inovacao.pk) == antes
+
+
+def test_terceiro_recebe_403_na_confirmacao(client, terceiro, criar_inovacao):
+    """EDEX-20, EDEX-21: GET de um USUARIO que nao e o autor."""
+    inovacao = criar_inovacao()
+    resposta = _entrar(client, terceiro).get(_excluir(inovacao))
+    assert resposta.status_code == 403
+    assertTemplateUsed(resposta, "inovacoes/acesso_negado.html")
+    html = resposta.content.decode()
+    assert NEGADO in html
+    assert SO_AUTOR in html
+    assert re.findall(r'<a href="([^"]*)">\s*Voltar para a inovação\s*</a>', html) == [
+        f"/inovacoes/{inovacao.pk}/"
+    ]
+    assert "Excluir definitivamente" not in html
+    assert Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+def test_id_sem_inovacao_na_confirmacao_responde_404_com_pagina_propria(client, autor):
+    """EDEX-28: o 404 da CONS-15."""
+    resposta = _entrar(client, autor).get("/inovacoes/999999/excluir/")
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", resposta.content.decode())

@@ -349,7 +349,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T9: Confirmação da exclusão (GET) e link "Excluir"
+### T9: Confirmação da exclusão (GET) e link "Excluir" ✅
 
 **What**: A rota `excluir`, a `InovacaoDeleteView` com o mixin de autoria, a página de confirmação e o link "Excluir" no detalhe.
 **Where**: `inovacoes/views.py`
@@ -364,18 +364,20 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `InovacaoDeleteView(AlteracaoDeInovacaoMixin, DeleteView)` com `success_url = reverse_lazy("inovacoes:lista")`; `path("<int:pk>/excluir/", ..., name="excluir")`
-- [ ] `inovacoes/templates/inovacoes/inovacao_confirm_delete.html` como no design: `<title>`/`h1` "Excluir inovação", o texto da EDEX-30, `<form method="post">` com `{% csrf_token %}` e o botão "Excluir definitivamente", link "Cancelar" → detalhe
-- [ ] `inovacao_detail.html` mostra `<a href="{% url 'inovacoes:excluir' inovacao.pk %}">Excluir</a>` junto de "Editar", sob o mesmo `pode_alterar`
-- [ ] Testes e2e em `inovacoes/tests/test_views_exclusao.py`: autor → 200, `h1` "Excluir inovação" e "Você vai excluir a inovação “Controle de Caixa” (Teste Unidade · Teste Categoria). Esta ação não pode ser desfeita." (EDEX-30); `administrador` na inovação do `autor` → 200; autor `ADMINISTRADOR` → 200 (EDEX-19); formulário com `method="post"`, sem `action` ou com `action` da própria rota, e o botão "Excluir definitivamente" (EDEX-32); "Cancelar" com `href` do detalhe e, seguido, a inovação continua (EDEX-33, EDEX-34); o GET não apaga, nem repetido (EDEX-36); **`terceiro` → 403 com a página de acesso negado (EDEX-20)**; id inexistente → 404 (EDEX-28)
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor e `administrador` veem "Excluir" com `href="/inovacoes/<id>/excluir/"` (EDEX-31); **`terceiro` não vê (EDEX-24)**
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~435 testes passam (+9)
+- [x] `InovacaoDeleteView(AlteracaoDeInovacaoMixin, DeleteView)` com `success_url = reverse_lazy("inovacoes:lista")`; `path("<int:pk>/excluir/", ..., name="excluir")`
+- [x] `inovacoes/templates/inovacoes/inovacao_confirm_delete.html` como no design: `<title>`/`h1` "Excluir inovação", o texto da EDEX-30, `<form method="post">` com `{% csrf_token %}` e o botão "Excluir definitivamente", link "Cancelar" → detalhe
+- [x] `inovacao_detail.html` mostra `<a href="{% url 'inovacoes:excluir' inovacao.pk %}">Excluir</a>` junto de "Editar", sob o mesmo `pode_alterar`
+- [x] Testes e2e em `inovacoes/tests/test_views_exclusao.py`: autor → 200, `h1` "Excluir inovação" e "Você vai excluir a inovação “Controle de Caixa” (Teste Unidade · Teste Categoria). Esta ação não pode ser desfeita." (EDEX-30); `administrador` na inovação do `autor` → 200; autor `ADMINISTRADOR` → 200 (EDEX-19); formulário com `method="post"`, sem `action` ou com `action` da própria rota, e o botão "Excluir definitivamente" (EDEX-32); "Cancelar" com `href` do detalhe e, seguido, a inovação continua (EDEX-33, EDEX-34); o GET não apaga, nem repetido (EDEX-36); **`terceiro` → 403 com a página de acesso negado (EDEX-20)**; id inexistente → 404 (EDEX-28)
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor e `administrador` veem "Excluir" com `href="/inovacoes/<id>/excluir/"` (EDEX-31); **`terceiro` não vê (EDEX-24)**
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~435 testes passam (+9)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a confirmacao de exclusao de inovacao`
+
+**Status**: ✅ Complete — 438 passed (+11); InovacaoDeleteView só declara success_url, o mixin faz o 404 e o 403; o teste da EDEX-32 isola o form da confirmação do form do "Sair" do cabeçalho; a varredura da AD-006 já pega /inovacoes/1/excluir/ sem alteração
 
 ---
 

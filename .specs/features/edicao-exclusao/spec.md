@@ -283,15 +283,15 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-28 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-28 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-29 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-30 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-31 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-32 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-33 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-34 | P2: Excluir uma inovação com confirmação | Specify | Pending |
+| EDEX-30 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-31 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-32 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-33 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-34 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-35 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-36 | P2: Excluir uma inovação com confirmação | Specify | Pending |
+| EDEX-36 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-37 | P2: Excluir uma inovação com confirmação | Specify | Pending |
 | EDEX-38 | P2: Excluir uma inovação com confirmação | Specify | Pending |
 | EDEX-39 | P2: Excluir uma inovação com confirmação | Specify | Pending |

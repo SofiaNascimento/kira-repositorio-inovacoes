@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Excluir inovação{% endblock %}
+
+{% block conteudo %}
+  <h1>Excluir inovação</h1>
+
+  {# EDEX-30: unidade e categoria distinguem titulos iguais em unidades diferentes (INOV-24). #}
+  <p>Você vai excluir a inovação “{{ inovacao.titulo }}” ({{ inovacao.unidade.nome }} · {{ inovacao.categoria.nome }}). Esta ação não pode ser desfeita.</p>
+
+  {# EDEX-32, RN12: so o POST desta confirmacao apaga; o GET nunca (EDEX-36). #}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Excluir definitivamente</button>
+    {# EDEX-33, EDEX-34 #}
+    <a href="{{ inovacao.get_absolute_url }}">Cancelar</a>
+  </form>
+{% endblock %}

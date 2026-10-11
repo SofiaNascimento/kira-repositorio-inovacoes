@@ -227,3 +227,29 @@ def test_detalhe_mantem_o_numero_de_consultas(
     client.force_login(request.getfixturevalue(conta))
     with django_assert_num_queries(CONSULTAS_DO_DETALHE):
         assert client.get(f"/inovacoes/{inovacao.pk}/").status_code == 200
+
+
+def test_autor_ve_o_link_excluir_no_detalhe(logado, criar_inovacao):
+    """EDEX-31."""
+    inovacao = criar_inovacao()
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Excluir") == [f"/inovacoes/{inovacao.pk}/excluir/"]
+
+
+def test_administrador_ve_o_link_excluir_na_inovacao_de_outro_autor(
+    client, administrador, criar_inovacao
+):
+    """EDEX-31: o administrador pode excluir qualquer inovacao."""
+    inovacao = criar_inovacao()
+    client.force_login(administrador)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Excluir") == [f"/inovacoes/{inovacao.pk}/excluir/"]
+
+
+def test_terceiro_nao_ve_o_link_excluir(client, terceiro, criar_inovacao):
+    """EDEX-24: USUARIO que nao e o autor."""
+    inovacao = criar_inovacao()
+    client.force_login(terceiro)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Excluir") == []
+    assert f"/inovacoes/{inovacao.pk}/excluir/" not in html

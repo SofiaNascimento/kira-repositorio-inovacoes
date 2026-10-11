@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls import reverse
-from django.views.generic import CreateView, DetailView, ListView, UpdateView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from inovacoes.forms import BuscaForm, InovacaoForm
 from inovacoes.models import Inovacao
@@ -164,6 +164,17 @@ class InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, 
             url_cancelar=self.object.get_absolute_url(),
             **kwargs,
         )
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, EDEX-26).
+class InovacaoDeleteView(AlteracaoDeInovacaoMixin, DeleteView):
+    """Confirmacao e exclusao definitiva pelo autor ou por um administrador (RF08, RN12).
+
+    O GET herdado so renderiza inovacao_confirm_delete.html; apagar exige o POST
+    da confirmacao (EDEX-36).
+    """
+
+    success_url = reverse_lazy("inovacoes:lista")
 
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).
