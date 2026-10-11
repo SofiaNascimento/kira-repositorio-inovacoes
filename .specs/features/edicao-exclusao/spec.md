@@ -299,7 +299,7 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
 | EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
 | EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
-| EDEX-44 | Edge Cases | Specify | Pending |
+| EDEX-44 | Edge Cases | Execute | Implementing |
 | EDEX-45 | Edge Cases | Specify | Pending |
 
 **Coverage:** 45 total, 0 mapped to tasks, 45 unmapped ⚠️ (esperado antes de Design/Tasks)

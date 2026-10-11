@@ -471,7 +471,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T13: Banco indisponível na edição e na exclusão
+### T13: Banco indisponível na edição e na exclusão ✅
 
 **What**: Evidência da EDEX-44: página 500 sem detalhes da conexão e nada alterado ou apagado.
 **Where**: `inovacoes/tests/test_views_erro_500.py`
@@ -486,15 +486,17 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] Edição: `Inovacao.save` levantando `OperationalError` no POST válido do autor → 500, página do projeto sem `DETALHE_DA_CONEXAO`, linha com os valores antigos
-- [ ] Exclusão: `Inovacao.delete` levantando `OperationalError` no POST do autor → 500, sem detalhes, inovação ainda no banco
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~461 testes passam (+2)
+- [x] Edição: `Inovacao.save` levantando `OperationalError` no POST válido do autor → 500, página do projeto sem `DETALHE_DA_CONEXAO`, linha com os valores antigos
+- [x] Exclusão: `Inovacao.delete` levantando `OperationalError` no POST do autor → 500, sem detalhes, inovação ainda no banco
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~461 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a pagina 500 na edicao e na exclusao com o banco fora do ar`
+
+**Status**: ✅ Complete — 468 passed (+2); nenhum ajuste de código; um teste parametrizado (edição derruba Inovacao.save, exclusão derruba Inovacao.delete). Não usa a fixture banco_fora_do_ar, que derruba o save() no setup e impediria o criar_inovacao; repete o padrão do teste da CONS-53 com o mesmo DETALHE_DA_CONEXAO
 
 ---
 

@@ -92,3 +92,42 @@ def test_banco_indisponivel_na_consulta_devolve_500_sem_detalhes(
     for trecho in ["db.interno.kira", "kira_app", "s3gr3d0-do-banco", "Traceback"]:
         assert trecho not in html, trecho
     assert DETALHE_DA_CONEXAO not in html
+
+
+# --- F4: edicao e exclusao (EDEX-44) --------------------------------------------
+# A inovacao e criada antes de derrubar o banco: a fixture banco_fora_do_ar
+# derruba o save() ja no setup, e o criar_inovacao grava por ele.
+
+
+@pytest.mark.parametrize(
+    ("metodo", "url", "dados_do_envio"),
+    [
+        ("save", "/inovacoes/{id}/editar/", True),
+        ("delete", "/inovacoes/{id}/excluir/", False),
+    ],
+    ids=["edicao", "exclusao"],
+)
+def test_banco_indisponivel_na_alteracao_devolve_500_sem_mudar_nada(
+    monkeypatch, client, autor, criar_inovacao, dados, metodo, url, dados_do_envio
+):
+    """EDEX-44: pagina 500 do projeto, sem detalhes da conexao, e a linha intacta.
+
+    O dispatch() ainda acha a inovacao; o banco cai na escrita (save ou delete).
+    """
+    inovacao = criar_inovacao()
+    antes = Inovacao.objects.values().get(pk=inovacao.pk)
+
+    def falhar(*args, **kwargs):
+        raise OperationalError(DETALHE_DA_CONEXAO)
+
+    monkeypatch.setattr(Inovacao, metodo, falhar)
+    client.force_login(autor)
+    client.raise_request_exception = False
+    resposta = client.post(url.format(id=inovacao.pk), dados if dados_do_envio else {})
+    assert resposta.status_code == 500
+    assertTemplateUsed(resposta, "500.html")
+    html = resposta.content.decode()
+    for trecho in ["db.interno.kira", "kira_app", "s3gr3d0-do-banco", "Traceback"]:
+        assert trecho not in html, trecho
+    assert DETALHE_DA_CONEXAO not in html
+    assert Inovacao.objects.values().get(pk=inovacao.pk) == antes
