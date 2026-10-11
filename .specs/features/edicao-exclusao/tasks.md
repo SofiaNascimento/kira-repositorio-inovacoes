@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/edicao-exclusao/spec.md`
 **Design**: `.specs/features/edicao-exclusao/design.md`
-**Status**: Approved (2026-10-11) — aguardando o Execute
+**Status**: In Progress — T1–T14 ✅; Verifier iteração 1 FAIL (lacunas só de teste) → Fase 5 (T15–T18) de correção
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1, F2 e F3.
 
@@ -103,6 +103,16 @@ anteriores ou do Django; se a evidência acusar falta, o ajuste entra na mesma t
 
 ```
 T11 → T12 → T13 → T14
+```
+
+### Phase 5: Correções da validação, iteração 1
+
+Fix tasks do `validation.md` (iteração 1, FAIL): quatro mutantes sobreviveram por lacuna de teste;
+nenhum defeito de produção. Só arquivos de teste mudam, e os testes existentes só ficam mais fortes
+(mais contas, mais cláusulas), nunca mais fracos.
+
+```
+T15 → T16 → T17 → T18
 ```
 
 ---
@@ -528,15 +538,125 @@ T11 → T12 → T13 → T14
 
 ---
 
+### T15: Varredura da AD-009 também para `USUARIO` com `is_staff` e `is_superuser` (Fix 1)
+
+**What**: O teste de recusa da varredura passa a rodar para três contas não autoras sem perfil de administrador: `terceiro`, `USUARIO` com `is_staff=True` e `USUARIO` com `is_superuser=True`.
+**Where**: `inovacoes/tests/test_controle_autoria.py`
+**Depends on**: T14
+**Reuses**: `test_terceiro_recebe_403_e_nada_muda` (T11); a comparação `values()` antes/depois
+**Requirement**: EDEX-20, EDEX-22, EDEX-23 (AD-009: `is_staff`/`is_superuser` não contam)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] A recusa é parametrizada por conta (3) × rota × método, com 403 e a linha igual campo a campo depois de cada requisição
+- [ ] Mutante M23b (`AlteracaoDeInovacaoMixin.dispatch` aceita `request.user.is_superuser`) aplicado num rascunho falha a suíte; descartado em seguida
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: ~478 testes passam (+8)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): varre as rotas de alteracao com contas staff e superusuario`
+
+---
+
+### T16: Links do detalhe escondidos de staff, superusuário e administrador rebaixado (Fix 2)
+
+**What**: Os testes que escondem "Editar" e "Excluir" passam a cobrir as mesmas três contas da T15 e o administrador rebaixado.
+**Where**: `inovacoes/tests/test_views_detalhe.py`
+**Depends on**: T15
+**Reuses**: os testes de link da T8 e da T9
+**Requirement**: EDEX-24, EDEX-25
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Nenhum dos dois links aparece para `terceiro`, `USUARIO` com `is_staff=True` e `USUARIO` com `is_superuser=True` (parametrizado)
+- [ ] Um `ADMINISTRADOR` não autor vê os links e, depois de rebaixado a `USUARIO`, deixa de vê-los na requisição seguinte
+- [ ] Mutantes M22 e M22b (`pode_alterar` também para `is_staff` / `is_superuser`) aplicados num rascunho falham a suíte; descartados em seguida
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: ~483 testes passam (+5)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): esconde as acoes do detalhe de staff e superusuario sem perfil`
+
+---
+
+### T17: Campo só com espaços e busca por título e solução na edição (Fix 3)
+
+**What**: As cláusulas da EDEX-09 (INOV-10) e da EDEX-11 (título e solução) ganham teste na rota de edição.
+**Where**: `inovacoes/tests/test_views_edicao.py`
+**Depends on**: T16
+**Reuses**: os testes da T6
+**Requirement**: EDEX-09, EDEX-10, EDEX-11
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Edição com `solucao="   "` → 200, "Descreva a solução aplicada." no campo e a linha intacta (EDEX-09 via INOV-10, EDEX-10)
+- [ ] Trocar o título e, em outro caso, a solução: a busca acha pela palavra nova e não acha pela palavra só do texto antigo (EDEX-11; parametrizado com o caso do problema que já existe, sem enfraquecê-lo)
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: ~486 testes passam (+3)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): prova o campo so com espacos e a busca apos editar titulo e solucao`
+
+---
+
+### T18: Varredura da AD-009 independente do texto `<int:pk>` (Fix 4)
+
+**What**: A coleta da varredura passa a pegar toda rota do namespace `inovacoes` que capture parâmetro e falha quando o parâmetro não é `pk`.
+**Where**: `inovacoes/tests/test_controle_autoria.py`
+**Depends on**: T17
+**Reuses**: `_rotas_com_pk` e o teste de sanidade da T11
+**Requirement**: EDEX-20, EDEX-22, EDEX-23 (AD-009: rota nova de alteração não escapa da varredura)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] A coleta usa os conversores capturados do padrão (`pattern.converters`), não o texto literal; rota de `inovacoes` com parâmetro diferente de `pk` faz a coleta falhar com mensagem clara
+- [ ] Mutante M24 (rota `<int:id>/status/` sem guarda) e mutante M18 (rota `<int:pk>/...` sem guarda) aplicados num rascunho falham a suíte; descartados em seguida
+- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 5)
+- [ ] Test count: ~487 testes passam (+1 ou mais)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): coleta as rotas da varredura pelos parametros capturados`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
 
 Phase 1:  T1 → T2 → T3
 Phase 2:  T4 → T5 → T6 → T7
 Phase 3:  T8 → T9 → T10
 Phase 4:  T11 → T12 → T13 → T14
+Phase 5:  T15 → T16 → T17 → T18
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -545,6 +665,7 @@ Arcos de fronteira entre fases (a primeira task de cada fase depende da última 
 T3  → T4
 T7  → T8
 T10 → T11
+T14 → T15
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -571,6 +692,7 @@ começar.
 | T9 | 1 tela = view + rota + template (+ 1 link no detalhe) | ⚠️ 4 arquivos, coeso — ver nota |
 | T10 | 1 método da view | ✅ Granular |
 | T11, T12, T13, T14 | 1 arquivo de teste cada (o código já existe) | ✅ Granular |
+| T15, T16, T17, T18 | 1 arquivo de teste cada (correções da validação) | ✅ Granular |
 
 **Nota sobre T4 e T9:** uma view Django não é testável sem rota e template. Na T4, o mixin também não
 é testável sem uma view que o use, e separar a checagem de autoria da tela deixaria um commit em que
@@ -600,6 +722,10 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T12 | T11 | T11 → T12 | ✅ Match |
 | T13 | T12 | T12 → T13 | ✅ Match |
 | T14 | T13 | T13 → T14 | ✅ Match |
+| T15 | T14 | T14 → T15 (arco de fronteira) | ✅ Match |
+| T16 | T15 | T15 → T16 | ✅ Match |
+| T17 | T16 | T16 → T17 | ✅ Match |
+| T18 | T17 | T17 → T18 | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior.
 
@@ -623,6 +749,7 @@ Nenhuma dependência aponta para uma fase posterior.
 | T12: acessibilidade | Templates (evidência) | e2e | e2e | ✅ OK |
 | T13: banco indisponível | Views (evidência) | e2e | e2e | ✅ OK |
 | T14: CSRF | Views (evidência) | e2e | e2e | ✅ OK |
+| T15–T18: correções da iteração 1 | Views (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
