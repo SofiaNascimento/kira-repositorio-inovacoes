@@ -176,6 +176,13 @@ class InovacaoDeleteView(AlteracaoDeInovacaoMixin, DeleteView):
 
     success_url = reverse_lazy("inovacoes:lista")
 
+    def form_valid(self, form):
+        # EDEX-40: o titulo e guardado antes, porque o super() apaga a linha.
+        titulo = self.object.titulo
+        resposta = super().form_valid(form)
+        messages.success(self.request, f"Inovação “{titulo}” excluída com sucesso.")
+        return resposta
+
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).
 class InovacaoListView(ListView):

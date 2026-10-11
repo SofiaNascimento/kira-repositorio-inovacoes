@@ -381,7 +381,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T10: Exclusão definitiva (POST) e POST negado
+### T10: Exclusão definitiva (POST) e POST negado ✅
 
 **What**: O POST da confirmação apaga a inovação e leva à lista com a mensagem; o POST de terceiro e o do anônimo não apagam.
 **Where**: `inovacoes/views.py`
@@ -396,15 +396,17 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `InovacaoDeleteView.form_valid` guarda o título, chama `super().form_valid(form)` e publica "Inovação “{titulo}” excluída com sucesso."
-- [ ] Testes e2e em `inovacoes/tests/test_views_exclusao.py`: autor faz POST → 302 para `/inovacoes/` e a linha não existe mais (EDEX-35, EDEX-37); a lista, a busca pelo título e a contagem da CONS-33 já não a incluem (EDEX-37); seguindo o redirect, a mensagem aparece em `role="status"` e some ao recarregar (EDEX-40); `administrador` apaga a inovação do `autor`; autor `ADMINISTRADOR` apaga (EDEX-19); segundo POST para o mesmo id → 404, nunca 500 (EDEX-38); o detalhe da apagada → 404 (EDEX-39); **`terceiro` faz POST → 403 e a inovação continua no banco (EDEX-23)**; administrador rebaixado faz POST na inovação do `autor` → 403 e ela continua (EDEX-25); anônimo faz POST → login e ela continua (EDEX-26)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 3)
-- [ ] Test count: ~445 testes passam (+10)
+- [x] `InovacaoDeleteView.form_valid` guarda o título, chama `super().form_valid(form)` e publica "Inovação “{titulo}” excluída com sucesso."
+- [x] Testes e2e em `inovacoes/tests/test_views_exclusao.py`: autor faz POST → 302 para `/inovacoes/` e a linha não existe mais (EDEX-35, EDEX-37); a lista, a busca pelo título e a contagem da CONS-33 já não a incluem (EDEX-37); seguindo o redirect, a mensagem aparece em `role="status"` e some ao recarregar (EDEX-40); `administrador` apaga a inovação do `autor`; autor `ADMINISTRADOR` apaga (EDEX-19); segundo POST para o mesmo id → 404, nunca 500 (EDEX-38); o detalhe da apagada → 404 (EDEX-39); **`terceiro` faz POST → 403 e a inovação continua no banco (EDEX-23)**; administrador rebaixado faz POST na inovação do `autor` → 403 e ela continua (EDEX-25); anônimo faz POST → login e ela continua (EDEX-26)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (fecha a Fase 3)
+- [x] Test count: ~445 testes passam (+10)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): exclui a inovacao confirmada e nega o envio de terceiros`
+
+**Status**: ✅ Complete — 448 passed (+10); o form_valid guarda o título antes do super(), que apaga e redireciona; o segundo POST cai no 404 do mixin; o teste da EDEX-37 olha só a tabela, porque a lista mostra a mensagem com o título; o anônimo é provado em GET e POST. Build gate verde, fecha a Fase 3
 
 ---
 

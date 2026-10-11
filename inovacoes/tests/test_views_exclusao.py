@@ -2,8 +2,10 @@
 
 import re
 
-from pytest_django.asserts import assertTemplateUsed
+import pytest
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
+from contas.models import Usuario
 from inovacoes.models import Inovacao
 
 NEGADO = "Você não tem permissão para alterar esta inovação."
@@ -126,3 +128,126 @@ def test_id_sem_inovacao_na_confirmacao_responde_404_com_pagina_propria(client, 
     assert resposta.status_code == 404
     assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
     assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", resposta.content.decode())
+
+
+# --- Exclusao definitiva (POST) ------------------------------------------------
+
+SUCESSO = "Inovação “Controle de Caixa” excluída com sucesso."
+
+
+def _regiao_de_status(html):
+    inicio = html.index('role="status"')
+    return html[inicio : html.index("</div>", inicio)]
+
+
+def _afirma_pagina_nao_encontrada(resposta):
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+
+
+def test_autor_confirma_e_a_inovacao_sai_do_banco(client, autor, criar_inovacao):
+    """EDEX-35, EDEX-37: 302 para /inovacoes/ e a linha nao existe mais."""
+    inovacao = criar_inovacao()
+    resposta = _entrar(client, autor).post(_excluir(inovacao))
+    assertRedirects(resposta, "/inovacoes/", fetch_redirect_response=False)
+    assert not Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+def test_inovacao_excluida_some_da_lista_da_busca_e_da_contagem(client, autor, criar_inovacao):
+    """EDEX-37: listagem, busca pelo titulo e contagem da CONS-33."""
+    inovacao = criar_inovacao()
+    criar_inovacao(titulo="Planilha de Compras")
+    logado = _entrar(client, autor)
+    assert "2 inovações encontradas" in logado.get("/inovacoes/").content.decode()
+    logado.post(_excluir(inovacao))
+    lista = logado.get("/inovacoes/")
+    assert [i.titulo for i in lista.context["inovacoes"]] == ["Planilha de Compras"]
+    html = lista.content.decode()
+    assert "1 inovação encontrada" in html
+    tabela = html[html.index("<table>") : html.index("</table>")]
+    assert "Controle de Caixa" not in tabela
+    busca = logado.get("/inovacoes/?q=Controle de Caixa")
+    assert list(busca.context["inovacoes"]) == []
+    assert "Nenhuma inovação encontrada para a busca e os filtros informados." in (
+        busca.content.decode()
+    )
+
+
+def test_exclusao_confirma_na_lista_uma_vez_so(client, autor, criar_inovacao):
+    """EDEX-40: mensagem com o titulo excluido no role=status, e nao reaparece."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    resposta = logado.post(_excluir(inovacao), follow=True)
+    assert resposta.redirect_chain == [("/inovacoes/", 302)]
+    assert SUCESSO in _regiao_de_status(resposta.content.decode())
+    assert "excluída com sucesso" not in logado.get("/inovacoes/").content.decode()
+
+
+def test_administrador_exclui_a_inovacao_de_outro_autor(client, administrador, criar_inovacao):
+    """EDEX-35: o administrador na inovacao da Ana."""
+    inovacao = criar_inovacao()
+    resposta = _entrar(client, administrador).post(_excluir(inovacao))
+    assertRedirects(resposta, "/inovacoes/", fetch_redirect_response=False)
+    assert not Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+def test_autor_administrador_exclui(client, administrador, criar_inovacao):
+    """EDEX-19: o autor ADMINISTRADOR exclui como o autor USUARIO."""
+    inovacao = criar_inovacao(autor=administrador)
+    resposta = _entrar(client, administrador).post(_excluir(inovacao))
+    assertRedirects(resposta, "/inovacoes/", fetch_redirect_response=False)
+    assert not Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+def test_segundo_envio_da_confirmacao_responde_404(client, autor, criar_inovacao):
+    """EDEX-38: Voltar ou duplo clique recebem o 404 da CONS-15, nunca 500."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    assert logado.post(_excluir(inovacao)).status_code == 302
+    _afirma_pagina_nao_encontrada(logado.post(_excluir(inovacao)))
+
+
+def test_detalhe_da_inovacao_excluida_responde_404(client, autor, criar_inovacao):
+    """EDEX-39."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    logado.post(_excluir(inovacao))
+    _afirma_pagina_nao_encontrada(logado.get(f"/inovacoes/{inovacao.pk}/"))
+
+
+def test_terceiro_que_envia_a_exclusao_recebe_403_e_a_inovacao_continua(
+    client, terceiro, criar_inovacao
+):
+    """EDEX-23: o POST forjado de um USUARIO que nao e o autor nao apaga."""
+    inovacao = criar_inovacao()
+    antes = Inovacao.objects.values().get(pk=inovacao.pk)
+    resposta = _entrar(client, terceiro).post(_excluir(inovacao))
+    assert resposta.status_code == 403
+    assertTemplateUsed(resposta, "inovacoes/acesso_negado.html")
+    assert NEGADO in resposta.content.decode()
+    assert Inovacao.objects.values().get(pk=inovacao.pk) == antes
+
+
+def test_administrador_rebaixado_nao_exclui_a_inovacao_de_outro_autor(
+    client, administrador, criar_inovacao
+):
+    """EDEX-25: o perfil e lido na requisicao do POST."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, administrador)
+    assert logado.get(_excluir(inovacao)).status_code == 200
+    Usuario.objects.filter(pk=administrador.pk).update(perfil=Usuario.Perfil.USUARIO)
+    resposta = logado.post(_excluir(inovacao))
+    assert resposta.status_code == 403
+    assertTemplateUsed(resposta, "inovacoes/acesso_negado.html")
+    assert Inovacao.objects.filter(pk=inovacao.pk).exists()
+
+
+@pytest.mark.django_db
+def test_anonimo_que_envia_a_exclusao_vai_ao_login_e_a_inovacao_continua(client, criar_inovacao):
+    """EDEX-26 (POST e GET)."""
+    inovacao = criar_inovacao()
+    caminho = _excluir(inovacao)
+    for metodo in (client.get, client.post):
+        resposta = metodo(caminho)
+        assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+    assert Inovacao.objects.filter(pk=inovacao.pk).exists()

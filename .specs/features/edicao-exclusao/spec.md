@@ -278,7 +278,7 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-20 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-21 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-22 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-23 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-23 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-24 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
@@ -290,12 +290,12 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-32 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-33 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-34 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-35 | P2: Excluir uma inovação com confirmação | Specify | Pending |
+| EDEX-35 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-36 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-37 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-38 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-39 | P2: Excluir uma inovação com confirmação | Specify | Pending |
-| EDEX-40 | P2: Excluir uma inovação com confirmação | Specify | Pending |
+| EDEX-37 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-38 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-39 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
+| EDEX-40 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
 | EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
 | EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
