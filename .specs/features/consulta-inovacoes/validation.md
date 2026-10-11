@@ -181,6 +181,49 @@ Sobre a M7: o `none()` da view (`views.py:81-83`) é defesa redundante. Nenhum t
 
 ---
 
+## Interactive UAT Results
+
+O Verifier roda sem usuário; a conferência no navegador é conduzida pelo orquestrador, em duas partes, como o recorte A/B do `tasks.md`. **Status (2026-10-11): concluída. Parte A 20/20 (2026-10-03), parte B 20/20 (2026-10-11); nenhum achado no código.** Conta `maria` (USUARIO) nos dois roteiros.
+
+**Parte A** (listagem, detalhe, navegação; 2026-10-03): 20/20 aprovados. Os passos 17 e 18 fizeram o percurso com teclado na listagem e no detalhe. O roteiro ficou na conversa daquele dia; o resultado está no Handoff do `STATE.md` e no commit `45d3714`.
+
+**Preparação da parte B** (2026-10-11)
+
+| # | Test | Result | Details |
+| - | ---- | ------ | ------- |
+| P1 | `migrate` no banco local | ✅ Pass | `inovacoes 0005` e `0006` aplicadas; as 505 inovações com `texto_busca` preenchido |
+| P2 | `carregar_demonstracao` | ✅ Pass | "500 inovações de demonstração criadas"; conta `demo` (USUARIO); 505 inovações no total (500 + as 5 dos UATs anteriores) |
+| P3 | Gate | ✅ Pass | `.venv/bin/pytest -q`: 380 passed |
+
+Os valores esperados foram calculados por uma normalização independente (NFD + `casefold`, sem marcas) aplicada às linhas do banco, sem usar `inovacoes.busca`.
+
+**Roteiro da parte B**
+
+| # | Test | Esperado | Result |
+| - | ---- | -------- | ------ |
+| 1 | Abre `/inovacoes/` | "505 inovações encontradas", "Página 1 de 26", "Demonstração 500" no topo (CONS-33) | ✅ Pass |
+| 2 | Busca `conciliacao planilha` | 24; termo mantido no campo; "Limpar filtros" (CONS-19, 25, 32) | ✅ Pass |
+| 3 | Busca `CONCILIAÇÃO PLANILHA` | Os mesmos 24 (CONS-20) | ✅ Pass |
+| 4 | Busca `ferias` | 113; "férias" no problema ou na solução (CONS-20) | ✅ Pass |
+| 5 | Busca `equipe` (só no contato) e `filial` (só na unidade) | Estado vazio com "Limpar filtros", sem tabela (CONS-22, 35) | ✅ Pass. O "Limpar filtros" duplicado (ao lado do botão e sob a mensagem) fica: o usuário não vê problema |
+| 6 | Busca `100%`, `processo_rh`, `processo rh` | 0, 0 e 3 (CONS-23) | ✅ Pass |
+| 7 | Busca só com espaços | 505, sem "Limpar filtros" (CONS-21) | ✅ Pass |
+| 8 | `?q=` com 101 caracteres | "Use no máximo 100 caracteres (você digitou 101).", alerta, sem lista; `aria-invalid` e `aria-describedby` (CONS-24, 43) | ✅ Pass pela barra de endereço. Pelo campo, o `maxlength="100"` corta o 101º caractere e a busca vai com 100 (válida, estado vazio). O caso só é alcançável por URL montada à mão, como os limites da F2 |
+| 9 | Ordem das opções dos três selects | Alfabética depois de "Todas…"; status na ordem da spec (CONS-26) | ✅ Pass |
+| 10 | Troca um select sem clicar em Buscar | A lista não muda (CONS-31) | ✅ Pass |
+| 11 | Compras; Sede; Disponível para replicação | 103, 102, 167; valor mantido selecionado (CONS-27, 29) | ✅ Pass |
+| 12 | Compras + Filial Norte | 20, sem paginação (CONS-28, 03) | ✅ Pass |
+| 13 | `automacao` + TI interno + Sede + Validada; troca para Disponível | 7 (Demonstração 499, 424, 349, 274, 199, 124, 049) em < 2 s; 6 (CONS-28, Success Criterion de desempenho) | ✅ Pass |
+| 14 | `conciliacao planilha` + Financeiro + Sede; "Limpar filtros" | Estado vazio; o link volta a `/inovacoes/` com as 505 (CONS-32, 35) | ✅ Pass |
+| 15 | `planilha` + Validada; Próxima e Anterior | 40 em 2 páginas; `q` e `status` mantidos nos links (CONS-04) | ✅ Pass |
+| 16 | `page=abc` e `page=99` com os filtros | Página 1 e página 2, filtros mantidos (CONS-05) | ✅ Pass |
+| 17 | `?categoria=9999`, `?unidade=abc`, `?status=XYZ` | Mensagem do controle, alerta "Não foi possível buscar…", sem lista, `aria-invalid` (CONS-30, 43) | ✅ Pass |
+| 18 | Só teclado: busca, selects, Buscar, Limpar filtros, tabela, paginação, detalhe; clique no rótulo; `role="search"`; sem `tabindex` positivo | Foco visível na ordem visual (CONS-36, 37, 41; Success Criterion de teclado) | ✅ Pass. Fecha o Success Criterion de teclado |
+| 19 | `carregar_demonstracao` de novo | "0 inovações de demonstração criadas (500 no total)." (CONS-45) | ✅ Pass |
+| 20 | Recarrega `/inovacoes/` | 505; uma conta `demo` (CONS-45) | ✅ Pass |
+
+---
+
 ## Code Quality
 
 | Principle | Status |
@@ -262,4 +305,4 @@ Proposta. O Verifier **não** edita `spec.md`.
 
 **Issues found**: nenhum bloqueante. SPG-1 e SPG-2 (Sugestão 1); evidência de CONS-36/52 só no nível do form (Sugestão 2).
 
-**Next steps**: UAT interativo da F3 (feature com interface), se o orquestrador o conduzir; aplicar as Sugestões 1 e 2 se o usuário quiser.
+**Next steps**: ~~UAT interativo da F3~~ concluído em 2026-10-11, 40/40 nas duas partes (ver *Interactive UAT Results*). Aplicar as Sugestões 1 e 2 se o usuário quiser.

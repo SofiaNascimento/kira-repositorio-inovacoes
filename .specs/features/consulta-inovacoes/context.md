@@ -86,4 +86,5 @@ Todas estão na tabela de Assumptions da spec.
 - Ordenação escolhida pelo usuário (por título, por status) e ordenação por relevância.
 - Destaque do termo buscado nos resultados.
 - Voltar do detalhe para a listagem preservando busca e filtros.
+- Avisar o limite de 100 caracteres no texto de ajuda da busca. O `maxlength="100"` corta em silêncio o que passa disso (digitado ou colado), e a mensagem da CONS-24 só aparece por URL montada à mão. Achado na conferência da parte B (passo 8, 2026-10-11); o usuário manteve o comportamento, igual aos limites da F2.
 - `InovacaoForm.label_suffix = ""` (F2) não tem efeito: o `Form.__init__` o sobrescreve com ":", então os rótulos do cadastro saem com dois-pontos. Achado na T17; a F3 não altera o formulário da F2.

@@ -417,9 +417,10 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 - [x] Com o conjunto de demonstração carregado, filtrar por categoria + unidade + status + busca
       devolve exatamente os registros que satisfazem os quatro critérios, em até 2 s de servidor.
 - [x] Repositório vazio e consulta sem resultado mostram cada um sua mensagem, com o próximo passo.
-- [ ] Busca, filtros, paginação e detalhe são operados só com teclado, com rótulos associados e foco
+- [x] Busca, filtros, paginação e detalhe são operados só com teclado, com rótulos associados e foco
       visível.
       Listagem e detalhe: percurso real com teclado aprovado na conferência da parte A (passos 17
-      e 18, 2026-10-03); busca, filtros e paginação aguardam a conferência da parte B. A estrutura
+      e 18, 2026-10-03); busca, filtros e paginação, na conferência da parte B (passo 18,
+      2026-10-11; `validation.md`, *Interactive UAT Results*). A estrutura
       (`tabindex`, controles nativos, `:focus-visible`, rótulos) está provada em
       `inovacoes/tests/test_views_acessibilidade_consulta.py` e `test_forms_busca.py`.
