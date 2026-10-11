@@ -122,6 +122,12 @@ class InovacaoDetailView(DetailView):
         except Http404:
             return _inovacao_nao_encontrada(request)
 
+    def get_context_data(self, **kwargs):
+        # EDEX-03, EDEX-24: as acoes so aparecem para quem pode alterar (AD-009).
+        return super().get_context_data(
+            pode_alterar=self.object.pode_ser_alterada_por(self.request.user), **kwargs
+        )
+
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, EDEX-26).
 class InovacaoUpdateView(AlteracaoDeInovacaoMixin, GravacaoComTituloUnicoMixin, UpdateView):

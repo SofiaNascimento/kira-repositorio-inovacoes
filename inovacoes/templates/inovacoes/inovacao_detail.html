@@ -8,6 +8,11 @@
   {# CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
   <p>Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }}</p>
 
+  {# EDEX-03, EDEX-24: so para o autor e o administrador (AD-009). #}
+  {% if pode_alterar %}
+    <p><a href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a></p>
+  {% endif %}
+
   {# CONS-42: campos numa lista de descricao; o escape automatico cobre a CONS-17. #}
   <dl>
     <dt>Título</dt>

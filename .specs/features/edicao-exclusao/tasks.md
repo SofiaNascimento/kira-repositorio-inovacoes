@@ -319,7 +319,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T8: Link "Editar" no detalhe só para quem pode alterar
+### T8: Link "Editar" no detalhe só para quem pode alterar ✅
 
 **What**: O detalhe recebe `pode_alterar` e mostra "Editar" ao autor e ao administrador.
 **Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
@@ -334,16 +334,18 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `InovacaoDetailView.get_context_data` acrescenta `pode_alterar`; o template mostra `<a href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a>` logo após "Cadastrada por…" só com ele verdadeiro
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor vê "Editar" com `href="/inovacoes/<id>/editar/"` (EDEX-03); `administrador` vê na inovação do `autor`; **`terceiro` não vê o link (EDEX-24)**; o detalhe continua com o mesmo número de consultas (o `autor` já vem no `select_related`)
-- [ ] Testes existentes do detalhe (CONS-12 a CONS-18) passam sem alteração
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~426 testes passam (+3)
+- [x] `InovacaoDetailView.get_context_data` acrescenta `pode_alterar`; o template mostra `<a href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a>` logo após "Cadastrada por…" só com ele verdadeiro
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor vê "Editar" com `href="/inovacoes/<id>/editar/"` (EDEX-03); `administrador` vê na inovação do `autor`; **`terceiro` não vê o link (EDEX-24)**; o detalhe continua com o mesmo número de consultas (o `autor` já vem no `select_related`)
+- [x] Testes existentes do detalhe (CONS-12 a CONS-18) passam sem alteração
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~426 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): mostra o link de edicao no detalhe para quem pode alterar`
+
+**Status**: ✅ Complete — 427 passed (+5); pode_alterar vem de Inovacao.pode_ser_alterada_por no get_context_data do detalhe; a contagem de consultas foi medida antes da mudança (6) e é afirmada para o autor e o terceiro; testes da CONS-12 a CONS-18 sem alteração
 
 ---
 

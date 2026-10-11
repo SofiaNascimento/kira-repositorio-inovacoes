@@ -258,7 +258,7 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | -------------- | ----- | ----- | ------ |
 | EDEX-01 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-02 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-03 | P1: Editar uma inovação que cadastrei | Specify | Pending |
+| EDEX-03 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-04 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-05 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
 | EDEX-06 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
@@ -279,7 +279,7 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-21 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-22 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-23 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
-| EDEX-24 | P1: Negar a alteração de inovações de terceiros | Specify | Pending |
+| EDEX-24 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
 | EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |

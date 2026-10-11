@@ -178,3 +178,52 @@ def test_id_nao_numerico_nao_mostra_a_mensagem_de_inovacao(logado):
     resposta = logado.get("/inovacoes/abc/")
     assert resposta.status_code == 404
     assert "Inovação não encontrada." not in resposta.content.decode()
+
+
+# --- F4: acoes de alteracao no detalhe (EDEX-03, EDEX-24) ---------------------
+
+# Consultas do detalhe antes da F4 (sessao, conta, inovacao com select_related e
+# a gravacao da sessao): o pode_alterar le autor_id e o perfil ja carregados.
+CONSULTAS_DO_DETALHE = 6
+
+
+def _links(html, rotulo):
+    """hrefs de todos os links com o texto exato do rotulo."""
+    return re.findall(rf'<a href="([^"]*)">\s*{rotulo}\s*</a>', html)
+
+
+def test_autor_ve_o_link_editar_no_detalhe(logado, criar_inovacao):
+    """EDEX-03."""
+    inovacao = criar_inovacao()
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Editar") == [f"/inovacoes/{inovacao.pk}/editar/"]
+
+
+def test_administrador_ve_o_link_editar_na_inovacao_de_outro_autor(
+    client, administrador, criar_inovacao
+):
+    """EDEX-03: o administrador pode alterar qualquer inovacao (EDEX-17)."""
+    inovacao = criar_inovacao()
+    client.force_login(administrador)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Editar") == [f"/inovacoes/{inovacao.pk}/editar/"]
+
+
+def test_terceiro_nao_ve_o_link_editar(client, terceiro, criar_inovacao):
+    """EDEX-24: USUARIO que nao e o autor."""
+    inovacao = criar_inovacao()
+    client.force_login(terceiro)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _links(html, "Editar") == []
+    assert f"/inovacoes/{inovacao.pk}/editar/" not in html
+
+
+@pytest.mark.parametrize("conta", ["autor", "terceiro"])
+def test_detalhe_mantem_o_numero_de_consultas(
+    client, criar_inovacao, django_assert_num_queries, request, conta
+):
+    """EDEX-03, EDEX-24: decidir os links nao custa consulta extra."""
+    inovacao = criar_inovacao()
+    client.force_login(request.getfixturevalue(conta))
+    with django_assert_num_queries(CONSULTAS_DO_DETALHE):
+        assert client.get(f"/inovacoes/{inovacao.pk}/").status_code == 200
