@@ -39,7 +39,7 @@ Excluído explicitamente. Documentado para impedir scope creep.
 
 | Feature | Reason |
 | ------- | ------ |
-| Editar, excluir ou trocar o status a partir da lista ou do detalhe | F4 (RF07, RF08) e F5 (RF09). O detalhe da F3 não exibe esses botões. |
+| Editar, excluir ou trocar o status a partir da lista ou do detalhe | F4 (RF07, RF08) e F5 (RF09). O detalhe da F3 não exibe esses botões. *(Alterado pela F4 (EDEX-03, EDEX-31): o detalhe passa a exibir "Editar" e "Excluir" para o autor e o administrador.)* |
 | Botão "Reaproveitei esta inovação" e indicadores | F6 (RF10, RF11). |
 | Ordenação escolhida pelo usuário ou por relevância | Nenhum RF pede; ordem fixa por data de criação. Registrado em Deferred Ideas. |
 | Destaque do termo buscado nos resultados | Nenhum RF pede. Registrado em Deferred Ideas. |

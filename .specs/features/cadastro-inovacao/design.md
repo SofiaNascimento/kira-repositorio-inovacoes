@@ -180,6 +180,8 @@ graph TD
        `form_invalid` com 200 (INOV-25). Qualquer outro `IntegrityError` sobe (vira 500);
     4. `messages.success(request, f"Inovação “{titulo}” cadastrada com sucesso.")` e redirect 302
        para `nucleo:home` (INOV-03, INOV-28). *Alterado pela F3 (CONS-49): detalhe da inovação criada.*
+
+    *Refatorado pela F4 (T2): os passos 2 a 4 foram movidos para `GravacaoComTituloUnicoMixin`, compartilhado com a edição (EDEX-14); a view define `mensagem_de_sucesso` e atribui o autor num `gravar()` próprio. Comportamento igual, provado pela suíte da F2 sem alteração.*
   - sem decorator: protegida pelo middleware (AD-006, INOV-07).
 - **Dependencies**: `InovacaoForm`, `django.contrib.messages`, `django.db.transaction`
 - **Reuses**: `CreateView`.
@@ -193,7 +195,7 @@ graph TD
   - `<form method="post" novalidate>` com `{% csrf_token %}` e `{{ campo.as_field_group }}` por campo.
     O `novalidate` desliga a validação nativa do navegador para que as mensagens em português do
     servidor (RF13) sejam as que o usuário vê; o atributo `required` continua no HTML (INOV-32).
-  - `<button type="submit">Salvar</button>` e `<a href="{% url 'nucleo:home' %}">Cancelar</a>` *(alterado pela F3 (CONS-51): `{% url 'inovacoes:lista' %}`)*
+  - `<button type="submit">Salvar</button>` e `<a href="{% url 'nucleo:home' %}">Cancelar</a>` *(alterado pela F3 (CONS-51): `{% url 'inovacoes:lista' %}`; parametrizado pela F4 (T3): título, botão e alvo do "Cancelar" vêm do contexto da view, com os mesmos textos no cadastro)*
     (INOV-36, INOV-37)
   - só controles nativos, sem `tabindex` (INOV-34)
 - **`inovacoes/templates/inovacoes/campo.html`** — cópia de `django/forms/field.html` com a ordem

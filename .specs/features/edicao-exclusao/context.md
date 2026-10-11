@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-10-11
 **Spec:** `.specs/features/edicao-exclusao/spec.md`
-**Status:** Ready for design (spec aprovada em 2026-10-11)
+**Status:** Feature implementada e verificada (2026-10-11, `validation.md`, iteração 2 PASS; conferência manual 20/20)
 
 ---
 

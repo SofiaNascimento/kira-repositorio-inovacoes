@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/edicao-exclusao/spec.md`
 **Context**: `.specs/features/edicao-exclusao/context.md`
-**Status**: Approved (2026-10-11)
+**Status**: Approved (2026-10-11) — implementado e verificado (2026-10-11, `validation.md`, iteração 2 PASS)
 
 **Abordagem escolhida (com o usuário):** A — modelo + mixin. A regra "autor ou administrador" vira
 um único método do modelo, `Inovacao.pode_ser_alterada_por(usuario)`. Um mixin,
@@ -254,7 +254,7 @@ Nenhuma mudança de schema e nenhuma migration: `Inovacao` ganha só um método.
 
 | Concern | Location (file:line) | Impact | Mitigation |
 | ------- | -------------------- | ------ | ---------- |
-| **Segurança:** uma view futura que altere `Inovacao` (troca de status da F5) pode esquecer a checagem de autoria, e o esquecimento abre a porta em silêncio | `inovacoes/views.py` | Usuário comum altera registro de terceiro (RNF07) | AD-009: toda view que altera `Inovacao` herda o mixin. Teste de varredura: toda rota de `inovacoes` com `pk`, exceto o detalhe (allowlist), responde 403 a GET e POST de um terceiro `USUARIO` — o mesmo desenho da varredura da AD-006 |
+| **Segurança:** uma view futura que altere `Inovacao` (troca de status da F5) pode esquecer a checagem de autoria, e o esquecimento abre a porta em silêncio | `inovacoes/views.py` | Usuário comum altera registro de terceiro (RNF07) | AD-009: toda view que altera `Inovacao` herda o mixin. Teste de varredura: toda rota de `inovacoes` com `pk`, exceto o detalhe (allowlist), responde 403 a GET e POST de um terceiro `USUARIO` — o mesmo desenho da varredura da AD-006. *Reforçado na T18 (Verifier, iteração 1): a coleta lê os parâmetros capturados, não o texto `<int:pk>`, e falha em rota com parâmetro que não seja `pk`; a recusa roda também para `USUARIO` com `is_staff` e `is_superuser` (T15)* |
 | **Integridade:** o `Model.save()` faz INSERT quando o UPDATE não acha a linha; uma exclusão entre o `dispatch()` e o `save()` da edição recriaria a inovação | `django/db/models/base.py` (`_save_table`), usado por `form.save()` | Inovação excluída volta a existir | `SELECT … FOR UPDATE` dentro da transação em `InovacaoUpdateView.gravar()`; linha ausente → 404. Alternativa descartada: `save(force_update=True)`, que exigiria distinguir o `DatabaseError` dela do `OperationalError` de banco fora do ar (a EDEX-44 pede 500) |
 | **Fragilidade:** o `403.html` global é compartilhado com o admin | `templates/` (não existe hoje) | Um `403.html` com o texto da F4 apareceria nas recusas do admin (INOV-20, AUTH-22) | A página de acesso negado é renderizada pela view; nenhum `403.html` global é criado |
 | **Fragilidade:** parametrizar `inovacao_form.html` e extrair o `form_valid` do cadastro mexe em código da F2 | `inovacoes/templates/inovacoes/inovacao_form.html`, `inovacoes/views.py:23-50` | Regressão no cadastro | O cadastro passa os mesmos textos pelo contexto; a suíte da F2 (título, botão, "Cancelar", INOV-25, INOV-28) tem de passar sem alteração |
