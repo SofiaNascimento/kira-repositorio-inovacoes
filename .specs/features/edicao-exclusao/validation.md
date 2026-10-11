@@ -1,14 +1,14 @@
 # Edição e Exclusão de Inovações (F4) Validation
 
 **Date**: 2026-10-11
-**Iteration**: 1
+**Iteration**: 2
 **Spec**: `.specs/features/edicao-exclusao/spec.md` (EDEX-01 … EDEX-45)
-**Diff range**: `8ac62d4..b749ff3` em `main` (HEAD = `b749ff3`). 14 commits de task (T1 `55b6fe0` … T14 `b749ff3`). 18 arquivos, +1573/−153 (`git diff --stat 8ac62d4..b749ff3`).
+**Diff range**: feature `8ac62d4..6791933` em `main` (HEAD = `6791933`). Correções desta iteração: `ec93572..6791933`, 4 commits (T15 `e3feabe`, T16 `8ed816b`, T17 `602664e`, T18 `6791933`). Arquivos: `inovacoes/tests/conftest.py`, `test_controle_autoria.py`, `test_views_detalhe.py`, `test_views_edicao.py` e `tasks.md` (+184/−40). Nenhum arquivo de produção mudou desde a iteração 1: `git diff b749ff3..6791933 -- ':!inovacoes/tests'` só lista arquivos de `.specs/`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌
+**Verdict**: PASS ✅
 
-O build gate passa com 470 testes. As 45 ACs têm evidência `file:line`, e 43 afirmam o valor exato que a spec define. A EDEX-09 e a EDEX-11 estão cobertas em parte: falta afirmar uma cláusula de cada uma na rota de edição. O sensor injetou 31 mutações num `git worktree` descartável. 27 morreram e 4 sobreviveram, e nenhuma delas é equivalente. Três estão no caminho de segurança: a AD-009 diz que `is_staff`/`is_superuser` não dão acesso a inovações de terceiros, mas isso só é provado no modelo (`test_permissoes.py:39-45`). Nenhum teste de rota ou de tela usa um `USUARIO` com `is_staff` ou `is_superuser`. Por isso, uma exceção para superusuário no `dispatch()` do mixin (M23b) e links "Editar"/"Excluir" exibidos a staff ou superusuário no detalhe (M22, M22b) passam com a suíte inteira verde. O caso é real: no banco local, a `maria` é `USUARIO` com `is_staff` (`STATE.md` Handoff). A quarta sobrevivente (M24) mostra que a varredura da AD-009 só encontra rotas cujo padrão contém o texto literal `<int:pk>`. As correções são só de teste, e nenhum defeito de produção foi encontrado.
+O gate passa com 492 testes (470 + 22). As quatro sobreviventes da iteração 1 morrem no HEAD: M22 e M22b nos testes de link do detalhe parametrizados por conta, M23b na varredura de rotas com o superusuário `USUARIO`, M24 na coleta, que agora lê os parâmetros capturados e recusa a rota `<int:id>`. As oito mutações novas no caminho de autorização e na busca também morrem, então o sensor fica em 12/12. As 45 ACs têm evidência `file:line` com o valor da spec afirmado. A EDEX-09 ganhou o campo só com espaços (INOV-10), e a EDEX-11 ganhou a busca depois de trocar o título e a solução. Os commits de correção só tocam testes e só reforçam: a fixture `terceiro` foi trocada por `nao_autor_usuario`, que ainda inclui o `terceiro` e acrescenta staff e superusuário, e o filtro `"<int:pk>" in str(padrao.pattern)` foi trocado por uma coleta que pega toda rota com o parâmetro `pk` e falha nas outras. Nenhuma asserção foi removida.
 
 ---
 
@@ -16,146 +16,136 @@ O build gate passa com 470 testes. As 45 ACs têm evidência `file:line`, e 43 a
 
 | Task | Status | Notes |
 | ---- | ------ | ----- |
-| T1–T14 | ✅ Done | `tasks.md`: 14 de 14 com `**Status**: ✅ Complete` e todos os Done when marcados; contagens 389 → 470 conferem com o gate |
-| T7 | ✅ Done · fix | `0403acc`: `select_for_update().exists()` em `InovacaoUpdateView.gravar` (`views.py:148`) impede o INSERT do `Model.save()` quando a linha some entre o `dispatch()` e a gravação. O teste `test_views_edicao.py:496-513` falhava antes da trava (confirmado pela M6) |
+| T1–T14 | ✅ Done | Inalteradas desde a iteração 1 (`tasks.md`, 14 de 14 completas) |
+| T15 (Fix 1) | ✅ Done | `e3feabe`: fixture `nao_autor_usuario` (`conftest.py:59-76`) e `test_controle_autoria.py:102-121` com 3 contas × 2 rotas × 2 métodos. 478 passed (+8) confere |
+| T16 (Fix 2) | ✅ Done | `8ed816b`: `test_views_detalhe.py:212`, `:249` com as 3 contas, e o rebaixado em `:258-277`. +5 confere |
+| T17 (Fix 3) | ✅ Done | `602664e`: `test_views_edicao.py:365-375` (INOV-10) e `:482-510` (título e solução). +3 confere |
+| T18 (Fix 4) | ✅ Done | `6791933`: coleta em `test_controle_autoria.py:18-40` e +6 testes da coleta (`:61-85`). 492 passed confere com o gate |
 
 ---
 
 ## Spec-Anchored Acceptance Criteria
 
-Caminhos relativos a `inovacoes/tests/`, salvo indicação. Relidos no HEAD `b749ff3`.
+Caminhos relativos a `inovacoes/tests/`, salvo indicação. Relidos no HEAD `6791933`. Os arquivos `test_views_exclusao.py`, `test_permissoes.py`, `test_views_acessibilidade_alteracao.py` e `test_views_erro_500.py` não mudaram desde a iteração 1, então as linhas deles valem como estão. Em `test_views_edicao.py`, as linhas até 362 não mudaram, e as seguintes foram atualizadas.
 
 ### P1: Editar uma inovação que cadastrei
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-01 | 200; `<title>`/`h1` "Editar inovação"; exatamente os 7 campos | `test_views_edicao.py:41` - `status_code == 200`; `:45-46` - title começa com e `h1 == ["Editar inovação"]`; `:47` - `list(form.fields) == CAMPOS`; `:49` - `name=` do form == os 7; `:50-51` - sem `autor`/`status`/`data_criacao`; `:70-72` - botão `["Salvar alterações"]` | ✅ PASS |
-| EDEX-02 | todos os campos com o valor salvo, inclusive o contato salvo | `test_views_edicao.py:83-91` - `{campo: form[campo].value()} ==` os 7 valores salvos; `:93` - `value="Setor Financeiro (fin@x.com)"`; `:95` - sem o pré-preenchimento da INOV-39; `:96-97` - `option selected` de unidade e categoria | ✅ PASS (M12 morta) |
-| EDEX-03 | link "Editar" → `/inovacoes/<id>/editar/` para quem pode alterar | `test_views_detalhe.py:199` - autor: `_links(html,"Editar") == ["/inovacoes/<pk>/editar/"]`; `:209` - administrador em inovação alheia | ✅ PASS (M9b morta) |
-| EDEX-04 | mesma inovação atualizada, textos aparados, nenhuma nova | `test_views_edicao.py:217-220` - envio com espaços nas pontas; `count() == 1`; `:206-209` - cada campo `== dados[campo].strip()`, unidade e categoria por id | ✅ PASS (payload: os 7 valores; M25 morta) |
-| EDEX-05 | 302 → `/inovacoes/<id>/` | `test_views_edicao.py:226` - `assertRedirects(…, f"/inovacoes/{pk}/")` | ✅ PASS (M13 morta) |
-| EDEX-06 | "Inovação “<título salvo>” atualizada com sucesso." no `role="status"` do detalhe | `test_views_edicao.py:233` - `redirect_chain == [("/inovacoes/<pk>/", 302)]`; `:235` - texto exato com o título aparado dentro de `_regiao_de_status` | ✅ PASS (M21 morta) |
-| EDEX-07 | mensagem não reaparece ao recarregar | `test_views_edicao.py:242` - presente na 1ª; `:244` - `"atualizada com sucesso" not in` no reload | ✅ PASS |
-| EDEX-08 | autor, status e data forjados ignorados | `test_views_edicao.py:251-257` - POST com `autor`, `status=VALIDADA`, `data_criacao`; `:261-263` - `autor_id == autor.pk`, `status == EM_TESTE`, `data_criacao == DATA_ORIGINAL` | ✅ PASS (M20 morta) |
-| EDEX-09 | mensagens da INOV-09, INOV-10, INOV-12, INOV-17; 200; valores enviados (INOV-11); resumo da INOV-30 em `role="alert"` | `test_views_edicao.py:347-351` - 200 e `errors == {"titulo": ["Informe o título da inovação."], "problema": ["Descreva o problema ou dor."]}` (INOV-09); `:355` - RESUMO no alerta; `:357-361` - valores preservados; `:371` - "Selecione uma unidade da lista." (INOV-17); `:381-383` - "Use no máximo 150 caracteres (você digitou 151)." (INOV-12) | ⚠️ PARCIAL: a INOV-10 (campo só com espaços tratado como vazio) não tem teste na rota de edição. Coberta só no formulário da F2. Fix 3 |
-| EDEX-10 | qualquer recusa mantém todos os valores salvos | `test_views_edicao.py:362`, `:372`, `:384`, `:407`, `:449` - `_linha(inovacao) == antes` (todas as colunas) | ✅ PASS |
-| EDEX-11 | busca acha pelas palavras novas de título, problema ou solução, e não pelas substituídas | `test_views_edicao.py:462` - antes: "manual" acha; `:465` - "divergencias" (problema novo) acha; `:466` - "manual" (só no problema antigo) não acha | ⚠️ PARCIAL: só o problema é afirmado. Título e solução mudam no envio (`dados`), mas nenhuma busca prova a troca deles. O mecanismo é o `Inovacao.save()` (AD-008, `models.py:157`), já provado na F3. Fix 3 |
-| EDEX-12 | mesmo título, com ou sem mudança de caixa, mesma unidade → aceito | `test_views_edicao.py:387-393` - parametrizado `"Controle de Caixa"`/`"CONTROLE DE CAIXA"`; `assertRedirects` ao detalhe e título gravado | ✅ PASS |
-| EDEX-13 | título de outra inovação da unidade (ignorando caixa) → recusa com "Já existe uma inovação com este título nesta unidade. Escolha outro título." no campo | `test_views_edicao.py:402-407` - `"planilha de COMPRAS"`; `errors == {"titulo": [MENSAGEM_DUPLICADO]}`; mensagem dentro de `id_titulo_error`; linha intacta. Outra unidade aceita (`:410-419`), acento distinto (`:422-430`) | ✅ PASS |
-| EDEX-14 | corrida → só uma persiste; a outra 200 com a mensagem da EDEX-13, nunca 500 | `test_views_edicao.py:444-450` - validação neutralizada, constraint real do PostgreSQL; 200, `errors == {"titulo": [MENSAGEM_DUPLICADO]}`, resumo, linha intacta, `count == 1` | ✅ PASS (M10 morta) |
-| EDEX-15 | duas edições em sequência → vale a última | `test_views_edicao.py:293-296` - autor e depois administrador; `_afirma_gravado(inovacao, segunda)` | ✅ PASS |
-| EDEX-16 | "Cancelar" → `/inovacoes/<id>/`, sem alterar, sem confirmação | `test_views_edicao.py:105-110` - único link "Cancelar" com `href == "/inovacoes/<pk>/"`; o GET dele abre o detalhe (200); linha intacta | ✅ PASS (M11 morta) |
+| EDEX-01 | 200; `<title>`/`h1` "Editar inovação"; exatamente os 7 campos | `test_views_edicao.py:41` - `status_code == 200`; `:45-46` - title e `h1 == ["Editar inovação"]`; `:47` - `list(form.fields) == CAMPOS`; `:49-51`; `:70-72` - botão `["Salvar alterações"]` | ✅ PASS |
+| EDEX-02 | todos os campos com o valor salvo, inclusive o contato salvo | `test_views_edicao.py:83-97` - os 7 valores salvos, contato salvo, sem pré-preenchimento da INOV-39, `option selected` | ✅ PASS |
+| EDEX-03 | link "Editar" → `/inovacoes/<id>/editar/` para quem pode alterar | `test_views_detalhe.py:199` (autor), `:209` (administrador em inovação alheia) - `_links(html,"Editar") == ["/inovacoes/<pk>/editar/"]` | ✅ PASS |
+| EDEX-04 | mesma inovação atualizada, textos aparados, nenhuma nova | `test_views_edicao.py:206-209`, `:217-220` - cada campo `== dados[campo].strip()`, `count() == 1` | ✅ PASS |
+| EDEX-05 | 302 → `/inovacoes/<id>/` | `test_views_edicao.py:226` - `assertRedirects(…, f"/inovacoes/{pk}/")` | ✅ PASS |
+| EDEX-06 | "Inovação “<título salvo>” atualizada com sucesso." no `role="status"` do detalhe | `test_views_edicao.py:233-235` - `redirect_chain` e texto exato com o título aparado na região de status | ✅ PASS (N4 morta) |
+| EDEX-07 | mensagem não reaparece ao recarregar | `test_views_edicao.py:242`, `:244` | ✅ PASS |
+| EDEX-08 | autor, status e data forjados ignorados | `test_views_edicao.py:251-263` - `autor_id`, `status == EM_TESTE`, `data_criacao == DATA_ORIGINAL` | ✅ PASS |
+| EDEX-09 | mensagens da INOV-09, INOV-10, INOV-12, INOV-17; 200; valores enviados (INOV-11); resumo da INOV-30 em `role="alert"` | `test_views_edicao.py:347-361` (INOV-09, resumo, valores preservados); **`:365-375`** - `solucao="   "`, 200, `errors == {"solucao": ["Descreva a solução aplicada."]}` (texto da INOV-09 na spec da F2, linha 72), mensagem no campo, RESUMO no alerta, linha intacta (INOV-10); `:384` (INOV-17); `:394-396` (INOV-12) | ✅ PASS (Fix 3 resolvido) |
+| EDEX-10 | qualquer recusa mantém todos os valores salvos | `test_views_edicao.py:362`, `:375`, `:385`, `:397`, `:420`, `:462` - `_linha(inovacao) == antes` | ✅ PASS |
+| EDEX-11 | busca acha pelas palavras novas de título, problema ou solução, e não pelas substituídas | `test_views_edicao.py:475-479` (problema); **`:482-510`** parametrizado por título e solução: pré-condição `:503-504` (antiga acha, nova não), só o campo-alvo troca (`:505`), `:509` - `_titulos_da_busca(palavra_nova) == [titulo]`, `:510` - `_titulos_da_busca(palavra_antiga) == []` | ✅ PASS (Fix 3 resolvido; N7, N8 mortas) |
+| EDEX-12 | mesmo título, com ou sem mudança de caixa, mesma unidade → aceito | `test_views_edicao.py:400-406` - parametrizado, `assertRedirects` e título gravado | ✅ PASS |
+| EDEX-13 | título de outra inovação da unidade (ignorando caixa) → "Já existe uma inovação com este título nesta unidade. Escolha outro título." no campo | `test_views_edicao.py:415-420`; outra unidade aceita (`:423-432`), acento distinto (`:435-443`) | ✅ PASS |
+| EDEX-14 | corrida → só uma persiste; a outra 200 com a mensagem da EDEX-13, nunca 500 | `test_views_edicao.py:457-464` - constraint real, 200, `errors == {"titulo": [MENSAGEM_DUPLICADO]}`, resumo, `count == 1` | ✅ PASS |
+| EDEX-15 | duas edições em sequência → vale a última | `test_views_edicao.py:293-296` | ✅ PASS |
+| EDEX-16 | "Cancelar" → `/inovacoes/<id>/`, sem alterar, sem confirmação | `test_views_edicao.py:105-110` | ✅ PASS |
 
 ### P1: Curadoria pelo administrador
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-17 | ADMINISTRADOR em inovação alheia → 200 e o form da EDEX-01 | `test_views_edicao.py:118` - `_afirma_formulario_de_edicao` completo; `test_permissoes.py:31` - regra `is True` | ✅ PASS |
-| EDEX-18 | aplica EDEX-04 a 06 e mantém autor e data originais | `test_views_edicao.py:271-280` - 302 ao detalhe, 7 valores gravados, `autor_id == autor.pk`, `data_criacao == DATA_ORIGINAL`, mensagem no `role="status"`, "Cadastrada por Ana Souza em 01/09/2026" | ✅ PASS (M14 morta) |
+| EDEX-17 | ADMINISTRADOR em inovação alheia → 200 e o form da EDEX-01 | `test_views_edicao.py:118`; `test_permissoes.py:31` | ✅ PASS |
+| EDEX-18 | aplica EDEX-04 a 06 e mantém autor e data originais | `test_views_edicao.py:271-280` | ✅ PASS (N4 morta) |
 | EDEX-19 | autor USUARIO e autor ADMINISTRADOR editam e excluem do mesmo jeito | `test_permissoes.py:15`, `:21`; `test_views_edicao.py:124`, `:286-288`; `test_views_exclusao.py:70`, `:197-199` | ✅ PASS |
 
 ### P1: Negar a alteração de inovações de terceiros
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-20 | GET de USUARIO não autor nas duas rotas → 403 com os dois textos exatos | `test_views_edicao.py:56-60` - 403, `acesso_negado.html`, NEGADO e SO_AUTOR (textos exatos `:15-16`); `test_views_exclusao.py:113-117`; `test_controle_autoria.py:69` - toda rota descoberta | ✅ PASS para o terceiro sem bandeiras · ❌ sem prova na rota para `USUARIO` com `is_staff`/`is_superuser` (AD-009; M23b sobreviveu). Fix 1 |
-| EDEX-21 | link "Voltar para a inovação" → `/inovacoes/<id>/` | `test_views_edicao.py:61-62` - `links == ["/inovacoes/<pk>/"]`; `test_views_exclusao.py:118-120` | ✅ PASS (M17 morta) |
-| EDEX-22 | POST de edição do terceiro → 403, todos os valores intactos | `test_views_edicao.py:302-305` - página de acesso negado, `_linha == antes` (todas as colunas), `count == 1`; `test_controle_autoria.py:66-71` - POST com dados válidos e diferentes | ✅ PASS (M4 morta) · ❌ mesma lacuna de staff/superuser (Fix 1) |
-| EDEX-23 | POST de exclusão do terceiro → 403, inovação continua | `test_views_exclusao.py:224-228` - 403, template, NEGADO, `values() == antes`; `test_controle_autoria.py:69-71` | ✅ PASS · ❌ mesma lacuna (Fix 1) |
-| EDEX-24 | sem "Editar"/"Excluir" no detalhe para quem não é autor nem ADMINISTRADOR | `test_views_detalhe.py:217-218`, `:254-255` - `_links == []` e o caminho ausente do HTML (terceiro sem bandeiras) | ✅ PASS para o terceiro sem bandeiras · ❌ staff/superuser `USUARIO` e administrador rebaixado não testados na tela (M22, M22b sobreviveram). Fix 2 |
-| EDEX-25 | perfil lido a cada requisição; rebaixado → 403 na seguinte | `test_permissoes.py:52-54`; `test_views_edicao.py:141-143` - 200, rebaixa, `_afirma_acesso_negado`; `test_views_exclusao.py:237-242` - POST de exclusão negado e a inovação continua | ✅ PASS |
-| EDEX-26 | anônimo em GET e POST nas duas rotas → login com `next`, nada muda | `test_views_edicao.py:160` (GET), `:313-314` (POST, linha intacta); `test_views_exclusao.py:250-253` (GET e POST, continua) | ✅ PASS |
-| EDEX-27 | `editar` com id inexistente em GET e POST → 404 da CONS-15 | `test_views_edicao.py:149-151` - 404, template, `h1` "Inovação não encontrada."; `:480-482` POST, nada criado | ✅ PASS (M5, M15 mortas) |
+| EDEX-20 | GET de USUARIO não autor nas duas rotas → 403 com os dois textos exatos | `test_views_edicao.py:56-60` e `test_views_exclusao.py:113-117` - 403, template, os dois textos exatos; **`test_controle_autoria.py:102-121`** - `[terceiro|staff|superusuario]` × rota × GET: `status_code == 403` (`:119`), `values() == antes` (`:120`). A fixture confere `perfil == USUARIO` e as bandeiras (`conftest.py:70-75`) | ✅ PASS (Fix 1 resolvido; M23b, N1 mortas) |
+| EDEX-21 | link "Voltar para a inovação" → `/inovacoes/<id>/` | `test_views_edicao.py:61-62`; `test_views_exclusao.py:118-120` | ✅ PASS |
+| EDEX-22 | POST de edição do terceiro → 403, todos os valores intactos | `test_views_edicao.py:302-305`; `test_controle_autoria.py:115-121` - POST com dados válidos e diferentes, as 3 contas | ✅ PASS (M23b, N1, N6 mortas) |
+| EDEX-23 | POST de exclusão do terceiro → 403, inovação continua | `test_views_exclusao.py:224-228`; `test_controle_autoria.py:115-121` (as 3 contas, `count() == 1`) | ✅ PASS (N3 morta) |
+| EDEX-24 | sem "Editar"/"Excluir" no detalhe para quem não é autor nem ADMINISTRADOR | `test_views_detalhe.py:212-218`, `:249-255` - `[terceiro|staff|superusuario]`: `_links == []` e o caminho ausente do HTML; `:258-277` - administrador rebaixado por `update()`, que mantém `is_staff` (`:271`), deixa de ver os dois links (`:274-277`) | ✅ PASS (Fix 2 resolvido; M22, M22b, N2 mortas) |
+| EDEX-25 | perfil lido a cada requisição; rebaixado → 403 na seguinte | `test_permissoes.py:52-54`; `test_views_edicao.py:141-143`; `test_views_exclusao.py:237-242`; `test_views_detalhe.py:274-277` (tela) | ✅ PASS (N2 morta) |
+| EDEX-26 | anônimo em GET e POST nas duas rotas → login com `next`, nada muda | `test_views_edicao.py:160`, `:313-314`; `test_views_exclusao.py:250-253` | ✅ PASS |
+| EDEX-27 | `editar` com id inexistente em GET e POST → 404 da CONS-15 | `test_views_edicao.py:149-151`; `:524-526` (POST, nada criado) | ✅ PASS |
 | EDEX-28 | `excluir` com id inexistente em GET → CONS-15 | `test_views_exclusao.py:128-130` | ✅ PASS |
-| EDEX-29 | edição de inovação excluída no meio → CONS-15, nada criado | `test_views_edicao.py:490-493` (sequencial); `:509-513` (mesma requisição, `count == 0`) | ✅ PASS (M6 morta) |
+| EDEX-29 | edição de inovação excluída no meio → CONS-15, nada criado | `test_views_edicao.py:534-537` (sequencial); `:553-557` (mesma requisição, `count == 0`) | ✅ PASS |
 
 ### P2: Excluir uma inovação com confirmação
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-30 | autor/ADMINISTRADOR GET → 200, "Excluir inovação", texto exato com título, unidade e categoria | `test_views_exclusao.py:38-44` - 200, template, title/`h1`, `AVISO` exato (`:13-16`); `:56`, `:64` | ✅ PASS (M16 morta) |
-| EDEX-31 | link "Excluir" → `/inovacoes/<id>/excluir/` para quem pode alterar | `test_views_detalhe.py:236`, `:246` | ✅ PASS |
-| EDEX-32 | botão "Excluir definitivamente" com POST à própria rota | `test_views_exclusao.py:78` - `method="post"`; `:80` - `action` vazio ou a rota; `:81` - csrf; `:83-84` - único botão, sem `type="button"` | ✅ PASS |
+| EDEX-30 | autor/ADMINISTRADOR GET → 200, "Excluir inovação", texto exato com título, unidade e categoria | `test_views_exclusao.py:38-44`, `:56`, `:64` | ✅ PASS |
+| EDEX-31 | link "Excluir" → `/inovacoes/<id>/excluir/` para quem pode alterar | `test_views_detalhe.py:236`, `:246`, `:266` | ✅ PASS |
+| EDEX-32 | botão "Excluir definitivamente" com POST à própria rota | `test_views_exclusao.py:78-84` | ✅ PASS |
 | EDEX-33 | link "Cancelar" → `/inovacoes/<id>/` | `test_views_exclusao.py:91-92` | ✅ PASS |
-| EDEX-34 | seguir "Cancelar" → detalhe e a inovação continua | `test_views_exclusao.py:93-96` | ✅ PASS (M7b morta) |
+| EDEX-34 | seguir "Cancelar" → detalhe e a inovação continua | `test_views_exclusao.py:93-96` | ✅ PASS |
 | EDEX-35 | POST de autor/ADMINISTRADOR → apaga e 302 a `/inovacoes/` | `test_views_exclusao.py:152-153`, `:190-191` | ✅ PASS |
-| EDEX-36 | GET nunca apaga | `test_views_exclusao.py:104-106` - 3 GETs com 200, `values() == antes` | ✅ PASS (M7, M7b mortas) |
-| EDEX-37 | linha sai do banco; some da lista, da busca e da contagem da CONS-33 | `test_views_exclusao.py:153`; `:161` "2 inovações encontradas" → `:164-166` títulos `["Planilha de Compras"]` e "1 inovação encontrada"; `:168` fora da tabela; `:170-173` busca vazia | ✅ PASS |
-| EDEX-38 | segundo POST → CONS-15, nunca 500 | `test_views_exclusao.py:206-207` - 302 e depois 404 com `inovacao_nao_encontrada.html` | ✅ PASS |
+| EDEX-36 | GET nunca apaga | `test_views_exclusao.py:104-106` | ✅ PASS |
+| EDEX-37 | linha sai do banco; some da lista, da busca e da contagem da CONS-33 | `test_views_exclusao.py:153`, `:161-173` | ✅ PASS |
+| EDEX-38 | segundo POST → CONS-15, nunca 500 | `test_views_exclusao.py:206-207` | ✅ PASS |
 | EDEX-39 | detalhe da excluída → CONS-15 | `test_views_exclusao.py:214-215` | ✅ PASS |
-| EDEX-40 | "Inovação “<título>” excluída com sucesso." no `role="status"` da lista, uma vez só | `test_views_exclusao.py:181-183` - `redirect_chain == [("/inovacoes/", 302)]`, `SUCESSO` exato (`:135`) na região, ausente no reload | ✅ PASS (M8, M8b mortas) |
+| EDEX-40 | "Inovação “<título>” excluída com sucesso." no `role="status"` da lista, uma vez só | `test_views_exclusao.py:181-183` | ✅ PASS |
 
 ### P1: Edição, confirmação e acesso negado acessíveis
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-41 | rótulos, marcadores, ajudas e erros iguais ao cadastro (INOV-31/32/33/41) | `test_views_acessibilidade_alteracao.py:69-72` (label `for`), `:79-84` (`required` + "(obrigatório)" só nos 6), `:91-92` (ajuda no `aria-describedby`), `:113-115` (`aria-invalid="true"` só no campo com erro + `id_titulo_error`) | ✅ PASS |
-| EDEX-42 | só controles nativos, sem `tabindex` positivo, foco visível, nas 3 páginas | `test_views_acessibilidade_alteracao.py:126-136` (parametrizado nas 3); `:142-146` - `:focus-visible` com `outline: Npx solid`, sem `outline: none` (`templates/base.html:11`) | ✅ PASS |
-| EDEX-43 | um `h1` e `<title>` "Editar inovação", "Excluir inovação", "Acesso negado" | `test_views_acessibilidade_alteracao.py:153-155` (parametrizado nas 3) | ✅ PASS |
+| EDEX-41 | rótulos, marcadores, ajudas e erros iguais ao cadastro | `test_views_acessibilidade_alteracao.py:69-72`, `:79-84`, `:91-92`, `:113-115` | ✅ PASS |
+| EDEX-42 | só controles nativos, sem `tabindex` positivo, foco visível, nas 3 páginas | `test_views_acessibilidade_alteracao.py:126-136`, `:142-146` | ✅ PASS |
+| EDEX-43 | um `h1` e `<title>` "Editar inovação", "Excluir inovação", "Acesso negado" | `test_views_acessibilidade_alteracao.py:153-155` | ✅ PASS |
 
 ### Edge Cases da spec
 
 | AC | Spec-defined outcome | `file:line` + assertion | Result |
 | -- | -------------------- | ----------------------- | ------ |
-| EDEX-44 | banco fora → 500 do projeto, nada muda, sem detalhes da conexão | `test_views_erro_500.py:110-133` - parametrizado edição (`save`) e exclusão (`delete`); 500, `500.html`, nenhum trecho da conexão, `values() == antes` | ✅ PASS |
-| EDEX-45 | POST sem CSRF nas duas rotas → 403, nada muda | `test_controle_autoria.py:79-85` - o próprio autor, `enforce_csrf_checks=True`; 403, não é a página de acesso negado, `values() == antes` | ✅ PASS (M19 morta) |
+| EDEX-44 | banco fora → 500 do projeto, nada muda, sem detalhes da conexão | `test_views_erro_500.py:110-133` | ✅ PASS |
+| EDEX-45 | POST sem CSRF nas duas rotas → 403, nada muda | `test_controle_autoria.py:124-135` - o próprio autor, `enforce_csrf_checks=True`; 403, não é a página de acesso negado, `values() == antes` | ✅ PASS |
 
-**Status**: ❌ Gaps presentes. 43/45 ACs com o valor da spec afirmado. EDEX-09 e EDEX-11 parciais. A AD-009 (staff/superuser `USUARIO`) não é provada na rota nem na tela (EDEX-20, 22, 23, 24). Nenhum spec-precision gap.
+**Status**: ✅ 45/45 ACs com o valor da spec afirmado. Nenhum spec-precision gap.
 
 ### RNF07 — "usuário comum tenta alterar registro de terceiro"
 
 | Exigência | Evidência | Result |
 | --------- | --------- | ------ |
-| GET e POST nas duas rotas, 403 | `test_controle_autoria.py:55-71` (rotas × métodos); `test_views_edicao.py:127-132`, `:299-305`; `test_views_exclusao.py:109-122`, `:218-228` | ✅ |
-| Banco intacto campo a campo | `Inovacao.objects.values().get(pk=…) == antes` (todas as colunas) em `test_controle_autoria.py:70`, `test_views_edicao.py:304`, `test_views_exclusao.py:228` | ✅ |
-| Links escondidos | `test_views_detalhe.py:212-218`, `:249-255` (terceiro sem bandeiras) | ✅ · ❌ staff/superuser (M22, M22b) |
-| Administrador rebaixado | `test_views_edicao.py:135-143`, `test_views_exclusao.py:231-242` | ✅ |
-| `is_staff`/`is_superuser` sem perfil | só `test_permissoes.py:39-45` (modelo) | ❌ não chega à rota nem à tela (M23b, M22, M22b) |
-| Varredura AD-009 dinâmica | `test_controle_autoria.py:18-32` percorre o `get_resolver()` em tempo de coleta, com a sanidade em `:35-38`. Uma rota nova sem guarda com `<int:pk>` é pega (M18 morta) | ⚠️ filtra por `"<int:pk>" in str(padrao.pattern)`. Uma rota com `<int:id>`, `<pk>` ou `<slug:…>` fica fora sem aviso (M24 sobreviveu). Fix 4 |
+| GET e POST nas duas rotas, 403 | `test_controle_autoria.py:102-121` (contas × rotas × métodos); `test_views_edicao.py:127-132`, `:299-305`; `test_views_exclusao.py:109-122`, `:218-228` | ✅ |
+| Banco intacto campo a campo | `values().get(pk=…) == antes` em `test_controle_autoria.py:120`, `test_views_edicao.py:304`, `test_views_exclusao.py:228` | ✅ |
+| Links escondidos | `test_views_detalhe.py:212-218`, `:249-255` (3 contas), `:258-277` (rebaixado) | ✅ |
+| Administrador rebaixado | `test_views_edicao.py:135-143`, `test_views_exclusao.py:231-242`, `test_views_detalhe.py:258-277` | ✅ |
+| `is_staff`/`is_superuser` sem perfil | modelo `test_permissoes.py:39-45`; rota `test_controle_autoria.py:102-121`; tela `test_views_detalhe.py:212`, `:249` | ✅ |
+| Varredura AD-009 dinâmica | `test_controle_autoria.py:18-44`: lê `pattern.converters` e `regex.groupindex`, recolhe toda rota de `inovacoes` com exatamente o parâmetro `pk` em 1 grupo e derruba a coleta nas outras (`:33-39`). Sanidade em `:47-50`; os 5 formatos recusados (`:61-75`) e os aceitos (`:78-85`) têm teste próprio | ✅ (M24, N5 mortas) |
 
 ---
 
 ## Discrimination Sensor
 
-Executado num `git worktree add --detach` temporário a partir de `b749ff3` (scratchpad da sessão), com o `.env` copiado e o mesmo PostgreSQL de teste (porta 5433). Uma mutação por vez, `pytest -q -x` da suíte inteira e `git checkout -- .` no worktree depois de cada uma, em sequência. No fim: `git worktree remove --force` + `git worktree prune`. `git status --porcelain` da árvore real: vazio antes e vazio depois (idêntico ao baseline). HEAD inalterado.
+Executado num `git worktree add --detach` temporário a partir de `6791933` (scratchpad da sessão), com o `.env` copiado e o mesmo PostgreSQL de teste (porta 5433). Linha de base no worktree: 492 passed. Uma mutação por vez, por substituição exata de texto (cada trecho conferido como único), `pytest -q` da suíte inteira e `git checkout -- .` no worktree depois de cada uma, em sequência. No fim: `git worktree remove --force` + `git worktree prune`. `git status --porcelain` da árvore real: vazio antes e vazio depois. HEAD inalterado (`6791933`).
 
-| # | File:line | Mutação | Killed? (primeiro teste que falhou) |
-| - | --------- | ------- | ----------------------------------- |
-| M1 | `inovacoes/models.py:176-178` | regra → `True` para todo autenticado | ✅ `test_controle_autoria.py::…[editar-get]` |
-| M2 | `inovacoes/models.py:176` | sem a guarda `is_authenticated` | ✅ `test_permissoes.py::test_anonimo_nao_pode_alterar` |
-| M3 | `inovacoes/models.py:177` | `is_staff` no lugar de `is_administrador` | ✅ `test_permissoes.py::…[is_staff]` |
-| M3b | `inovacoes/models.py:177` | `is_administrador or is_staff or is_superuser or autor` | ✅ `test_permissoes.py::…[is_staff]` |
-| M3c | `inovacoes/views.py:41` | mixin aceita também `is_staff or is_superuser` | ✅ `test_views_edicao.py::test_administrador_rebaixado…` (por acaso: o rebaixado por `.update()` mantém o `is_staff`) |
-| M4 | `inovacoes/views.py:41` | mixin pula a regra no POST | ✅ `test_controle_autoria.py::…[editar-post]` |
-| M4b | `inovacoes/views.py:41` | mixin pula a regra no GET | ✅ `test_controle_autoria.py::…[editar-get]` |
-| M5 | `inovacoes/views.py:40` | id inexistente → 403 (ordem 404/403 trocada) | ✅ `test_views_edicao.py::test_id_sem_inovacao…` |
-| M6 | `inovacoes/views.py:148-149` | `gravar` sem a checagem `select_for_update` | ✅ `test_views_edicao.py::test_inovacao_excluida_durante_o_envio_nao_e_recriada` |
-| M7 | `inovacoes/views.py:177` | DeleteView apaga no GET (`self.object.delete()`) | ✅ (500 no GET) |
-| M7b | `inovacoes/views.py:177` | GET apaga por queryset e ainda renderiza a confirmação | ✅ `test_views_exclusao.py::test_cancelar_leva_ao_detalhe…` |
-| M8 | `inovacoes/views.py:183` | sem a mensagem de exclusão | ✅ `test_views_exclusao.py::test_exclusao_confirma_na_lista_uma_vez_so` |
-| M8b | `inovacoes/views.py:183` | mensagem com o pk no lugar do título | ✅ idem |
-| M9 | `inovacao_detail.html:12` | links para todos | ✅ `test_views_detalhe.py::test_terceiro_nao_ve_o_link_editar` |
-| M9b | `inovacao_detail.html:12` | links para ninguém | ✅ `test_views_detalhe.py::test_autor_ve_o_link_editar_no_detalhe` |
-| M10 | `inovacoes/views.py:75-76` | `IntegrityError` da constraint relançado | ✅ (500 no cadastro, INOV-25) |
-| M11 | `inovacoes/views.py:164` | `url_cancelar` da edição → lista | ✅ `test_views_edicao.py::test_cancelar_leva_ao_detalhe…` |
-| M12 | `inovacoes/views.py:142` | edição ganha `get_initial` com o contato da INOV-39 | ✅ `test_views_edicao.py::test_formulario_vem_preenchido…` |
-| M13 | `inovacoes/views.py:142` | `success_url` da edição → lista | ✅ `test_views_edicao.py::test_envio_valido_redireciona_ao_detalhe` |
-| M14 | `inovacoes/views.py:150` | edição atribui o autor da sessão | ✅ `test_views_edicao.py::test_administrador_edita…_mantem_autor_e_data` |
-| M15 | `inovacoes/views.py:39-40` | `Http404` do mixin relançado (404 padrão) | ✅ `test_views_edicao.py::test_id_sem_inovacao…` |
-| M16 | `inovacao_confirm_delete.html:9` | aviso sem a unidade | ✅ `test_views_exclusao.py::test_autor_ve_a_confirmacao_com_o_aviso` |
-| M17 | `acesso_negado.html:13` | sem o link "Voltar para a inovação" | ✅ `test_views_edicao.py::test_terceiro_recebe_403…` |
-| M18 | `inovacoes/urls.py:18` | rota nova `<int:pk>/status/` sem guarda (`InovacaoDetailView`) | ✅ `test_controle_autoria.py::…[inovacoes:status-get]` |
-| M19 | `inovacoes/views.py:35` | `@method_decorator(csrf_exempt)` no `dispatch` do mixin | ✅ `test_controle_autoria.py::test_post_sem_token_csrf…[editar]` |
-| M20 | `inovacoes/forms.py:24` | `Meta.fields` ganha `status` | ✅ `test_forms.py` (F2) |
-| M21 | `inovacoes/views.py:142` | mensagem da edição diz "cadastrada" | ✅ `test_views_edicao.py::test_edicao_bem_sucedida_confirma…` |
-| M22 | `inovacoes/views.py:128` | `pode_alterar` também para `is_staff` | ❌ **Survived**: staff `USUARIO` vê "Editar"/"Excluir" na inovação alheia → Fix 2 |
-| M22b | `inovacoes/views.py:128` | `pode_alterar` também para `is_superuser` | ❌ **Survived** → Fix 2 |
-| M23b | `inovacoes/views.py:41` | mixin aceita `is_superuser` (sem tocar o modelo) | ❌ **Survived**: superusuário `USUARIO` edita e exclui inovação alheia em GET e POST → Fix 1 |
-| M24 | `inovacoes/urls.py:18` | rota nova `<int:id>/status/` sem guarda | ❌ **Survived**: a varredura não a enxerga → Fix 4 |
-| (M23) | `inovacoes/views.py:41` | exceção artificial só para o username `dora` | Survived; diagnóstico, não contado. Confirma que nenhum teste de rota usa uma conta com bandeira |
+### Sobreviventes da iteração 1, rodadas de novo como descritas
 
-**Sensor depth**: expandido (caminho de segurança RNF07/AD-009): 31 mutações contadas.
-**Result**: 27/31 mortas; 4 sobreviventes não equivalentes (M22, M22b, M23b, M24) → FAIL ❌
+| # | File:line | Mutação | Killed? (testes que falharam) |
+| - | --------- | ------- | ----------------------------- |
+| M22 | `inovacoes/views.py:128` | `pode_alterar` também para `is_staff` | ✅ 3 falhas: `test_views_detalhe.py::test_terceiro_nao_ve_o_link_editar[staff]`, `…_excluir[staff]`, `test_administrador_rebaixado_deixa_de_ver_os_links_na_requisicao_seguinte` |
+| M22b | `inovacoes/views.py:128` | `pode_alterar` também para `is_superuser` | ✅ 2 falhas: `…_editar[superusuario]`, `…_excluir[superusuario]` |
+| M23b | `inovacoes/views.py:41` | mixin aceita `is_superuser` (sem tocar o modelo) | ✅ 4 falhas: `test_controle_autoria.py::test_terceiro_recebe_403_e_nada_muda[superusuario-{editar,excluir}-{get,post}]` |
+| M24 | `inovacoes/urls.py:18` | rota nova `<int:id>/status/` sem guarda | ✅ erro de coleta em `test_controle_autoria.py:34`: "captura ['id'] … só sabe montar rotas nomeadas com exatamente o parâmetro pk"; pytest sai com 2 |
+
+### Mutações novas (iteração 2)
+
+| # | File:line | Mutação | Killed? (testes que falharam) |
+| - | --------- | ------- | ----------------------------- |
+| N1 | `inovacoes/views.py:41` | `dispatch` do mixin aceita `is_staff` | ✅ 6 falhas: `[staff-…]` nas 4 combinações e os dois rebaixados (edição e exclusão) |
+| N2 | `inovacoes/views.py:128` | `pode_alterar` guardado num cache de módulo por (usuário, inovação): ignora o rebaixamento | ✅ `test_views_detalhe.py::test_administrador_rebaixado_deixa_de_ver_os_links_na_requisicao_seguinte` |
+| N3 | `inovacoes/views.py:170` | `InovacaoDeleteView` sem o `AlteracaoDeInovacaoMixin` (`model = Inovacao`) | ✅ 11 falhas, entre elas `[terceiro|staff|superusuario-inovacoes:excluir-{get,post}]` |
+| N4 | `inovacoes/views.py:78`, `:150` | mensagem da edição com o título antigo (lido antes de gravar) | ✅ `test_edicao_bem_sucedida_confirma_com_o_titulo_salvo`, `test_administrador_edita_a_inovacao_de_outro_autor_e_mantem_autor_e_data` |
+| N5 | `inovacoes/urls.py:18` | `re_path(r"^(?P<inovacao>[0-9]+)/status/$")` sem guarda | ✅ erro de coleta: "captura ['inovacao']" |
+| N6 | `inovacoes/views.py:41` | mixin só nega o GET; o POST de qualquer autenticado passa | ✅ 9 falhas: `[terceiro|staff|superusuario-{editar,excluir}-post]` e outras |
+| N7 | `inovacoes/views.py:150` | depois de gravar, a edição refaz o `texto_busca` com a solução antiga | ✅ `test_busca_acompanha_a_troca_do_titulo_e_da_solucao[solucao-…]` |
+| N8 | `inovacoes/views.py:150` | idem com o título antigo | ✅ `test_busca_acompanha_a_troca_do_titulo_e_da_solucao[titulo-…]` |
+
+**Sensor depth**: expandido (caminho de segurança RNF07/AD-009): 4 sobreviventes da iteração 1 + 8 mutações novas. As 27 mortas da iteração 1 não foram repetidas: nenhum arquivo de produção mudou, e nenhuma asserção que as matava foi removida.
+**Result**: 12/12 mortas (4/4 ex-sobreviventes, 8/8 novas) - PASS ✅
 
 ---
 
@@ -163,35 +153,37 @@ Executado num `git worktree add --detach` temporário a partir de `b749ff3` (scr
 
 | Principle | Status |
 | --------- | ------ |
-| Minimum code | ✅ Um método no modelo, dois mixins, duas views de prateleira, dois templates pequenos |
-| Surgical changes | ✅ Produção limitada a `models.py`, `views.py`, `urls.py` e 4 templates, como o design lista |
-| No scope creep | ✅ Sem status na edição, sem ações na listagem, sem exclusão lógica |
-| Matches patterns | ✅ O 404 da CONS-15 foi reaproveitado em `_inovacao_nao_encontrada` (`views.py:19`), e o 403 é renderizado pela view (AD-009) |
-| Spec-anchored outcome check | ⚠️ 43/45; EDEX-09 e EDEX-11 parciais |
-| Per-layer Coverage Expectation met | ❌ A matriz (`tasks.md`) pede o `is_staff`/`is_superuser` só no modelo, mas a mesma regra é reaplicada no mixin e no detalhe sem prova nessas camadas |
-| Every test maps to a spec requirement | ✅ Toda docstring cita EDEX-NN, AD-009 ou a INOV reaplicada |
+| Minimum code | ✅ Produção inalterada; as correções são uma fixture parametrizada, uma coleta mais estrita e 5 testes novos |
+| Surgical changes | ✅ Os commits T15–T18 só tocam `inovacoes/tests/` e `tasks.md` |
+| No scope creep | ✅ |
+| Matches patterns | ✅ A fixture `nao_autor_usuario` (`conftest.py:59-76`) é reaproveitada na rota e na tela, e confere perfil e bandeiras no setup |
+| Spec-anchored outcome check | ✅ 45/45 |
+| Per-layer Coverage Expectation met | ✅ A regra da AD-009 sobre `is_staff`/`is_superuser` agora é provada nas três camadas que a aplicam: modelo, mixin (rota) e detalhe (tela) |
+| Every test maps to a spec requirement | ✅ Os testes novos citam EDEX-09/10/11/20/22/23/24/25 ou AD-009 na docstring |
 | Documented guidelines followed | ✅ nenhuma diretriz no projeto; strong defaults da Test Coverage Matrix |
-| Testes da F1/F2/F3 intocados | ✅ `git diff 8ac62d4..b749ff3 -- contas inovacoes/tests`: só adições (+1214, nenhuma linha removida). As refatorações T2/T3/T4 passam na suíte da F2/F3 sem alteração, e a M10 é morta pelo teste do cadastro |
+| Testes só reforçados | ✅ `git diff ec93572..6791933 -- inovacoes/tests`: as 40 linhas removidas são docstrings, o import, o parâmetro `terceiro` (trocado pela fixture que ainda o inclui) e o filtro `"<int:pk>" in str(padrao.pattern)` (trocado por uma coleta que inclui toda rota com `pk` e recusa as demais). Nenhum `assert` removido |
 
 ---
 
 ## Edge Cases
 
-- [x] Título que existe em outra unidade é aceito (`test_views_edicao.py:410-419`).
-- [x] Títulos que diferem só no acento continuam distintos (`test_views_edicao.py:422-430`).
-- [x] Unidade inexistente no POST → INOV-17 (`test_views_edicao.py:365-372`). Categoria inexistente sem teste próprio na edição, coberta pelo formulário da F2.
-- [ ] Id não numérico em `/inovacoes/abc/editar/`: sem teste próprio na F4. A rota `<int:pk>` não casa, e o comportamento equivale ao de `/inovacoes/abc/`, provado em `test_views_detalhe.py:176-180`. Não bloqueia.
-- Observação (fora da spec): dois POSTs de exclusão que passam juntos pelo `dispatch()` antes de um deles apagar recebem os dois a mensagem de sucesso. O `Model.delete()` de uma linha já ausente não falha. A EDEX-38 só fala do reenvio depois da exclusão (coberto). Não bloqueia.
+- [x] Título que existe em outra unidade é aceito (`test_views_edicao.py:423-432`).
+- [x] Títulos que diferem só no acento continuam distintos (`test_views_edicao.py:435-443`).
+- [x] Unidade inexistente no POST → INOV-17 (`test_views_edicao.py:378-385`). Categoria inexistente coberta pelo formulário da F2.
+- [x] Campo obrigatório só com espaços na edição → INOV-09 (`test_views_edicao.py:365-375`).
+- [ ] Id não numérico em `/inovacoes/abc/editar/`: sem teste próprio na F4; equivale ao de `/inovacoes/abc/` (`test_views_detalhe.py:176-180`). Não bloqueia.
+- Observação (fora da spec, mantida da iteração 1): dois POSTs de exclusão que passam juntos pelo `dispatch()` recebem os dois a mensagem de sucesso. A EDEX-38 só fala do reenvio depois da exclusão (coberto). Não bloqueia.
 
 ---
 
 ## Gate Check
 
-- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (árvore real, HEAD `b749ff3`)
-- **Result**: exit 0. `ruff check`: All checks passed · `ruff format --check`: 97 files already formatted · `makemigrations --check`: No changes detected · `pytest -q`: 470 passed, 0 failed, 0 skipped (14.31 s)
+- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (árvore real, HEAD `6791933`)
+- **Result**: exit 0. `ruff check`: All checks passed · `ruff format --check`: 98 files already formatted · `makemigrations --check`: No changes detected · `pytest -q`: 492 passed, 0 failed, 0 skipped (14.58 s)
 - **Test count before feature**: 380 (`tasks.md`, linha de base)
-- **Test count after feature**: 470
-- **Delta**: +90. Nenhum teste removido nem alterado
+- **Test count after iteration 1**: 470
+- **Test count after feature**: 492
+- **Delta**: +112 na feature (+22 nesta iteração: T15 +8, T16 +5, T17 +3, T18 +6). Nenhum teste removido
 - **Skipped tests**: nenhum
 - **Failures**: nenhuma
 
@@ -199,38 +191,20 @@ Executado num `git worktree add --detach` temporário a partir de `b749ff3` (scr
 
 ## Spec-Precision Gaps
 
-Nenhum. A EDEX-20 a 24 falam de "user with profile `USUARIO`", e a AD-009 (vinculante) fixa que `is_staff`/`is_superuser` não contam, então o resultado esperado para essas contas está definido. A lacuna está nos testes, não na spec.
+Nenhum.
 
 ---
 
 ## Fix Plans
 
-### Fix 1: staff/superuser `USUARIO` não testado nas rotas de alteração (M23b) — Major
+Nenhum aberto. Situação dos planos da iteração 1:
 
-- **Root cause**: a varredura `test_controle_autoria.py:55-71` e os testes de recusa só usam a fixture `terceiro`, sem bandeiras. A regra da AD-009 (`is_staff`/`is_superuser` não contam) só é provada no modelo (`test_permissoes.py:39-45`), então o `dispatch()` do mixin pode ganhar uma exceção para essas contas sem que nenhum teste falhe.
-- **Fix task**: em `test_controle_autoria.py`, parametrizar `test_terceiro_recebe_403_e_nada_muda` também pela conta: `terceiro`, `USUARIO` não autor com `is_staff=True` e `USUARIO` não autor com `is_superuser=True`. Manter rota × método e a comparação `values()` antes/depois.
-- **Verify**: a M23b (`views.py:41` aceita `request.user.is_superuser`) e a M3c sem o caso do rebaixado precisam morrer.
-- **Done when**: 403 e banco intacto para as 3 contas × 2 rotas × 2 métodos; gate verde.
-
-### Fix 2: links do detalhe para staff/superuser `USUARIO` e para o administrador rebaixado (M22, M22b) — Major
-
-- **Root cause**: `test_views_detalhe.py:212-218` e `:249-255` usam só o `terceiro`. O `pode_alterar` (`views.py:128`) pode passar a valer para `is_staff` ou `is_superuser` sem falha. A `maria` do banco local é exatamente esse caso.
-- **Fix task**: parametrizar `test_terceiro_nao_ve_o_link_editar` e `test_terceiro_nao_ve_o_link_excluir` pelas mesmas 3 contas do Fix 1, e acrescentar o administrador rebaixado (`update(perfil=USUARIO)`) que deixa de ver os links na requisição seguinte (EDEX-24, EDEX-25).
-- **Verify**: M22 e M22b morrem.
-- **Done when**: nenhum dos dois links aparece para essas contas; gate verde.
-
-### Fix 3: cláusulas sem teste na EDEX-09 e na EDEX-11 — Minor
-
-- **Root cause**: a EDEX-09 cita a INOV-10, e a EDEX-11 cita título e solução. A rota de edição não afirma nenhum dos dois.
-- **Fix task**: (a) em `test_views_edicao.py`, um envio de edição com um campo obrigatório só com espaços (p. ex. `solucao="   "`), afirmando a mensagem de obrigatório da INOV-09 no campo, 200 e a linha intacta. (b) Estender `test_busca_acha_pelo_texto_novo_e_nao_pelo_texto_substituido`, ou parametrizá-lo, para o título e a solução: palavra nova acha, palavra só do texto antigo não acha.
-- **Done when**: as duas cláusulas têm `file:line`; gate verde.
-
-### Fix 4: varredura da AD-009 presa ao texto literal `<int:pk>` (M24) — Minor
-
-- **Root cause**: `test_controle_autoria.py:26` filtra por `"<int:pk>" in str(padrao.pattern)`. Uma rota futura de `inovacoes` com outro nome de parâmetro ou outro conversor não entra na varredura, e a sanidade (`:35-38`) não percebe.
-- **Fix task**: selecionar toda rota do namespace `inovacoes` que capture algum parâmetro (`padrao.pattern.converters` não vazio, ou o regex com grupos nomeados), e falhar a coleta quando o parâmetro não for `pk`, para que a rota nova precise entrar na varredura ou na allowlist de forma explícita.
-- **Verify**: a M24 (`<int:id>/status/` sem guarda) morre.
-- **Done when**: a M18 e a M24 morrem; gate verde.
+| Fix | Resolvido? | Evidência |
+| --- | ---------- | --------- |
+| Fix 1 (M23b, staff/superuser na rota) | ✅ | `conftest.py:59-76`; `test_controle_autoria.py:102-121`. M23b e N1 morrem |
+| Fix 2 (M22, M22b, links do detalhe) | ✅ | `test_views_detalhe.py:212-218`, `:249-255`, `:258-277`. M22, M22b e N2 morrem |
+| Fix 3 (EDEX-09 INOV-10, EDEX-11 título e solução) | ✅ | `test_views_edicao.py:365-375`, `:482-510`. N7 e N8 morrem |
+| Fix 4 (M24, varredura presa a `<int:pk>`) | ✅ | `test_controle_autoria.py:18-44`, `:61-85`. M24 e N5 morrem |
 
 ---
 
@@ -240,27 +214,27 @@ Proposta (o `spec.md` não foi editado pelo Verifier):
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| EDEX-01 … EDEX-08, EDEX-10, EDEX-12 … EDEX-19, EDEX-21, EDEX-25 … EDEX-45 | Implementing | ✅ Verified |
-| EDEX-09, EDEX-11 | Implementing | ❌ Needs Fix (Fix 3) |
-| EDEX-20, EDEX-22, EDEX-23 | Implementing | ❌ Needs Fix (Fix 1) |
-| EDEX-24 | Implementing | ❌ Needs Fix (Fix 2) |
+| EDEX-01 … EDEX-45 | Implementing | ✅ Verified |
+
+---
+
+## Histórico
+
+- **Iteração 1** (HEAD `b749ff3`): FAIL ❌. 43/45 ACs (EDEX-09 e EDEX-11 parciais), 27/31 mutantes mortos. Sobreviveram M22 e M22b (links do detalhe para staff/superusuário `USUARIO`), M23b (mixin aceita superusuário) e M24 (varredura presa ao texto `<int:pk>`). Viraram T15 (`e3feabe`), T16 (`8ed816b`), T17 (`602664e`) e T18 (`6791933`), só em teste.
+- **Iteração 2** (HEAD `6791933`): PASS ✅. 45/45 ACs, os 4 ex-sobreviventes mortos, 8/8 mutantes novos mortos.
 
 ---
 
 ## Summary
 
-**Overall**: ❌ Not Ready (só correções de teste; nenhum defeito de produção encontrado)
+**Overall**: ✅ Ready (evidência: `inovacoes/tests/test_controle_autoria.py:102-121`, `inovacoes/tests/test_views_detalhe.py:258-277`, `inovacoes/tests/test_views_edicao.py:482-510`)
 
-**Spec-anchored check**: 43/45 ACs com o valor da spec afirmado; EDEX-09 e EDEX-11 parciais; 0 spec-precision gaps
-**Sensor**: 27/31 mortas; sobreviventes M22, M22b, M23b, M24
-**Gate**: 470 passed, 0 failed
+**Spec-anchored check**: 45/45 ACs com o valor da spec afirmado; 0 spec-precision gaps
+**Sensor**: 12/12 mortas (M22, M22b, M23b, M24 e N1–N8)
+**Gate**: 492 passed, 0 failed
 
-**What works**: a regra de autoria fica num único método (`inovacoes/models.py:169-178`), aplicada no `dispatch()` antes de qualquer método HTTP (`inovacoes/views.py:35-46`), com 404 antes de 403. Terceiro sem bandeiras, rebaixado, anônimo e POST sem CSRF são recusados em GET e POST, com o banco comparado coluna a coluna (`test_controle_autoria.py:70`, `test_views_edicao.py:304`, `test_views_exclusao.py:228`). A trava contra recriar uma inovação excluída tem teste que a discrimina (`test_views_edicao.py:496-513`). O GET da exclusão nunca apaga (`test_views_exclusao.py:99-106`). As mensagens, os textos e os redirects são afirmados literalmente. Os testes da F1/F2/F3 não foram alterados.
+**What works**: a regra de autoria fica num único método (`inovacoes/models.py:169-178`), aplicada no `dispatch()` antes de qualquer método HTTP (`inovacoes/views.py:35-46`) e no detalhe (`inovacoes/views.py:128`). As três camadas agora são testadas com as contas que a AD-009 exclui: terceiro sem bandeiras, `USUARIO` com `is_staff`, `USUARIO` com `is_superuser` e administrador rebaixado. A varredura da AD-009 não deixa passar em silêncio uma rota de `inovacoes` com parâmetro diferente de `pk` (`test_controle_autoria.py:33-39`). A edição refaz a busca para os três campos (`test_views_edicao.py:475-479`, `:509-510`).
 
-**Issues found**:
-1. AD-009 sem prova na rota para `USUARIO` com `is_staff`/`is_superuser` (M23b): Fix 1, `test_controle_autoria.py:55-71`.
-2. Links do detalhe sem prova para essas contas e para o rebaixado (M22, M22b): Fix 2, `test_views_detalhe.py:212-218`, `:249-255`.
-3. EDEX-09 (INOV-10) e EDEX-11 (título, solução) parciais: Fix 3, `test_views_edicao.py:339-362`, `:459-466`.
-4. Varredura presa a `<int:pk>` (M24): Fix 4, `test_controle_autoria.py:26`.
+**Issues found**: nenhum.
 
-**Next steps**: rodar os Fix 1–4 como tasks de teste e depois uma nova iteração do Verifier (iteração 2 de no máximo 3).
+**Next steps**: o orquestrador atualiza a rastreabilidade do `spec.md` e o `STATE.md`.

@@ -6,7 +6,7 @@
 **Reusa da F2:** `inovacoes.Inovacao` sem campos novos · `InovacaoForm` com os rótulos, ajudas e mensagens da INOV-09 a INOV-17 e INOV-30 a INOV-35, INOV-41 · unicidade de título por unidade (INOV-22 a INOV-27) · tratamento da corrida na constraint (INOV-25)
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e a página "Inovação não encontrada." (CONS-15) · listagem `/inovacoes/` como destino após a exclusão
 **Altera a F3:** o detalhe passa a exibir "Editar" e "Excluir" para quem pode alterar a inovação (a F3 dizia, em Out of Scope, que o detalhe não exibe esses botões) — ver EDEX-03 e EDEX-31
-**Status:** Aprovada pelo usuário em 2026-10-11 (assumptions confirmadas na aprovação)
+**Status:** Aprovada pelo usuário em 2026-10-11 (assumptions confirmadas na aprovação) · implementada e verificada em 2026-10-11 (`validation.md`, iteração 2, PASS; iteração 1 FAIL só por lacunas de teste)
 **Contexto da discussão:** `.specs/features/edicao-exclusao/context.md`
 
 > **Nota de notação:** como na F1, F2 e F3, os critérios de aceite estão em EARS em inglês (WHEN /
@@ -25,15 +25,15 @@ explícita (RN12).
 
 ## Goals
 
-- [ ] O autor edita e exclui as inovações que cadastrou; o administrador edita e exclui as de
+- [x] O autor edita e exclui as inovações que cadastrou; o administrador edita e exclui as de
       qualquer autor; os dois perfis usam as mesmas telas.
-- [ ] Um usuário comum que tenta editar ou excluir uma inovação de outra pessoa recebe HTTP 403 e
+- [x] Um usuário comum que tenta editar ou excluir uma inovação de outra pessoa recebe HTTP 403 e
       nada muda no banco, tanto ao abrir a tela quanto ao enviar a requisição diretamente.
-- [ ] Nenhuma inovação é excluída sem passar pela página de confirmação; abrir a confirmação e
+- [x] Nenhuma inovação é excluída sem passar pela página de confirmação; abrir a confirmação e
       cancelar não apagam nada.
-- [ ] A edição valida os dados com as mesmas regras e mensagens do cadastro, preserva o que foi
+- [x] A edição valida os dados com as mesmas regras e mensagens do cadastro, preserva o que foi
       digitado em caso de erro e oferece "Cancelar" sem gravar.
-- [ ] Depois de editar, a busca da F3 encontra a inovação pelos textos novos e não pelos antigos.
+- [x] Depois de editar, a busca da F3 encontra a inovação pelos textos novos e não pelos antigos.
 
 ## Out of Scope
 
@@ -256,53 +256,53 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| EDEX-01 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-02 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-03 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-04 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-05 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-06 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-07 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-08 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-09 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-10 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-11 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-12 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-13 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-14 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-15 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-16 | P1: Editar uma inovação que cadastrei | Execute | Implementing |
-| EDEX-17 | P1: Curadoria pelo administrador | Execute | Implementing |
-| EDEX-18 | P1: Curadoria pelo administrador | Execute | Implementing |
-| EDEX-19 | P1: Curadoria pelo administrador | Execute | Implementing |
-| EDEX-20 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-21 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-22 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-23 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-24 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-28 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-29 | P1: Negar a alteração de inovações de terceiros | Execute | Implementing |
-| EDEX-30 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-31 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-32 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-33 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-34 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-35 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-36 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-37 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-38 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-39 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-40 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
-| EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
-| EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
-| EDEX-44 | Edge Cases | Execute | Implementing |
-| EDEX-45 | Edge Cases | Execute | Implementing |
+| EDEX-01 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-02 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-03 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-04 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-05 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-06 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-07 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-08 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-09 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-10 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-11 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-12 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-13 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-14 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-15 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-16 | P1: Editar uma inovação que cadastrei | Execute | Verified |
+| EDEX-17 | P1: Curadoria pelo administrador | Execute | Verified |
+| EDEX-18 | P1: Curadoria pelo administrador | Execute | Verified |
+| EDEX-19 | P1: Curadoria pelo administrador | Execute | Verified |
+| EDEX-20 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-21 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-22 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-23 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-24 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-25 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-26 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-27 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-28 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-29 | P1: Negar a alteração de inovações de terceiros | Execute | Verified |
+| EDEX-30 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-31 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-32 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-33 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-34 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-35 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-36 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-37 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-38 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-39 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-40 | P2: Excluir uma inovação com confirmação | Execute | Verified |
+| EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Verified |
+| EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Verified |
+| EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Verified |
+| EDEX-44 | Edge Cases | Execute | Verified |
+| EDEX-45 | Edge Cases | Execute | Verified |
 
-**Coverage:** 45 total, 0 mapped to tasks, 45 unmapped ⚠️ (esperado antes de Design/Tasks)
+**Coverage:** 45 total, 45 mapeados para tasks, 45 verificados (`validation.md`, iteração 2, PASS).
 
 ---
 
@@ -328,13 +328,15 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 
 ## Success Criteria
 
-- [ ] Um `USUARIO` edita e exclui uma inovação própria; um `ADMINISTRADOR` edita e exclui uma
+- [x] Um `USUARIO` edita e exclui uma inovação própria; um `ADMINISTRADOR` edita e exclui uma
       inovação de outro autor; em ambos os casos o autor e a data de criação originais continuam no
       detalhe.
-- [ ] Um `USUARIO` não vê "Editar" nem "Excluir" numa inovação de outra pessoa, e GET e POST nas duas
+- [x] Um `USUARIO` não vê "Editar" nem "Excluir" numa inovação de outra pessoa, e GET e POST nas duas
       rotas respondem 403 sem alterar o banco (provado por teste automatizado para cada combinação
       de rota, método e perfil).
-- [ ] Nenhum caminho apaga uma inovação sem o POST da página de confirmação.
-- [ ] Depois de editar o problema, a busca acha a inovação pela palavra nova e não pela antiga.
+- [x] Nenhum caminho apaga uma inovação sem o POST da página de confirmação.
+- [x] Depois de editar o problema, a busca acha a inovação pela palavra nova e não pela antiga.
 - [ ] Edição, confirmação e acesso negado são operados só com teclado, com rótulos associados e foco
       visível.
+      Estrutura provada em `inovacoes/tests/test_views_acessibilidade_alteracao.py` (EDEX-41 a
+      EDEX-43); o percurso real com teclado aguarda a conferência manual no navegador.
