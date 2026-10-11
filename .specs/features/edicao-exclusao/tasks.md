@@ -440,7 +440,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T12: Acessibilidade da edição, da confirmação e do acesso negado
+### T12: Acessibilidade da edição, da confirmação e do acesso negado ✅
 
 **What**: Evidência de EDEX-41 a EDEX-43 nas três páginas novas.
 **Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
@@ -455,17 +455,19 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] Formulário de edição: todo campo com `label[for]` igual ao `id`; os obrigatórios com `required` e "(obrigatório)" no rótulo; texto de ajuda ligado por `aria-describedby`; com erro, `aria-invalid="true"` e o id da mensagem no `aria-describedby` (EDEX-41)
-- [ ] Nas três páginas (edição, confirmação, acesso negado; parametrizado): nenhum `tabindex` positivo e só controles nativos (`a`, `button`, `input`, `select`, `textarea`) como interativos; o `base.html` mantém a regra `:focus-visible` (EDEX-42)
-- [ ] Nas três páginas: um único `h1` e o `<title>` começando por "Editar inovação", "Excluir inovação" e "Acesso negado" (EDEX-43)
-- [ ] Se a evidência acusar falta, o ajuste no template entra nesta task
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~459 testes passam (+9)
+- [x] Formulário de edição: todo campo com `label[for]` igual ao `id`; os obrigatórios com `required` e "(obrigatório)" no rótulo; texto de ajuda ligado por `aria-describedby`; com erro, `aria-invalid="true"` e o id da mensagem no `aria-describedby` (EDEX-41)
+- [x] Nas três páginas (edição, confirmação, acesso negado; parametrizado): nenhum `tabindex` positivo e só controles nativos (`a`, `button`, `input`, `select`, `textarea`) como interativos; o `base.html` mantém a regra `:focus-visible` (EDEX-42)
+- [x] Nas três páginas: um único `h1` e o `<title>` começando por "Editar inovação", "Excluir inovação" e "Acesso negado" (EDEX-43)
+- [x] Se a evidência acusar falta, o ajuste no template entra nesta task
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~459 testes passam (+9)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a acessibilidade da edicao e da exclusao`
+
+**Status**: ✅ Complete — 466 passed (+13); nenhum ajuste de template: as três páginas já cumpriam as ACs. Reusa Pagina e PAPEIS_DE_CONTROLE de test_views_acessibilidade.py; o acesso negado é aberto pelo terceiro (403); EDEX-41 em quatro testes (rótulo, obrigatório, ajuda, erro)
 
 ---
 

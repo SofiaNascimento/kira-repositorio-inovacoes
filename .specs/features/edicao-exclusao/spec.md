@@ -296,9 +296,9 @@ depois até "Excluir definitivamente"; foco visível em cada passo. No DevTools,
 | EDEX-38 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-39 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
 | EDEX-40 | P2: Excluir uma inovação com confirmação | Execute | Implementing |
-| EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
-| EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
-| EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Specify | Pending |
+| EDEX-41 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
+| EDEX-42 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
+| EDEX-43 | P1: Edição, confirmação e acesso negado acessíveis | Execute | Implementing |
 | EDEX-44 | Edge Cases | Specify | Pending |
 | EDEX-45 | Edge Cases | Specify | Pending |
 
