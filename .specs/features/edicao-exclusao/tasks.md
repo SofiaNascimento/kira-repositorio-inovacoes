@@ -410,7 +410,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T11: Varredura de autoria das rotas de alteração (AD-009)
+### T11: Varredura de autoria das rotas de alteração (AD-009) ✅
 
 **What**: Um teste que varre as rotas de `inovacoes` com `pk` e exige 403 a GET e POST de um terceiro `USUARIO`, sem mudança no banco, salvo a allowlist do detalhe.
 **Where**: `inovacoes/tests/test_controle_autoria.py`
@@ -425,16 +425,18 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] Coleta, pelo resolver, toda rota do namespace `inovacoes` cujo padrão tem `<int:pk>`; `ROTAS_DE_LEITURA = {"inovacoes:detalhe"}` é a única allowlist
-- [ ] Teste parametrizado (rota × GET/POST): `terceiro` logado recebe 403 e a linha da inovação, comparada campo a campo, fica igual (e continua existindo)
-- [ ] Teste de sanidade: a varredura encontra pelo menos `inovacoes:editar` e `inovacoes:excluir`, para que uma coleta vazia não passe em silêncio
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~450 testes passam (+5)
+- [x] Coleta, pelo resolver, toda rota do namespace `inovacoes` cujo padrão tem `<int:pk>`; `ROTAS_DE_LEITURA = {"inovacoes:detalhe"}` é a única allowlist
+- [x] Teste parametrizado (rota × GET/POST): `terceiro` logado recebe 403 e a linha da inovação, comparada campo a campo, fica igual (e continua existindo)
+- [x] Teste de sanidade: a varredura encontra pelo menos `inovacoes:editar` e `inovacoes:excluir`, para que uma coleta vazia não passe em silêncio
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~450 testes passam (+5)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): varre as rotas de alteracao exigindo a regra de autoria`
+
+**Status**: ✅ Complete — 453 passed (+5); as rotas vêm do resolver na coleta (namespace inovacoes, padrão com <int:pk>), sem lista fixa; o POST manda dados válidos e diferentes dos salvos, para que uma regra quebrada gravasse; a sanidade exige que o detalhe seja visto e que editar e excluir estejam na varredura
 
 ---
 
