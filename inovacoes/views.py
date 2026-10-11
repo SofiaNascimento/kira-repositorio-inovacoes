@@ -15,25 +15,21 @@ def _mensagem_de_titulo_duplicado():
     return constraint.get_violation_error_message()
 
 
-# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, INOV-07).
-class InovacaoCreateView(CreateView):
-    """Cadastro de inovacao (RF02), aberto a qualquer perfil (INOV-08)."""
+class GravacaoComTituloUnicoMixin:
+    """Grava o formulario numa transacao e trata a corrida no titulo (INOV-25, EDEX-14).
 
-    form_class = InovacaoForm
-    template_name = "inovacoes/inovacao_form.html"
+    Cada view define a mensagem_de_sucesso, com {titulo}, e pode trocar gravar().
+    """
 
-    def get_initial(self):
-        # INOV-39: pre-preenchido e editavel; o responsavel nem sempre e o autor.
-        usuario = self.request.user
-        nome = usuario.get_full_name() or usuario.get_username()
-        return {"contato": f"{nome} ({usuario.email})"}
+    mensagem_de_sucesso = ""
+
+    def gravar(self, form):
+        return form.save()
 
     def form_valid(self, form):
-        # INOV-04: o autor vem da sessao, nunca do formulario.
-        form.instance.autor = self.request.user
         try:
             with transaction.atomic():
-                self.object = form.save()
+                self.object = self.gravar(form)
         except IntegrityError as erro:
             # INOV-25: dois envios simultaneos passam juntos pela validacao e o
             # segundo bate na constraint. So esse caso vira erro de campo;
@@ -43,9 +39,29 @@ class InovacaoCreateView(CreateView):
                 raise
             form.add_error("titulo", _mensagem_de_titulo_duplicado())
             return self.form_invalid(form)
-        # INOV-28: diz o que aconteceu e com qual registro (RF12).
-        messages.success(self.request, f"Inovação “{self.object.titulo}” cadastrada com sucesso.")
+        # INOV-28, EDEX-06: diz o que aconteceu e com qual registro (RF12).
+        messages.success(self.request, self.mensagem_de_sucesso.format(titulo=self.object.titulo))
         return HttpResponseRedirect(self.get_success_url())
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, INOV-07).
+class InovacaoCreateView(GravacaoComTituloUnicoMixin, CreateView):
+    """Cadastro de inovacao (RF02), aberto a qualquer perfil (INOV-08)."""
+
+    form_class = InovacaoForm
+    template_name = "inovacoes/inovacao_form.html"
+    mensagem_de_sucesso = "Inovação “{titulo}” cadastrada com sucesso."
+
+    def get_initial(self):
+        # INOV-39: pre-preenchido e editavel; o responsavel nem sempre e o autor.
+        usuario = self.request.user
+        nome = usuario.get_full_name() or usuario.get_username()
+        return {"contato": f"{nome} ({usuario.email})"}
+
+    def gravar(self, form):
+        # INOV-04: o autor vem da sessao, nunca do formulario.
+        form.instance.autor = self.request.user
+        return super().gravar(form)
 
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).

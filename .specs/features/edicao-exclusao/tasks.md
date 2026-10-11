@@ -139,7 +139,7 @@ T11 → T12 → T13 → T14
 
 ---
 
-### T2: `GravacaoComTituloUnicoMixin` extraído do cadastro
+### T2: `GravacaoComTituloUnicoMixin` extraído do cadastro ✅
 
 **What**: O tratamento da gravação em transação, da corrida na constraint de título (INOV-25) e da mensagem de sucesso sai de `InovacaoCreateView.form_valid` para um mixin, sem mudança de comportamento.
 **Where**: `inovacoes/views.py`
@@ -154,16 +154,18 @@ T11 → T12 → T13 → T14
 
 **Done when**:
 
-- [ ] `GravacaoComTituloUnicoMixin` com `mensagem_de_sucesso` (formato com `{titulo}`), `gravar(form)` (padrão `form.save()`) e `form_valid(form)` como no design: `transaction.atomic()`, `IntegrityError` só da `inovacao_titulo_unico_por_unidade` vira erro de campo, as demais sobem
-- [ ] `InovacaoCreateView` herda o mixin com `mensagem_de_sucesso = "Inovação “{titulo}” cadastrada com sucesso."`; autor atribuído antes da gravação (INOV-04); `get_initial()` intacto (INOV-39)
-- [ ] Nenhum teste existente alterado: `test_views_cadastro.py` e `test_constraints.py` (INOV-25, INOV-28, INOV-43) passam como estão
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~389 testes passam (+0: refatoração provada pela suíte da F2)
+- [x] `GravacaoComTituloUnicoMixin` com `mensagem_de_sucesso` (formato com `{titulo}`), `gravar(form)` (padrão `form.save()`) e `form_valid(form)` como no design: `transaction.atomic()`, `IntegrityError` só da `inovacao_titulo_unico_por_unidade` vira erro de campo, as demais sobem
+- [x] `InovacaoCreateView` herda o mixin com `mensagem_de_sucesso = "Inovação “{titulo}” cadastrada com sucesso."`; autor atribuído antes da gravação (INOV-04); `get_initial()` intacto (INOV-39)
+- [x] Nenhum teste existente alterado: `test_views_cadastro.py` e `test_constraints.py` (INOV-25, INOV-28, INOV-43) passam como estão
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~389 testes passam (+0: refatoração provada pela suíte da F2)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `refactor(inovacoes): extrai a gravacao com titulo unico do cadastro`
+
+**Status**: ✅ Complete — 389 passed (+0); refatoração provada pela suíte da F2 sem alteração (INOV-25, INOV-28); o autor é atribuído num gravar() próprio do cadastro. Build gate verde. EDEX-06 e EDEX-14 seguem Pending na traceability até a T5 e a T6, que as provam
 
 ---
 
