@@ -5,5 +5,7 @@
 {% block conteudo %}
   <h1>Inovação não encontrada.</h1>
 
-  <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
+  <div class="cartao estado-erro">
+    <p class="acoes acoes--primaria"><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
+  </div>
 {% endblock %}

@@ -6,18 +6,19 @@
   <h1>{{ inovacao.titulo }}</h1>
 
   {# CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
-  <p>Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }}</p>
+  <p class="meta">Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }}</p>
 
   {# EDEX-03, EDEX-24, EDEX-31: so para o autor e o administrador (AD-009). #}
   {% if pode_alterar %}
-    <p>
+    <p class="acoes">
       <a href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a>
       <a href="{% url 'inovacoes:excluir' inovacao.pk %}">Excluir</a>
     </p>
   {% endif %}
 
   {# CONS-42: campos numa lista de descricao; o escape automatico cobre a CONS-17. #}
-  <dl>
+  <div class="cartao">
+  <dl class="ficha">
     <dt>Título</dt>
     <dd>{{ inovacao.titulo }}</dd>
     <dt>Unidade de origem</dt>
@@ -31,10 +32,13 @@
     <dt>Resultado ou impacto</dt>
     <dd>{{ inovacao.resultado|linebreaksbr|default:"Não informado" }}</dd>
     <dt>Status</dt>
-    <dd>{{ inovacao.get_status_display }}</dd>
+    {# DS-12: o texto puro fica no dd (CONS-12); o selo vai na classe. #}
+    <dd class="selo selo--{{ inovacao.status|lower }}">{{ inovacao.get_status_display }}</dd>
     <dt>Contato responsável</dt>
-    <dd>{{ inovacao.contato }}</dd>
+    {# design-spec §10 F3: o contato do responsavel em destaque. #}
+    <dd class="destaque">{{ inovacao.contato }}</dd>
   </dl>
+  </div>
 
   <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

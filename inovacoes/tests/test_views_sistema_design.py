@@ -338,3 +338,161 @@ def test_alertas_tem_borda_esquerda_colorida():
         ("[role=alert]", "error"),
     ]:
         assert re.search(rf"border-left-color\s*:\s*var\(--{cor}\)", _corpos(seletor)), seletor
+
+
+# --- DS-01: as telas so estendem o base -----------------------------------------
+
+RAIZES = [
+    Path(settings.BASE_DIR) / "templates",
+    Path(settings.BASE_DIR) / "contas" / "templates",
+    Path(settings.BASE_DIR) / "inovacoes" / "templates",
+]
+# Pecas incluidas, nao telas: o proprio base, a marca e o grupo de campo.
+PECAS = {"base.html", "marca.html", "inovacoes/campo.html"}
+
+
+def _telas():
+    for raiz in RAIZES:
+        for arquivo in sorted(raiz.rglob("*.html")):
+            nome = arquivo.relative_to(raiz).as_posix()
+            if nome not in PECAS:
+                yield nome, arquivo.read_text()
+
+
+@pytest.mark.unit
+def test_toda_tela_estende_o_base_sem_estilo_proprio():
+    """DS-01."""
+    telas = dict(_telas())
+    assert len(telas) == 8
+    for nome, fonte in telas.items():
+        assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
+        assert "<style" not in fonte, nome
+        assert "style=" not in fonte, nome
+
+
+@pytest.mark.unit
+def test_pecas_e_base_nao_tem_estilo_inline_alem_da_folha_central():
+    """DS-01: o unico style do projeto e o do base, que embute kira.css."""
+    for raiz in RAIZES:
+        for arquivo in raiz.rglob("*.html"):
+            fonte = arquivo.read_text()
+            assert "style=" not in fonte, arquivo
+            estilos = re.findall(r"<style>(.*?)</style>", fonte, re.S)
+            if arquivo.name == "base.html":
+                assert estilos == ['{% include "kira.css" %}']
+            else:
+                assert estilos == [], arquivo
+
+
+# --- DS-12 e DS-13: selo de status ----------------------------------------------
+
+STATUS = [
+    ("EM_TESTE", "em_teste", "Em teste"),
+    ("VALIDADA", "validada", "Validada"),
+    ("DISPONIVEL_PARA_REPLICACAO", "disponivel_para_replicacao", "Disponível para replicação"),
+]
+
+
+@pytest.mark.parametrize(("status", "classe", "rotulo"), STATUS)
+def test_lista_mostra_o_status_num_selo_com_o_rotulo(
+    client, autor, criar_inovacao, status, classe, rotulo
+):
+    """DS-12, na listagem."""
+    criar_inovacao(status=status)
+    client.force_login(autor)
+    html = client.get("/inovacoes/").content.decode()
+    corpo = re.search(r"<tbody>(.*?)</tbody>", html, re.S).group(1)
+    assert re.search(
+        rf'<td>\s*<span class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</span>\s*</td>', corpo
+    )
+
+
+@pytest.mark.parametrize(("status", "classe", "rotulo"), STATUS)
+def test_detalhe_mostra_o_status_num_selo_com_o_rotulo(
+    client, autor, criar_inovacao, status, classe, rotulo
+):
+    """DS-12, no detalhe: o selo vai no proprio dd, com o texto puro (CONS-12)."""
+    inovacao = criar_inovacao(status=status)
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert re.search(
+        rf"<dt>\s*Status\s*</dt>\s*"
+        rf'<dd class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</dd>',
+        html,
+    )
+
+
+@pytest.mark.unit
+def test_cada_status_tem_uma_forma_propria_alem_da_cor():
+    """DS-13: a forma distingue o status sem depender da cor (WCAG 1.4.1)."""
+    formas = []
+    for _, classe, _ in STATUS:
+        regra = _corpos(f".selo--{classe}::before")
+        forma = re.search(r"(border-radius|transform)\s*:\s*([^;]+);", regra)
+        assert forma, classe
+        formas.append(forma.groups())
+    assert len(set(formas)) == len(STATUS)
+    assert re.search(r'content:\s*""', _corpos(".selo::before"))
+
+
+# --- DS-14: botoes --------------------------------------------------------------
+
+
+def _botoes_de_envio(html):
+    conteudo = html[html.index("<main") :]
+    return re.findall(r'<button type="submit"(?: class="([^"]*)")?>\s*(.*?)\s*</button>', conteudo)
+
+
+def test_excluir_definitivamente_usa_o_botao_de_perigo(client, autor, criar_inovacao):
+    """DS-14."""
+    inovacao = criar_inovacao()
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/excluir/").content.decode()
+    assert _botoes_de_envio(html) == [("botao--perigo", "Excluir definitivamente")]
+    assert re.search(r"background\s*:\s*var\(--error\)", _corpos(".botao--perigo"))
+
+
+def test_demais_envios_das_telas_tem_o_estilo_primario(client, autor, criar_inovacao):
+    """DS-14: os outros submits nao trocam o estilo primario do elemento button."""
+    inovacao = criar_inovacao()
+    envios = {"/entrar/": "Entrar"}
+    html = {"/entrar/": client.get("/entrar/").content.decode()}
+    client.force_login(autor)
+    envios |= {
+        "/inovacoes/": "Buscar",
+        "/inovacoes/nova/": "Salvar",
+        f"/inovacoes/{inovacao.pk}/editar/": "Salvar alterações",
+    }
+    for url in list(envios)[1:]:
+        html[url] = client.get(url).content.decode()
+    for url, rotulo in envios.items():
+        assert _botoes_de_envio(html[url]) == [("", rotulo)], url
+    assert re.search(r"background\s*:\s*var\(--brand-blue\)", _corpos("button"))
+
+
+# --- DS-15: login ---------------------------------------------------------------
+
+
+@pytest.mark.django_db
+def test_login_fica_num_card_com_a_marca_no_topo(client):
+    """DS-15."""
+    html = client.get("/entrar/").content.decode()
+    conteudo = html[html.index("<main") :]
+    card = re.search(r'<div class="cartao cartao--estreito">(.*)</form>', conteudo, re.S)
+    assert card
+    dentro = card.group(1)
+    assert dentro.index('<div class="marca">') < dentro.index("<h1>") < dentro.index("<form")
+    assert re.search(r">\s*KIRA\s*<", dentro)
+
+
+# --- DS-16: tabela responsiva ---------------------------------------------------
+
+
+def test_tabela_fica_num_quadro_que_rola_na_horizontal(client, autor, criar_inovacao):
+    """DS-16."""
+    criar_inovacao()
+    client.force_login(autor)
+    html = client.get("/inovacoes/").content.decode()
+    assert re.search(r'<div class="tabela">\s*<table>', html)
+    assert re.search(r"</table>\s*</div>", html)
+    assert re.search(r"overflow-x\s*:\s*auto", _corpos(".tabela"))

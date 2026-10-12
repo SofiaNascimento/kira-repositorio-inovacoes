@@ -128,7 +128,7 @@ elementos recebem estilo por seletor de estrutura ou de papel ARIA, ou por um co
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| DS-01 | P1: Layout | Execute | Pending |
+| DS-01 | P1: Layout | Execute | Implemented |
 | DS-02 | P1: Layout | Execute | Implemented |
 | DS-03 | P1: Layout | Execute | Implemented |
 | DS-04 | P1: Layout | Execute | Implemented |
@@ -139,11 +139,11 @@ elementos recebem estilo por seletor de estrutura ou de papel ARIA, ou por um co
 | DS-09 | P1: Layout | Execute | Implemented |
 | DS-10 | P1: Componentes | Execute | Implemented |
 | DS-11 | P1: Componentes | Execute | Implemented |
-| DS-12 | P1: Componentes | Execute | Pending |
-| DS-13 | P1: Componentes | Execute | Pending |
-| DS-14 | P1: Componentes | Execute | Pending |
-| DS-15 | P1: Componentes | Execute | Pending |
-| DS-16 | P1: Componentes | Execute | Pending |
+| DS-12 | P1: Componentes | Execute | Implemented |
+| DS-13 | P1: Componentes | Execute | Implemented |
+| DS-14 | P1: Componentes | Execute | Implemented |
+| DS-15 | P1: Componentes | Execute | Implemented |
+| DS-16 | P1: Componentes | Execute | Implemented |
 
 **Coverage:** 16 total, 16 mapped to execution steps, 0 unmapped.
 

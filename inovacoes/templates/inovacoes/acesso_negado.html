@@ -6,9 +6,11 @@
   <h1>Acesso negado</h1>
 
   {# EDEX-20: renderizada pela view com 403; o 403.html global e o do admin (AD-009). #}
+  <div class="cartao estado-erro">
   <p>Você não tem permissão para alterar esta inovação.</p>
   <p>Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la.</p>
 
   {# EDEX-21 #}
-  <p><a href="{{ inovacao.get_absolute_url }}">Voltar para a inovação</a></p>
+  <p class="acoes acoes--primaria"><a href="{{ inovacao.get_absolute_url }}">Voltar para a inovação</a></p>
+  </div>
 {% endblock %}

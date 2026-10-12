@@ -6,13 +6,16 @@
   <h1>Excluir inovação</h1>
 
   {# EDEX-30: unidade e categoria distinguem titulos iguais em unidades diferentes (INOV-24). #}
+  <div class="cartao">
   <p>Você vai excluir a inovação “{{ inovacao.titulo }}” ({{ inovacao.unidade.nome }} · {{ inovacao.categoria.nome }}). Esta ação não pode ser desfeita.</p>
 
   {# EDEX-32, RN12: so o POST desta confirmacao apaga; o GET nunca (EDEX-36). #}
-  <form method="post">
+  <form method="post" class="acoes">
     {% csrf_token %}
-    <button type="submit">Excluir definitivamente</button>
+    {# DS-14: a unica acao destrutiva do sistema usa o botao de perigo. #}
+    <button type="submit" class="botao--perigo">Excluir definitivamente</button>
     {# EDEX-33, EDEX-34 #}
     <a href="{{ inovacao.get_absolute_url }}">Cancelar</a>
   </form>
+  </div>
 {% endblock %}

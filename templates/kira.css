@@ -226,6 +226,13 @@ button:active,
 .botao--secundario:hover,
 .acoes > a:hover { background: var(--info-tint); }
 
+/* Primario para links que os testes fixam sem classe (estado vazio, erro). */
+.acoes--primaria > a { background: var(--brand-blue); color: #FFFFFF; }
+.acoes--primaria > a:hover {
+  background: color-mix(in srgb, var(--brand-blue) 92%, #000000);
+  border-color: color-mix(in srgb, var(--brand-blue) 92%, #000000);
+}
+
 .botao--perigo { background: var(--error); border-color: var(--error); }
 .botao--perigo:hover {
   background: color-mix(in srgb, var(--error) 92%, #000000);
@@ -417,6 +424,13 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 .ficha dt { padding-right: var(--space-4); color: var(--text-muted); font-weight: 600; }
 .ficha dt:first-of-type,
 .ficha dd:first-of-type { border-top: 0; }
+/* O status vai no proprio dd (CONS-12 le o texto puro); o selo nao ganha a linha. */
+.ficha dd.selo {
+  align-self: center;
+  margin: var(--space-2) 0;
+  padding: 2px var(--space-3);
+  border: 1px solid currentcolor;
+}
 .ficha .destaque { color: var(--brand-navy); font-weight: 700; }
 
 @media (max-width: 40rem) {

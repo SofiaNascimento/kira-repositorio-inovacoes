@@ -3,22 +3,27 @@
 {% block title %}Entrar{% endblock %}
 
 {% block conteudo %}
-  <h1>Entrar</h1>
+  {# DS-15, design-spec §10 F1: card centralizado com a marca no topo. #}
+  <div class="cartao cartao--estreito">
+    {% include "marca.html" %}
 
-  <form method="post">
-    {% csrf_token %}
+    <h1>Entrar</h1>
 
-    {% if form.non_field_errors %}
-      <div role="alert">
-        {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
-      </div>
-    {% endif %}
+    <form method="post" class="formulario">
+      {% csrf_token %}
 
-    {% for campo in form %}
-      {{ campo.as_field_group }}
-    {% endfor %}
+      {% if form.non_field_errors %}
+        <div role="alert">
+          {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+        </div>
+      {% endif %}
 
-    <input type="hidden" name="next" value="{{ next }}">
-    <button type="submit">Entrar</button>
-  </form>
+      {% for campo in form %}
+        <div class="campo">{{ campo.as_field_group }}</div>
+      {% endfor %}
+
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
 {% endblock %}

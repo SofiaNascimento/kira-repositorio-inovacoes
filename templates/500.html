@@ -9,7 +9,9 @@
 
 {% block conteudo %}
   <h1>Algo deu errado do nosso lado</h1>
-  <p>Não foi possível concluir o pedido agora. Aguarde alguns minutos e tente novamente.</p>
-  <p>Se o problema continuar, avise a equipe responsável pelo sistema.</p>
-  <p><a href="/">Voltar ao início</a></p>
+  <div class="cartao estado-erro">
+    <p>Não foi possível concluir o pedido agora. Aguarde alguns minutos e tente novamente.</p>
+    <p>Se o problema continuar, avise a equipe responsável pelo sistema.</p>
+    <p class="acoes acoes--primaria"><a href="/">Voltar ao início</a></p>
+  </div>
 {% endblock %}
