@@ -128,22 +128,22 @@ elementos recebem estilo por seletor de estrutura ou de papel ARIA, ou por um co
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| DS-01 | P1: Layout | Execute | Implemented |
-| DS-02 | P1: Layout | Execute | Implemented |
-| DS-03 | P1: Layout | Execute | Implemented |
-| DS-04 | P1: Layout | Execute | Implemented |
-| DS-05 | P1: Layout | Execute | Implemented |
-| DS-06 | P1: Layout | Execute | Implemented |
-| DS-07 | P1: Layout | Execute | Implemented |
-| DS-08 | P1: Layout | Execute | Implemented |
-| DS-09 | P1: Layout | Execute | Implemented |
-| DS-10 | P1: Componentes | Execute | Implemented |
-| DS-11 | P1: Componentes | Execute | Implemented |
-| DS-12 | P1: Componentes | Execute | Implemented |
-| DS-13 | P1: Componentes | Execute | Implemented |
-| DS-14 | P1: Componentes | Execute | Implemented |
-| DS-15 | P1: Componentes | Execute | Implemented |
-| DS-16 | P1: Componentes | Execute | Implemented |
+| DS-01 | P1: Layout | Execute | Verified |
+| DS-02 | P1: Layout | Execute | Verified |
+| DS-03 | P1: Layout | Execute | Verified |
+| DS-04 | P1: Layout | Execute | Verified |
+| DS-05 | P1: Layout | Execute | Verified |
+| DS-06 | P1: Layout | Execute | Verified |
+| DS-07 | P1: Layout | Execute | Verified |
+| DS-08 | P1: Layout | Execute | Verified |
+| DS-09 | P1: Layout | Execute | Verified |
+| DS-10 | P1: Componentes | Execute | Verified |
+| DS-11 | P1: Componentes | Execute | Verified |
+| DS-12 | P1: Componentes | Execute | Verified |
+| DS-13 | P1: Componentes | Execute | Verified |
+| DS-14 | P1: Componentes | Execute | Verified |
+| DS-15 | P1: Componentes | Execute | Verified |
+| DS-16 | P1: Componentes | Execute | Verified |
 
 **Coverage:** 16 total, 16 mapped to execution steps, 0 unmapped.
 
@@ -151,6 +151,6 @@ elementos recebem estilo por seletor de estrutura ou de papel ARIA, ou por um co
 
 ## Success Criteria
 
-- [ ] Os 492 testes da F1 à F4 passam sem nenhuma alteração.
-- [ ] Nenhum template de tela tem `<style>` ou `style=`.
-- [ ] O Verifier dá PASS em `validation.md`.
+- [x] Os 492 testes da F1 à F4 passam sem nenhuma alteração.
+- [x] Nenhum template de tela tem `<style>` ou `style=`.
+- [x] O Verifier dá PASS em `validation.md`.
