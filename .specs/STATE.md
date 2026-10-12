@@ -74,6 +74,14 @@
 - **Date**: 2026-10-11
 - **Status**: active
 
+### AD-010
+- **Decision**: O visual do sistema segue `docs/design-spec.md` por um template base único (`templates/base.html`) e uma folha de estilo central (`templates/kira.css`), embutida pelo base em `<style>{% include "kira.css" %}</style>`. Toda tela estende o base e usa só os componentes da folha (`botao`, `campo`, `alerta`, `cartao`, `tabela`, `selo`, `acoes`, `vazio`); nenhuma tela tem `<style>` ou `style=`. HTML que um teste fixa recebe estilo por seletor de papel ARIA ou por contêiner, nunca por atributo novo. A folha não tem `="` nem `<`, e os seletores de atributo vão sem aspas (`[role=alert]`).
+- **Reason**: A §6 da spec de design pede que as telas estendam os componentes sem recriar estilo (H4). O projeto não serve estáticos: não há `STATIC_ROOT` nem servidor de arquivos com `DEBUG=False`, e um `<link>` para `/static/` sairia sem estilo fora do `runserver` de desenvolvimento. Embutir a folha mantém um arquivo só, sem dependência nova, e os testes de foco da F2–F4 (INOV-35, CONS-41, EDEX-42) continuam lendo o CSS real da página. Os testes procuram atributos no HTML por substring (`'role="alert"' not in html`, `aria-invalid`), e o CSS embutido os enganaria se repetisse esse texto.
+- **Trade-off**: Cada página carrega ~14 KB de CSS sem cache do navegador. Quando o deploy servir estáticos (whitenoise ou servidor web), o caminho é mover `kira.css` para `static/` com um `<link>` e ajustar os testes de foco para ler o arquivo; isso exige supersedir esta decisão. Botões e links fixados pelos testes não ganham `aria-current` nem classes próprias, só estilo herdado do contêiner.
+- **Scope**: Todas as telas: F1 a F4 hoje, F5 e F6 (o dashboard e o controle de status entram como componentes novos na mesma folha). Tokens e pares de contraste vigiados por `inovacoes/tests/test_views_sistema_design.py`; todo par novo de cor entra no teste DS-08.
+- **Date**: 2026-10-11
+- **Status**: active
+
 ## Handoff
 
 - **Feature**: edicao-exclusao (F4) — `.specs/features/edicao-exclusao/`. **Concluída** em 2026-10-11: Verifier PASS na iteração 2 e conferência manual 20/20 (`validation.md`). A iteração 1 deu FAIL só por lacunas de teste (mutantes M22, M22b, M23b, M24: contas `USUARIO` com `is_staff`/`is_superuser` sem teste nas rotas e no detalhe, e a varredura presa ao texto `<int:pk>`), corrigidas na Fase 5 (T15–T18).
