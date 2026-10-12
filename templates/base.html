@@ -4,40 +4,42 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}KIRA{% endblock %} · Repositório de Inovações</title>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 60rem; padding: 0 1rem; line-height: 1.5; }
-    header, footer { padding: 1rem 0; }
-    /* RNF09: foco sempre visivel para quem navega pelo teclado. */
-    :focus-visible { outline: 3px solid #1a5fb4; outline-offset: 2px; }
-    .mensagens { list-style: none; padding: 0; }
-    .mensagens li { padding: .5rem 1rem; border-left: 4px solid #1a5fb4; background: #eef3fb; }
-  </style>
+  {# AD-010: a folha central vem embutida; nenhuma tela tem estilo proprio. #}
+  <style>{% include "kira.css" %}</style>
 </head>
 <body>
+  {# DS-03, WCAG 2.4.1: o primeiro elemento focavel da pagina. #}
+  <a class="pular" href="#conteudo">Ir para o conteúdo principal</a>
+
   <header>
-    <strong>KIRA · Repositório de Inovações</strong>
-    {% if user.is_authenticated %}
-      {# INOV-38: o cadastro e alcancavel de qualquer pagina interna. #}
-      <nav aria-label="Principal">
-        <a href="{% url 'inovacoes:lista' %}">Inovações</a>
-        <a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>
-      </nav>
-      {# LogoutView so aceita POST: sair e um formulario, nao um link. #}
-      <form method="post" action="{% url 'contas:sair' %}">
-        {% csrf_token %}
-        <span>{{ user.get_username }}</span>
-        <button type="submit">Sair</button>
-      </form>
-    {% endif %}
-    {% block cabecalho %}{% endblock %}
+    <div class="container cabecalho">
+      {% include "marca.html" with link=True %}
+      {% if user.is_authenticated %}
+        {# INOV-38: o cadastro e alcancavel de qualquer pagina interna. #}
+        <nav aria-label="Principal">
+          <a href="{% url 'inovacoes:lista' %}">Inovações</a>
+          <a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>
+        </nav>
+        <div class="usuario">
+          <span>{{ user.get_username }}</span>
+          {# LogoutView so aceita POST: sair e um formulario, nao um link. #}
+          <form method="post" action="{% url 'contas:sair' %}">
+            {% csrf_token %}
+            <button type="submit" class="botao--secundario">Sair</button>
+          </form>
+        </div>
+      {% endif %}
+      {% block cabecalho %}{% endblock %}
+    </div>
   </header>
 
-  <main>
+  <main id="conteudo">
     <div role="status">
       {% if messages %}
         <ul class="mensagens">
           {% for message in messages %}
-            <li>{{ message }}</li>
+            {# DS-10: a variante do alerta segue o nivel da mensagem. #}
+            <li class="alerta alerta--{{ message.level_tag }}">{{ message }}</li>
           {% endfor %}
         </ul>
       {% endif %}
@@ -47,7 +49,9 @@
   </main>
 
   <footer>
-    <small>KIRA · uso interno</small>
+    <div class="container">
+      <p>KIRA · Repositório de Inovações · uso interno</p>
+    </div>
   </footer>
 </body>
 </html>

@@ -1,0 +1,8 @@
+{% comment %}
+  Marca KIRA (design-spec §1). Sem logo em imagem no repositorio: o nome e a
+  tagline em texto. Com link=True, leva a raiz (cabecalho, §5).
+{% endcomment %}
+{% if link %}<a class="marca" href="{% url 'nucleo:home' %}">{% else %}<div class="marca">{% endif %}
+  <span class="marca__nome">KIRA</span>
+  <span class="marca__tagline">Conhecimento · Inovação · Replicação Administrativa</span>
+{% if link %}</a>{% else %}</div>{% endif %}

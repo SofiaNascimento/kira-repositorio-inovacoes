@@ -129,16 +129,16 @@ elementos recebem estilo por seletor de estrutura ou de papel ARIA, ou por um co
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
 | DS-01 | P1: Layout | Execute | Pending |
-| DS-02 | P1: Layout | Execute | Pending |
-| DS-03 | P1: Layout | Execute | Pending |
-| DS-04 | P1: Layout | Execute | Pending |
-| DS-05 | P1: Layout | Execute | Pending |
-| DS-06 | P1: Layout | Execute | Pending |
-| DS-07 | P1: Layout | Execute | Pending |
-| DS-08 | P1: Layout | Execute | Pending |
-| DS-09 | P1: Layout | Execute | Pending |
-| DS-10 | P1: Componentes | Execute | Pending |
-| DS-11 | P1: Componentes | Execute | Pending |
+| DS-02 | P1: Layout | Execute | Implemented |
+| DS-03 | P1: Layout | Execute | Implemented |
+| DS-04 | P1: Layout | Execute | Implemented |
+| DS-05 | P1: Layout | Execute | Implemented |
+| DS-06 | P1: Layout | Execute | Implemented |
+| DS-07 | P1: Layout | Execute | Implemented |
+| DS-08 | P1: Layout | Execute | Implemented |
+| DS-09 | P1: Layout | Execute | Implemented |
+| DS-10 | P1: Componentes | Execute | Implemented |
+| DS-11 | P1: Componentes | Execute | Implemented |
 | DS-12 | P1: Componentes | Execute | Pending |
 | DS-13 | P1: Componentes | Execute | Pending |
 | DS-14 | P1: Componentes | Execute | Pending |
