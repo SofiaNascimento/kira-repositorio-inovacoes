@@ -3,8 +3,8 @@
   Embutida pelo base.html num elemento style; nenhuma tela tem estilo proprio.
   Cores de texto: so os pares da §2 ou os conferidos pelo teste DS-08.
   Seletores de atributo sem aspas, e nenhum sinal de menor: o CSS vai dentro
-  do HTML, e um atributo escrito aqui como no HTML enganaria quem o procura
-  na pagina (teste DS-02).
+  do HTML, e um atributo escrito aqui como no HTML confundiria quem o procura
+  na pagina (teste DS-02). Pelo mesmo motivo, nenhum nome de usuario dos testes.
 */
 
 /* --- Tokens (§2, §3, §4) ------------------------------------------------- */

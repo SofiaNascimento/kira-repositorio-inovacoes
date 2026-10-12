@@ -105,6 +105,24 @@ def test_folha_central_nao_repete_atributos_do_html():
     assert "<" not in CSS
 
 
+def _nomes_de_usuario_dos_testes():
+    """Usernames que os testes criam; um teste pode procurar qualquer um no HTML."""
+    pastas = [Path(settings.BASE_DIR) / app / "tests" for app in ("contas", "inovacoes")]
+    nomes = set()
+    for arquivo in (a for pasta in pastas for a in pasta.glob("*.py")):
+        for nome in re.findall(r'username=f?"([^"{]+)', arquivo.read_text()):
+            nomes.add(nome.lower())
+    return nomes
+
+
+@pytest.mark.unit
+def test_folha_central_nao_contem_nome_de_usuario_dos_testes():
+    """DS-02, AD-010: o CSS embutido nao satisfaz um `"ana" in html` (AUTH-01) por acaso."""
+    nomes = _nomes_de_usuario_dos_testes()
+    assert "ana" in nomes
+    assert [nome for nome in sorted(nomes) if nome in CSS.lower()] == []
+
+
 # --- DS-03: link de pular -------------------------------------------------------
 
 
@@ -207,7 +225,14 @@ def test_foco_visivel_e_um_anel_de_2px_na_cor_de_acao():
     """DS-07: §6, anel de 2px; contraste do anel conferido no DS-08."""
     regra = _regra(":focus-visible")
     assert re.search(r"outline\s*:\s*2px\s+solid\s+var\(--brand-blue\)", regra)
-    assert not re.search(r"outline\s*:\s*(none|0)\b", CSS)
+    # Nenhuma regra apaga ou afina o anel, nem pelas propriedades longas.
+    for propriedade, valor in re.findall(r"(outline(?:-[a-z]+)?)\s*:\s*([^;}]+)", CSS):
+        valor = valor.strip().lower()
+        assert not re.search(r"\bnone\b|\bhidden\b|\btransparent\b", valor), (propriedade, valor)
+        assert not re.fullmatch(r"0(\.0+)?[a-z%]*", valor.split()[0]), (propriedade, valor)
+        if propriedade in ("outline", "outline-width"):
+            for numero in re.findall(r"(\d*\.?\d+)px", valor):
+                assert float(numero) >= 2, (propriedade, valor)
 
 
 # --- DS-08: contraste -----------------------------------------------------------
