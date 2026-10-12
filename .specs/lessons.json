@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 17,
+  "next_id": 19,
   "lessons": [
     {
       "id": "L-001",
@@ -296,6 +296,42 @@
       ],
       "created": "2026-10-11T18:10:26Z",
       "last_seen": "2026-10-11T18:10:26Z"
+    },
+    {
+      "id": "L-017",
+      "key": "surviving_mutant::when a test forbids removing a css property reject every equivalent form unit suffixed zero longhand properties transparent color not just the keyword",
+      "text": "When a test forbids removing a CSS property, reject every equivalent form (unit-suffixed zero, longhand properties, transparent color), not just the keyword",
+      "signal": "surviving_mutant",
+      "scope": "templates-css",
+      "status": "candidate",
+      "features": [
+        "sistema-de-design"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "S25 inovacoes/tests/test_views_sistema_design.py:210 (templates-css)"
+      ],
+      "created": "2026-10-12T01:01:27Z",
+      "last_seen": "2026-10-12T01:01:27Z"
+    },
+    {
+      "id": "L-018",
+      "key": "surviving_mutant::keep content embedded in every page free of any text that existing tests search for in the page including plain words in comments",
+      "text": "Keep content embedded in every page free of any text that existing tests search for in the page, including plain words in comments",
+      "signal": "surviving_mutant",
+      "scope": "templates-css",
+      "status": "candidate",
+      "features": [
+        "sistema-de-design"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "S26 contas/tests/test_views_home.py:49 vs templates/kira.css:6 (templates-css)"
+      ],
+      "created": "2026-10-12T01:01:27Z",
+      "last_seen": "2026-10-12T01:01:27Z"
     }
   ]
 }

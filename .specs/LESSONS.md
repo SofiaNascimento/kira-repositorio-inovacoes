@@ -108,6 +108,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md M24 (inovacoes/tests/test_controle_autoria.py:26) (tests)
 - last seen: 2026-10-11T18:10:26Z
 
+### L-017 - When a test forbids removing a CSS property, reject every equivalent form (unit-suffixed zero, longhand properties, transparent color), not just the keyword
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `templates-css` · harmful: 0
+- features: sistema-de-design
+- evidence: S25 inovacoes/tests/test_views_sistema_design.py:210 (templates-css)
+- last seen: 2026-10-12T01:01:27Z
+
+### L-018 - Keep content embedded in every page free of any text that existing tests search for in the page, including plain words in comments
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `templates-css` · harmful: 0
+- features: sistema-de-design
+- evidence: S26 contas/tests/test_views_home.py:49 vs templates/kira.css:6 (templates-css)
+- last seen: 2026-10-12T01:01:27Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
