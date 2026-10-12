@@ -261,6 +261,8 @@ button[aria-disabled=true],
 /* --- Campo de formulario (§6) -------------------------------------------- */
 
 .formulario { max-width: 40rem; }
+/* Indicacao de obrigatorio em texto, para o formulario inteiro (§6). */
+.legenda { color: var(--text-muted); font-size: var(--fs-sm); }
 .campo { margin-bottom: var(--space-5); }
 
 label,

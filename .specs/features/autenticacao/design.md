@@ -151,6 +151,18 @@ e é deliberado, porque cada peça pronta usada é uma peça a menos para testar
 - **Dependencies**: `LoginForm`, backends configurados
 - **Reuses**: `LoginView`. O tratamento do `next` (AUTH-10) e a validação de host do destino já vêm
   prontos; não escrevemos redirecionamento à mão.
+- **Tela** (`contas/templates/contas/login.html`, desde o passe visual de 2026-10-11; segue
+  `docs/design-spec.md` §10 F1 e a AD-010): estende o `base.html` e usa só componentes da
+  `templates/kira.css`, sem estilo próprio. Estrutura, de cima para baixo:
+  - card estreito centralizado (`cartao cartao--estreito`) com a marca KIRA no topo e o `h1` "Entrar";
+  - legenda em texto "Os dois campos são obrigatórios." antes dos campos (§6: obrigatoriedade não
+    depende de cor; o rótulo "Usuário ou e-mail" fica como está, fixado pelo teste do `LoginForm`);
+  - credencial inválida: `div role="alert"` com "Usuário ou senha inválidos." antes dos campos;
+    nenhum campo ganha `aria-invalid` nem lista de erro, para não indicar qual falhou (AUTH-03);
+  - campos "Usuário ou e-mail" (`autofocus`) e "Senha", com rótulo visível ligado por `for`, e o
+    botão primário "Entrar". Só controles nativos, na ordem do teclado.
+  - Testes: `contas/tests/test_views_login_acessibilidade.py` e o DS-15 em
+    `inovacoes/tests/test_views_sistema_design.py`.
 
 ### `contas.views.LogoutUsuarioView`
 

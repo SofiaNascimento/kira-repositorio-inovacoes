@@ -12,6 +12,9 @@
     <form method="post" class="formulario">
       {% csrf_token %}
 
+      {# design-spec §6: a obrigatoriedade dita em texto; o rotulo e fixo (AUTH-03). #}
+      <p class="legenda">Os dois campos são obrigatórios.</p>
+
       {% if form.non_field_errors %}
         <div role="alert">
           {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
