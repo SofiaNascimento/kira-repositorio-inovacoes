@@ -3,7 +3,7 @@ from operator import or_
 
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse
@@ -101,6 +101,22 @@ class InovacaoQuerySet(models.QuerySet):
         return self.filter(**filtros)
 
 
+class TransicaoDeStatusRecusada(Exception):
+    """O avanco de status foi recusado e nada foi gravado (STAT-10, STAT-12)."""
+
+
+class StatusDesatualizado(TransicaoDeStatusRecusada):
+    """O status que a pessoa viu nao e mais o gravado (STAT-12, STAT-13)."""
+
+    def __init__(self, status_atual):
+        super().__init__(status_atual)
+        self.status_atual = status_atual
+
+
+class UltimoEstagioDoCiclo(TransicaoDeStatusRecusada):
+    """A inovacao ja esta no estagio final do ciclo (STAT-10)."""
+
+
 # Campos de que texto_busca deriva (AD-008).
 CAMPOS_DA_BUSCA = {"titulo", "problema", "solucao"}
 
@@ -186,6 +202,39 @@ class Inovacao(models.Model):
         return usuario.is_authenticated and (
             usuario.is_administrador or self.autor_id == usuario.pk
         )
+
+    @property
+    def proximo_status(self):
+        """Proximo estagio do ciclo, ou None no ultimo (RN03)."""
+        return PROXIMO_STATUS.get(self.status)
+
+    def avancar_status(self, *, por, status_visto):
+        """AD-011: unico caminho para mudar o status depois do cadastro.
+
+        Avanca um estagio e cria o MudancaDeStatus na mesma transacao (STAT-15).
+        A trava da linha serializa envios simultaneos, e o status visto faz o
+        segundo cair em StatusDesatualizado em vez de pular um estagio
+        (STAT-13). Nao decide autorizacao: a view ja passou pelo mixin (AD-009).
+        Inovacao.DoesNotExist sobe se a inovacao foi apagada (STAT-22).
+        """
+        with transaction.atomic():
+            # O valor gravado, e nao o da instancia: ela pode estar velha.
+            gravado = (
+                Inovacao.objects.select_for_update()
+                .values_list("status", flat=True)
+                .get(pk=self.pk)
+            )
+            if status_visto != gravado:
+                raise StatusDesatualizado(gravado)
+            novo = PROXIMO_STATUS.get(gravado)
+            if novo is None:
+                raise UltimoEstagioDoCiclo()
+            # AD-008: grava pelo save(), so o status; ele nao entra em texto_busca.
+            self.status = novo
+            self.save(update_fields=["status"])
+            return MudancaDeStatus.objects.create(
+                inovacao=self, status_anterior=gravado, status_novo=novo, responsavel=por
+            )
 
     def validate_constraints(self, exclude=None):
         """Leva o erro de titulo duplicado para o campo titulo (INOV-22).

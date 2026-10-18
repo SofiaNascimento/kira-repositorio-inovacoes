@@ -262,13 +262,13 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-06 | P1: Avançar o status | Tasks | In Tasks |
 | STAT-07 | P1: Avançar o status | Tasks | In Tasks |
 | STAT-08 | P1: Avançar o status | Tasks | In Tasks |
-| STAT-09 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-09 | P1: Avançar o status | Execute | Implementing |
 | STAT-10 | P1: Avançar o status | Tasks | In Tasks |
 | STAT-11 | P1: Avançar o status | Tasks | In Tasks |
 | STAT-12 | P1: Avançar o status | Tasks | In Tasks |
 | STAT-13 | P1: Avançar o status | Tasks | In Tasks |
-| STAT-14 | P1: Registrar e dar feedback | Tasks | In Tasks |
-| STAT-15 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-14 | P1: Registrar e dar feedback | Execute | Implementing |
+| STAT-15 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-16 | P1: Registrar e dar feedback | Tasks | In Tasks |
 | STAT-17 | P1: Só autor ou administrador | Tasks | In Tasks |
 | STAT-18 | P1: Só autor ou administrador | Tasks | In Tasks |

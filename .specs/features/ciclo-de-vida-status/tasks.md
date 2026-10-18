@@ -144,7 +144,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T2: `Inovacao.proximo_status` e `Inovacao.avancar_status`
+### T2: `Inovacao.proximo_status` e `Inovacao.avancar_status` ✅
 
 **What**: A propriedade do próximo estágio e o método que avança numa transação com trava, conferência do status visto e criação do histórico, com as exceções de recusa.
 **Where**: `inovacoes/models.py`
@@ -159,17 +159,19 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `TransicaoDeStatusRecusada(Exception)`, `StatusDesatualizado(TransicaoDeStatusRecusada)` com `status_atual`, `UltimoEstagioDoCiclo(TransicaoDeStatusRecusada)`
-- [ ] `proximo_status` devolve `PROXIMO_STATUS.get(self.status)`
-- [ ] `avancar_status(self, *, por, status_visto)` como no design (passos 1 a 6), com comentário citando AD-011
-- [ ] Testes de integração em `inovacoes/tests/test_ciclo_de_vida.py`: `proximo_status` nos três estágios (`None` no último); "Em teste" → "Validada" e "Validada" → "Disponível para replicação", cada um com **um** registro com anterior, novo, `responsavel` e `data` preenchida (STAT-07, STAT-08, STAT-14); estágio final → `UltimoEstagioDoCiclo`, status igual e zero registros (STAT-10 no modelo); `status_visto` diferente, `None` e valor fora do enum → `StatusDesatualizado` com `status_atual` = gravado, nada gravado (STAT-12); dois `avancar_status` seguidos com o mesmo `status_visto` → o segundo recusa, status avançou **um** estágio e há **um** registro (STAT-13); status mudado no banco depois de carregar a instância → recusa pelo valor gravado, não pelo da instância; `CaptureQueriesContext` mostra `FOR UPDATE` na leitura do status (STAT-13); falha forçada ao criar o registro (`mock` em `MudancaDeStatus.objects.create`) → status no banco inalterado (STAT-15); `responsavel` = conta passada em `por` quando ela não é o autor, e `autor` inalterado (STAT-18); inovação apagada antes da chamada → `Inovacao.DoesNotExist`; `texto_busca` inalterado depois do avanço (AD-008)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~603 testes passam (+16)
+- [x] `TransicaoDeStatusRecusada(Exception)`, `StatusDesatualizado(TransicaoDeStatusRecusada)` com `status_atual`, `UltimoEstagioDoCiclo(TransicaoDeStatusRecusada)`
+- [x] `proximo_status` devolve `PROXIMO_STATUS.get(self.status)`
+- [x] `avancar_status(self, *, por, status_visto)` como no design (passos 1 a 6), com comentário citando AD-011
+- [x] Testes de integração em `inovacoes/tests/test_ciclo_de_vida.py`: `proximo_status` nos três estágios (`None` no último); "Em teste" → "Validada" e "Validada" → "Disponível para replicação", cada um com **um** registro com anterior, novo, `responsavel` e `data` preenchida (STAT-07, STAT-08, STAT-14); estágio final → `UltimoEstagioDoCiclo`, status igual e zero registros (STAT-10 no modelo); `status_visto` diferente, `None` e valor fora do enum → `StatusDesatualizado` com `status_atual` = gravado, nada gravado (STAT-12); dois `avancar_status` seguidos com o mesmo `status_visto` → o segundo recusa, status avançou **um** estágio e há **um** registro (STAT-13); status mudado no banco depois de carregar a instância → recusa pelo valor gravado, não pelo da instância; `CaptureQueriesContext` mostra `FOR UPDATE` na leitura do status (STAT-13); falha forçada ao criar o registro (`mock` em `MudancaDeStatus.objects.create`) → status no banco inalterado (STAT-15); `responsavel` = conta passada em `por` quando ela não é o autor, e `autor` inalterado (STAT-18); inovação apagada antes da chamada → `Inovacao.DoesNotExist`; `texto_busca` inalterado depois do avanço (AD-008)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~603 testes passam (+16)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o avanco de status com trava e historico`
+
+**Status**: ✅ Complete — 604 passed (+16); a trava é provada pela primeira leitura capturada (`SELECT` do status terminando em `FOR UPDATE`); o teste da AD-008 muda título e `texto_busca` no banco depois de carregar a instância e confere que o avanço não os reescreve. STAT-07, 08, 10, 12, 13 e 18 ficam In Tasks até as rotas (T3, T4)
 
 ---
 
