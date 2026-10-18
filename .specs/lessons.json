@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 30,
+  "next_id": 33,
   "lessons": [
     {
       "id": "L-001",
@@ -533,6 +533,60 @@
       ],
       "created": "2026-10-18T21:40:53Z",
       "last_seen": "2026-10-18T21:40:53Z"
+    },
+    {
+      "id": "L-030",
+      "key": "surviving_mutant::assert that content is displayed on the parsed dom of the whole page skipping comments template closed details and any ancestor with hidden inert or aria hidden in any case not by regex on the raw html",
+      "text": "Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests)"
+      ],
+      "created": "2026-10-18T21:57:48Z",
+      "last_seen": "2026-10-18T21:57:48Z"
+    },
+    {
+      "id": "L-031",
+      "key": "surviving_mutant::decode html entities before a page wide negative text assertion so an encoded label cannot slip past it",
+      "text": "Decode HTML entities before a page-wide negative text assertion, so an encoded label cannot slip past it",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 6, F17 (STAT-05), inovacoes/tests/test_views_detalhe.py:379,403,415,432 (tests)"
+      ],
+      "created": "2026-10-18T21:57:48Z",
+      "last_seen": "2026-10-18T21:57:48Z"
+    },
+    {
+      "id": "L-032",
+      "key": "spec_precision_gap::when an ac says a control or text shall be displayed state whether it must also be exposed to assistive technology",
+      "text": "When an AC says a control or text SHALL be displayed, state whether it must also be exposed to assistive technology",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 6, F15/F19 (STAT-38, STAT-40) (specs)"
+      ],
+      "created": "2026-10-18T21:57:48Z",
+      "last_seen": "2026-10-18T21:57:48Z"
     }
   ]
 }

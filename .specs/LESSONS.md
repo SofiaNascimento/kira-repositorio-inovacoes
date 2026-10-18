@@ -186,6 +186,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 5, E17 (STAT-03, STAT-34), inovacao_detail.html:63 (specs)
 - last seen: 2026-10-18T21:40:53Z
 
+### L-030 - Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests)
+- last seen: 2026-10-18T21:57:48Z
+
+### L-031 - Decode HTML entities before a page-wide negative text assertion, so an encoded label cannot slip past it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 6, F17 (STAT-05), inovacoes/tests/test_views_detalhe.py:379,403,415,432 (tests)
+- last seen: 2026-10-18T21:57:48Z
+
+### L-032 - When an AC says a control or text SHALL be displayed, state whether it must also be exposed to assistive technology
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 6, F15/F19 (STAT-38, STAT-40) (specs)
+- last seen: 2026-10-18T21:57:48Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
