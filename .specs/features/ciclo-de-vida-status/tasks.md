@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — passe de design: T16–T22 feitas; Verifier iterações 4 e 5 FAIL só por lacunas de teste → Fases 9 e 10 concluídas → aguardando o Verifier, iteração 6 (última rodada autorizada para o passe). Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
+**Status**: ✅ Concluída com ressalva — T1–T22. Passe de design (Fases 8–10) fechado em 2026-10-18: Verifier FAIL nas iterações 4–6 só por lacunas de teste (template conforme desde a T16); o usuário aceitou o risco residual de teste (checagens de exibição por regex: STAT-01, 03, 04, 05, 38–41), além do risco da STAT-37 aceito antes (`validation.md`, as duas Decisões do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 

@@ -6,7 +6,7 @@
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e o 404 "Inovação não encontrada." (CONS-15) · filtro por status da listagem (CONS-27), que passa a refletir o status avançado
 **Reusa da F4:** `AlteracaoDeInovacaoMixin` e a página de acesso negado (EDEX-20, EDEX-21) · padrão de confirmação por página com POST (EDEX-30 a EDEX-36) · varredura de autoria de `inovacoes/tests/test_controle_autoria.py`, que passa a cobrir a rota nova sem mudança · EDEX-08 continua valendo: a edição não muda o status
 **Altera a F3/F4:** o detalhe ganha a seção "Ciclo de vida" (estágios, ação de avançar e histórico) — ver STAT-01 a STAT-05, STAT-24 a STAT-27 e STAT-38 a STAT-41
-**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · implementada em 2026-10-18; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual da STAT-37 aceito pelo usuário (`validation.md`) · **passe de design em 2026-10-18** (design-spec §10 F5): STAT-04 e STAT-05 emendadas, STAT-38 a STAT-41 novas
+**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · implementada em 2026-10-18; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual da STAT-37 aceito pelo usuário (`validation.md`) · **passe de design em 2026-10-18** (design-spec §10 F5): STAT-04 e STAT-05 emendadas, STAT-38 a STAT-41 novas · passe de design fechado com risco residual de teste aceito pelo usuário (Verifier FAIL na iteração 6)
 **Escopo (auto-sizing):** **Large** — o mapa previa Medium, mas o histórico de mudanças acrescenta modelo, migration e tela de confirmação. Roda Design e Tasks formais.
 **Contexto da discussão:** `.specs/features/ciclo-de-vida-status/context.md`
 
@@ -260,11 +260,11 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| STAT-01 | P1: Ver o estágio | Execute | Verified |
+| STAT-01 | P1: Ver o estágio | Execute | Implementing (risco residual aceito) |
 | STAT-02 | P1: Ver o estágio | Execute | Verified |
-| STAT-03 | P1: Ver o estágio | Execute | Verified |
-| STAT-04 | P1: Ver o estágio | Execute | Implementing (emendada) |
-| STAT-05 | P1: Ver o estágio | Execute | Implementing (emendada) |
+| STAT-03 | P1: Ver o estágio | Execute | Implementing (risco residual aceito) |
+| STAT-04 | P1: Ver o estágio | Execute | Implementing (risco residual aceito, emendada) |
+| STAT-05 | P1: Ver o estágio | Execute | Implementing (risco residual aceito, emendada) |
 | STAT-06 | P1: Avançar o status | Execute | Verified |
 | STAT-07 | P1: Avançar o status | Execute | Verified |
 | STAT-08 | P1: Avançar o status | Execute | Verified |
@@ -297,14 +297,14 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-35 | Edge Cases | Execute | Verified |
 | STAT-36 | Edge Cases | Execute | Verified |
 | STAT-37 | P1: Acessível | Execute | Implementing (risco residual aceito) |
-| STAT-38 | P1: Ver o estágio | Execute | Implementing |
-| STAT-39 | P1: Ver o estágio | Execute | Implementing |
-| STAT-40 | P1: Ver o estágio | Execute | Implementing |
-| STAT-41 | P1: Acessível | Execute | Implementing (emendada) |
+| STAT-38 | P1: Ver o estágio | Execute | Implementing (risco residual aceito) |
+| STAT-39 | P1: Ver o estágio | Execute | Implementing (risco residual aceito) |
+| STAT-40 | P1: Ver o estágio | Execute | Implementing (risco residual aceito) |
+| STAT-41 | P1: Acessível | Execute | Implementing (risco residual aceito, emendada) |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 
-**Coverage:** 41 total (37 originais + STAT-38 a STAT-41 do passe de design de 2026-10-18), 41 mapeados para tasks (T1 a T17). 34 `Verified` (`validation.md`, iterações 1–3); STAT-04 e STAT-05 emendadas e STAT-38 a STAT-41 novas voltam a `In Tasks`; STAT-37 fica `Implementing` com risco residual aceito pelo usuário (`validation.md`, Decisão do usuário).
+**Coverage:** 41 total, 41 mapeados para tasks (T1 a T22). 32 `Verified`. Nove ficam `Implementing (risco residual aceito)`: STAT-37 (contraste, aceito em 2026-10-18 depois da iteração 3) e STAT-01, 03, 04, 05, 38, 39, 40, 41 (checagens de exibição por regex, aceito em 2026-10-18 depois da iteração 6). Produção conforme em todas (`validation.md`, as duas Decisões do usuário).
 
 ---
 

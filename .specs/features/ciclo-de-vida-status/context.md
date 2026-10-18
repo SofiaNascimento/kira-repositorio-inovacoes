@@ -65,3 +65,4 @@ Nenhuma área foi recusada: as quatro propostas foram discutidas e decididas pel
 - Notificar o autor quando outra pessoa avançar a inovação.
 - Teste de contraste do ciclo e do histórico que leia toda regra cujo seletor **contenha** `.ciclo`/`.historico` (não só as que começam pela classe) e exija cada uma na `CADEIA_DO_COMPONENTE` — fecha o risco residual A6/A7 da STAT-37 aceito no fechamento da F5 (`validation.md`, Decisão do usuário).
 - Emendar STAT-06/STAT-34 para "o `<title>` começa por 'Avançar status'" na próxima revisão da spec.
+- Helper de testes que analise a página inteira como DOM (ignora comentários, `<template>` e `<details>` fechado; herda `hidden`/`inert`/`aria-hidden` de qualquer ancestral sem depender de caixa ou aspas; decodifica entidades) e substitua as checagens por regex de exibição do ciclo — fecha o risco residual F1–F18 do passe de design aceito em 2026-10-18 (`validation.md`).
