@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 19,
+  "next_id": 22,
   "lessons": [
     {
       "id": "L-001",
@@ -332,6 +332,60 @@
       ],
       "created": "2026-10-12T01:01:27Z",
       "last_seen": "2026-10-12T01:01:27Z"
+    },
+    {
+      "id": "L-019",
+      "key": "surviving_mutant::when a page lists the child records of one parent seed records of another parent and assert they are not listed",
+      "text": "When a page lists the child records of one parent, seed records of another parent and assert they are not listed",
+      "signal": "surviving_mutant",
+      "scope": "views",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M11 (inovacoes/views.py:132, STAT-24) (views)"
+      ],
+      "created": "2026-10-18T20:17:58Z",
+      "last_seen": "2026-10-18T20:17:58Z"
+    },
+    {
+      "id": "L-020",
+      "key": "surviving_mutant::check color contrast on the text and background pair each rule renders not on each color token s membership in an approved set",
+      "text": "Check color contrast on the text and background pair each rule renders, not on each color token's membership in an approved set",
+      "signal": "surviving_mutant",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M27 (templates/kira.css:510, STAT-37) (css)"
+      ],
+      "created": "2026-10-18T20:17:59Z",
+      "last_seen": "2026-10-18T20:17:59Z"
+    },
+    {
+      "id": "L-021",
+      "key": "spec_precision_gap::when the base layout appends a site suffix to the page title write title criteria as starting with the page name not as an exact value",
+      "text": "When the base layout appends a site suffix to the page title, write title criteria as starting with the page name, not as an exact value",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "STAT-06/STAT-34 title, test_views_status.py:50 (specs)"
+      ],
+      "created": "2026-10-18T20:17:59Z",
+      "last_seen": "2026-10-18T20:17:59Z"
     }
   ]
 }

@@ -120,6 +120,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: S26 contas/tests/test_views_home.py:49 vs templates/kira.css:6 (templates-css)
 - last seen: 2026-10-12T01:01:27Z
 
+### L-019 - When a page lists the child records of one parent, seed records of another parent and assert they are not listed
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `views` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md M11 (inovacoes/views.py:132, STAT-24) (views)
+- last seen: 2026-10-18T20:17:58Z
+
+### L-020 - Check color contrast on the text and background pair each rule renders, not on each color token's membership in an approved set
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md M27 (templates/kira.css:510, STAT-37) (css)
+- last seen: 2026-10-18T20:17:59Z
+
+### L-021 - When the base layout appends a site suffix to the page title, write title criteria as starting with the page name, not as an exact value
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: STAT-06/STAT-34 title, test_views_status.py:50 (specs)
+- last seen: 2026-10-18T20:17:59Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
