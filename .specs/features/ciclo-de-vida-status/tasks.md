@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — passe de design (Fase 8, T16–T17) sobre a F5 concluída com ressalva em 2026-10-18 (T1–T15; risco residual da STAT-37 aceito pelo usuário, `validation.md`)
+**Status**: ✅ Concluída com ressalva — T1–T17. Passe de design (Fase 8, T16–T17) concluído em 2026-10-18, aguardando o Verifier. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -631,7 +631,7 @@ T16 → T17
 
 ---
 
-### T17: Acessibilidade do controle de transição
+### T17: Acessibilidade do controle de transição ✅
 
 **What**: A evidência da STAT-41 e da STAT-34 para o botão desabilitado e para a ajuda do link.
 **Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
@@ -646,14 +646,16 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e: no detalhe em estágio final visto pelo autor, o `button` tem `type="button"`, `aria-disabled="true"`, nenhum atributo `disabled`, nenhum `tabindex` positivo, não está dentro de `form` e tem `aria-describedby` apontando para um elemento existente cujo texto é "Último estágio do ciclo." (STAT-41); no detalhe com próximo estágio, o link "Avançar para" tem `aria-describedby` apontando para o texto exato da STAT-40 (STAT-41); a seção do ciclo no estágio final passa pelo critério de controles nativos e o CSS real da página dá foco visível ao botão (STAT-34)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~699 testes passam (+~4)
+- [x] Testes e2e: no detalhe em estágio final visto pelo autor, o `button` tem `type="button"`, `aria-disabled="true"`, nenhum atributo `disabled`, nenhum `tabindex` positivo, não está dentro de `form` e tem `aria-describedby` apontando para um elemento existente cujo texto é "Último estágio do ciclo." (STAT-41); no detalhe com próximo estágio, o link "Avançar para" tem `aria-describedby` apontando para o texto exato da STAT-40 (STAT-41); a seção do ciclo no estágio final passa pelo critério de controles nativos e o CSS real da página dá foco visível ao botão (STAT-34)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~699 testes passam (+~4)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): prova a acessibilidade do controle de transicao`
+
+**Status**: ✅ Complete — 704 passed (+4); o botão do estágio final passa pelo critério da EDEX-42 e tem `type="button"`, `aria-disabled="true"`, nenhum `disabled`, nenhum `tabindex` positivo, fica fora de `form` e o `aria-describedby` resolve para "Último estágio do ciclo."; o link de avançar resolve para a ajuda exata da STAT-40, em "Em teste" e "Validada"; `PAGINAS_DO_CICLO` ganhou `detalhe_final`, e o teste de foco visível passa a cobrir a página do botão. Build gate verde
 
 ---
 

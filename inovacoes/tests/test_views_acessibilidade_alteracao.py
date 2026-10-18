@@ -163,6 +163,8 @@ PAGINAS_DO_CICLO = {
     "avancar": (StatusInovacao.EM_TESTE, "status/"),
     "ultimo_estagio": (StatusInovacao.DISPONIVEL_PARA_REPLICACAO, "status/"),
     "detalhe": (StatusInovacao.VALIDADA, ""),
+    # STAT-41: o detalhe no estagio final, com o botao "Avancar status" desabilitado.
+    "detalhe_final": (StatusInovacao.DISPONIVEL_PARA_REPLICACAO, ""),
 }
 # Secao do detalhe -> (id do h2, texto do h2, classe da lista).
 SECOES_DO_CICLO = {
@@ -291,3 +293,48 @@ def test_estagio_atual_e_identificavel_sem_css(client, autor, criar_inovacao):
         for item in re.findall(r"<li\b[^>]*>(.*?)</li>", trecho, re.S)
     ]
     assert itens == ["Em teste", "Validada (status atual)", "Disponível para replicação"]
+
+
+# --- STAT-41: controle de transicao do ciclo (passe de design) -------------------
+
+
+def _texto_do_id(html, id_):
+    achado = re.search(rf'<(\w+)\b[^>]*\bid="{id_}"[^>]*>(.*?)</\1>', html, re.S)
+    assert achado, f"falta o elemento #{id_}"
+    return " ".join(re.sub(r"<[^>]+>", "", achado.group(2)).split())
+
+
+def _ciclo_do_autor(client, autor, criar_inovacao, status):
+    inovacao = criar_inovacao(status=status)
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    return _secao(html, "ciclo-titulo")
+
+
+def test_botao_desabilitado_continua_focavel_e_le_a_explicacao(client, autor, criar_inovacao):
+    """STAT-41, STAT-34: aria-disabled sem disabled, sem acao e descrito pelo texto."""
+    trecho = _ciclo_do_autor(
+        client, autor, criar_inovacao, StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+    )
+    parser = _analisar(trecho)
+    _afirma_so_nativos(parser)
+    botoes = [(a, no_form) for tag, a, no_form in parser.elementos if tag == "button"]
+    assert len(botoes) == 1
+    atributos, no_form = botoes[0]
+    assert atributos.get("type") == "button"
+    assert atributos.get("aria-disabled") == "true"
+    assert "disabled" not in atributos
+    assert int(atributos.get("tabindex", "0")) <= 0
+    assert no_form is False
+    assert _texto_do_id(trecho, atributos["aria-describedby"]) == "Último estágio do ciclo."
+
+
+@pytest.mark.parametrize("status", [StatusInovacao.EM_TESTE, StatusInovacao.VALIDADA], ids=str)
+def test_link_de_avancar_e_descrito_pela_ajuda(client, autor, criar_inovacao, status):
+    """STAT-41: o link "Avancar para" aponta para a ajuda de um estagio por vez."""
+    trecho = _ciclo_do_autor(client, autor, criar_inovacao, status)
+    links = [a for tag, a, _ in _analisar(trecho).elementos if tag == "a"]
+    assert len(links) == 1
+    assert _texto_do_id(trecho, links[0]["aria-describedby"]) == (
+        "O status avança um estágio por vez e não volta ao anterior."
+    )

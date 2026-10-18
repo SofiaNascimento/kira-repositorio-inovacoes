@@ -300,7 +300,7 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-38 | P1: Ver o estágio | Execute | Implementing |
 | STAT-39 | P1: Ver o estágio | Execute | Implementing |
 | STAT-40 | P1: Ver o estágio | Execute | Implementing |
-| STAT-41 | P1: Acessível | Tasks | In Tasks |
+| STAT-41 | P1: Acessível | Execute | Implementing |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 
