@@ -3,9 +3,10 @@
 import re
 
 import pytest
-from pytest_django.asserts import assertTemplateUsed
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao
+from inovacoes.views import InovacaoStatusView
 
 EM_TESTE = StatusInovacao.EM_TESTE
 VALIDADA = StatusInovacao.VALIDADA
@@ -131,4 +132,171 @@ def test_id_sem_inovacao_na_confirmacao_responde_404_com_pagina_propria(client, 
     assert resposta.status_code == 404
     assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
     assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", resposta.content.decode())
+    assert MudancaDeStatus.objects.count() == 0
+
+
+# --- Avanco do status (POST) ---------------------------------------------------
+
+
+def _conflito(rotulo):
+    return (
+        f"O status desta inovação já foi alterado para “{rotulo}”. "
+        "Confira o status atual antes de avançar."
+    )
+
+
+def _sucesso(anterior, novo):
+    return f"Status da inovação “Controle de Caixa” alterado de “{anterior}” para “{novo}”."
+
+
+def _mensagens(html):
+    """Itens da regiao role="status" do base, com o nivel de cada um."""
+    inicio = html.index('<div role="status">')
+    regiao = html[inicio : html.index("</div>", inicio)]
+    return re.findall(r'<li class="alerta alerta--(\w+)">(.*?)</li>', regiao, re.S)
+
+
+def _avancar(logado, inovacao, status_visto):
+    dados = {} if status_visto is None else {"status_visto": status_visto}
+    return logado.post(_status(inovacao), dados, follow=True)
+
+
+def _afirma_volta_ao_detalhe(resposta, inovacao):
+    assert resposta.redirect_chain == [(f"/inovacoes/{inovacao.pk}/", 302)]
+    assertTemplateUsed(resposta, "inovacoes/inovacao_detail.html")
+
+
+def test_autor_avanca_de_em_teste_para_validada(client, autor, criar_inovacao):
+    """STAT-07, STAT-14, STAT-16, STAT-17: 302 ao detalhe, novo status, registro e mensagem."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    resposta = logado.post(_status(inovacao), {"status_visto": EM_TESTE})
+    assertRedirects(resposta, f"/inovacoes/{inovacao.pk}/", fetch_redirect_response=False)
+    assert _status_no_banco(inovacao) == VALIDADA
+    registro = MudancaDeStatus.objects.get()
+    assert (registro.inovacao_id, registro.status_anterior, registro.status_novo) == (
+        inovacao.pk,
+        EM_TESTE,
+        VALIDADA,
+    )
+    assert registro.responsavel == autor
+    detalhe = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _mensagens(detalhe) == [("success", _sucesso("Em teste", "Validada"))]
+
+
+def test_mensagem_de_sucesso_nao_reaparece_ao_recarregar(client, autor, criar_inovacao):
+    """STAT-16: a mensagem aparece uma vez so."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    resposta = _avancar(logado, inovacao, EM_TESTE)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _mensagens(resposta.content.decode()) == [("success", _sucesso("Em teste", "Validada"))]
+    recarregado = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _mensagens(recarregado) == []
+    assert "alterado de" not in recarregado
+
+
+def test_autor_avanca_de_validada_para_disponivel(client, autor, criar_inovacao):
+    """STAT-08, STAT-17: o segundo passo do ciclo."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    resposta = _avancar(_entrar(client, autor), inovacao, VALIDADA)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _status_no_banco(inovacao) == DISPONIVEL
+    registro = MudancaDeStatus.objects.get()
+    assert (registro.status_anterior, registro.status_novo) == (VALIDADA, DISPONIVEL)
+    assert _mensagens(resposta.content.decode()) == [
+        ("success", _sucesso("Validada", "Disponível para replicação"))
+    ]
+
+
+def test_administrador_avanca_a_inovacao_de_outro_autor(
+    client, autor, administrador, criar_inovacao
+):
+    """STAT-18: avanca, o autor continua e o administrador fica como responsavel."""
+    inovacao = criar_inovacao()
+    resposta = _avancar(_entrar(client, administrador), inovacao, EM_TESTE)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    gravada = Inovacao.objects.get(pk=inovacao.pk)
+    assert gravada.status == VALIDADA
+    assert gravada.autor == autor
+    assert MudancaDeStatus.objects.get().responsavel == administrador
+    assert _mensagens(resposta.content.decode()) == [("success", _sucesso("Em teste", "Validada"))]
+
+
+def test_envio_no_ultimo_estagio_avisa_e_nao_grava(client, autor, criar_inovacao):
+    """STAT-10 (POST): status igual, nenhum registro e o aviso do estagio final."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    resposta = _avancar(_entrar(client, autor), inovacao, DISPONIVEL)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _status_no_banco(inovacao) == DISPONIVEL
+    assert MudancaDeStatus.objects.count() == 0
+    assert _mensagens(resposta.content.decode()) == [("warning", ULTIMO_ESTAGIO)]
+
+
+@pytest.mark.parametrize("status_visto", [None, VALIDADA, "APROVADA"])
+def test_status_visto_ausente_ou_diferente_avisa_e_nao_grava(
+    client, autor, criar_inovacao, status_visto
+):
+    """STAT-12: o aviso cita o status gravado; nada muda."""
+    inovacao = criar_inovacao()
+    resposta = _avancar(_entrar(client, autor), inovacao, status_visto)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _status_no_banco(inovacao) == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+    assert _mensagens(resposta.content.decode()) == [("warning", _conflito("Em teste"))]
+
+
+def test_reenvio_da_mesma_confirmacao_avanca_um_estagio_so(client, autor, criar_inovacao):
+    """STAT-13: duplo clique ou Voltar e reenviar."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, autor)
+    _avancar(logado, inovacao, EM_TESTE)
+    resposta = _avancar(logado, inovacao, EM_TESTE)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _status_no_banco(inovacao) == VALIDADA
+    assert MudancaDeStatus.objects.count() == 1
+    assert _mensagens(resposta.content.decode()) == [("warning", _conflito("Validada"))]
+
+
+def test_status_mudado_durante_o_envio_avisa_e_nao_grava(
+    client, autor, criar_inovacao, monkeypatch
+):
+    """STAT-13, mesma requisicao: outra pessoa avanca entre o dispatch() e a trava."""
+    inovacao = criar_inovacao()
+    post = InovacaoStatusView.post
+
+    def avancar_antes(self, request, *args, **kwargs):
+        Inovacao.objects.filter(pk=self.object.pk).update(status=VALIDADA)
+        return post(self, request, *args, **kwargs)
+
+    monkeypatch.setattr(InovacaoStatusView, "post", avancar_antes)
+    resposta = _avancar(_entrar(client, autor), inovacao, EM_TESTE)
+    _afirma_volta_ao_detalhe(resposta, inovacao)
+    assert _status_no_banco(inovacao) == VALIDADA
+    assert MudancaDeStatus.objects.count() == 0
+    assert _mensagens(resposta.content.decode()) == [("warning", _conflito("Validada"))]
+
+
+def test_inovacao_excluida_durante_o_envio_responde_404(client, autor, criar_inovacao, monkeypatch):
+    """STAT-22, mesma requisicao: a linha some entre o dispatch() e a trava."""
+    inovacao = criar_inovacao()
+    post = InovacaoStatusView.post
+
+    def apagar_antes(self, request, *args, **kwargs):
+        Inovacao.objects.filter(pk=self.object.pk).delete()
+        return post(self, request, *args, **kwargs)
+
+    monkeypatch.setattr(InovacaoStatusView, "post", apagar_antes)
+    resposta = _entrar(client, autor).post(_status(inovacao), {"status_visto": EM_TESTE})
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    assert Inovacao.objects.count() == 0
+    assert MudancaDeStatus.objects.count() == 0
+
+
+def test_envio_para_id_sem_inovacao_responde_404(client, autor):
+    """STAT-22 (POST): o 404 da CONS-15, sem registro."""
+    resposta = _entrar(client, autor).post("/inovacoes/999999/status/", {"status_visto": EM_TESTE})
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
     assert MudancaDeStatus.objects.count() == 0

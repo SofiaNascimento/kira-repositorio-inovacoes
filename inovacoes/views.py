@@ -6,7 +6,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from inovacoes.forms import BuscaForm, InovacaoForm
-from inovacoes.models import Inovacao
+from inovacoes.models import Inovacao, StatusDesatualizado, StatusInovacao, UltimoEstagioDoCiclo
 
 CONSTRAINT_TITULO = "inovacao_titulo_unico_por_unidade"
 
@@ -206,6 +206,37 @@ class InovacaoStatusView(AlteracaoDeInovacaoMixin, DetailView):
             mensagem_ultimo_estagio=MENSAGEM_ULTIMO_ESTAGIO,
             **kwargs,
         )
+
+    def post(self, request, *args, **kwargs):
+        # O mixin ja negou o terceiro (403) e o id inexistente (404) no dispatch().
+        inovacao = self.object
+        try:
+            mudanca = inovacao.avancar_status(
+                por=request.user, status_visto=request.POST.get("status_visto")
+            )
+        except StatusDesatualizado as recusa:
+            # STAT-12, STAT-13: reenvio, duplo clique ou outra pessoa avancou antes.
+            atual = StatusInovacao(recusa.status_atual).label
+            messages.warning(
+                request,
+                f"O status desta inovação já foi alterado para “{atual}”. "
+                "Confira o status atual antes de avançar.",
+            )
+        except UltimoEstagioDoCiclo:
+            # STAT-10 (POST): o mesmo texto do GET, como aviso.
+            messages.warning(request, MENSAGEM_ULTIMO_ESTAGIO)
+        except Inovacao.DoesNotExist:
+            # STAT-22: apagada entre o dispatch() e a trava; o 404 da CONS-15.
+            return _inovacao_nao_encontrada(request)
+        else:
+            # STAT-16: diz o que mudou e em qual inovacao (RF12).
+            messages.success(
+                request,
+                f"Status da inovação “{inovacao.titulo}” alterado de "
+                f"“{mudanca.get_status_anterior_display()}” para "
+                f"“{mudanca.get_status_novo_display()}”.",
+            )
+        return HttpResponseRedirect(inovacao.get_absolute_url())
 
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).

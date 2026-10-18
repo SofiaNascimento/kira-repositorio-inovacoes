@@ -208,7 +208,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T4: Avanço do status (POST) com mensagens de sucesso e de aviso
+### T4: Avanço do status (POST) com mensagens de sucesso e de aviso ✅
 
 **What**: O `post()` da `InovacaoStatusView`: chama `avancar_status` e traduz sucesso, status desatualizado, estágio final e inovação apagada em redirect com mensagem ou 404.
 **Where**: `inovacoes/views.py`
@@ -223,15 +223,17 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `post()` como no design: sucesso → `messages.success` com os rótulos; `StatusDesatualizado` → `messages.warning` com o rótulo gravado; `UltimoEstagioDoCiclo` → `messages.warning(MENSAGEM_ULTIMO_ESTAGIO)`; os três → 302 para o detalhe; `Inovacao.DoesNotExist` → `_inovacao_nao_encontrada`
-- [ ] Testes e2e em `inovacoes/tests/test_views_status.py`: autor `USUARIO` envia `status_visto=EM_TESTE` → 302 para o detalhe, status "Validada", um registro com o autor como responsável, e no detalhe seguido a mensagem "Status da inovação “<título>” alterado de “Em teste” para “Validada”." dentro de `role="status"` (STAT-07, STAT-16, STAT-17); recarregar o detalhe → a mensagem some (STAT-16); de "Validada" → "Disponível para replicação" (STAT-08); `administrador` na inovação de outro autor → avança, autor inalterado, administrador como responsável (STAT-18); POST no estágio final → status igual, zero registros, aviso com `MENSAGEM_ULTIMO_ESTAGIO` (STAT-10); `status_visto` ausente e diferente → status igual, zero registros novos, aviso "O status desta inovação já foi alterado para “<rótulo gravado>”. Confira o status atual antes de avançar." (STAT-12); **reenvio do mesmo POST** → o segundo cai no aviso, status avançou um estágio e há um registro (STAT-13); status mudado entre o `dispatch()` e o método (monkeypatch, padrão da EDEX-29) → aviso, nada gravado (STAT-13); inovação apagada entre o `dispatch()` e o método → 404 da CONS-15, nada criado (STAT-22)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~625 testes passam (+12)
+- [x] `post()` como no design: sucesso → `messages.success` com os rótulos; `StatusDesatualizado` → `messages.warning` com o rótulo gravado; `UltimoEstagioDoCiclo` → `messages.warning(MENSAGEM_ULTIMO_ESTAGIO)`; os três → 302 para o detalhe; `Inovacao.DoesNotExist` → `_inovacao_nao_encontrada`
+- [x] Testes e2e em `inovacoes/tests/test_views_status.py`: autor `USUARIO` envia `status_visto=EM_TESTE` → 302 para o detalhe, status "Validada", um registro com o autor como responsável, e no detalhe seguido a mensagem "Status da inovação “<título>” alterado de “Em teste” para “Validada”." dentro de `role="status"` (STAT-07, STAT-16, STAT-17); recarregar o detalhe → a mensagem some (STAT-16); de "Validada" → "Disponível para replicação" (STAT-08); `administrador` na inovação de outro autor → avança, autor inalterado, administrador como responsável (STAT-18); POST no estágio final → status igual, zero registros, aviso com `MENSAGEM_ULTIMO_ESTAGIO` (STAT-10); `status_visto` ausente e diferente → status igual, zero registros novos, aviso "O status desta inovação já foi alterado para “<rótulo gravado>”. Confira o status atual antes de avançar." (STAT-12); **reenvio do mesmo POST** → o segundo cai no aviso, status avançou um estágio e há um registro (STAT-13); status mudado entre o `dispatch()` e o método (monkeypatch, padrão da EDEX-29) → aviso, nada gravado (STAT-13); inovação apagada entre o `dispatch()` e o método → 404 da CONS-15, nada criado (STAT-22)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~625 testes passam (+12)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): avanca o status com confirmacao e feedback`
+
+**Status**: ✅ Complete — 632 passed (+12); toda recusa confere o status e a contagem de registros no banco e o nível da mensagem (`alerta--success`/`alerta--warning`) dentro de `role="status"`; a corrida e a exclusão no meio do envio usam monkeypatch no `post()`, padrão da EDEX-29; o `status_visto` fora do enum entra na parametrização da STAT-12. Build gate verde
 
 ---
 
