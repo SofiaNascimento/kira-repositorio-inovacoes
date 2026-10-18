@@ -308,14 +308,14 @@ indicadores sem depender de cor ou de mouse.
 | REAP-02 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-03 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-04 | P1: Sinalizar | Tasks | In Tasks |
-| REAP-05 | P1: Sinalizar | Tasks | In Tasks |
+| REAP-05 | P1: Sinalizar | Tasks | Implementing |
 | REAP-06 | P1: Sinalizar | Tasks | In Tasks |
-| REAP-07 | P1: Sinalizar | Tasks | In Tasks |
+| REAP-07 | P1: Sinalizar | Tasks | Implementing |
 | REAP-08 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-09 | P1: Guardas da RN09 | Tasks | In Tasks |
-| REAP-10 | P1: Guardas da RN09 | Tasks | In Tasks |
-| REAP-11 | P1: Guardas da RN09 | Tasks | In Tasks |
-| REAP-12 | P1: Guardas da RN09 | Tasks | In Tasks |
+| REAP-10 | P1: Guardas da RN09 | Tasks | Implementing |
+| REAP-11 | P1: Guardas da RN09 | Tasks | Implementing |
+| REAP-12 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-13 | P1: Guardas da RN09 | Tasks | In Tasks |
 | REAP-14 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-15 | P1: Guardas da RN09 | Tasks | In Tasks |
@@ -325,7 +325,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-19 | P1: Acesso e integridade | Tasks | In Tasks |
 | REAP-20 | P1: Acesso e integridade | Tasks | In Tasks |
 | REAP-21 | P1: Acesso e integridade | Tasks | In Tasks |
-| REAP-22 | P1: Acesso e integridade | Tasks | In Tasks |
+| REAP-22 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-23 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-24 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-25 | P1: Acesso e integridade | Tasks | Implementing |

@@ -195,7 +195,7 @@ T17 → T18
 
 ---
 
-### T2: `Inovacao.pode_ser_reaproveitada` e `Inovacao.registrar_reaproveitamento`
+### T2: `Inovacao.pode_ser_reaproveitada` e `Inovacao.registrar_reaproveitamento` ✅
 
 **What**: O método de consulta da RN09 e o método único de criação da AD-012, com as três mensagens como constantes de módulo.
 **Where**: `inovacoes/models.py`
@@ -210,9 +210,9 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `pode_ser_reaproveitada()` devolve `True` só para `DISPONIVEL_PARA_REPLICACAO`
-- [ ] `registrar_reaproveitamento(self, *, unidade, por)` como no design (algoritmo), com comentário citando AD-012; constantes `MENSAGEM_REAPROVEITAMENTO_STATUS`, `MENSAGEM_REAPROVEITAMENTO_ORIGEM`, `MENSAGEM_REAPROVEITAMENTO_REPETIDO` com o texto exato da spec (REAP-09, REAP-11, REAP-12)
-- [ ] Testes de integração em `inovacoes/tests/test_reaproveitamento.py`:
+- [x] `pode_ser_reaproveitada()` devolve `True` só para `DISPONIVEL_PARA_REPLICACAO`
+- [x] `registrar_reaproveitamento(self, *, unidade, por)` como no design (algoritmo), com comentário citando AD-012; constantes `MENSAGEM_REAPROVEITAMENTO_STATUS`, `MENSAGEM_REAPROVEITAMENTO_ORIGEM`, `MENSAGEM_REAPROVEITAMENTO_REPETIDO` com o texto exato da spec (REAP-09, REAP-11, REAP-12)
+- [x] Testes de integração em `inovacoes/tests/test_reaproveitamento.py`:
   - `pode_ser_reaproveitada` nos três status.
   - Sucesso: um registro com inovação, unidade, `registrado_por` = `por` (inclusive quando `por` não é o autor) e `data` preenchida; o retorno é esse registro (REAP-05, REAP-22).
   - "Em teste" e "Validada" → `ValidationError` com `code == "status_indisponivel"` e a mensagem com o rótulo do status gravado; zero registros (REAP-10).
@@ -223,13 +223,15 @@ T17 → T18
   - `CaptureQueriesContext` mostra `FOR UPDATE` na leitura do status.
   - Inovação apagada antes da chamada → `Inovacao.DoesNotExist`.
   - Todos os campos da inovação (`values()` antes × depois, inclusive `status`, `autor_id`, `data_criacao`, `texto_busca`) iguais depois do sucesso (REAP-07).
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~732 testes passam (+15)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~732 testes passam (+15)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o registro de reaproveitamento com trava`
+
+**Status**: ✅ Complete — 732 passed (+15); a trava é provada pela primeira leitura capturada (`SELECT` do status terminando em `FOR UPDATE`); o status gravado decide nos dois sentidos (instância velha em "Disponível" recusa, instância velha em "Em teste" aceita); a outra `IntegrityError` é forjada com `__cause__.diag.constraint_name`, como o psycopg entrega. Limite: o teste do savepoint roda dentro da transação do pytest-django, onde o `atomic` externo do método já é um savepoint, então ele prova que a transação de quem chama segue usável, mas não discrimina a ausência do savepoint interno. REAP-11, 12, 14 e 22 seguem para as rotas (T5)
 
 ---
 

@@ -3,7 +3,7 @@ from operator import or_
 
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
-from django.db import models, transaction
+from django.db import IntegrityError, models, transaction
 from django.db.models import Q
 from django.db.models.functions import Lower
 from django.urls import reverse
@@ -120,6 +120,19 @@ class UltimoEstagioDoCiclo(TransicaoDeStatusRecusada):
 # Campos de que texto_busca deriva (AD-008).
 CAMPOS_DA_BUSCA = {"titulo", "problema", "solucao"}
 
+# RN09: as tres recusas da sinalizacao, com o texto exato da spec.
+# REAP-09: {status} e o rotulo do status gravado.
+MENSAGEM_REAPROVEITAMENTO_STATUS = (
+    "Só uma inovação “Disponível para replicação” pode ser sinalizada como reaproveitada. "
+    "Status atual: “{status}”."
+)
+# REAP-11
+MENSAGEM_REAPROVEITAMENTO_ORIGEM = "A unidade de origem não pode reaproveitar a própria inovação."
+# REAP-12: {unidade} e o nome da unidade repetida.
+MENSAGEM_REAPROVEITAMENTO_REPETIDO = (
+    "A unidade “{unidade}” já sinalizou o reaproveitamento desta inovação."
+)
+
 
 class Inovacao(models.Model):
     """A entidade central do dominio (RF02).
@@ -235,6 +248,54 @@ class Inovacao(models.Model):
             return MudancaDeStatus.objects.create(
                 inovacao=self, status_anterior=gravado, status_novo=novo, responsavel=por
             )
+
+    def pode_ser_reaproveitada(self) -> bool:
+        """RN09: so uma inovacao disponivel para replicacao aceita sinalizacao.
+
+        Le o status desta instancia; a garantia final e a releitura travada em
+        registrar_reaproveitamento.
+        """
+        return self.status == StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+
+    def registrar_reaproveitamento(self, *, unidade, por):
+        """AD-012: unico caminho para criar um Reaproveitamento (RN09).
+
+        Trava a linha, confere o status gravado (REAP-10) e a unidade de origem
+        (REAP-11) e cria o registro. A repeticao fica com a UniqueConstraint
+        (REAP-12, REAP-14). Nao decide autorizacao (REAP-19) e nao grava nenhum
+        campo da inovacao (REAP-07). Inovacao.DoesNotExist sobe se a inovacao
+        foi apagada (REAP-16).
+        """
+        with transaction.atomic():
+            # O valor gravado, e nao o da instancia: ela pode estar velha.
+            # A trava serializa duas sinalizacoes da mesma inovacao.
+            gravado = (
+                Inovacao.objects.select_for_update()
+                .values_list("status", flat=True)
+                .get(pk=self.pk)
+            )
+            if gravado != StatusInovacao.DISPONIVEL_PARA_REPLICACAO:
+                raise ValidationError(
+                    MENSAGEM_REAPROVEITAMENTO_STATUS.format(status=StatusInovacao(gravado).label),
+                    code="status_indisponivel",
+                )
+            if unidade.pk == self.unidade_id:
+                raise ValidationError(MENSAGEM_REAPROVEITAMENTO_ORIGEM, code="unidade_de_origem")
+            try:
+                # Savepoint: a transacao de quem chamou sobrevive ao erro.
+                with transaction.atomic():
+                    return Reaproveitamento.objects.create(
+                        inovacao=self, unidade=unidade, registrado_por=por
+                    )
+            except IntegrityError as erro:
+                # REAP-14: so a unicidade vira recusa; outra violacao sobe e vira 500.
+                diag = getattr(erro.__cause__, "diag", None)
+                if getattr(diag, "constraint_name", None) != "reaproveitamento_unico_por_unidade":
+                    raise
+                raise ValidationError(
+                    MENSAGEM_REAPROVEITAMENTO_REPETIDO.format(unidade=unidade.nome),
+                    code="unidade_ja_reaproveitou",
+                ) from erro
 
     def validate_constraints(self, exclude=None):
         """Leva o erro de titulo duplicado para o campo titulo (INOV-22).
