@@ -601,7 +601,7 @@ T16 → T17
 
 ---
 
-### T16: Controle de transição no detalhe
+### T16: Controle de transição no detalhe ✅
 
 **What**: A seção "Ciclo de vida" ganha o texto de explicação `#ciclo-explicacao` e o botão "Avançar status" desabilitado no estágio final, conforme a tabela "Controle de transição" do design.
 **Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
@@ -616,16 +616,18 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Template com os quatro estados da tabela do design; nenhuma mudança na view, no CSS ou nas outras seções
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor e administrador em "Em teste"/"Validada" veem o link e a ajuda exata da STAT-40 (STAT-03, STAT-40); autor e administrador no estágio final veem "Último estágio do ciclo." e exatamente um `button` "Avançar status" com `aria-disabled="true"`, sem link para `/status/` (STAT-04, STAT-38); terceiro no estágio final vê "Último estágio do ciclo.", nenhum `button` nem link "Avançar" (STAT-04, STAT-05); `nao_autor_usuario` (terceiro, staff, superusuário) em "Em teste"/"Validada" vê o texto exato da STAT-39 e nenhum link ou botão "Avançar" (STAT-05, STAT-39, L-003); a ajuda da STAT-40 e o texto da STAT-39 nunca aparecem juntos nem no estágio final
-- [ ] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` e `test_terceiro_nao_ve_o_link_de_avancar` passam a afirmar as STAT-04 e STAT-05 emendadas (sem link para `/status/`; nenhum controle "Avançar" para quem não pode alterar), sem perder nenhuma outra asserção
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~695 testes passam (+~10)
+- [x] Template com os quatro estados da tabela do design; nenhuma mudança na view, no CSS ou nas outras seções
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor e administrador em "Em teste"/"Validada" veem o link e a ajuda exata da STAT-40 (STAT-03, STAT-40); autor e administrador no estágio final veem "Último estágio do ciclo." e exatamente um `button` "Avançar status" com `aria-disabled="true"`, sem link para `/status/` (STAT-04, STAT-38); terceiro no estágio final vê "Último estágio do ciclo.", nenhum `button` nem link "Avançar" (STAT-04, STAT-05); `nao_autor_usuario` (terceiro, staff, superusuário) em "Em teste"/"Validada" vê o texto exato da STAT-39 e nenhum link ou botão "Avançar" (STAT-05, STAT-39, L-003); a ajuda da STAT-40 e o texto da STAT-39 nunca aparecem juntos nem no estágio final
+- [x] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` e `test_terceiro_nao_ve_o_link_de_avancar` passam a afirmar as STAT-04 e STAT-05 emendadas (sem link para `/status/`; nenhum controle "Avançar" para quem não pode alterar), sem perder nenhuma outra asserção
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~695 testes passam (+~10)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): mostra transicoes indisponiveis do ciclo com explicacao`
+
+**Status**: ✅ Complete — 700 passed (+15); os dois testes autorizados seguem as STAT-04 e STAT-05 emendadas sem perder asserções (o do estágio final troca a proibição de "Avançar" por: nenhum `<a>` na seção, nenhum link para `/status/`, nenhum "Avançar para"; o do terceiro ganha "nenhum `button`"); o helper `_links` passou a aceitar atributos depois do `href`, porque o link agora leva `aria-describedby` (STAT-41) — rótulo e destino continuam exatos. `nao_autor_usuario` cobre terceiro, staff e superusuário na STAT-39 e no estágio final. Nenhuma mudança em view nem CSS
 
 ---
 

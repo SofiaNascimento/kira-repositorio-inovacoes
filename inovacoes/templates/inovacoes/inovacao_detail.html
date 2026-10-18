@@ -52,11 +52,18 @@
         {% endif %}
       {% endfor %}
     </ol>
-    {# STAT-03 a STAT-05: o link so para quem pode alterar; o estagio final se explica. #}
+    {# STAT-03 a STAT-05, STAT-38 a STAT-41: transicao indisponivel aparece desabilitada ou explicada, nunca some sem motivo. #}
+    {# aria-disabled e nao disabled: o botao continua no Tab e le a explicacao. #}
     {% if not inovacao.proximo_status %}
-      <p>Último estágio do ciclo.</p>
+      {% if pode_alterar %}
+        <p class="acoes"><button type="button" aria-disabled="true" aria-describedby="ciclo-explicacao">Avançar status</button></p>
+      {% endif %}
+      <p id="ciclo-explicacao">Último estágio do ciclo.</p>
     {% elif pode_alterar %}
-      <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
+      <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}" aria-describedby="ciclo-explicacao">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
+      <p id="ciclo-explicacao" class="helptext">O status avança um estágio por vez e não volta ao anterior.</p>
+    {% else %}
+      <p id="ciclo-explicacao">Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>
     {% endif %}
   </section>
 

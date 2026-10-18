@@ -263,8 +263,8 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-01 | P1: Ver o estágio | Execute | Verified |
 | STAT-02 | P1: Ver o estágio | Execute | Verified |
 | STAT-03 | P1: Ver o estágio | Execute | Verified |
-| STAT-04 | P1: Ver o estágio | Tasks | In Tasks (emendada) |
-| STAT-05 | P1: Ver o estágio | Tasks | In Tasks (emendada) |
+| STAT-04 | P1: Ver o estágio | Execute | Implementing (emendada) |
+| STAT-05 | P1: Ver o estágio | Execute | Implementing (emendada) |
 | STAT-06 | P1: Avançar o status | Execute | Verified |
 | STAT-07 | P1: Avançar o status | Execute | Verified |
 | STAT-08 | P1: Avançar o status | Execute | Verified |
@@ -297,9 +297,9 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-35 | Edge Cases | Execute | Verified |
 | STAT-36 | Edge Cases | Execute | Verified |
 | STAT-37 | P1: Acessível | Execute | Implementing (risco residual aceito) |
-| STAT-38 | P1: Ver o estágio | Tasks | In Tasks |
-| STAT-39 | P1: Ver o estágio | Tasks | In Tasks |
-| STAT-40 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-38 | P1: Ver o estágio | Execute | Implementing |
+| STAT-39 | P1: Ver o estágio | Execute | Implementing |
+| STAT-40 | P1: Ver o estágio | Execute | Implementing |
 | STAT-41 | P1: Acessível | Tasks | In Tasks |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).

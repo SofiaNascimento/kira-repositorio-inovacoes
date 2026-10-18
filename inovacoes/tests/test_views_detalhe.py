@@ -189,8 +189,12 @@ CONSULTAS_DO_DETALHE = 7
 
 
 def _links(html, rotulo):
-    """hrefs de todos os links com o texto exato do rotulo."""
-    return re.findall(rf'<a href="([^"]*)">\s*{rotulo}\s*</a>', html)
+    """hrefs de todos os links com o texto exato do rotulo.
+
+    Aceita atributos depois do href: o link de avancar aponta para a explicacao
+    por aria-describedby (STAT-41).
+    """
+    return re.findall(rf'<a href="([^"]*)"[^>]*>\s*{rotulo}\s*</a>', html)
 
 
 def test_autor_ve_o_link_editar_no_detalhe(logado, criar_inovacao):
@@ -341,27 +345,98 @@ def test_quem_pode_alterar_ve_o_link_de_avancar(
     assert "Último estágio do ciclo." not in secao
 
 
+AJUDA_DO_AVANCO = "O status avança um estágio por vez e não volta ao anterior."
+QUEM_PODE_AVANCAR = "Só quem cadastrou a inovação ou um administrador pode avançar o status."
+
+
+def _explicacao(secao):
+    """Texto do elemento #ciclo-explicacao da secao do ciclo."""
+    achado = re.search(r'<p\b[^>]*\bid="ciclo-explicacao"[^>]*>(.*?)</p>', secao, re.S)
+    assert achado, "falta o #ciclo-explicacao"
+    return achado.group(1).strip()
+
+
+def _botoes(secao):
+    """(atributos, texto) de cada button da secao."""
+    return re.findall(r"<button\b([^>]*)>(.*?)</button>", secao, re.S)
+
+
 @pytest.mark.parametrize("conta", ["autor", "administrador", "terceiro"])
 def test_ultimo_estagio_explica_e_ninguem_ve_o_link(client, criar_inovacao, request, conta):
-    """STAT-04: "Ultimo estagio do ciclo." e nenhum link para /status/, para qualquer conta."""
+    """STAT-04 (emendada): "Ultimo estagio do ciclo." e nenhum link para /status/."""
     inovacao = criar_inovacao(status=DISPONIVEL)
     client.force_login(request.getfixturevalue(conta))
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert "<p>Último estágio do ciclo.</p>" in _secao(html, "ciclo-titulo")
-    assert "Avançar" not in html
+    secao = _secao(html, "ciclo-titulo")
+    assert _explicacao(secao) == "Último estágio do ciclo."
+    assert "<a " not in secao
     assert f"/inovacoes/{inovacao.pk}/status/" not in html
+    assert "Avançar para" not in html
+    assert AJUDA_DO_AVANCO not in html
+    assert QUEM_PODE_AVANCAR not in html
+
+
+@pytest.mark.parametrize("conta", ["autor", "administrador"])
+def test_ultimo_estagio_mostra_avancar_desabilitado_a_quem_pode_alterar(
+    client, criar_inovacao, request, conta
+):
+    """STAT-38: botao "Avancar status" com aria-disabled, sem link para /status/."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    secao = _ciclo(client, request.getfixturevalue(conta), inovacao)
+    botoes = _botoes(secao)
+    assert [texto.strip() for _, texto in botoes] == ["Avançar status"]
+    assert 'aria-disabled="true"' in botoes[0][0]
+
+
+def test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar(
+    client, nao_autor_usuario, criar_inovacao
+):
+    """STAT-04, STAT-05: no estagio final, quem nao pode alterar nao ve controle algum."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    secao = _ciclo(client, nao_autor_usuario, inovacao)
+    assert _botoes(secao) == []
+    assert "Avançar" not in secao
+    assert _explicacao(secao) == "Último estágio do ciclo."
 
 
 @pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
 def test_terceiro_nao_ve_o_link_de_avancar(client, terceiro, criar_inovacao, status):
-    """STAT-05: quem nao pode alterar ve o ciclo sem a acao."""
+    """STAT-05 (emendada): quem nao pode alterar ve o ciclo sem link nem botao de avancar."""
     inovacao = criar_inovacao(status=status)
     client.force_login(terceiro)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert len(_itens_do_ciclo(_secao(html, "ciclo-titulo"))) == 3
+    secao = _secao(html, "ciclo-titulo")
+    assert len(_itens_do_ciclo(secao)) == 3
     assert "Avançar" not in html
+    assert _botoes(secao) == []
     assert f"/inovacoes/{inovacao.pk}/status/" not in html
     assert "Último estágio do ciclo." not in html
+
+
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
+def test_quem_nao_pode_alterar_le_quem_pode_avancar(
+    client, nao_autor_usuario, criar_inovacao, status
+):
+    """STAT-39, STAT-05: a acao nao aparece, mas a explicacao sim (L-003: staff e superuser)."""
+    inovacao = criar_inovacao(status=status)
+    secao = _ciclo(client, nao_autor_usuario, inovacao)
+    assert _explicacao(secao) == QUEM_PODE_AVANCAR
+    assert "Avançar" not in secao
+    assert _botoes(secao) == []
+    assert AJUDA_DO_AVANCO not in secao
+
+
+@pytest.mark.parametrize("conta", ["autor", "administrador"])
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
+def test_quem_pode_alterar_le_a_ajuda_de_um_estagio_por_vez(
+    client, criar_inovacao, request, conta, status
+):
+    """STAT-40: a ajuda acompanha o link; nem botao desabilitado nem a explicacao de permissao."""
+    inovacao = criar_inovacao(status=status)
+    secao = _ciclo(client, request.getfixturevalue(conta), inovacao)
+    assert _explicacao(secao) == AJUDA_DO_AVANCO
+    assert _botoes(secao) == []
+    assert QUEM_PODE_AVANCAR not in secao
 
 
 # --- F5: secao "Historico de status" ---------------------------------------------
