@@ -302,3 +302,49 @@ class MudancaDeStatus(models.Model):
 
     def __str__(self):
         return f"{self.get_status_anterior_display()} → {self.get_status_novo_display()}"
+
+
+class Reaproveitamento(models.Model):
+    """Uma unidade reaproveitou uma inovacao de outra (RF11, RN09).
+
+    AD-012: so nasce por Inovacao.registrar_reaproveitamento.
+    """
+
+    # REAP-23: apagar a inovacao apaga os reaproveitamentos dela.
+    inovacao = models.ForeignKey(
+        Inovacao,
+        on_delete=models.CASCADE,
+        related_name="reaproveitamentos",
+        verbose_name="inovação",
+    )
+    # REAP-24: unidade em uso nao pode ser apagada (mesmo criterio da INOV-19).
+    unidade = models.ForeignKey(
+        Unidade,
+        on_delete=models.PROTECT,
+        related_name="reaproveitamentos",
+        verbose_name="unidade que reaproveitou",
+    )
+    # REAP-25: excluir a conta nao apaga o registro do que ela sinalizou.
+    registrado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="reaproveitamentos_registrados",
+        verbose_name="registrado por",
+    )
+    data = models.DateTimeField("data", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "reaproveitamento"
+        verbose_name_plural = "reaproveitamentos"
+        # REAP-18: do mais antigo ao mais recente; o id desempata.
+        ordering = ["data", "id"]
+        constraints = [
+            # REAP-14: uma sinalizacao por unidade, garantida pelo banco.
+            models.UniqueConstraint(
+                fields=["inovacao", "unidade"],
+                name="reaproveitamento_unico_por_unidade",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.inovacao} — {self.unidade}"
