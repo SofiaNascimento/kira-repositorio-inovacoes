@@ -150,6 +150,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 3 A6/A7 (templates/kira.css:521, STAT-37; test_views_sistema_design.py:536-543) (css)
 - last seen: 2026-10-18T20:45:23Z
 
+### L-024 - When an amendment relaxes a page-wide negative assertion for some roles, keep the page-wide assertion for every role whose rule did not change
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md Iteração 4 R1 (STAT-05); inovacoes/tests/test_views_detalhe.py:363-376 (tests)
+- last seen: 2026-10-18T21:20:47Z
+
+### L-025 - When widening an HTML-matching test helper to accept new attributes, accept only the expected attributes so a hidden or aria-hidden control still fails
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md Iteração 4 R2 (STAT-03); inovacoes/tests/test_views_detalhe.py:197 (tests)
+- last seen: 2026-10-18T21:20:47Z
+
+### L-026 - When an AC requires a control to stay keyboard reachable, require it in the sequential Tab order, because tabindex -1 keeps it focusable but removes it from Tab
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md Iteração 4 D12 (STAT-41) (specs)
+- last seen: 2026-10-18T21:20:47Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
