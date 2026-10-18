@@ -630,3 +630,17 @@ iteração do Verifier.
 - **`validate_state.py`**: sai com código 1, porque o veredito registrado é FAIL. É o resultado
   esperado: a feature foi fechada por decisão do usuário, e o gate determinístico continua dizendo
   a verdade sobre o veredito.
+
+---
+
+## Interactive UAT Results (2026-10-18)
+
+Conferência manual no navegador pelo usuário, no banco local `kira` com a migration 0007 aplicada,
+seguindo o roteiro de 12 passos: ciclo e histórico no detalhe; confirmação e "Cancelar"; dois
+avanços com mensagem de sucesso que some ao recarregar; estágio final no detalhe e em `/status/`;
+reenvio da confirmação → aviso de conflito sem pular estágio; terceiro sem o link e com 403 em
+`/status/`; administrador avançando inovação de outra autora e registrado como responsável; filtro
+"Validada" na listagem; percurso só com teclado e foco visível. **Resultado: aprovado pelo usuário.**
+A conferência não altera o veredito do Verifier nem o risco residual da STAT-37, que é de teste e
+não de comportamento.
+
