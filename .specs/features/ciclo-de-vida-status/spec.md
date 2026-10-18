@@ -6,7 +6,7 @@
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e o 404 "Inovação não encontrada." (CONS-15) · filtro por status da listagem (CONS-27), que passa a refletir o status avançado
 **Reusa da F4:** `AlteracaoDeInovacaoMixin` e a página de acesso negado (EDEX-20, EDEX-21) · padrão de confirmação por página com POST (EDEX-30 a EDEX-36) · varredura de autoria de `inovacoes/tests/test_controle_autoria.py`, que passa a cobrir a rota nova sem mudança · EDEX-08 continua valendo: a edição não muda o status
 **Altera a F3/F4:** o detalhe ganha a seção "Ciclo de vida" (estágios, ação de avançar e histórico) — ver STAT-01 a STAT-05 e STAT-24 a STAT-27
-**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação)
+**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · implementada em 2026-10-18; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual da STAT-37 aceito pelo usuário (`validation.md`)
 **Escopo (auto-sizing):** **Large** — o mapa previa Medium, mas o histórico de mudanças acrescenta modelo, migration e tela de confirmação. Roda Design e Tasks formais.
 **Contexto da discussão:** `.specs/features/ciclo-de-vida-status/context.md`
 
@@ -254,47 +254,47 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| STAT-01 | P1: Ver o estágio | Execute | Implementing |
-| STAT-02 | P1: Ver o estágio | Execute | Implementing |
-| STAT-03 | P1: Ver o estágio | Execute | Implementing |
-| STAT-04 | P1: Ver o estágio | Execute | Implementing |
-| STAT-05 | P1: Ver o estágio | Execute | Implementing |
-| STAT-06 | P1: Avançar o status | Execute | Implementing |
-| STAT-07 | P1: Avançar o status | Execute | Implementing |
-| STAT-08 | P1: Avançar o status | Execute | Implementing |
-| STAT-09 | P1: Avançar o status | Execute | Implementing |
-| STAT-10 | P1: Avançar o status | Execute | Implementing |
-| STAT-11 | P1: Avançar o status | Execute | Implementing |
-| STAT-12 | P1: Avançar o status | Execute | Implementing |
-| STAT-13 | P1: Avançar o status | Execute | Implementing |
-| STAT-14 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-15 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-16 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-17 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-18 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-19 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-20 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-21 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-22 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-23 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-24 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-25 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-26 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-27 | P1: Registrar e dar feedback | Execute | Implementing |
-| STAT-28 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-29 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-30 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-31 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-32 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-33 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-34 | P1: Acessível | Execute | Implementing |
-| STAT-35 | Edge Cases | Execute | Implementing |
-| STAT-36 | Edge Cases | Execute | Implementing |
-| STAT-37 | P1: Acessível | Execute | Implementing |
+| STAT-01 | P1: Ver o estágio | Execute | Verified |
+| STAT-02 | P1: Ver o estágio | Execute | Verified |
+| STAT-03 | P1: Ver o estágio | Execute | Verified |
+| STAT-04 | P1: Ver o estágio | Execute | Verified |
+| STAT-05 | P1: Ver o estágio | Execute | Verified |
+| STAT-06 | P1: Avançar o status | Execute | Verified |
+| STAT-07 | P1: Avançar o status | Execute | Verified |
+| STAT-08 | P1: Avançar o status | Execute | Verified |
+| STAT-09 | P1: Avançar o status | Execute | Verified |
+| STAT-10 | P1: Avançar o status | Execute | Verified |
+| STAT-11 | P1: Avançar o status | Execute | Verified |
+| STAT-12 | P1: Avançar o status | Execute | Verified |
+| STAT-13 | P1: Avançar o status | Execute | Verified |
+| STAT-14 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-15 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-16 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-17 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-18 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-19 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-20 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-21 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-22 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-23 | P1: Só autor ou administrador | Execute | Verified |
+| STAT-24 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-25 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-26 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-27 | P1: Registrar e dar feedback | Execute | Verified |
+| STAT-28 | P1: Histórico íntegro | Execute | Verified |
+| STAT-29 | P1: Histórico íntegro | Execute | Verified |
+| STAT-30 | P1: Histórico íntegro | Execute | Verified |
+| STAT-31 | P1: Histórico íntegro | Execute | Verified |
+| STAT-32 | P1: Histórico íntegro | Execute | Verified |
+| STAT-33 | P1: Histórico íntegro | Execute | Verified |
+| STAT-34 | P1: Acessível | Execute | Verified |
+| STAT-35 | Edge Cases | Execute | Verified |
+| STAT-36 | Edge Cases | Execute | Verified |
+| STAT-37 | P1: Acessível | Execute | Implementing (risco residual aceito) |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 
-**Coverage:** 37 total, 37 mapeados para tasks (`tasks.md`, T1 a T11), 0 sem mapeamento.
+**Coverage:** 37 total, 37 mapeados para tasks (T1 a T15). 36 `Verified` (`validation.md`, iterações 1–3). STAT-37 fica `Implementing`: produção conforme, mas o teste de contraste tem lacuna aceita pelo usuário em 2026-10-18 (`validation.md`, Decisão do usuário).
 
 ---
 

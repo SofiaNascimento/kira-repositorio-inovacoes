@@ -8,7 +8,7 @@
 **Diff range (iteração 1)**: `6616da1..f48bb1a` em `main` (HEAD = `f48bb1a`), 11 commits (T1 `fd1ee9c`, T2 `0f09ede`, T3 `0a6307d`, T4 `8ad7dad`, T5 `10603fd`, T6 `73eccf5`, T7 `9f417d1`, T8 `4a48733`, T9 `0b4f8f4`, T10 `36fa95a`, T11 `f48bb1a`). 17 arquivos, +1604/−115. Produção: `inovacoes/models.py`, `views.py`, `urls.py`, `migrations/0007_mudancadestatus.py`, `templates/inovacoes/inovacao_detail.html`, `inovacao_status.html` e `templates/kira.css`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ (iteração 3, HEAD `5e0fd25`; limite de 3 iterações atingido, escalar ao usuário)
+**Verdict**: FAIL ❌ na iteração 3 (HEAD `5e0fd25`), **com risco residual aceito pelo usuário em 2026-10-18** — ver [Decisão do usuário](#decisão-do-usuário-2026-10-18). O veredito do Verifier não foi reescrito; a feature foi fechada por decisão, não por PASS.
 
 **Iteração 3 em resumo:** o gate passa com 685 testes, e o código de produção continua igual ao da iteração 1. A T14 mata a N14, a M27 e a M11 continuam mortas, e a `CADEIA_DO_COMPONENTE` confere com o DOM e o layout reais. Mas a T14 **enfraqueceu uma checagem anterior**. Antes, todo `background*` (inclusive `background-image`) de `.ciclo`/`.historico` tinha de ser `var(--token)` de um fundo do DS-08. Agora (`test_views_sistema_design.py:597-599`), a regra só é conferida se declarar `color`, `background` ou `background-color`. Com isso, **A1** (`.historico li { background-image: linear-gradient(var(--brand-blue), var(--brand-blue)) }`) e **A2** (`background-image: var(--brand-gradient)`) em `templates/kira.css:521` passam a suíte inteira. As duas morriam no teste do `ef25406`, o que prova a regressão. Sobreviveram também **A6** (`ol.historico li { background: var(--brand-blue) }`) e **A7** (`section .ciclo li { color: var(--surface) }`): o teste só lê regras cujo seletor *começa* pela classe (`:536-543`). Essa lacuna já existia antes da T14. A STAT-37 cobre os quatro casos ("every color the cycle control and the history add to `kira.css`"). Resultado: 36/37 ACs, sensor 17/22. Fix 4 abaixo, só de teste. Como esta é a terceira iteração, o próximo passo é decisão do usuário.
 
@@ -601,3 +601,32 @@ Não aplicada (FAIL). Proposta:
 **Next steps**: escalar ao usuário. Opções:
 1. Autorizar uma 4ª rodada: Fix 4, só de teste, e nova verificação.
 2. Aceitar o risco residual da STAT-37, já que o CSS de produção cumpre o DS-08, e registrar a decisão no `STATE.md`.
+
+---
+
+## Decisão do usuário (2026-10-18)
+
+Registrada pelo orquestrador depois da escalada (limite de 3 iterações atingido). Não é uma
+iteração do Verifier.
+
+- **Decisão**: aceitar o risco residual da STAT-37 e fechar a F5, corrigindo só a regressão que a
+  T14 introduziu. Sem iteração 4.
+- **Base**: o código de produção não mudou desde a iteração 1 e cumpre a spec; o Verifier conferiu
+  à mão que todo par de cor do `.ciclo` e do `.historico` está no DS-08. As 36 outras ACs têm
+  evidência e passaram no sensor das três iterações. M11, M27 e N14 continuam mortos.
+- **Corrigido depois da iteração 3**: T15 (`1a57e9c`) — toda propriedade `background*` volta a ser
+  conferida no teste de pares. A1 e A2 conferidos mortos numa worktree temporária pelo
+  orquestrador (autor da correção, não verificação independente); N14 e M27 continuam mortos.
+  Gate de build verde, 685 testes.
+- **Risco residual aceito (STAT-37)**: o teste de pares só lê regras cujo seletor **começa** por
+  `.ciclo`/`.historico`. Uma regra como `ol.historico li { background: var(--brand-blue) }` (A6) ou
+  `section .ciclo li { color: var(--surface) }` (A7) quebraria o contraste sem derrubar a suíte.
+  Mitigação: a auditoria de acessibilidade final do RNF09 confere o contraste na página renderizada;
+  a ideia de correção fica em `context.md` (Deferred Ideas).
+- **Fora do escopo, só registrado**: A10 (`opacity`) e B7 (desempate por `id` na ordenação) não são
+  cobertos por nenhuma AC.
+- **Lacuna de precisão aberta**: STAT-06/STAT-34 (`<title>` conferido pelo prefixo). Não bloqueia;
+  emenda sugerida: "o `<title>` começa por 'Avançar status'".
+- **`validate_state.py`**: sai com código 1, porque o veredito registrado é FAIL. É o resultado
+  esperado: a feature foi fechada por decisão do usuário, e o gate determinístico continua dizendo
+  a verdade sobre o veredito.

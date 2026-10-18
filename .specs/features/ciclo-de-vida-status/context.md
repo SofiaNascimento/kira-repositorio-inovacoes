@@ -63,3 +63,5 @@ Nenhuma área foi recusada: as quatro propostas foram discutidas e decididas pel
 - Comentário ou justificativa opcional ao avançar.
 - Retroceder um estágio com justificativa, restrito ao administrador.
 - Notificar o autor quando outra pessoa avançar a inovação.
+- Teste de contraste do ciclo e do histórico que leia toda regra cujo seletor **contenha** `.ciclo`/`.historico` (não só as que começam pela classe) e exija cada uma na `CADEIA_DO_COMPONENTE` — fecha o risco residual A6/A7 da STAT-37 aceito no fechamento da F5 (`validation.md`, Decisão do usuário).
+- Emendar STAT-06/STAT-34 para "o `<title>` começa por 'Avançar status'" na próxima revisão da spec.
