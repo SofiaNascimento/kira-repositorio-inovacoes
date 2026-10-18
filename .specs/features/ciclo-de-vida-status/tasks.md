@@ -112,7 +112,7 @@ T8 → T9 → T10 → T11
 
 ## Task Breakdown
 
-### T1: `MudancaDeStatus`, `PROXIMO_STATUS` e a migration 0007
+### T1: `MudancaDeStatus`, `PROXIMO_STATUS` e a migration 0007 ✅
 
 **What**: O modelo do histórico com o CHECK de transição, `CASCADE` na inovação e `PROTECT` no responsável, a constante `PROXIMO_STATUS` e a migration gerada.
 **Where**: `inovacoes/models.py`
@@ -127,18 +127,20 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `PROXIMO_STATUS = {EM_TESTE: VALIDADA, VALIDADA: DISPONIVEL_PARA_REPLICACAO}` no nível de módulo, depois de `StatusInovacao`
-- [ ] `MudancaDeStatus` como no design (Data Models): `inovacao` (CASCADE, `related_name="mudancas_de_status"`), `status_anterior`, `status_novo` (choices de `StatusInovacao`), `responsavel` (`settings.AUTH_USER_MODEL`, PROTECT), `data` (`auto_now_add`), `ordering = ["data", "id"]`, CHECK `mudanca_de_status_transicao_valida` montado a partir de `PROXIMO_STATUS`
-- [ ] `inovacoes/migrations/0007_mudancadestatus.py` gerada por `makemigrations`; só cria a tabela
-- [ ] `MudancaDeStatus` **não** é registrado em `inovacoes/admin.py` (AD-007)
-- [ ] Testes de integração em `inovacoes/tests/test_ciclo_de_vida.py`: os dois pares válidos gravam; **cada um dos sete pares inválidos** (os 9 pares do produto 3×3 menos os 2 válidos) levanta `IntegrityError` ao gravar pelo ORM (STAT-31); excluir a inovação apaga os registros dela e não os de outra (STAT-28); excluir a conta responsável levanta `ProtectedError` e o registro continua (STAT-29); dois registros com a mesma `data` saem na ordem do `id`
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~587 testes passam (+13)
+- [x] `PROXIMO_STATUS = {EM_TESTE: VALIDADA, VALIDADA: DISPONIVEL_PARA_REPLICACAO}` no nível de módulo, depois de `StatusInovacao`
+- [x] `MudancaDeStatus` como no design (Data Models): `inovacao` (CASCADE, `related_name="mudancas_de_status"`), `status_anterior`, `status_novo` (choices de `StatusInovacao`), `responsavel` (`settings.AUTH_USER_MODEL`, PROTECT), `data` (`auto_now_add`), `ordering = ["data", "id"]`, CHECK `mudanca_de_status_transicao_valida` montado a partir de `PROXIMO_STATUS`
+- [x] `inovacoes/migrations/0007_mudancadestatus.py` gerada por `makemigrations`; só cria a tabela
+- [x] `MudancaDeStatus` **não** é registrado em `inovacoes/admin.py` (AD-007)
+- [x] Testes de integração em `inovacoes/tests/test_ciclo_de_vida.py`: os dois pares válidos gravam; **cada um dos sete pares inválidos** (os 9 pares do produto 3×3 menos os 2 válidos) levanta `IntegrityError` ao gravar pelo ORM (STAT-31); excluir a inovação apaga os registros dela e não os de outra (STAT-28); excluir a conta responsável levanta `ProtectedError` e o registro continua (STAT-29); dois registros com a mesma `data` saem na ordem do `id`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~587 testes passam (+13)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona o historico de mudancas de status`
+
+**Status**: ✅ Complete — 588 passed (+14); os sete pares inválidos parametrizados, mais um teste de sanidade da contagem; `__str__` acrescentado ao modelo (exigido pelo DJ008 do Ruff); o bloco Python do `design.md` foi formatado pelo Ruff, porque o `ruff format --check` do gate já falhava nele antes da T1. Build gate verde
 
 ---
 

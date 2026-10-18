@@ -163,12 +163,22 @@ A seção do ciclo usa `<strong>` para o texto "(status atual)": a marcação é
 
 ```python
 class MudancaDeStatus(models.Model):
-    inovacao = models.ForeignKey(Inovacao, on_delete=models.CASCADE,
-                                 related_name="mudancas_de_status", verbose_name="inovação")
-    status_anterior = models.CharField("status anterior", max_length=26, choices=StatusInovacao.choices)
+    inovacao = models.ForeignKey(
+        Inovacao,
+        on_delete=models.CASCADE,
+        related_name="mudancas_de_status",
+        verbose_name="inovação",
+    )
+    status_anterior = models.CharField(
+        "status anterior", max_length=26, choices=StatusInovacao.choices
+    )
     status_novo = models.CharField("status novo", max_length=26, choices=StatusInovacao.choices)
-    responsavel = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
-                                    related_name="mudancas_de_status", verbose_name="responsável")
+    responsavel = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="mudancas_de_status",
+        verbose_name="responsável",
+    )
     data = models.DateTimeField("data da mudança", auto_now_add=True)
 
     class Meta:
@@ -177,8 +187,9 @@ class MudancaDeStatus(models.Model):
         ordering = ["data", "id"]  # STAT-24: do mais antigo ao mais recente; id desempata
         constraints = [
             models.CheckConstraint(
-                condition=reduce(or_, (Q(status_anterior=a, status_novo=n)
-                                       for a, n in PROXIMO_STATUS.items())),
+                condition=reduce(
+                    or_, (Q(status_anterior=a, status_novo=n) for a, n in PROXIMO_STATUS.items())
+                ),
                 name="mudanca_de_status_transicao_valida",
             ),
         ]

@@ -1,3 +1,6 @@
+from functools import reduce
+from operator import or_
+
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import models
@@ -18,6 +21,13 @@ class StatusInovacao(models.TextChoices):
     EM_TESTE = "EM_TESTE", "Em teste"
     VALIDADA = "VALIDADA", "Validada"
     DISPONIVEL_PARA_REPLICACAO = "DISPONIVEL_PARA_REPLICACAO", "Disponível para replicação"
+
+
+# RN03: fonte unica da sequencia do ciclo. Sem chave = estagio final.
+PROXIMO_STATUS = {
+    StatusInovacao.EM_TESTE: StatusInovacao.VALIDADA,
+    StatusInovacao.VALIDADA: StatusInovacao.DISPONIVEL_PARA_REPLICACAO,
+}
 
 
 class ItemDeLista(models.Model):
@@ -196,3 +206,50 @@ class Inovacao(models.Model):
             if outros:
                 erros[NON_FIELD_ERRORS] = outros
             raise ValidationError(erros) from erro
+
+
+class MudancaDeStatus(models.Model):
+    """Registro de um avanco de status (STAT-14): quem, quando, de qual para qual.
+
+    So o Inovacao.avancar_status cria registros (AD-011); nenhuma tela, rota ou
+    admin os edita ou apaga (STAT-30, AD-007).
+    """
+
+    # STAT-28: apagar a inovacao apaga o historico dela.
+    inovacao = models.ForeignKey(
+        Inovacao,
+        on_delete=models.CASCADE,
+        related_name="mudancas_de_status",
+        verbose_name="inovação",
+    )
+    status_anterior = models.CharField(
+        "status anterior", max_length=26, choices=StatusInovacao.choices
+    )
+    status_novo = models.CharField("status novo", max_length=26, choices=StatusInovacao.choices)
+    # STAT-29: excluir a conta responsavel nao apaga a trilha.
+    responsavel = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="mudancas_de_status",
+        verbose_name="responsável",
+    )
+    data = models.DateTimeField("data da mudança", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "mudança de status"
+        verbose_name_plural = "mudanças de status"
+        # STAT-24: do mais antigo ao mais recente; o id desempata.
+        ordering = ["data", "id"]
+        constraints = [
+            # STAT-31: o banco so aceita as transicoes de PROXIMO_STATUS.
+            models.CheckConstraint(
+                condition=reduce(
+                    or_,
+                    (Q(status_anterior=a, status_novo=n) for a, n in PROXIMO_STATUS.items()),
+                ),
+                name="mudanca_de_status_transicao_valida",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.get_status_anterior_display()} → {self.get_status_novo_display()}"
