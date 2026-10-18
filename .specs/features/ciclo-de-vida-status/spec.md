@@ -235,7 +235,7 @@ avançá-lo sem depender de mouse ou de cor.
 
 1. **STAT-34** — The system SHALL build the "Ciclo de vida" section, the "Histórico de status" section and the "Avançar status" page only from native HTML elements (`ol`/`ul`, links, a `form` with a `button`), without any positive `tabindex`, with a visible focus indicator on each link and button, and SHALL give the "Avançar status" page a single `h1` and a `<title>` both reading "Avançar status".
 2. **STAT-37** — The system SHALL convey the current stage by text (STAT-02) and SHALL meet the contrast pairs of DS-08 for every color the cycle control and the history add to `kira.css`.
-3. **STAT-41** — The system SHALL keep the disabled "Avançar status" button focusable (no `disabled` attribute, no positive `tabindex`), SHALL reference the text "Último estágio do ciclo." from it through `aria-describedby`, SHALL reference the STAT-40 help text from the "Avançar para" link through `aria-describedby`, and SHALL give the disabled button no action (`type="button"`, outside any `form`). *(passe de design, 2026-10-18)*
+3. **STAT-41** — The system SHALL keep the disabled "Avançar status" button in the sequential Tab order (no `disabled` attribute; `tabindex` absent or `0`), SHALL reference the text "Último estágio do ciclo." from it through `aria-describedby`, SHALL reference the STAT-40 help text from the "Avançar para" link through `aria-describedby`, and SHALL give the disabled button no action (`type="button"`, outside any `form`). *(passe de design, 2026-10-18; emendada no mesmo dia depois da iteração 4: "focável" passou a ser "na ordem do Tab", lacuna D12)*
 
 **Independent Test**: só com teclado, a partir do detalhe: Tab até "Avançar para “Validada”", Enter,
 Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as cores desligadas
@@ -300,7 +300,7 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-38 | P1: Ver o estágio | Execute | Implementing |
 | STAT-39 | P1: Ver o estágio | Execute | Implementing |
 | STAT-40 | P1: Ver o estágio | Execute | Implementing |
-| STAT-41 | P1: Acessível | Execute | Implementing |
+| STAT-41 | P1: Acessível | Tasks | In Tasks (emendada) |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 

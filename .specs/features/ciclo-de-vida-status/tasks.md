@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: ✅ Concluída com ressalva — T1–T17. Passe de design (Fase 8, T16–T17) concluído em 2026-10-18, aguardando o Verifier. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
+**Status**: In Progress — passe de design: T16–T17 feitas; Verifier iteração 4 FAIL (R1, R2 por lacuna de teste; D12 lacuna de precisão) → Fase 9 (T18–T20). Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -151,6 +151,17 @@ e `test_terceiro_nao_ve_o_link_de_avancar` (`test_views_detalhe.py`), que proibi
 
 ```
 T16 → T17
+```
+
+### Phase 9: Correções da validação do passe de design (iteração 4)
+
+Fix tasks do `validation.md` (iteração 4, FAIL): R1 (STAT-05) sobreviveu porque a T16 tirou a checagem
+de página inteira de "Avançar" para quem não pode alterar no estágio final; R2 (STAT-03) sobreviveu
+porque o `_links` passou a aceitar qualquer atributo; D12 (`tabindex="-1"`) virou emenda da STAT-41.
+Decisão do usuário: corrigir os três e reverificar. Só testes e spec mudam.
+
+```
+T18 → T19 → T20
 ```
 
 ---
@@ -659,10 +670,92 @@ T16 → T17
 
 ---
 
+### T18: "Avançar" ausente da página inteira para quem não pode alterar (Fix 5, R1)
+
+**What**: Os testes do estágio final voltam a afirmar, na página inteira, que quem não pode alterar não vê nenhum controle "Avançar".
+**Where**: `inovacoes/tests/test_views_detalhe.py`
+**Depends on**: T17
+**Reuses**: `test_ultimo_estagio_explica_e_ninguem_ve_o_link`, `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar`
+**Requirement**: STAT-05
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar` afirma `"Avançar" not in html` na página inteira (terceiro, staff, superusuário), além das checagens da seção
+- [ ] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` recupera, para `terceiro`, a asserção `"Avançar" not in html` que a T16 removeu
+- [ ] O mutante R1 (botão desabilitado fora da seção, para quem não pode alterar) derruba os testes, conferido numa worktree temporária
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: 704 testes passam (+0)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): volta a exigir Avancar ausente da pagina para terceiros`
+
+---
+
+### T19: `_links` aceita só o `aria-describedby` depois do `href` (Fix 6, R2)
+
+**What**: O helper `_links` deixa de aceitar atributos arbitrários: só um `aria-describedby` opcional depois do `href`, de modo que um link com `hidden` ou `aria-hidden` não conta como exibido.
+**Where**: `inovacoes/tests/test_views_detalhe.py`
+**Depends on**: T18
+**Reuses**: `_links`
+**Requirement**: STAT-03 (e EDEX-03, EDEX-24, que usam o mesmo helper)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Regex `<a href="…"(?: aria-describedby="…")?>rótulo</a>`; os testes que usam `_links` passam sem outra alteração
+- [ ] O mutante R2 (`hidden` no link de avançar) derruba o teste da STAT-03, conferido numa worktree temporária
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: 704 testes passam (+0)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): restringe o helper de links ao aria-describedby`
+
+---
+
+### T20: Botão desabilitado na ordem do Tab (STAT-41 emendada, D12)
+
+**What**: O teste de acessibilidade do botão desabilitado exige `tabindex` ausente ou `0`.
+**Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
+**Depends on**: T19
+**Reuses**: `test_botao_desabilitado_continua_focavel_e_le_a_explicacao` (T17)
+**Requirement**: STAT-41
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] A asserção `int(tabindex) <= 0` vira `tabindex` ausente ou `"0"`; as demais checagens da T17 ficam
+- [ ] O mutante D12 (`tabindex="-1"` no botão) derruba o teste, conferido numa worktree temporária
+- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [ ] Test count: 704 testes passam (+0)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): exige o botao desabilitado na ordem do tab`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 9
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4
@@ -672,6 +765,7 @@ Phase 5:  T12 → T13
 Phase 6:  T14
 Phase 7:  T15
 Phase 8:  T16 → T17
+Phase 9:  T18 → T19 → T20
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -684,6 +778,7 @@ T11 → T12
 T13 → T14
 T14 → T15
 T15 → T16
+T17 → T18
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -709,6 +804,7 @@ fronteira de fase: **lote 1** = Fases 1+2+3 (7 tasks: modelo, tela e detalhe), *
 | T12, T13, T14, T15 | 1 arquivo de teste cada (correções da validação) | ✅ Granular |
 | T16 | 1 trecho de template (+ testes) | ✅ Granular |
 | T17 | 1 arquivo de teste | ✅ Granular |
+| T18, T19, T20 | 1 arquivo de teste cada (correções da iteração 4) | ✅ Granular |
 
 **Nota sobre T1 e T3:** a migration é gerada pelo `makemigrations`, não escrita à mão, e o gate de
 build (`--check`) falharia sem ela. Uma view Django não é testável sem rota e template. O `Where`
@@ -741,6 +837,9 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T15 | T14 | T14 → T15 (arco de fronteira) | ✅ Match |
 | T16 | T15 | T15 → T16 (arco de fronteira) | ✅ Match |
 | T17 | T16 | T16 → T17 | ✅ Match |
+| T18 | T17 | T17 → T18 (arco de fronteira) | ✅ Match |
+| T19 | T18 | T18 → T19 | ✅ Match |
+| T20 | T19 | T19 → T20 | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior.
 
@@ -767,6 +866,7 @@ Nenhuma dependência aponta para uma fase posterior.
 | T15: todo background* conferido | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
 | T16: controle de transição | Template do detalhe | e2e | e2e | ✅ OK |
 | T17: acessibilidade do controle | Templates (evidência) | e2e | e2e | ✅ OK |
+| T18–T20: correções da iteração 4 | Templates (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
@@ -777,10 +877,10 @@ Nenhuma task tem `Tests: none`.
 | Requisito | Tasks |
 | --------- | ----- |
 | STAT-01, 02 | T5 |
-| STAT-03, 04 | T5, T16 |
-| STAT-05 | T5, T8, T16 |
+| STAT-03, 04 | T5, T16, T19 (STAT-03) |
+| STAT-05 | T5, T8, T16, T18 |
 | STAT-38, 39, 40 | T16 |
-| STAT-41 | T17 |
+| STAT-41 | T17, T20 |
 | STAT-06, 11 | T3 |
 | STAT-07, 08 | T2, T4 |
 | STAT-09 | T1, T2 |
