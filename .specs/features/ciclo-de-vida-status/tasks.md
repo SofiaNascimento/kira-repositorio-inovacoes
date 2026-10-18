@@ -297,7 +297,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T7: Componentes `.ciclo` e `.historico` na `kira.css`
+### T7: Componentes `.ciclo` e `.historico` na `kira.css` ✅
 
 **What**: As regras de estilo do controle do ciclo e do histórico, sem cor nova, e a página de confirmação nas checagens do sistema de design.
 **Where**: `templates/kira.css`
@@ -312,15 +312,17 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `.ciclo`, `.ciclo li + li::before`, `.ciclo [aria-current=step]` e `.historico` como no design; nenhuma cor literal nova, nenhum `="` nem `<` na folha (AD-010)
-- [ ] `inovacoes/tests/test_views_sistema_design.py`: a fixture `paginas` ganha `"status": f"/inovacoes/{inovacao.pk}/status/"` (herda as checagens de base, `style` único e cabeçalho); o DS-14 ganha o botão "Avançar para “Validada”" como envio primário; teste novo: as regras `.ciclo` e `.historico` existem e todas as cores que usam são `var(--…)` de tokens presentes em `PARES_DE_TEXTO` (STAT-37)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~650 testes passam (+9, a maioria herdada da parametrização de `paginas`)
+- [x] `.ciclo`, `.ciclo li + li::before`, `.ciclo [aria-current=step]` e `.historico` como no design; nenhuma cor literal nova, nenhum `="` nem `<` na folha (AD-010)
+- [x] `inovacoes/tests/test_views_sistema_design.py`: a fixture `paginas` ganha `"status": f"/inovacoes/{inovacao.pk}/status/"` (herda as checagens de base, `style` único e cabeçalho); o DS-14 ganha o botão "Avançar para “Validada”" como envio primário; teste novo: as regras `.ciclo` e `.historico` existem e todas as cores que usam são `var(--…)` de tokens presentes em `PARES_DE_TEXTO` (STAT-37)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~650 testes passam (+9, a maioria herdada da parametrização de `paginas`)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(design): estiliza o ciclo de vida e o historico de status`
+
+**Status**: ✅ Complete — 654 passed (+3); a fixture `paginas` ganhou `status` e o DS-14 ganhou "Avançar para “Validada”" (acréscimos previstos); o teste novo exige as regras `.ciclo` e `.historico`, nenhuma cor literal e que todo `color`/`background` delas seja token de `PARES_DE_TEXTO` (bordas como `--border` não são par de texto e só precisam existir no `:root`); a data do histórico sai em `--text-muted` pelo `<time>`. O comentário da folha não repete "(status atual)", porque o CSS vai embutido na página. STAT-34 e STAT-37 ficam In Tasks até a T10. Build gate verde
 
 ---
 

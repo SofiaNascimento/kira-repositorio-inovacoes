@@ -77,6 +77,8 @@ def paginas(client, autor, terceiro, criar_inovacao):
         "detalhe": f"/inovacoes/{inovacao.pk}/",
         "editar": f"/inovacoes/{inovacao.pk}/editar/",
         "excluir": f"/inovacoes/{inovacao.pk}/excluir/",
+        # F5: a confirmacao do avanco de status (STAT-34).
+        "status": f"/inovacoes/{inovacao.pk}/status/",
         "nao_encontrada": "/inovacoes/999999/",
     }.items():
         html[nome] = client.get(url).content.decode()
@@ -488,6 +490,8 @@ def test_demais_envios_das_telas_tem_o_estilo_primario(client, autor, criar_inov
         "/inovacoes/": "Buscar",
         "/inovacoes/nova/": "Salvar",
         f"/inovacoes/{inovacao.pk}/editar/": "Salvar alterações",
+        # F5: avancar o status nao e destrutivo; usa o envio primario.
+        f"/inovacoes/{inovacao.pk}/status/": "Avançar para “Validada”",
     }
     for url in list(envios)[1:]:
         html[url] = client.get(url).content.decode()
@@ -522,3 +526,47 @@ def test_tabela_fica_num_quadro_que_rola_na_horizontal(client, autor, criar_inov
     assert re.search(r'<div class="tabela">\s*<table>', html)
     assert re.search(r"</table>\s*</div>", html)
     assert re.search(r"overflow-x\s*:\s*auto", _corpos(".tabela"))
+
+
+# --- F5: ciclo de vida e historico de status (STAT-37) ---------------------------
+
+CORES_LITERAIS = re.compile(r"#[0-9a-fA-F]{3,8}\b|\b(?:rgb|rgba|hsl|hsla)\(")
+
+
+def _regras_do_componente(classe):
+    """(seletores, corpo) de toda regra com algum seletor que comeca pela classe."""
+    sem_comentarios = re.sub(r"/\*.*?\*/", "", CSS, flags=re.S)
+    return [
+        (seletores.strip(), corpo)
+        for seletores, corpo in re.findall(r"([^{}]+)\{([^}]*)\}", sem_comentarios)
+        if any(s.strip().startswith(classe) for s in seletores.split(","))
+    ]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("classe", [".ciclo", ".historico"])
+def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
+    """STAT-37, AD-010: nenhuma cor nova; texto e fundo so de pares do DS-08."""
+    regras = _regras_do_componente(classe)
+    assert [s for s, _ in regras if s == classe], f"falta a regra {classe}"
+    textos = {texto for texto, _ in PARES_DE_TEXTO}
+    fundos = {fundo for _, fundo in PARES_DE_TEXTO}
+    for seletores, corpo in regras:
+        assert not CORES_LITERAIS.search(corpo), seletores
+        for propriedade, valor in re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo):
+            for token in re.findall(r"var\(--([\w-]+)\)", valor):
+                assert _token(token), (seletores, token)
+            if propriedade == "color":
+                assert re.fullmatch(r"var\(--([\w-]+)\)", valor.strip()), seletores
+                assert valor.strip()[6:-1] in textos, seletores
+            if propriedade.startswith("background"):
+                assert re.fullmatch(r"var\(--([\w-]+)\)", valor.strip()), seletores
+                assert valor.strip()[6:-1] in fundos, seletores
+
+
+@pytest.mark.unit
+def test_estagio_atual_do_ciclo_tem_estilo_proprio():
+    """STAT-37: o estagio atual ganha borda e cor de pares conferidos, alem do texto."""
+    corpo = _regra(".ciclo [aria-current=step]")
+    assert "var(--brand-blue)" in corpo
+    assert re.search(r"(?:^|;)\s*color\s*:\s*var\(--brand-navy\)", corpo)
