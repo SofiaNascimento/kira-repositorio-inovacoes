@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 27,
+  "next_id": 30,
   "lessons": [
     {
       "id": "L-001",
@@ -479,6 +479,60 @@
       ],
       "created": "2026-10-18T21:20:47Z",
       "last_seen": "2026-10-18T21:20:47Z"
+    },
+    {
+      "id": "L-027",
+      "key": "surviving_mutant::run every page wide negative assertion for each account variant of the denied role including staff and superuser flags in every state of the screen",
+      "text": "Run every page-wide negative assertion for each account variant of the denied role, including staff and superuser flags, in every state of the screen",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 5, E2b (STAT-05), inovacao_detail.html:68 (tests)"
+      ],
+      "created": "2026-10-18T21:40:53Z",
+      "last_seen": "2026-10-18T21:40:53Z"
+    },
+    {
+      "id": "L-028",
+      "key": "surviving_mutant::when asserting that a control or text is displayed reject hidden inert and aria hidden on the element and on every ancestor not only on the matched tag",
+      "text": "When asserting that a control or text is displayed, reject hidden, inert and aria-hidden on the element and on every ancestor, not only on the matched tag",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests)"
+      ],
+      "created": "2026-10-18T21:40:53Z",
+      "last_seen": "2026-10-18T21:40:53Z"
+    },
+    {
+      "id": "L-029",
+      "key": "spec_precision_gap::when an ac requires an action link to be displayed also require it in the sequential tab order and exposed to assistive technology",
+      "text": "When an AC requires an action link to be displayed, also require it in the sequential Tab order and exposed to assistive technology",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "ciclo-de-vida-status"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 5, E17 (STAT-03, STAT-34), inovacao_detail.html:63 (specs)"
+      ],
+      "created": "2026-10-18T21:40:53Z",
+      "last_seen": "2026-10-18T21:40:53Z"
     }
   ]
 }

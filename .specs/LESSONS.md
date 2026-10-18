@@ -168,6 +168,24 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md Iteração 4 D12 (STAT-41) (specs)
 - last seen: 2026-10-18T21:20:47Z
 
+### L-027 - Run every page-wide negative assertion for each account variant of the denied role, including staff and superuser flags, in every state of the screen
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 5, E2b (STAT-05), inovacao_detail.html:68 (tests)
+- last seen: 2026-10-18T21:40:53Z
+
+### L-028 - When asserting that a control or text is displayed, reject hidden, inert and aria-hidden on the element and on every ancestor, not only on the matched tag
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests)
+- last seen: 2026-10-18T21:40:53Z
+
+### L-029 - When an AC requires an action link to be displayed, also require it in the sequential Tab order and exposed to assistive technology
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 5, E17 (STAT-03, STAT-34), inovacao_detail.html:63 (specs)
+- last seen: 2026-10-18T21:40:53Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

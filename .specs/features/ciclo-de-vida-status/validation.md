@@ -8,7 +8,7 @@
 **Diff range (iteração 1)**: `6616da1..f48bb1a` em `main` (HEAD = `f48bb1a`), 11 commits (T1 `fd1ee9c`, T2 `0f09ede`, T3 `0a6307d`, T4 `8ad7dad`, T5 `10603fd`, T6 `73eccf5`, T7 `9f417d1`, T8 `4a48733`, T9 `0b4f8f4`, T10 `36fa95a`, T11 `f48bb1a`). 17 arquivos, +1604/−115. Produção: `inovacoes/models.py`, `views.py`, `urls.py`, `migrations/0007_mudancadestatus.py`, `templates/inovacoes/inovacao_detail.html`, `inovacao_status.html` e `templates/kira.css`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ na iteração 4 (passe de design, HEAD `b246c63`) — ver [Iteração 4](#iteração-4--passe-de-design-2026-10-18). O template cumpre a spec, mas sobrevivem dois mutantes cobertos por AC, os dois por lacuna de teste da T16: R1 (STAT-05) e R2 (STAT-03). O risco residual A6/A7 da STAT-37 continua aceito pelo usuário e não conta como falha nova. Antes: FAIL ❌ na iteração 3 (HEAD `5e0fd25`), **com risco residual aceito pelo usuário em 2026-10-18** — ver [Decisão do usuário](#decisão-do-usuário-2026-10-18). Aquele veredito não foi reescrito: a feature foi fechada por decisão, não por PASS.
+**Verdict**: FAIL ❌ na iteração 5 (passe de design, HEAD `6020a4f`) — ver [Iteração 5](#iteração-5--passe-de-design-2026-10-18). R1, R2 e D12 morrem, e T18–T20 não enfraquecem nada. Mas sobrevivem cinco mutantes novos cobertos por AC, todos por lacuna de teste: E2b (STAT-05, botão fora da seção para staff com próximo estágio), E9 (STAT-03), E10/E11 (STAT-38) e E16 (STAT-40), estes quatro com `hidden` num ancestral ou no próprio elemento. O risco residual A6/A7 da STAT-37 continua aceito e não conta. Antes: FAIL ❌ na iteração 4 (passe de design, HEAD `b246c63`) — ver [Iteração 4](#iteração-4--passe-de-design-2026-10-18). O template cumpre a spec, mas sobrevivem dois mutantes cobertos por AC, os dois por lacuna de teste da T16: R1 (STAT-05) e R2 (STAT-03). O risco residual A6/A7 da STAT-37 continua aceito pelo usuário e não conta como falha nova. Antes: FAIL ❌ na iteração 3 (HEAD `5e0fd25`), **com risco residual aceito pelo usuário em 2026-10-18** — ver [Decisão do usuário](#decisão-do-usuário-2026-10-18). Aquele veredito não foi reescrito: a feature foi fechada por decisão, não por PASS.
 
 **Iteração 3 em resumo:** o gate passa com 685 testes, e o código de produção continua igual ao da iteração 1. A T14 mata a N14, a M27 e a M11 continuam mortas, e a `CADEIA_DO_COMPONENTE` confere com o DOM e o layout reais. Mas a T14 **enfraqueceu uma checagem anterior**. Antes, todo `background*` (inclusive `background-image`) de `.ciclo`/`.historico` tinha de ser `var(--token)` de um fundo do DS-08. Agora (`test_views_sistema_design.py:597-599`), a regra só é conferida se declarar `color`, `background` ou `background-color`. Com isso, **A1** (`.historico li { background-image: linear-gradient(var(--brand-blue), var(--brand-blue)) }`) e **A2** (`background-image: var(--brand-gradient)`) em `templates/kira.css:521` passam a suíte inteira. As duas morriam no teste do `ef25406`, o que prova a regressão. Sobreviveram também **A6** (`ol.historico li { background: var(--brand-blue) }`) e **A7** (`section .ciclo li { color: var(--surface) }`): o teste só lê regras cujo seletor *começa* pela classe (`:536-543`). Essa lacuna já existia antes da T14. A STAT-37 cobre os quatro casos ("every color the cycle control and the history add to `kira.css`"). Resultado: 36/37 ACs, sensor 17/22. Fix 4 abaixo, só de teste. Como esta é a terceira iteração, o próximo passo é decisão do usuário.
 
@@ -850,3 +850,204 @@ As demais sobreviventes não geraram lição:
 - **Testes alterados.** Os testes dos estados com próximo estágio não perderam força.
 
 **Next steps**: Fix 5 e Fix 6 (só testes) e nova verificação. A iteração 4 foi aberta pelo passe de design, fora do ciclo de 3 iterações já encerrado. Cabe ao usuário decidir se as correções entram ou se aceita R1 e R2 como risco.
+
+---
+
+## Iteração 5 — passe de design (2026-10-18)
+
+**Date**: 2026-10-18
+**HEAD**: `6020a4f`. Correções da iteração 4 `16fe215..6020a4f`: `380b575` (emenda da STAT-41 e plano da Fase 9), `64b97f2` (T18, R1), `44ea0f7` (T19, R2) e `6020a4f` (T20, D12). Passe de design inteiro: `e7d8709..6020a4f`.
+**Produção tocada desde a iteração 4**: nenhuma. `git diff b246c63..HEAD -- . ':!inovacoes/tests' ':!.specs'` sai vazio. Só mudaram `inovacoes/tests/test_views_detalhe.py` (+15/−5 líquido), `inovacoes/tests/test_views_acessibilidade_alteracao.py` (+2/−1) e os artefatos de `.specs/`.
+**Verifier**: novo sub-agente independente. Não escreveu código, testes nem correções. Re-derivou a cobertura a partir da `spec.md` (STAT-41 lida na redação emendada).
+**Risco já aceito**: a lacuna A6/A7 da STAT-37 continua aceita ([Decisão do usuário](#decisão-do-usuário-2026-10-18)). Nenhuma sobrevivente desta iteração pertence a essa classe.
+
+### Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T1–T17 | ✅ Done | Inalteradas desde a iteração 4 |
+| T18 | ✅ Done | `64b97f2`. R1 morta (4 falhas) |
+| T19 | ✅ Done | `44ea0f7`. R2 morta (4 falhas) |
+| T20 | ✅ Done | `6020a4f`. D12 morta (1 falha) |
+
+### Gate Check (iteração 5)
+
+- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`, rodado na árvore real com HEAD `6020a4f`.
+- **Result**: exit 0 em cada etapa.
+  - `ruff check`: All checks passed.
+  - `ruff format --check`: 110 files already formatted.
+  - `makemigrations --check`: No changes detected.
+  - `pytest -q`: **704 passed**, 0 failed, 0 skipped (16,9 s).
+- **Test count**: 704 (igual à iteração 4; a Fase 9 não acrescentou nem removeu testes).
+
+### T18–T20: houve enfraquecimento?
+
+**Não.** Cada diff foi comparado com o commit pai.
+
+1. **T18** (`64b97f2`, `test_views_detalhe.py`):
+   - `test_ultimo_estagio_explica_e_ninguem_ve_o_link` ganha `:378-379`, `if conta == "terceiro": assert "Avançar" not in html`. Recupera a asserção que a T16 tirou, sem mexer nas outras seis.
+   - `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar` troca `"Avançar" not in secao` por `"Avançar" not in html` (`:403`). Como a seção é um trecho da página, a asserção nova implica a antiga. `_botoes(secao) == []` e a explicação exata ficam.
+2. **T19** (`44ea0f7`, `_links` em `:191-197`):
+   - O regex passa de `<a href="…"[^>]*>` para `<a href="…"(?: aria-describedby="[^"]*")?>`. As asserções positivas (STAT-03 `:344`; EDEX-03/EDEX-31 `:204`, `:214`, `:241`, `:251`, `:270-271`) ficam mais fortes.
+   - As negativas (`_links(...) == []` em `:222`, `:259`, `:279-280`) ficam mais fracas que no `b246c63`, porque um link com outro atributo deixaria de casar. Mas todas estão acompanhadas de `f"/inovacoes/{pk}/editar|excluir/" not in html` (`:223`, `:260`, `:281-282`), que não depende do helper. Em relação ao regex original da F4 (`<a href="…">` exato), nenhuma asserção perdeu força. **Não há enfraquecimento líquido.**
+3. **T20** (`6020a4f`, `test_views_acessibilidade_alteracao.py:328`): `int(tabindex) <= 0` vira `atributos.get("tabindex", "0") == "0"`, que é estritamente mais forte e segue a STAT-41 emendada. As demais checagens (`:320-330`) ficam.
+
+### Spec-Anchored Acceptance Criteria (re-derivado no HEAD `6020a4f`)
+
+Caminhos relativos a `inovacoes/tests/`. O template está em `inovacoes/templates/inovacoes/inovacao_detail.html:55-68`.
+
+#### ACs re-derivadas por inteiro
+
+| AC | Spec-defined outcome | `file:line` + assertion | Result |
+| -- | -------------------- | ----------------------- | ------ |
+| STAT-03 | quem pode alterar, em "Em teste"/"Validada": **exibe** na seção do ciclo o link "Avançar para “<próximo>”" → `/inovacoes/<id>/status/` | `test_views_detalhe.py:344` `_links(secao, f"Avançar para “{proximo}”") == [f"/inovacoes/{pk}/status/"]` (autor e administrador × 2 status), com o regex restrito de `:197`; `test_views_acessibilidade_alteracao.py:255` `links == [f"/inovacoes/{pk}/status/"]` | ❌ **GAP**: R2 (`hidden` no `<a>`) e E1 (`aria-hidden`) morrem. Mas **E9** (`hidden` no `<p class="acoes">` que envolve o link) sobrevive: nenhum teste olha os ancestrais do link |
+| STAT-04 (emendada) | estágio final: "Último estágio do ciclo." na seção; nenhum link para `/status/`, para qualquer conta | `test_views_detalhe.py:371` `_explicacao(secao) == "Último estágio do ciclo."`; `:372` `"<a " not in secao`; `:373` caminho fora da página; `:374` `"Avançar para" not in html` (autor, administrador, terceiro); `:404` para `nao_autor_usuario` | ✅ PASS (E13 morta) |
+| STAT-05 (emendada) | quem não pode alterar não vê **nenhum** link ou botão "Avançar" na página de detalhe | Estágio final, página inteira: `test_views_detalhe.py:403` (`nao_autor_usuario`: terceiro, staff, superusuário) e `:379` (terceiro). Com próximo estágio, página inteira: `:415` `"Avançar" not in html` **só para `terceiro`**. Para `nao_autor_usuario` só há `test_views_status.py:336` `"Avançar para" not in html` (página) e `test_views_detalhe.py:429-430` `"Avançar" not in secao`, `_botoes(secao) == []` (seção) | ❌ **GAP**: R1 e E2 morrem. Mas **E2b** sobrevive: um botão "Avançar status" fora da seção, só para conta `USUARIO` com `is_staff` em "Em teste"/"Validada". A checagem de página inteira por "Avançar" não roda para staff/superusuário com próximo estágio |
+| STAT-38 | pode alterar + estágio final: **exibe** na seção o botão "Avançar status" com `aria-disabled="true"` | `test_views_detalhe.py:390` `[texto.strip() …] == ["Avançar status"]`; `:391` `'aria-disabled="true"' in botoes[0][0]` (autor, administrador); `test_views_acessibilidade_alteracao.py:325` `aria-disabled == "true"` | ❌ **GAP**: E4, E8 e E12 morrem. Mas **E10** (`hidden` no `<p>` do botão) e **E11** (`hidden` no próprio `<button>`) sobrevivem. Nenhum teste recusa `hidden` no botão ou num ancestral |
+| STAT-39 | não pode alterar + "Em teste"/"Validada": o texto exato na seção | `test_views_detalhe.py:428` `_explicacao(secao) == QUEM_PODE_AVANCAR` (3 contas × 2 status); ausente no estágio final (`:376`) e para quem pode alterar (`:444`) | ✅ PASS (E3 morta) |
+| STAT-40 | pode alterar + "Em teste"/"Validada": **exibe** na seção a ajuda exata | `test_views_detalhe.py:442` `_explicacao(secao) == AJUDA_DO_AVANCO` (2 contas × 2 status); `test_views_acessibilidade_alteracao.py:339-341`; ausente no estágio final (`:375`) e para quem não pode alterar (`:431`) | ❌ **GAP**: E5 morta. Mas **E16** (`hidden` no `<p id="ciclo-explicacao" class="helptext">`) sobrevive. `_explicacao` lê o texto e ignora atributos |
+| STAT-41 (emendada) | botão na ordem do Tab (sem `disabled`; `tabindex` ausente ou `0`); `aria-describedby` → "Último estágio do ciclo."; link → ajuda da STAT-40; botão `type="button"` fora de `form` | `test_views_acessibilidade_alteracao.py:322` um botão; `:324` `type == "button"`; `:325` `aria-disabled == "true"`; `:326` sem `disabled`; `:328` `tabindex` ausente ou `"0"`; `:329` fora de `form`; `:330` `_texto_do_id(…) == "Último estágio do ciclo."`; `:338-341` o link resolve para a ajuda exata, nos 2 status | ✅ PASS (D12, E3, E7, E8 mortas) |
+| STAT-34 | só nativos, sem `tabindex` positivo, foco visível em cada link e botão; um `h1` e `<title>` "Avançar status" | `test_views_acessibilidade_alteracao.py:207-218` `_afirma_so_nativos` (sem papel de controle, `tabindex <= 0`), aplicado em `:224`, `:250`, `:320`; `:233-236` confirmação com um `submit` no `form` e um link; `:248-257` seções rotuladas pelo `h2`, uma `ol`; `:261-267` `:focus-visible` com `outline` sólido nas 4 páginas do ciclo, inclusive `detalhe_final`; `:278-280` `h1` exato e `<title>` por prefixo | ✅ PASS ⚠️ (E7, E14 mortas; título por prefixo, lacuna herdada sem bloqueio) |
+
+#### Amostragem das demais ACs no HEAD (10, relidas linha a linha)
+
+`test_views_status.py`, `test_ciclo_de_vida.py` e `test_views_erro_500.py` estão fora do diff `b246c63..HEAD`.
+
+| AC | `file:line` + assertion | Result |
+| -- | ----------------------- | ------ |
+| STAT-01 | `test_views_detalhe.py:313` `findall(h2) == ["Ciclo de vida"]`; `:315` itens sem o sufixo `== ETAPAS` | ✅ |
+| STAT-02 | `test_views_detalhe.py:326` `html.count("(status atual)") == 1`; `:329` lista inteira igual à esperada, 3 status | ✅ |
+| STAT-06 | `test_views_status.py:46-67` 200, template, `h1 == ["Avançar status"]`, texto exato, `method="post"`, um `submit` "Avançar para “<próximo>”", `status_visto` oculto com o status gravado, `cancelar == [f"/inovacoes/{pk}/"]` | ✅ ⚠️ (título) |
+| STAT-07 | `test_views_status.py:175-176` `assertRedirects(…, f"/inovacoes/{pk}/")`, `== VALIDADA` | ✅ |
+| STAT-10 | `test_views_status.py:230-234` POST: redirect, `== DISPONIVEL`, `count() == 0`, `[("warning", ULTIMO_ESTAGIO)]` | ✅ |
+| STAT-12 | `test_views_status.py:237-247` `[None, VALIDADA, "APROVADA"]`: `== EM_TESTE`, `count() == 0`, `[("warning", _conflito("Em teste"))]` | ✅ |
+| STAT-14 | `test_views_status.py:177-183` `(inovacao_id, anterior, novo) == (pk, EM_TESTE, VALIDADA)`, `responsavel == autor` | ✅ |
+| STAT-19/20 | `test_views_status.py:310-327` terceiro, staff e superusuário, GET e POST: 403, `acesso_negado.html`, `NEGADO`, status e contagem | ✅ |
+| STAT-31 | `test_ciclo_de_vida.py:67-73` `IntegrityError` com `mudanca_de_status_transicao_valida`, 7 pares | ✅ |
+| STAT-36 | `test_views_erro_500.py:173-183` 403 que não é o acesso negado, `== EM_TESTE`, `count() == 0` | ✅ |
+
+As demais ACs (STAT-08, 09, 11, 13, 15–18, 21–30, 32, 33, 35) foram herdadas das iterações 1 a 4, sem mudança nos testes nem na produção que as exercita. A STAT-37 segue com o risco residual A6/A7 aceito.
+
+**Status**: ❌ 36/41 ACs com o valor da spec afirmado e discriminante. STAT-03, STAT-05, STAT-38 e STAT-40 têm asserção, mas cada uma deixa sobreviver um mutante que a AC cobre (E9, E2b, E10/E11, E16). A STAT-37 conta à parte, pelo risco aceito.
+
+### Discrimination Sensor (iteração 5)
+
+**Preparação.**
+- Worktree: `git worktree add --detach scratchpad/wt5 HEAD`, com o `.env` copiado.
+- Banco: PostgreSQL de teste na porta 5433.
+- Código em uso: `inovacoes.__file__` resolve para a worktree.
+- Linha de base: **704 passed**.
+
+**Execução.** Cada mutação foi feita por substituição exata e única (`count == 1`) em `inovacoes/templates/inovacoes/inovacao_detail.html`. Para cada uma, rodei a suíte inteira com `.venv/bin/pytest -q -p no:cacheprovider`, depois `git checkout -- .` e `git diff --quiet`.
+
+**Sondas.** Para provar que as sobreviventes são efetivas, usei um arquivo de sonda descartável, não rastreado, só na worktree. Cada sonda passa no HEAD (9 passed) e falha com o seu mutante. Depois apaguei o arquivo.
+
+**Limpeza.** No fim, `git worktree remove --force` e `git worktree prune`. `git worktree list` só mostra a árvore principal. O `git status --porcelain` da árvore real está vazio e é idêntico à linha de base gravada antes do sensor. O HEAD continua `6020a4f`.
+
+#### Re-injeções da iteração 4
+
+| # | File:line | Mutação | Killed? (testes que falharam) | AC |
+| - | --------- | ------- | ----------------------------- | -- |
+| R1 | `inovacao_detail.html:68` (depois da seção) | `{% if not pode_alterar and not inovacao.proximo_status %}<p><button type="button" aria-disabled="true">Avançar status</button></p>{% endif %}` | ✅ 4: `test_ultimo_estagio_explica_e_ninguem_ve_o_link[terceiro]`, `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar[terceiro, staff, superusuario]` | STAT-05 |
+| R2 | `:63` | `hidden` no `<a>` de avançar | ✅ 4: `test_quem_pode_alterar_ve_o_link_de_avancar[2 contas × 2 status]` | STAT-03 |
+| D12 | `:59` | `tabindex="-1"` no botão | ✅ `test_botao_desabilitado_continua_focavel_e_le_a_explicacao` | STAT-41 |
+
+#### Mutações novas
+
+| # | File:line | Mutação | Killed? (testes que falharam) | AC |
+| - | --------- | ------- | ----------------------------- | -- |
+| E1 | `:63` | `aria-hidden="true"` no `<a>` | ✅ 4: `test_quem_pode_alterar_ve_o_link_de_avancar[…]` | STAT-03 |
+| E2 | `:68` | link visível `<a href="/inovacoes/">Avançar</a>` fora da seção, para quem não pode alterar, com próximo estágio | ✅ 2: `test_terceiro_nao_ve_o_link_de_avancar[EM_TESTE, VALIDADA]` | STAT-05 |
+| **E2b** | `:68` | `{% if not pode_alterar and inovacao.proximo_status and user.is_staff %}<p><button type="button" aria-disabled="true">Avançar status</button></p>{% endif %}` (botão fora da seção para `USUARIO` com `is_staff`) | ❌ **Survived** (704 passed). Sonda `"Avançar" not in html` com `nao_autor_usuario` falha em `[staff-EM_TESTE]` e `[staff-VALIDADA]` | **STAT-05** |
+| E3 | `:59` | `aria-describedby` do botão → um `<p id="ciclo-permissao">` novo com o texto da STAT-39 | ✅ 3: `test_botao_desabilitado_continua_focavel…`, `test_ultimo_estagio_explica_e_ninguem_ve_o_link[autor, administrador]` | STAT-41, STAT-39 |
+| E4 | `:59` | `aria-disabled="false"` | ✅ 3: `test_ultimo_estagio_mostra_avancar_desabilitado…[2]`, `test_botao_desabilitado_continua_focavel…` | STAT-38 |
+| E5 | `:61` | ajuda da STAT-40 (`.helptext`) mostrada também no estágio final | ✅ 3: `test_ultimo_estagio_explica_e_ninguem_ve_o_link[3 contas]` | STAT-40, design |
+| E6 | `:61` | "Último estágio do ciclo." duplicado (dois `#ciclo-explicacao`) | ⚪ Survived, **fora da letra da spec**: nenhuma AC proíbe repetir o texto. O `id` duplicado é HTML inválido, e o `aria-describedby` resolve para o primeiro. Sonda com `count('id="ciclo-explicacao"') == 1` falha | nota |
+| E7 | `:59` | `tabindex="1"` no botão | ✅ `test_botao_desabilitado_continua_focavel…` | STAT-34, STAT-41 |
+| E8 | `:59` → `:71` | botão movido para dentro da seção "Histórico de status" | ✅ 3: `test_ultimo_estagio_mostra_avancar_desabilitado…[2]`, `test_botao_desabilitado_continua_focavel…` | STAT-38 |
+| **E9** | `:63` | `<p class="acoes" hidden>` em volta do link de avançar | ❌ **Survived** (704 passed). Sonda falha | **STAT-03** ("SHALL display … a link") |
+| **E10** | `:59` | `<p class="acoes" hidden>` em volta do botão desabilitado | ❌ **Survived** (704 passed). Sonda falha | **STAT-38** ("SHALL display … a button") |
+| **E11** | `:59` | `<button hidden type="button" …>` | ❌ **Survived** (704 passed). Sonda falha | **STAT-38** |
+| E12 | `:59` | rótulo "Avançar" em vez de "Avançar status" | ✅ 2: `test_ultimo_estagio_mostra_avancar_desabilitado…[2]` | STAT-38 |
+| E13 | `:61` → depois de `:68` | "Último estágio do ciclo." movido para fora da seção | ✅ 7: `test_ultimo_estagio_explica…[3]`, `test_ultimo_estagio_nao_mostra_botao…[3]`, `test_botao_desabilitado…` | STAT-04 |
+| E14 | `:63` | `role="button"` no link | ✅ 6: STAT-03 (4), `test_secoes_do_detalhe_sao_nativas…[ciclo]`, `test_views_acessibilidade_consulta.py::test_pagina_so_tem_controles_nativos[detalhe]` | STAT-03, STAT-34 |
+| E15 | `:59` | `style="display:none"` no botão | ✅ 2: `test_views_sistema_design.py::test_pecas_e_base_nao_tem_estilo_inline…`, `test_toda_tela_estende_o_base_sem_estilo_proprio` | STAT-38 (via DS) |
+| **E16** | `:64` | `hidden` no `<p id="ciclo-explicacao" class="helptext">` | ❌ **Survived** (704 passed). Sonda falha | **STAT-40** ("SHALL display … the help text") |
+| E17 | `:63` | `<p class="acoes" inert>` em volta do link | ⚪ Survived (704 passed). Sonda falha. O link continua **exibido**, então a letra da STAT-03 é cumprida. `inert` o tira do Tab e da árvore de acessibilidade, e a STAT-34 pede foco visível "on each link", o que pressupõe um link focável. Nenhuma AC exige, com todas as letras, que o link de avançar esteja na ordem do Tab (a STAT-41 só exige isso do botão) | ⚠️ SPG |
+
+**Sensor depth**: expandido (autorização na tela e acessibilidade): 3 re-injeções e 18 mutações novas.
+**Result**: 14/21 mortas. Das 7 sobreviventes:
+- **E2b** (STAT-05), **E9** (STAT-03), **E10 e E11** (STAT-38) e **E16** (STAT-40) são cobertas por AC → FAIL ❌. As quatro de `hidden` são da mesma classe da R2, que a iteração 4 contou como falha.
+- **E17** é uma lacuna de precisão da spec (não bloqueia).
+- **E6** está fora da spec (só nota).
+
+Nenhuma sobrevivente é da classe A6/A7 já aceita: o passe de design não toca CSS.
+
+### Spec-Precision Gaps (iteração 5)
+
+- **STAT-03, link operável (novo, E17).** A STAT-41 emendada exige a ordem do Tab só para o botão desabilitado. O link "Avançar para" pode ficar `inert` (visível, mas fora do Tab e da árvore de acessibilidade) sem violar a letra de nenhuma AC. Sugestão de emenda: "the link SHALL be reachable in the sequential Tab order and exposed to assistive technology (no `hidden`, `inert` or `aria-hidden` on it or an ancestor)". **Não bloqueia.**
+- **STAT-06/STAT-34, `<title>` (herdado).** Igual às iterações anteriores, sem bloqueio.
+
+### Fix Plans (iteração 5)
+
+#### Fix 7: STAT-05 com próximo estágio só é conferida na página inteira para o terceiro sem bandeiras (E2b) — Major, só teste
+
+- **Root cause**: `test_terceiro_nao_ve_o_link_de_avancar` (`test_views_detalhe.py:407-418`) tem `"Avançar" not in html`, mas usa só a fixture `terceiro`. Os testes com `nao_autor_usuario` olham a página por `"Avançar para"` (`test_views_status.py:336`) ou a seção por `"Avançar"` (`test_views_detalhe.py:429`). Um controle "Avançar status" fora da seção, condicionado a `is_staff`, passa. É a lacuna da R1, no outro ramo do `{% if %}`.
+- **Fix task**: em `test_quem_nao_pode_alterar_le_quem_pode_avancar` (`:421-431`), carregar a página inteira e afirmar `"Avançar" not in html`, como a T18 fez no estágio final. Alternativa: trocar `"Avançar para"` por `"Avançar"` em `test_views_status.py:336`.
+- **Verify**: E2b morre na worktree; R1, E2, D1 e D14 continuam mortas.
+- **Done when**: E2b está morta, o gate de build está verde e nenhum código de produção mudou.
+
+#### Fix 8: controles e textos "exibidos" não recusam `hidden` num ancestral ou no próprio elemento (E9, E10, E11, E16) — Major, só teste
+
+- **Root cause**: as asserções positivas da STAT-03, STAT-38 e STAT-40 leem rótulo, destino e atributos ARIA do elemento por regex ou parser, mas nada recusa um `hidden` (ou `inert`, ou `aria-hidden`) no elemento ou num ancestral dentro da seção. A T19 fechou só o caso do atributo no próprio `<a>`.
+- **Fix task**: em `test_views_acessibilidade_alteracao.py` (ou `test_views_detalhe.py`), criar um helper que, sobre a seção do ciclo analisada por `_analisar`, afirme que **nenhum** elemento tem `hidden`, `inert` ou `aria-hidden="true"`. Aplicá-lo nos quatro estados da tabela "Controle de transição" (pode/não pode alterar × com próximo/estágio final). A recusa de `style=` inline já vem do DS (E15 morta).
+- **Verify**: E9, E10, E11, E16 e E17 morrem na worktree; R2 e E1 continuam mortas.
+- **Done when**: as cinco estão mortas, o gate de build está verde e nenhum código de produção mudou.
+
+### Requirement Traceability Update (iteração 5)
+
+Não aplicada (FAIL). A `spec.md` e o `tasks.md` não foram alterados. Proposta para quando os Fix 7 e 8 passarem no Verifier:
+
+| Requirement | Status atual | Proposto |
+| ----------- | ------------ | -------- |
+| STAT-04, STAT-39, STAT-41 | Implementing / Implementing (emendada) | ✅ Verified (evidência acima) |
+| STAT-03 | Verified | ❌ Needs Fix (Fix 8, E9) |
+| STAT-05 | Implementing (emendada) | ❌ Needs Fix (Fix 7, E2b) |
+| STAT-38 | Implementing | ❌ Needs Fix (Fix 8, E10/E11) |
+| STAT-40 | Implementing | ❌ Needs Fix (Fix 8, E16) |
+| STAT-37 | Implementing (risco residual aceito) | sem mudança |
+
+### Summary (iteração 5)
+
+**Overall**: ❌ Not Ready.
+- **O que foi corrigido.** As três correções da iteração 4 funcionam: R1, R2 e D12 morrem, e T18–T20 não enfraquecem nada. O template continua cumprindo a spec nos quatro estados.
+- **Por que FAIL.** Cinco mutantes novos, cobertos por AC, sobrevivem, todos por lacuna de teste:
+  - **E2b** (STAT-05): botão "Avançar status" fora da seção para `USUARIO` com `is_staff`, com próximo estágio.
+  - **E9** (STAT-03): `hidden` no `<p>` que envolve o link.
+  - **E10 e E11** (STAT-38): `hidden` no `<p>` do botão ou no próprio botão.
+  - **E16** (STAT-40): `hidden` na ajuda.
+
+**Spec-anchored check**: 36/41 ACs com o valor da spec afirmado e discriminante. STAT-03, STAT-05, STAT-38 e STAT-40 têm lacuna de discriminação, e a STAT-37 fica fora da conta pelo risco aceito. 2 lacunas de precisão que não bloqueiam (link operável da STAT-03/E17 e o título).
+**Sensor**: 14/21 mortas. Sobreviventes cobertas por AC: E2b, E9, E10, E11 e E16. Lacuna de precisão: E17. Fora da spec: E6.
+**Gate**: 704 passed, 0 failed; ruff, format e makemigrations limpos.
+**validate_state.py**: `python3 .claude/skills/tlc-spec-driven/scripts/validate_state.py ciclo-de-vida-status` → exit 1, "validation.md verdict is FAIL - route the ranked gaps to fix tasks, then re-verify (feature is not done)". É o resultado esperado para um FAIL.
+
+**Lessons** (estado das candidatas da iteração 4):
+
+| Lição | Situação |
+| ----- | -------- |
+| **L-024** | Aplicada para o caso que a originou: R1 morre. **Recorre no ramo vizinho** (E2b). A asserção de página inteira voltou no estágio final, mas, com próximo estágio, nunca existiu para staff/superusuário |
+| **L-025** | Aplicada: R2 e E1 morrem. A mesma família reaparece um nível acima (E9, E10, E11, E16): o helper agora recusa atributos no `<a>`, mas nenhum teste olha `hidden` num ancestral, no botão ou no texto |
+| **L-026** | Atendida: STAT-41 emendada, e D12 e E7 morrem. O caso vizinho (E17, link `inert`) fica como lacuna de precisão |
+
+Lições novas, `candidate`:
+
+| Lição | Sinal | Regra |
+| ----- | ----- | ----- |
+| **L-027** | E2b | Asserção negativa de página roda para toda variante de conta do papel negado |
+| **L-028** | E9/E10/E11/E16 | Asserção de "exibido" recusa `hidden`, `inert` e `aria-hidden` no elemento e nos ancestrais |
+| **L-029** | E17, lacuna de precisão | AC de link de ação também exige ordem do Tab e exposição à tecnologia assistiva |
+
+**L-003** (confirmada) não foi penalizada. A letra dela, a recusa da tela e da rota a contas com `is_staff`/`is_superuser`, é cumprida (`test_views_status.py:310-327`). A falha da E2b é de asserção negativa na página, não de acesso.
+
+**Next steps**: Fix 7 e Fix 8 (só testes) e nova verificação, se o usuário aceitar a rodada. A outra opção é aceitar E2b, E9, E10, E11 e E16 como risco residual: o template atual não tem nenhum desses defeitos.
