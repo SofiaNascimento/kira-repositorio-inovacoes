@@ -184,6 +184,30 @@ class InovacaoDeleteView(AlteracaoDeInovacaoMixin, DeleteView):
         return resposta
 
 
+# STAT-10: o GET e o aviso do POST dizem o mesmo texto.
+MENSAGEM_ULTIMO_ESTAGIO = (
+    "Esta inovação já está em “Disponível para replicação”, o último estágio do ciclo."
+)
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, STAT-23).
+class InovacaoStatusView(AlteracaoDeInovacaoMixin, DetailView):
+    """Confirmacao e avanco do status um estagio pelo autor ou administrador (RF09, RN03).
+
+    O GET herdado so renderiza a confirmacao e nunca grava (STAT-11).
+    """
+
+    template_name = "inovacoes/inovacao_status.html"
+
+    def get_context_data(self, **kwargs):
+        # STAT-06, STAT-10: sem proximo, a pagina explica em vez de oferecer o botao.
+        return super().get_context_data(
+            proximo=self.object.proximo_status,
+            mensagem_ultimo_estagio=MENSAGEM_ULTIMO_ESTAGIO,
+            **kwargs,
+        )
+
+
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).
 class InovacaoListView(ListView):
     """Listagem de todas as inovacoes, para qualquer perfil (RF03, CONS-08)."""

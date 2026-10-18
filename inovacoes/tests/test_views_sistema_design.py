@@ -388,7 +388,8 @@ def _telas():
 def test_toda_tela_estende_o_base_sem_estilo_proprio():
     """DS-01."""
     telas = dict(_telas())
-    assert len(telas) == 8
+    # STAT-06, STAT-34: a F5 acrescenta a tela "Avançar status".
+    assert len(telas) == 9
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

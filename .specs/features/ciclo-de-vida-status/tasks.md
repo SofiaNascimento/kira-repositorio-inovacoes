@@ -62,8 +62,10 @@ o link) · L-005 (toda AC com efeito em tela é afirmada pelo `client`, não só
 **Linha de base:** 574 testes coletados antes da T1 (`.venv/bin/pytest -q --co`, 2026-10-18). Rodar
 `.venv/bin/pytest -q` no início do Execute para confirmar que todos passam.
 
-**Testes de features anteriores que mudam:** só **um**, de propósito: `CONSULTAS_DO_DETALHE` em
-`inovacoes/tests/test_views_detalhe.py` sobe de 6 para 7 (T6, design → Risks). Os testes de
+**Testes de features anteriores que mudam:** **dois**, de propósito: `CONSULTAS_DO_DETALHE` em
+`inovacoes/tests/test_views_detalhe.py` sobe de 6 para 7 (T6, design → Risks); e a contagem de telas
+do DS-01 em `inovacoes/tests/test_views_sistema_design.py` sobe de 8 para 9 (T3, a tela nova
+"Avançar status"; autorizada pelo usuário em 2026-10-18). Os testes de
 sanidade da varredura (T8) e a fixture `paginas` do sistema de design (T7, T10) **ganham** a rota
 nova, sem perder nada. Qualquer outro teste da F1 a F4 que precise mudar indica erro na task. As
 contagens abaixo são estimativas; a regra dura é que a contagem nunca cai.
@@ -175,7 +177,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T3: Confirmação do avanço (GET) em `/inovacoes/<pk>/status/`
+### T3: Confirmação do avanço (GET) em `/inovacoes/<pk>/status/` ✅
 
 **What**: A rota `status`, a `InovacaoStatusView` com o mixin da AD-009 e o GET, e o template `inovacao_status.html` com a confirmação e a variante de estágio final.
 **Where**: `inovacoes/views.py`
@@ -190,17 +192,19 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `MENSAGEM_ULTIMO_ESTAGIO` e `InovacaoStatusView(AlteracaoDeInovacaoMixin, DetailView)` com `template_name = "inovacoes/inovacao_status.html"` e o contexto do próximo status; `path("<int:pk>/status/", ..., name="status")` em `inovacoes/urls.py`
-- [ ] `inovacoes/templates/inovacoes/inovacao_status.html` como no design: `<title>`/`h1` "Avançar status"; com próximo, o texto da STAT-06, `form method="post"` com `csrf_token`, `status_visto` oculto, botão "Avançar para “<próximo>”" e "Cancelar" → detalhe; sem próximo, `MENSAGEM_ULTIMO_ESTAGIO`, link "Voltar para a inovação" e nenhum `form`
-- [ ] Testes e2e em `inovacoes/tests/test_views_status.py`: autor `USUARIO` com "Em teste" → 200, `<title>` e `h1`, o texto exato da STAT-06, botão "Avançar para “Validada”", `status_visto` = `EM_TESTE`, "Cancelar" com `href` do detalhe (STAT-06, STAT-17); com "Validada" → texto e botão para "Disponível para replicação"; com "Disponível para replicação" → 200, `MENSAGEM_ULTIMO_ESTAGIO`, link "Voltar para a inovação", sem `<form` nem `<button` (STAT-10); o GET não muda status nem cria registro (STAT-11); `administrador` na inovação do autor → 200; `terceiro` → 403 com `acesso_negado.html` (STAT-19); id inexistente → 404 com "Inovação não encontrada." (STAT-22)
-- [ ] A varredura de `contas/tests/test_controle_acesso.py` (AD-006) passa sem alteração e já inclui a rota nova
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~613 testes passam (+10, mais os casos que a varredura da AD-009 gera sozinha para a rota nova)
+- [x] `MENSAGEM_ULTIMO_ESTAGIO` e `InovacaoStatusView(AlteracaoDeInovacaoMixin, DetailView)` com `template_name = "inovacoes/inovacao_status.html"` e o contexto do próximo status; `path("<int:pk>/status/", ..., name="status")` em `inovacoes/urls.py`
+- [x] `inovacoes/templates/inovacoes/inovacao_status.html` como no design: `<title>`/`h1` "Avançar status"; com próximo, o texto da STAT-06, `form method="post"` com `csrf_token`, `status_visto` oculto, botão "Avançar para “<próximo>”" e "Cancelar" → detalhe; sem próximo, `MENSAGEM_ULTIMO_ESTAGIO`, link "Voltar para a inovação" e nenhum `form`
+- [x] Testes e2e em `inovacoes/tests/test_views_status.py`: autor `USUARIO` com "Em teste" → 200, `<title>` e `h1`, o texto exato da STAT-06, botão "Avançar para “Validada”", `status_visto` = `EM_TESTE`, "Cancelar" com `href` do detalhe (STAT-06, STAT-17); com "Validada" → texto e botão para "Disponível para replicação"; com "Disponível para replicação" → 200, `MENSAGEM_ULTIMO_ESTAGIO`, link "Voltar para a inovação", sem `<form` nem `<button` (STAT-10); o GET não muda status nem cria registro (STAT-11); `administrador` na inovação do autor → 200; `terceiro` → 403 com `acesso_negado.html` (STAT-19); id inexistente → 404 com "Inovação não encontrada." (STAT-22)
+- [x] A varredura de `contas/tests/test_controle_acesso.py` (AD-006) passa sem alteração e já inclui a rota nova
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~613 testes passam (+10, mais os casos que a varredura da AD-009 gera sozinha para a rota nova)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona a confirmacao do avanco de status`
+
+**Status**: ✅ Complete — 620 passed (+16); a contagem de telas do DS-01 subiu de 8 para 9 (`test_views_sistema_design.py`) por causa da tela nova, com autorização do usuário; a varredura da AD-006 e a da AD-009 já cobrem `/status/` sem alteração; o `<title>` é conferido pelo prefixo "Avançar status", como na F4; o estágio final é testado para o autor e o administrador
 
 ---
 

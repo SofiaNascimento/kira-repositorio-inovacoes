@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Avançar status{% endblock %}
+
+{% block conteudo %}
+  <h1>Avançar status</h1>
+
+  <div class="cartao">
+  {% if proximo %}
+    {# STAT-06: o estado atual, o efeito e que nao tem volta (RN12). #}
+    <p>Você vai avançar a inovação “{{ inovacao.titulo }}” de “{{ inovacao.get_status_display }}” para “{{ proximo.label }}”. Depois de avançar, não é possível voltar ao status anterior.</p>
+
+    {# STAT-11: so o POST desta confirmacao avanca. #}
+    <form method="post" class="acoes">
+      {% csrf_token %}
+      {# STAT-12, STAT-13: o status que a pessoa viu; o POST so avanca se ainda for o gravado. #}
+      <input type="hidden" name="status_visto" value="{{ inovacao.status }}">
+      <button type="submit">Avançar para “{{ proximo.label }}”</button>
+      <a href="{{ inovacao.get_absolute_url }}">Cancelar</a>
+    </form>
+  {% else %}
+    {# STAT-10: o estagio final e explicado, sem botao. #}
+    <p>{{ mensagem_ultimo_estagio }}</p>
+    <p class="acoes"><a href="{{ inovacao.get_absolute_url }}">Voltar para a inovação</a></p>
+  {% endif %}
+  </div>
+{% endblock %}
