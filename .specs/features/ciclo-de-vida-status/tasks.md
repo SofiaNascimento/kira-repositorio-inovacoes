@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — T1–T13 implementadas; Verifier iteração 1 FAIL (2 mutantes sobreviventes por lacuna de teste) → Fase 5 (T12, T13) concluída → aguardando o Verifier, iteração 2
+**Status**: In Progress — T1–T14 implementadas; Verifier iteração 1 FAIL (M11, M27) → Fase 5 (T12, T13); iteração 2 FAIL (N14, mesma classe da M27) → Fase 6 (T14) concluída → aguardando o Verifier, iteração 3 (última antes de escalar)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -117,6 +117,16 @@ nenhum defeito de produção. Só arquivos de teste mudam, e só ficam mais fort
 
 ```
 T12 → T13
+```
+
+### Phase 6: Correção da validação, iteração 2
+
+Fix task do `validation.md` (iteração 2, FAIL): o mutante N14 (fundo novo sem `color` no
+`.historico li`) sobreviveu, porque o teste da T13 pulava regra sem `color` e usava fundos fixos.
+Só o arquivo de teste muda.
+
+```
+T14
 ```
 
 ---
@@ -507,16 +517,48 @@ T12 → T13
 
 ---
 
+### T14: Contraste calculado pelo par efetivo, herdado dos ancestrais (Fix 3, N14) ✅
+
+**What**: O teste de cores do ciclo e do histórico confere o par (texto, fundo) efetivo de toda regra que declara `color` ou fundo, lendo do CSS o que falta na regra pela cadeia de ancestrais e, por fim, pelo `body`.
+**Where**: `inovacoes/tests/test_views_sistema_design.py`
+**Depends on**: T13
+**Reuses**: `PARES_DE_TEXTO`, `_regras_do_componente`, `_corpos`, `_token` do mesmo arquivo
+**Requirement**: STAT-37
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] `FUNDO_HERDADO` (mapa fixo de fundos) sai; entra `CADEIA_DO_COMPONENTE` (ancestrais de cada seletor de `.ciclo`/`.historico`), e `_cor_desenhada` lê `color` e `background`/`background-color` do próprio seletor, dos ancestrais e do `body`, no CSS real
+- [x] Toda regra que declara `color`, `background` ou `background-color` tem o par efetivo conferido contra `PARES_DE_TEXTO`, inclusive a que declara só o fundo; seletor do componente fora da cadeia faz o teste falhar
+- [x] As checagens anteriores continuam: nenhuma cor literal, todo `var()` existe no `:root`, cor e fundo só por `var(--token)`
+- [x] Mutantes mortos numa worktree temporária: N14 (`background` e `background-color` no `.historico li`), M27, N12 (`.historico time` em `surface`), N13 (estágio atual em `surface`) e fundo no próprio `.ciclo`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 685 testes passam (+0: reforça o teste parametrizado da T7/T13)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(design): confere o contraste do ciclo pelo par efetivo herdado`
+
+**Status**: ✅ Complete — 685 passed (+0); o par é lido do CSS real, sem fundos escritos no teste; seis mutantes de cor conferidos numa worktree temporária, cada um derruba o teste de pares (o do estágio atual derruba também o DS da T7); worktree removida e árvore real intacta. Build gate verde
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4
 Phase 3:  T5 → T6 → T7
 Phase 4:  T8 → T9 → T10 → T11
 Phase 5:  T12 → T13
+Phase 6:  T14
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -526,6 +568,7 @@ T2 → T3
 T4 → T5
 T7 → T8
 T11 → T12
+T13 → T14
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -548,7 +591,7 @@ fronteira de fase: **lote 1** = Fases 1+2+3 (7 tasks: modelo, tela e detalhe), *
 | T6 | 1 trecho de template + 1 chave de contexto (+ 1 constante de teste) | ✅ Granular |
 | T7 | 1 folha de estilo (+ checagens do sistema de design) | ✅ Granular |
 | T8, T9, T10, T11 | 1 arquivo de teste cada (o código já existe) | ✅ Granular |
-| T12, T13 | 1 arquivo de teste cada (correções da validação) | ✅ Granular |
+| T12, T13, T14 | 1 arquivo de teste cada (correções da validação) | ✅ Granular |
 
 **Nota sobre T1 e T3:** a migration é gerada pelo `makemigrations`, não escrita à mão, e o gate de
 build (`--check`) falharia sem ela. Uma view Django não é testável sem rota e template. O `Where`
@@ -577,6 +620,7 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T11 | T10 | T10 → T11 | ✅ Match |
 | T12 | T11 | T11 → T12 (arco de fronteira) | ✅ Match |
 | T13 | T12 | T12 → T13 | ✅ Match |
+| T14 | T13 | T13 → T14 (arco de fronteira) | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior.
 
@@ -599,6 +643,7 @@ Nenhuma dependência aponta para uma fase posterior.
 | T11: banco e CSRF | Views (evidência) | e2e | e2e | ✅ OK |
 | T12: histórico só da inovação | Template do detalhe (evidência) | e2e | e2e | ✅ OK |
 | T13: contraste por par | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
+| T14: par efetivo herdado | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
@@ -628,6 +673,6 @@ Nenhuma task tem `Tests: none`.
 | STAT-30, 32, 33 | T9 |
 | STAT-34 | T7, T10 |
 | STAT-35, 36 | T11 |
-| STAT-37 | T7, T10, T13 |
+| STAT-37 | T7, T10, T13, T14 |
 
 **Coverage:** 37 de 37 requisitos mapeados para tasks.

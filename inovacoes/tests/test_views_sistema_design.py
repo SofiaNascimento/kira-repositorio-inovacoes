@@ -543,13 +543,19 @@ def _regras_do_componente(classe):
     ]
 
 
-# Fundo sobre o qual cada regra sem background proprio desenha o texto. O ::before
-# e o estagio atual ficam no li, que tem fundo surface; o historico fica fora do
-# cartao, direto no bg da pagina. Regra nova com color precisa entrar aqui.
-FUNDO_HERDADO = {
-    ".ciclo li + li::before": "surface",
-    ".ciclo [aria-current=step]": "surface",
-    ".historico time": "bg",
+# Ancestrais de cada seletor do componente, do mais proximo ao mais distante. O
+# estagio atual e o proprio li, entao a regra do li vale junto. Depois da cadeia
+# vem o body: as secoes do detalhe ficam fora do cartao e o main nao tem fundo.
+# Regra nova do componente precisa entrar aqui.
+CADEIA_DO_COMPONENTE = {
+    ".ciclo": [],
+    ".ciclo li": [".ciclo"],
+    ".ciclo li + li::before": [".ciclo li", ".ciclo"],
+    ".ciclo [aria-current=step]": [".ciclo li", ".ciclo"],
+    ".historico": [],
+    ".historico li": [".historico"],
+    ".historico li:first-child": [".historico li", ".historico"],
+    ".historico time": [".historico li", ".historico"],
 }
 
 
@@ -559,30 +565,42 @@ def _token_de(valor):
     return achado.group(1)
 
 
+def _declaracoes(corpo):
+    return re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo)
+
+
+def _cor_desenhada(seletor, propriedade):
+    """Token de color ou de fundo que vale no seletor, lido do CSS e herdado."""
+    for origem in [seletor, *CADEIA_DO_COMPONENTE[seletor], "body"]:
+        for nome, valor in reversed(_declaracoes(_corpos(origem))):
+            if nome == propriedade or (propriedade == "background" and nome == "background-color"):
+                return _token_de(valor)
+    raise AssertionError(f"{seletor}: sem {propriedade} nem no body")
+
+
 @pytest.mark.unit
 @pytest.mark.parametrize("classe", [".ciclo", ".historico"])
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
-    """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08."""
+    """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.
+
+    Toda regra que declara color ou fundo tem o par efetivo conferido: o que falta
+    na regra vem dos ancestrais e, por fim, do body.
+    """
     regras = _regras_do_componente(classe)
     assert [s for s, _ in regras if s == classe], f"falta a regra {classe}"
     for seletores, corpo in regras:
         assert not CORES_LITERAIS.search(corpo), seletores
-        propriedades = dict(re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo))
-        for valor in propriedades.values():
+        declaracoes = _declaracoes(corpo)
+        for _, valor in declaracoes:
             for token in re.findall(r"var\(--([\w-]+)\)", valor):
                 assert _token(token), (seletores, token)
-        fundos = [_token_de(v) for p, v in propriedades.items() if p.startswith("background")]
-        for fundo in fundos:
-            assert fundo in {f for _, f in PARES_DE_TEXTO}, (seletores, fundo)
-        if "color" not in propriedades:
+        nomes = {nome for nome, _ in declaracoes}
+        if "color" not in nomes and not {"background", "background-color"} & nomes:
             continue
-        texto = _token_de(propriedades["color"])
-        if fundos:
-            (fundo,) = fundos
-        else:
-            assert seletores in FUNDO_HERDADO, f"{seletores}: declare o fundo em FUNDO_HERDADO"
-            fundo = FUNDO_HERDADO[seletores]
-        assert (texto, fundo) in PARES_DE_TEXTO, (seletores, texto, fundo)
+        for seletor in (s.strip() for s in seletores.split(",")):
+            assert seletor in CADEIA_DO_COMPONENTE, f"{seletor}: declare a cadeia"
+            par = (_cor_desenhada(seletor, "color"), _cor_desenhada(seletor, "background"))
+            assert par in PARES_DE_TEXTO, (seletor, par)
 
 
 @pytest.mark.unit
