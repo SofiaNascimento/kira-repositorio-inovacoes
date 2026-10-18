@@ -129,14 +129,14 @@ Seen once or not yet corroborated. Tracked, not trusted.
 ### L-020 - Check color contrast on the text and background pair each rule renders, not on each color token's membership in an approved set
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
 - features: ciclo-de-vida-status
-- evidence: validation.md M27 (templates/kira.css:510, STAT-37) (css)
-- last seen: 2026-10-18T20:17:59Z
+- evidence: validation.md M27 (templates/kira.css:510, STAT-37) (css) (+1 more)
+- last seen: 2026-10-18T20:31:51Z
 
 ### L-021 - When the base layout appends a site suffix to the page title, write title criteria as starting with the page name, not as an exact value
 - signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
 - features: ciclo-de-vida-status
-- evidence: STAT-06/STAT-34 title, test_views_status.py:50 (specs)
-- last seen: 2026-10-18T20:17:59Z
+- evidence: STAT-06/STAT-34 title, test_views_status.py:50 (specs) (+1 more)
+- last seen: 2026-10-18T20:31:51Z
 
 ## Quarantined (failed when applied - ignore)
 

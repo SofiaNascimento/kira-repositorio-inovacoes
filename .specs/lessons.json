@@ -364,10 +364,11 @@
       "recurrence": 1,
       "harmful": 0,
       "evidence": [
-        "validation.md M27 (templates/kira.css:510, STAT-37) (css)"
+        "validation.md M27 (templates/kira.css:510, STAT-37) (css)",
+        "validation.md iteracao 2 N14 (templates/kira.css:521, STAT-37) (css)"
       ],
       "created": "2026-10-18T20:17:59Z",
-      "last_seen": "2026-10-18T20:17:59Z"
+      "last_seen": "2026-10-18T20:31:51Z"
     },
     {
       "id": "L-021",
@@ -382,10 +383,11 @@
       "recurrence": 1,
       "harmful": 0,
       "evidence": [
-        "STAT-06/STAT-34 title, test_views_status.py:50 (specs)"
+        "STAT-06/STAT-34 title, test_views_status.py:50 (specs)",
+        "validation.md iteracao 2, STAT-06/STAT-34 title (test_views_status.py:50) (specs)"
       ],
       "created": "2026-10-18T20:17:59Z",
-      "last_seen": "2026-10-18T20:17:59Z"
+      "last_seen": "2026-10-18T20:31:51Z"
     }
   ]
 }

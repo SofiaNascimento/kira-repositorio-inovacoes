@@ -1,14 +1,17 @@
 # Ciclo de Vida do Status (F5) Validation
 
 **Date**: 2026-10-18
-**Iteration**: 1
+**Iteration**: 2 (a iteração 1 fica abaixo, intacta; a iteração 2 está em [Iteração 2](#iteração-2), no fim)
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md` (STAT-01 … STAT-37)
-**Diff range**: `6616da1..f48bb1a` em `main` (HEAD = `f48bb1a`), 11 commits (T1 `fd1ee9c`, T2 `0f09ede`, T3 `0a6307d`, T4 `8ad7dad`, T5 `10603fd`, T6 `73eccf5`, T7 `9f417d1`, T8 `4a48733`, T9 `0b4f8f4`, T10 `36fa95a`, T11 `f48bb1a`). 17 arquivos, +1604/−115. Produção: `inovacoes/models.py`, `views.py`, `urls.py`, `migrations/0007_mudancadestatus.py`, `templates/inovacoes/inovacao_detail.html`, `inovacao_status.html` e `templates/kira.css`.
+**Diff range (iteração 2)**: feature `6616da1..ef25406` em `main` (HEAD = `ef25406`). Correções: `f1d3de1` (T12) e `ef25406` (T13), só em `inovacoes/tests/`. `git diff f48bb1a..ef25406 -- ':!inovacoes/tests' ':!.specs'` vazio: nenhum código de produção mudou desde a iteração 1.
+**Diff range (iteração 1)**: `6616da1..f48bb1a` em `main` (HEAD = `f48bb1a`), 11 commits (T1 `fd1ee9c`, T2 `0f09ede`, T3 `0a6307d`, T4 `8ad7dad`, T5 `10603fd`, T6 `73eccf5`, T7 `9f417d1`, T8 `4a48733`, T9 `0b4f8f4`, T10 `36fa95a`, T11 `f48bb1a`). 17 arquivos, +1604/−115. Produção: `inovacoes/models.py`, `views.py`, `urls.py`, `migrations/0007_mudancadestatus.py`, `templates/inovacoes/inovacao_detail.html`, `inovacao_status.html` e `templates/kira.css`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌
+**Verdict**: FAIL ❌ (iteração 2, HEAD `ef25406`)
 
-O gate passa com 684 testes, e 35 das 37 ACs têm evidência `file:line` com o valor da spec afirmado. O código de produção cumpre a spec em tudo o que conferi, inclusive nos dois pontos com lacuna. O FAIL vem do sensor: 2 dos 29 mutantes sobreviveram. **M11**: o detalhe mostra o histórico de *todas* as inovações em vez do histórico só daquela, e a suíte inteira passa (STAT-24, "every history record **of that Inovacao**"). Todo teste do histórico usa uma inovação só, então nenhum distingue "desta inovação" de "de todas". **M27**: `.ciclo li` passa a usar texto branco sobre fundo branco (`color: var(--surface)` sobre `background: var(--surface)`), e o teste da STAT-37 continua verde. O teste confere cada cor isoladamente contra o conjunto de textos e o conjunto de fundos do DS-08, nunca o par que a regra forma, e `surface` está nos dois conjuntos. Os dois viram fix tasks só de teste. Nenhum código de produção precisa mudar.
+**Iteração 2 em resumo:** o gate passa com 685 testes. T12 mata a M11 e T13 mata a M27, e as duas correções afirmam o valor da spec sem enfraquecer nenhuma checagem anterior. Das 15 mutações novas, 14 morrem. A **N14** sobrevive: `.historico li { background: var(--brand-blue) }` (`templates/kira.css:521`) põe o texto do histórico a 2,48:1 e a data a 1,0:1, e a suíte inteira passa. O teste da STAT-37 só confere o par das regras que declaram `color`. Uma regra que só declara fundo não tem o texto herdado conferido, e o `FUNDO_HERDADO` é fixo, não derivado do fundo do ancestral. A STAT-37 cobre o caso ("every color the cycle control and the history add"), então a lacuna é de teste: 36/37 ACs, Fix 3 abaixo. Nenhum código de produção precisa mudar.
+
+**Iteração 1 (registro original):** O gate passa com 684 testes, e 35 das 37 ACs têm evidência `file:line` com o valor da spec afirmado. O código de produção cumpre a spec em tudo o que conferi, inclusive nos dois pontos com lacuna. O FAIL vem do sensor: 2 dos 29 mutantes sobreviveram. **M11**: o detalhe mostra o histórico de *todas* as inovações em vez do histórico só daquela, e a suíte inteira passa (STAT-24, "every history record **of that Inovacao**"). Todo teste do histórico usa uma inovação só, então nenhum distingue "desta inovação" de "de todas". **M27**: `.ciclo li` passa a usar texto branco sobre fundo branco (`color: var(--surface)` sobre `background: var(--surface)`), e o teste da STAT-37 continua verde. O teste confere cada cor isoladamente contra o conjunto de textos e o conjunto de fundos do DS-08, nunca o par que a regra forma, e `surface` está nos dois conjuntos. Os dois viram fix tasks só de teste. Nenhum código de produção precisa mudar.
 
 ---
 
@@ -246,3 +249,156 @@ Não aplicada (FAIL). Proposta para depois da iteração 2:
 **Lessons recorded**: L-019 (M11, filtro por pai), L-020 (M27, contraste por par) e L-021 (título com sufixo do layout), todas `candidate` em `.specs/lessons.json`.
 
 **Next steps**: o orquestrador encaminha Fix 1 e Fix 2 a um implementador, que só mexe em teste, e depois despacha a iteração 2 do Verifier.
+
+---
+
+## Iteração 2
+
+**Date**: 2026-10-18
+**HEAD**: `ef25406` (feature `6616da1..ef25406`; correções `f1d3de1` T12 e `ef25406` T13)
+**Verifier**: novo sub-agente independente (não escreveu código, testes nem correções); cobertura re-derivada da spec
+**Produção inalterada**: `git diff --stat f48bb1a..ef25406 -- ':!inovacoes/tests' ':!.specs'` vazio. Os dois commits de correção só tocam `inovacoes/tests/test_views_detalhe.py` (+27) e `inovacoes/tests/test_views_sistema_design.py` (+30/−11), e o `tasks.md`
+
+### Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T1–T11 | ✅ Done | Inalteradas desde a iteração 1 |
+| T12 (Fix 1) | ✅ Done | `f1d3de1`: `test_views_detalhe.py:429-453`. 685 passed (+1), confere com o gate |
+| T13 (Fix 2) | ✅ Done | `ef25406`: `test_views_sistema_design.py:546-585`, reescrito no lugar (+0 testes) |
+
+### Reconferência das correções
+
+**T12 (STAT-24, STAT-26)**: `test_historico_lista_so_as_mudancas_da_inovacao_aberta` (`test_views_detalhe.py:429-453`) cria três inovações. A primeira tem um registro, a segunda dois e a terceira nenhum. `:441` afirma `_historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]` no detalhe da primeira, e `:444-447` afirma a lista exata de dois itens, em ordem, no da segunda. Isso prova "every history record **of that Inovacao**, from the oldest to the most recent", e o texto é o da STAT-25. `:452-453` afirma `'<p class="vazio">Nenhuma mudança de status registrada.</p>' in secao` e `"<li" not in secao` na terceira, enquanto as outras têm histórico (STAT-26 com dados alheios presentes). Com a M11, só esse teste falha. O resultado bate com a spec. ✅
+
+**T13 (STAT-37)**: comparei com `git show ef25406^:inovacoes/tests/test_views_sistema_design.py`. As checagens antigas eram quatro: nenhuma cor literal, todo `var(--x)` existente no `:root`, `color` ser `var()` de um token que aparece como texto em algum par, e `background*` ser `var()` de um token que aparece como fundo em algum par. As quatro continuam, em `:569`, `:573` e `:574-576` (o `_token_de` de `:557-560` exige `var(--x)` em todo `background*` e no `color`). A checagem de texto ficou mais estrita: `(texto, fundo) in PARES_DE_TEXTO` (`:585`) implica a pertinência antiga. Regra com `color` sem fundo próprio nem entrada em `FUNDO_HERDADO` faz o teste falhar (`:583`). Dois mais `background*` na mesma regra quebram o desempacotamento `(fundo,) = fundos` (`:581`), o que é conservador. Só existe uma diferença de forma: `dict(re.findall(...))` guarda a última declaração de cada propriedade. Para `color`, a última é a que o navegador aplica, então isso não enfraquece nada. `FUNDO_HERDADO` (`:549-553`) confere com o CSS e o HTML atuais: `.ciclo li` tem `background: var(--surface)` (`kira.css:509`), e a seção do histórico fica fora do `.cartao` (`inovacao_detail.html:20-41` contra `:63-75`), sobre o `body` com `--bg` (`kira.css:71`). Nenhuma checagem foi enfraquecida. ✅ A M27 morre. **Lacuna residual**: só as regras que declaram `color` têm o par conferido. Uma regra que só declara fundo deixa o texto herdado sem conferência, e `FUNDO_HERDADO` não acompanha o fundo real do ancestral. A N14, abaixo, explora isso.
+
+### Spec-Anchored Acceptance Criteria (re-derivado no HEAD `ef25406`)
+
+Caminhos relativos a `inovacoes/tests/`. "Reli" quer dizer que esta iteração leu a linha no HEAD e conferiu que a asserção afirma o valor da spec. "Herdado" quer dizer que a iteração 1 já tinha a evidência, o arquivo não mudou e a célula não foi relida aqui.
+
+| AC | `file:line` + assertion (HEAD) | Conferência | Result |
+| -- | ------------------------------ | ----------- | ------ |
+| STAT-01 | `test_views_detalhe.py:309` h2 `== ["Ciclo de vida"]`; `:311` itens `== ETAPAS` | Reli; N5 morta | ✅ |
+| STAT-02 | `test_views_detalhe.py:322` `count("(status atual)") == 1`; `:325` lista exata, 3 status | Reli; N5 morta | ✅ |
+| STAT-03 | `test_views_detalhe.py:340` `_links(secao, f"Avançar para “{proximo}”") == [f"/inovacoes/{pk}/status/"]` | Reli; N4 morta | ✅ |
+| STAT-04 | `test_views_detalhe.py:350-352` "<p>Último estágio do ciclo.</p>", sem "Avançar", 3 contas | Reli | ✅ |
+| STAT-05 | `test_views_detalhe.py:362-363`; `test_views_status.py:335-336` (terceiro, staff, superusuário) | Reli | ✅ |
+| STAT-06 | `test_views_status.py:46` 200; `:51` h1; `:52-55` texto exato; `:60-61` botão; `:66-67` "Cancelar" → detalhe; `<title>` por prefixo `:50` | Reli; N10, N11 mortas | ✅ ⚠️ (título, ver *Spec-precision*) |
+| STAT-07 | `test_views_status.py:175` `assertRedirects(…, f"/inovacoes/{pk}/")`; `:176` `== VALIDADA` | Reli; N7, N9 mortas | ✅ |
+| STAT-08 | `test_views_status.py:204` (`redirect_chain == [(…, 302)]` em `:166`); `:205` `== DISPONIVEL`; `:207` | Reli; N7, N9 mortas | ✅ |
+| STAT-09 | `test_ciclo_de_vida.py:131-133` `proximo_status`; `:138-151`; `:69-73` | Reli | ✅ |
+| STAT-10 | GET `test_views_status.py:98-105`; POST `:231-234` `[("warning", ULTIMO_ESTAGIO)]` | Reli | ✅ |
+| STAT-11 | `test_views_status.py:113-116` 3 GETs, status igual, `count() == 0` | Reli | ✅ |
+| STAT-12 | `test_views_status.py:244-247` `[None, VALIDADA, "APROVADA"]` → `[("warning", _conflito("Em teste"))]`; `test_ciclo_de_vida.py:171-175` | Reli; N6, N8 mortas | ✅ |
+| STAT-13 | `test_views_status.py:255-259`, `:262-278`; `test_ciclo_de_vida.py:191-200`, `:209-211` (`FOR UPDATE`) | Reli | ✅ |
+| STAT-14 | `test_ciclo_de_vida.py:145-151` payload completo; `test_views_status.py:177-183` | Reli; N9 morta | ✅ |
+| STAT-15 | `test_ciclo_de_vida.py:215-225`; `test_views_erro_500.py:147-170` | Reli | ✅ |
+| STAT-16 | `test_views_status.py:185`, `:194`, `:208-210`, `:224` (região `role="status"`, `:153-157`); `:196-197` recarregado `== []` | Reli; N7 morta | ✅ |
+| STAT-17 | `test_views_status.py:170-185`, `:200-210` (`conftest.py:8-11`: `autor` criado por `create_user`, perfil padrão) | Reli | ✅ |
+| STAT-18 | `test_views_status.py:220-224`; `test_ciclo_de_vida.py:233-234` | Reli | ✅ |
+| STAT-19 | `test_views_status.py:323-327` 403, `acesso_negado.html`, texto da EDEX-20, nada gravado | Reli | ✅ |
+| STAT-20 | `test_views_status.py:309-327` com `nao_autor_usuario` (terceiro, staff, superusuário) | Reli | ✅ |
+| STAT-21 | `test_views_status.py:345-356` | Reli | ✅ |
+| STAT-22 | `test_views_status.py:133-136`, `:300-303`, `:281-295` | Reli | ✅ |
+| STAT-23 | `test_views_status.py:369-371` `assertRedirects(…, f"/entrar/?next={caminho}")` | Reli | ✅ |
+| STAT-24 | `test_views_detalhe.py:372` h2; `:398-401` ordem pela data; **`:441`, `:444-447` só os registros da inovação aberta** | Re-derivado (T12); M11 morta | ✅ |
+| STAT-25 | `test_views_detalhe.py:398-401` nome/username; `:409` fuso; `:441`, `:444-447` | Reli; N1, N2, N3 mortas | ✅ |
+| STAT-26 | `test_views_detalhe.py:416-417`; **`:452-453` com outras inovações tendo histórico** | Re-derivado (T12); N15 morta | ✅ |
+| STAT-27 | `test_views_detalhe.py:420-426` terceiro vê a linha exata | Reli | ✅ |
+| STAT-28 | `test_ciclo_de_vida.py:85-87` `== [da_outra]` | Reli | ✅ |
+| STAT-29 | `test_ciclo_de_vida.py:94-97` `ProtectedError` | Reli | ✅ |
+| STAT-30 | `test_ciclo_de_vida.py:311-320`, `:331-336` | Reli | ✅ |
+| STAT-31 | `test_ciclo_de_vida.py:69-73` 7 pares, `IntegrityError` com o nome da constraint | Reli | ✅ |
+| STAT-32 | `test_ciclo_de_vida.py:284-288` | Reli | ✅ |
+| STAT-33 | `test_ciclo_de_vida.py:298-305` | Reli | ✅ |
+| STAT-34 | `test_views_acessibilidade_alteracao.py:220-234`, `:205-216`, `:246-255`, `:259-265`, `:276-278` (`<title>` por prefixo) | Reli; N11 morta | ✅ ⚠️ (título) |
+| STAT-35 | `test_views_erro_500.py:163-170` | Reli | ✅ |
+| STAT-36 | `test_views_erro_500.py:179-183` | Reli | ✅ |
+| STAT-37 | Texto: `test_views_acessibilidade_alteracao.py:293`. Cor: `test_views_sistema_design.py:585` `(texto, fundo) in PARES_DE_TEXTO` só para regras com `color`. **Regra com fundo e sem `color` não tem o texto herdado conferido**: `.historico li { background: var(--brand-blue) }` passa a suíte (N14), com o texto a 2,48:1 e a data a 1,0:1 | Re-derivado (T13); M27, N12, N13 mortas; **N14 sobreviveu** | ❌ GAP |
+
+**Status**: ❌ 36/37 ACs com o valor da spec afirmado e discriminante. A STAT-37 tem asserção, mas ela não distingue um fundo novo sem `color` (N14). Há 1 spec-precision gap de redação (título, STAT-06/STAT-34), que não bloqueia.
+
+### Discrimination Sensor (iteração 2)
+
+Rodado num `git worktree add --detach` em `scratchpad/wt`, a partir de `ef25406`, com o `.env` copiado e o PostgreSQL de teste (porta 5433). O `inovacoes.__file__` resolve para a worktree, e a linha de base nela é 685 passed. Cada mutação foi feita por substituição exata, com o trecho conferido como único (`count == 1`). Para cada uma rodei a suíte inteira (`.venv/bin/pytest -q -p no:cacheprovider`) e depois `git checkout -- .` e `git diff --quiet`. No fim, `git worktree remove --force` e `git worktree prune`. O `git status --porcelain` da árvore real ficou vazio antes e depois, o HEAD continua `ef25406` e `git worktree list` só mostra a árvore principal.
+
+#### Sobreviventes da iteração 1, re-injetadas como descritas
+
+| # | File:line | Mutação | Killed? |
+| - | --------- | ------- | ------- |
+| M11 | `inovacoes/views.py:132` | `mudancas=MudancaDeStatus.objects.select_related("responsavel")`, com `MudancaDeStatus` acrescentado ao import da linha 9 | ✅ `test_views_detalhe.py::test_historico_lista_so_as_mudancas_da_inovacao_aberta` (único) |
+| M27 | `templates/kira.css:510` | `.ciclo li { … color: var(--surface) }` | ✅ `test_views_sistema_design.py::test_ciclo_e_historico_so_usam_cores_de_pares_conferidos[.ciclo]` (único) |
+
+#### Mutações novas (iteração 2)
+
+| # | File:line | Mutação | Killed? (testes que falharam) |
+| - | --------- | ------- | ----------------------------- |
+| N1 | `inovacao_detail.html:69` | responsável só pelo username (sem nome completo) | ✅ 4: `test_historico_lista_as_mudancas_do_mais_antigo…`, `…_no_fuso_de_sao_paulo`, `test_terceiro_ve_o_historico`, `…_so_as_mudancas_da_inovacao_aberta` |
+| N2 | `inovacao_detail.html:69` | data `"m/d/Y H:i"` | ✅ os mesmos 4 |
+| N3 | `inovacao_detail.html:69` | anterior e novo trocados no item do histórico | ✅ os mesmos 4 |
+| N4 | `inovacao_detail.html:59` | link "Avançar para “<status atual>”" em vez do próximo | ✅ 4: `test_quem_pode_alterar_ve_o_link_de_avancar[em_teste|validada × autor|administrador]` |
+| N5 | `inovacoes/views.py:130` | `etapas=StatusInovacao.choices[::-1]` (ordem invertida) | ✅ 5: `test_ciclo_de_vida_lista_os_tres_estagios_em_ordem`, `test_ciclo_marca_so_o_estagio_atual…[3]`, `test_estagio_atual_e_identificavel_sem_css` |
+| N6 | `inovacoes/views.py:224` | aviso de conflito com o valor cru (`VALIDADA`) em vez do rótulo | ✅ 5: `test_status_visto_ausente_ou_diferente…[3]`, `test_reenvio…`, `test_status_mudado_durante_o_envio…` |
+| N7 | `inovacoes/views.py:244` | toda resposta do POST redireciona para a lista | ✅ 10: sucesso, estágio final, conflito e reenvio em `test_views_status.py` |
+| N8 | `inovacoes/models.py:227` | `status_visto` ausente aceito (`is not None and …`) | ✅ 2: `test_status_visto_diferente_do_gravado…[None]`, `test_status_visto_ausente_ou_diferente…[None]` |
+| N9 | `inovacoes/models.py:234` | sem `self.save(update_fields=["status"])`: o registro é criado e o status não muda | ✅ 9+: `test_avancar_status_avanca_um_estagio_e_registra[2]`, `test_avancar_grava_so_o_status`, `test_autor_avanca…[2]`, `test_administrador_avanca…`, `test_views_erro_500…[gravacao-do-status]` |
+| N10 | `inovacao_status.html:11` | sem "Depois de avançar, não é possível voltar ao status anterior." | ✅ 3: `test_autor_ve_a_confirmacao…[2]`, `test_administrador_ve_a_confirmacao…` |
+| N11 | `inovacao_status.html:3` | `<title>` com o título da inovação em vez de "Avançar status" | ✅ 5: as 3 de STAT-06 e `test_avancar_status_tem_um_unico_h1_e_title[avancar|ultimo_estagio]` |
+| N12 | `templates/kira.css:523` | `.historico time { color: var(--bg) }` (texto da cor do fundo) | ✅ `test_ciclo_e_historico_so_usam_cores_de_pares_conferidos[.historico]` |
+| N13 | `templates/kira.css:518` | `.ciclo [aria-current=step]` ganha `background: var(--brand-blue)` (navy sobre azul) | ✅ `test_ciclo_e_historico_so_usam_cores_de_pares_conferidos[.ciclo]` |
+| **N14** | `templates/kira.css:521` | `.historico li` ganha `background: var(--brand-blue)`: texto `--text` herdado a 2,48:1 e `.historico time` (`--text-muted`) a 1,0:1 | ❌ **Survived**: 685 passed |
+| N15 | `inovacao_detail.html:66` | `{% if mudancas|length > 1 %}` (off-by-one: um registro só mostra "Nenhuma mudança…") | ✅ 4: `…_no_fuso_de_sao_paulo`, `test_terceiro_ve_o_historico`, `…_so_as_mudancas_da_inovacao_aberta`, `test_secoes_do_detalhe…[historico]` |
+
+**Sensor depth**: expandido (integridade de transição de estado, autorização e acessibilidade): 2 re-injeções e 15 mutações novas, cobrindo o texto e a ordem do histórico, o rótulo do link, a ordem dos estágios, as mensagens, o redirect, o status visto ausente, a gravação do status, o texto e o título da confirmação, o off-by-one do histórico vazio e o contraste.
+**Result**: 16/17 mortas, 1 sobrevivente (N14) - FAIL ❌
+
+### Gate Check (iteração 2)
+
+- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (árvore real, HEAD `ef25406`)
+- **Result**: exit 0. `ruff check`: All checks passed · `ruff format --check`: 110 files already formatted · `makemigrations --check`: No changes detected · `pytest -q`: 685 passed, 0 failed, 0 skipped (16.0 s)
+- **Test count**: 574 antes da feature → 684 na iteração 1 → 685 agora (+1, T12; a T13 reescreveu um teste parametrizado existente). Nenhum teste removido; nenhuma asserção enfraquecida (ver *Reconferência das correções*)
+
+### Spec-Precision Gaps (iteração 2): julgamento do `<title>`
+
+**STAT-06 / STAT-34, `<title>` "reading 'Avançar status'"**: a página renderiza `Avançar status · Repositório de Inovações`, porque `templates/base.html:6` acrescenta o sufixo do site a toda página, e os testes conferem o prefixo (`test_views_status.py:50`, `test_views_acessibilidade_alteracao.py:278`). **Julgamento: spec-precision gap de redação, não GAP de implementação. Não bloqueia.** O sufixo é convenção global do layout, anterior à F5 e vigente na F1–F4. A AC da F4 equivalente (EDEX-43, "a `<title>` that name the page") aceitou o mesmo formato. O que a AC protege (WCAG 2.4.2: o título identifica a página, e o `h1` é único) está afirmado: o `h1` exato em `:51`/`:276` e o nome da página no começo do `<title>`. A N11, que troca o nome da página, morre. Limite conhecido: um sufixo inesperado depois de "Avançar status" passaria pelo prefixo. Sugestão para a próxima revisão da spec, sem editar as ACs agora: "a `<title>` that begins with 'Avançar status'", ou afirmar nos testes o título renderizado completo. Lição L-021 (candidate) mantida.
+
+### Fix Plans (iteração 2)
+
+#### Fix 3: STAT-37 não confere o texto herdado sob uma regra que só declara fundo (N14) — Minor
+
+- **Root cause**: `test_ciclo_e_historico_so_usam_cores_de_pares_conferidos` (`test_views_sistema_design.py:564-585`) só monta o par `(texto, fundo)` quando a regra declara `color` (`:577-578`, `continue`). Uma regra de `.ciclo`/`.historico` que declara `background` sem `color` passa só porque o fundo é um fundo de algum par (`:576`). O texto herdado (`--text` do `body`) e os descendentes com `color` (`.historico time`, `.ciclo li + li::before`, `.ciclo [aria-current=step]`) continuam conferidos contra o fundo fixo de `FUNDO_HERDADO`, não contra o novo.
+- **Fix task**: no mesmo teste, toda regra de `.ciclo`/`.historico` que declara `background*` precisa ter o par do texto que fica sobre ela em `PARES_DE_TEXTO`. Usar o `color` da própria regra ou, sem ele, o texto herdado `text` (o `color` do `body`, `kira.css:72`). Além disso, o fundo de cada entrada de `FUNDO_HERDADO` deve ser conferido contra o `background` real da regra ancestral (`.ciclo li` para o `::before` e o estágio atual; `.historico li`, se declarar fundo, e senão `bg` para o `.historico time`). Uma alternativa mais simples e aceitável: exigir que toda regra com `background*` declare também `color`, e derivar `FUNDO_HERDADO` do ancestral em vez de fixá-lo.
+- **Verify**: num scratch, com N14 (`.historico li { …; background: var(--brand-blue); }`) o teste falha; com N14 trocado por `background: var(--surface)` (par do DS-08) ele passa; no HEAD passa; M27, N12 e N13 continuam mortas.
+- **Done when**: N14 morta; gate de build verde; nenhum código de produção alterado.
+- **Priority**: Minor (o CSS atual cumpre o DS-08; o risco é regressão futura não detectada na mesma classe da M27)
+
+### Requirement Traceability Update (iteração 2)
+
+Não aplicada (FAIL). Proposta para a iteração 3:
+
+| Requirement | Previous Status | New Status |
+| ----------- | --------------- | ---------- |
+| STAT-01 … STAT-36 | Implementing | ✅ Verified (evidência acima; STAT-24 fechada pela T12) |
+| STAT-37 | Implementing | ❌ Needs Fix (Fix 3) |
+
+### Histórico (continuação)
+
+- **Iteração 2** (HEAD `ef25406`): FAIL ❌. 36/37 ACs; 16/17 mutantes mortos. M11 e M27 agora morrem. Sobreviveu N14 (fundo sem `color` no histórico, mesma classe da M27), que vira Fix 3, só em teste. Restam 1 iteração de correção e re-verificação antes de escalar ao usuário (limite de 3).
+
+### Summary (iteração 2)
+
+**Overall**: ❌ Not Ready (evidência da lacuna: `templates/kira.css:521` sob N14 com 685 passed; `inovacoes/tests/test_views_sistema_design.py:577-578` pula regras sem `color`)
+
+**Spec-anchored check**: 36/37 ACs com o valor da spec afirmado e discriminante; 1 spec-precision gap de redação (título, não bloqueia)
+**Sensor**: 16/17 mortas (sobrevivente: N14)
+**Gate**: 685 passed, 0 failed
+**validate_state.py**: `python3 .claude/skills/tlc-spec-driven/scripts/validate_state.py ciclo-de-vida-status` → exit 1, "validation.md verdict is FAIL - route the ranked gaps to fix tasks, then re-verify (feature is not done)". É o resultado esperado para um FAIL.
+
+**What works**: tudo o que a iteração 1 já provava continua provado, e as correções fecham a STAT-24 (histórico só da inovação aberta, com o vazio ao lado de inovações com histórico) e o caso "texto com `color` sobre fundo da mesma regra" da STAT-37.
+
+**Issues found**: Fix 3 (STAT-37, N14), só de teste.
+
+**Lessons**: L-020 (candidate) recorreu nesta feature com a N14, e o `lessons.py add` acrescentou a evidência; L-019 não recorreu (M11 morta); L-021 continua (o título segue como spec-precision gap), e o `lessons.py add` acrescentou a evidência. Nenhuma lição nova; nenhuma promovida, porque a recorrência é na mesma feature.
+
+**Next steps**: o orquestrador encaminha o Fix 3 a um implementador, que só mexe em teste, e depois despacha a iteração 3 do Verifier (a última antes de escalar).
