@@ -6,7 +6,9 @@ Os registros de preparo nascem pelo metodo do modelo (AD-012).
 import re
 
 import pytest
-from pytest_django.asserts import assertTemplateUsed
+from django.db import OperationalError
+from django.test import Client
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from inovacoes.models import Inovacao, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.views import InovacaoReaproveitarView
@@ -338,3 +340,71 @@ def test_administrador_registra(client, disponivel, sede, administrador):
     resposta = _entrar(client, administrador).post(_reaproveitar(disponivel), {"unidade": sede.pk})
     assert resposta.status_code == 302
     assert Reaproveitamento.objects.get().registrado_por_id == administrador.pk
+
+
+# --- Acesso e integridade (REAP-20, REAP-21, REAP-23, REAP-49) --------------------
+
+
+@pytest.mark.parametrize("metodo", ["get", "post"])
+def test_anonimo_vai_para_o_login_com_next(client, disponivel, sede, metodo):
+    """REAP-20: GET e POST anonimos levam ao login, e nada e gravado."""
+    caminho = _reaproveitar(disponivel)
+    if metodo == "get":
+        resposta = client.get(caminho)
+    else:
+        resposta = client.post(caminho, {"unidade": sede.pk})
+    assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+    assert Reaproveitamento.objects.count() == 0
+
+
+@pytest.mark.parametrize("conta", ["autor", "terceiro"])
+def test_post_sem_token_csrf_e_recusado(request, disponivel, sede, conta):
+    """REAP-21: o autor e um terceiro, com unidade elegivel e sem token: 403, nada gravado."""
+    cliente = Client(enforce_csrf_checks=True)
+    cliente.force_login(request.getfixturevalue(conta))
+    resposta = cliente.post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    assert resposta.status_code == 403
+    assert Reaproveitamento.objects.count() == 0
+
+
+def test_excluir_a_inovacao_pela_rota_apaga_os_reaproveitamentos_dela(
+    client, autor, terceiro, criar_inovacao, disponivel, sede
+):
+    """REAP-23: a exclusao da F4 leva os registros da inovacao, e so os dela."""
+    outra = criar_inovacao(titulo="Outra Inovacao", status=DISPONIVEL)
+    filial = Unidade.objects.get(nome="Filial Norte")
+    disponivel.registrar_reaproveitamento(unidade=sede, por=autor)
+    disponivel.registrar_reaproveitamento(unidade=filial, por=terceiro)
+    da_outra = outra.registrar_reaproveitamento(unidade=sede, por=terceiro)
+    resposta = _entrar(client, autor).post(f"/inovacoes/{disponivel.pk}/excluir/")
+    assert resposta.status_code == 302
+    assert not Inovacao.objects.filter(pk=disponivel.pk).exists()
+    assert list(Reaproveitamento.objects.values_list("pk", flat=True)) == [da_outra.pk]
+
+
+DETALHE_DA_CONEXAO = (
+    'connection to server at "db.interno.kira" (10.0.0.7), port 5433 failed: '
+    'FATAL: password authentication failed for user "kira_app" password=s3gr3d0-do-banco'
+)
+
+
+def test_banco_indisponivel_no_registro_devolve_500_sem_gravar(
+    client, autor, disponivel, sede, monkeypatch
+):
+    """REAP-49: o banco cai no INSERT do metodo; pagina 500 do projeto, sem detalhes."""
+
+    def falhar(*args, **kwargs):
+        raise OperationalError(DETALHE_DA_CONEXAO)
+
+    monkeypatch.setattr(Reaproveitamento.objects, "create", falhar)
+    logado = _entrar(client, autor)
+    logado.raise_request_exception = False
+    resposta = logado.post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    assert resposta.status_code == 500
+    assertTemplateUsed(resposta, "500.html")
+    html = resposta.content.decode()
+    for trecho in ["db.interno.kira", "kira_app", "s3gr3d0-do-banco", "Traceback"]:
+        assert trecho not in html, trecho
+    assert DETALHE_DA_CONEXAO not in html
+    monkeypatch.undo()
+    assert Reaproveitamento.objects.count() == 0

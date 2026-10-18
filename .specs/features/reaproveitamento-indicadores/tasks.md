@@ -444,11 +444,11 @@ T17 → T18
 
 **Commit**: `feat(inovacoes): permite ao administrador corrigir reaproveitamentos no admin`
 
-**Status**: ✅ Complete — 801 passed (+16); o L-003 usa um `USUARIO` com `is_staff` e todas as permissões do modelo e um `USUARIO` com `is_staff` + `is_superuser`: o admin só dá 403 a quem tem `is_staff`; o superusuário sem `is_staff` é mandado ao login do admin (302), coberto por teste próprio sem exclusão; a tela do registro abre só para leitura (sem `_save`) e o POST nela dá 403; depois da exclusão o admin volta ao índice, não à lista (não é ACs, não afirmado); REAP-24 pela tela de exclusão do admin de `Unidade` já passava (evidência). Build gate verde
+**Status**: ✅ Complete — 801 passed (+16); o L-003 usa um `USUARIO` com `is_staff` e todas as permissões do modelo e um `USUARIO` com `is_staff` + `is_superuser`: o admin só dá 403 a quem tem `is_staff`; o superusuário sem `is_staff` é mandado ao login do admin (302), coberto por teste próprio sem exclusão; a tela do registro abre só para leitura (sem `_save`) e o POST nela dá 403; depois da exclusão o admin volta ao índice, não à lista (fora das ACs, não afirmado); REAP-24 pela tela de exclusão do admin de `Unidade` já passava (evidência). Build gate verde
 
 ---
 
-### T9: Acesso e integridade da sinalização
+### T9: Acesso e integridade da sinalização ✅
 
 **What**: Evidências de anônimo, CSRF, banco indisponível e exclusão da inovação pela rota da F4 na sinalização.
 **Where**: `inovacoes/tests/test_views_reaproveitar.py`
@@ -463,18 +463,20 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Anônimo, GET e POST em `/inovacoes/<pk>/reaproveitar/` → redirect ao login com `next`, zero registros (REAP-20)
-- [ ] POST sem token CSRF, do autor e de um terceiro → 403, zero registros (REAP-21)
-- [ ] Inovação com reaproveitamentos excluída pelo POST de `/inovacoes/<pk>/excluir/` (autor) → os registros dela somem e os de outra inovação ficam (REAP-23)
-- [ ] `OperationalError` forçado no método durante o POST → 500 do projeto sem o detalhe da conexão, zero registros (REAP-49)
-- [ ] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~805 testes passam (+7)
+- [x] Anônimo, GET e POST em `/inovacoes/<pk>/reaproveitar/` → redirect ao login com `next`, zero registros (REAP-20)
+- [x] POST sem token CSRF, do autor e de um terceiro → 403, zero registros (REAP-21)
+- [x] Inovação com reaproveitamentos excluída pelo POST de `/inovacoes/<pk>/excluir/` (autor) → os registros dela somem e os de outra inovação ficam (REAP-23)
+- [x] `OperationalError` forçado no método durante o POST → 500 do projeto sem o detalhe da conexão, zero registros (REAP-49)
+- [x] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~805 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): cobre acesso e integridade da sinalizacao de reaproveitamento`
+
+**Status**: ✅ Complete — 807 passed (+6); todas as evidências passaram sem correção de produção, então o commit fica `test`; anônimo em GET e POST vai ao login com `next`; CSRF recusado para autor e terceiro; a exclusão pela rota da F4 leva os registros da inovação e deixa o da outra; o `OperationalError` é forçado no `Reaproveitamento.objects.create` dentro do método, e a página 500 não mostra host, usuário, senha nem traceback
 
 ---
 

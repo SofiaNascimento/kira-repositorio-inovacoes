@@ -323,8 +323,8 @@ indicadores sem depender de cor ou de mouse.
 | REAP-17 | P1: Detalhe | Tasks | Implementing |
 | REAP-18 | P1: Detalhe | Tasks | Implementing |
 | REAP-19 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-20 | P1: Acesso e integridade | Tasks | In Tasks |
-| REAP-21 | P1: Acesso e integridade | Tasks | In Tasks |
+| REAP-20 | P1: Acesso e integridade | Tasks | Implementing |
+| REAP-21 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-22 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-23 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-24 | P1: Acesso e integridade | Tasks | Implementing |
@@ -352,7 +352,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-46 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-47 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-48 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-49 | Edge Cases | Tasks | In Tasks |
+| REAP-49 | Edge Cases | Tasks | Implementing |
 
 **Coverage:** 49 total, 49 mapped to tasks (T1–T18, ver `tasks.md` → Requirement Coverage), 0 unmapped
 
