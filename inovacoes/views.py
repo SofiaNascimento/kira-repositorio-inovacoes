@@ -128,6 +128,8 @@ class InovacaoDetailView(DetailView):
         return super().get_context_data(
             pode_alterar=self.object.pode_ser_alterada_por(self.request.user),
             etapas=StatusInovacao.choices,
+            # STAT-24, STAT-25: uma consulta so, com o responsavel junto (sem N+1).
+            mudancas=self.object.mudancas_de_status.select_related("responsavel"),
             **kwargs,
         )
 

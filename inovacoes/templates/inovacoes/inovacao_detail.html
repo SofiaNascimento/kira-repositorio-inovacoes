@@ -60,5 +60,19 @@
     {% endif %}
   </section>
 
+  <section aria-labelledby="historico-titulo">
+    <h2 id="historico-titulo">Histórico de status</h2>
+    {# STAT-24 a STAT-27: do mais antigo ao mais recente, para qualquer usuario; responsavel como na CONS-13. #}
+    {% if mudancas %}
+      <ol class="historico">
+        {% for m in mudancas %}
+          <li><time>{{ m.data|date:"d/m/Y H:i" }}</time> — de “{{ m.get_status_anterior_display }}” para “{{ m.get_status_novo_display }}”, por {{ m.responsavel.get_full_name|default:m.responsavel.get_username }}</li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="vazio">Nenhuma mudança de status registrada.</p>
+    {% endif %}
+  </section>
+
   <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

@@ -267,7 +267,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T6: Seção "Histórico de status" no detalhe
+### T6: Seção "Histórico de status" no detalhe ✅
 
 **What**: A lista cronológica das mudanças com data, transição e responsável, o texto de histórico vazio e o ajuste deliberado da contagem de consultas do detalhe.
 **Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
@@ -282,16 +282,18 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `get_context_data` acrescenta `mudancas` com `select_related("responsavel")`; o template ganha a `section` com `h2` "Histórico de status", `ol.historico` ou `<p class="vazio">Nenhuma mudança de status registrada.</p>`, item no formato da STAT-25
-- [ ] `CONSULTAS_DO_DETALHE` passa de 6 para 7 com comentário citando STAT-24 — **única alteração em teste existente da feature**
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: duas mudanças aparecem na ordem cronológica (STAT-24); item exato "dd/mm/aaaa HH:MM — de “Em teste” para “Validada”, por <nome completo>" no fuso de São Paulo, com data fixada para o teste não depender do relógio (STAT-25); responsável sem nome sai pelo username (STAT-25); sem registros → "Nenhuma mudança de status registrada." (STAT-26); terceiro vê o histórico (STAT-27); o número de consultas é o mesmo com 0 e com 3 registros de responsáveis diferentes (sem N+1)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~641 testes passam (+7)
+- [x] `get_context_data` acrescenta `mudancas` com `select_related("responsavel")`; o template ganha a `section` com `h2` "Histórico de status", `ol.historico` ou `<p class="vazio">Nenhuma mudança de status registrada.</p>`, item no formato da STAT-25
+- [x] `CONSULTAS_DO_DETALHE` passa de 6 para 7 com comentário citando STAT-24 — **única alteração em teste existente da feature**
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: duas mudanças aparecem na ordem cronológica (STAT-24); item exato "dd/mm/aaaa HH:MM — de “Em teste” para “Validada”, por <nome completo>" no fuso de São Paulo, com data fixada para o teste não depender do relógio (STAT-25); responsável sem nome sai pelo username (STAT-25); sem registros → "Nenhuma mudança de status registrada." (STAT-26); terceiro vê o histórico (STAT-27); o número de consultas é o mesmo com 0 e com 3 registros de responsáveis diferentes (sem N+1)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~641 testes passam (+7)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): mostra o historico de status no detalhe`
+
+**Status**: ✅ Complete — 651 passed (+6); `CONSULTAS_DO_DETALHE` 6 → 7 com comentário citando STAT-24 (a única alteração prevista em teste existente nesta task); a ordem é provada com o registro criado primeiro levando a data mais recente; datas fixadas por `update()` em UTC e conferidas no fuso de São Paulo; responsável sem nome sai pelo username (`carla`); o teste de N+1 roda com 0 e 3 registros de três responsáveis. A data do item vai num `<time>` para a T7 estilizar
 
 ---
 

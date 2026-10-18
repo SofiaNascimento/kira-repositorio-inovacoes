@@ -8,7 +8,7 @@ from django.utils.html import escape
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, StatusInovacao
+from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao
 
 ROTULOS = [
     "Título",
@@ -184,7 +184,8 @@ def test_id_nao_numerico_nao_mostra_a_mensagem_de_inovacao(logado):
 
 # Consultas do detalhe antes da F4 (sessao, conta, inovacao com select_related e
 # a gravacao da sessao): o pode_alterar le autor_id e o perfil ja carregados.
-CONSULTAS_DO_DETALHE = 6
+# STAT-24: a F5 acrescenta uma, o historico de status com o responsavel junto.
+CONSULTAS_DO_DETALHE = 7
 
 
 def _links(html, rotulo):
@@ -361,3 +362,78 @@ def test_terceiro_nao_ve_o_link_de_avancar(client, terceiro, criar_inovacao, sta
     assert "Avançar" not in html
     assert f"/inovacoes/{inovacao.pk}/status/" not in html
     assert "Último estágio do ciclo." not in html
+
+
+# --- F5: secao "Historico de status" ---------------------------------------------
+
+
+def _historico(html):
+    secao = _secao(html, "historico-titulo")
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Histórico de status"]
+    itens = re.findall(r"<li\b[^>]*>(.*?)</li>", secao, re.S)
+    return [re.sub(r"<[^>]+>", "", item).strip() for item in itens]
+
+
+def _mudanca(inovacao, responsavel, anterior, novo, data):
+    mudanca = MudancaDeStatus.objects.create(
+        inovacao=inovacao, status_anterior=anterior, status_novo=novo, responsavel=responsavel
+    )
+    MudancaDeStatus.objects.filter(pk=mudanca.pk).update(data=data)
+    return mudanca
+
+
+def _utc(*args):
+    return datetime.datetime(*args, tzinfo=datetime.UTC)
+
+
+def test_historico_lista_as_mudancas_do_mais_antigo_ao_mais_recente(
+    logado, autor, administrador, criar_inovacao
+):
+    """STAT-24, STAT-25: a data manda, mesmo contra a ordem de criacao."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    # Criada primeiro, mas com a data mais recente.
+    _mudanca(inovacao, administrador, VALIDADA, DISPONIVEL, _utc(2026, 10, 2, 18, 45))
+    _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _historico(html) == [
+        "01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza",
+        "02/10/2026 15:45 — de “Validada” para “Disponível para replicação”, por carla",
+    ]
+
+
+def test_historico_mostra_a_data_no_fuso_de_sao_paulo(logado, autor, criar_inovacao):
+    """STAT-25: 02:30 UTC de 15/09 e 23:30 de 14/09 em America/Sao_Paulo."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 9, 15, 2, 30))
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _historico(html) == ["14/09/2026 23:30 — de “Em teste” para “Validada”, por Ana Souza"]
+
+
+def test_historico_sem_registros_diz_que_nao_ha_mudancas(logado, criar_inovacao):
+    """STAT-26: inovacao sem historico, inclusive a ja avancada antes da F5."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    secao = _secao(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode(), "historico-titulo")
+    assert '<p class="vazio">Nenhuma mudança de status registrada.</p>' in secao
+    assert "<li" not in secao
+
+
+def test_terceiro_ve_o_historico(client, autor, terceiro, criar_inovacao):
+    """STAT-27: quem nao pode alterar tambem ve o historico."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    client.force_login(terceiro)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]
+
+
+@pytest.mark.parametrize("quantidade", [0, 3])
+def test_historico_nao_cresce_em_consultas_com_os_registros(
+    logado, autor, administrador, terceiro, criar_inovacao, django_assert_num_queries, quantidade
+):
+    """STAT-24, STAT-25: tres responsaveis diferentes nao custam consulta a mais (sem N+1)."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    for conta in [autor, administrador, terceiro][:quantidade]:
+        _mudanca(inovacao, conta, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    with django_assert_num_queries(CONSULTAS_DO_DETALHE):
+        resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
+    assert len(_historico(resposta.content.decode())) == quantidade

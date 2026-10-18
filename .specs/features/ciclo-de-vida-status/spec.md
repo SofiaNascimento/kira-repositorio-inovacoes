@@ -277,10 +277,10 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-21 | P1: Só autor ou administrador | Tasks | In Tasks |
 | STAT-22 | P1: Só autor ou administrador | Execute | Implementing |
 | STAT-23 | P1: Só autor ou administrador | Tasks | In Tasks |
-| STAT-24 | P1: Registrar e dar feedback | Tasks | In Tasks |
-| STAT-25 | P1: Registrar e dar feedback | Tasks | In Tasks |
-| STAT-26 | P1: Registrar e dar feedback | Tasks | In Tasks |
-| STAT-27 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-24 | P1: Registrar e dar feedback | Execute | Implementing |
+| STAT-25 | P1: Registrar e dar feedback | Execute | Implementing |
+| STAT-26 | P1: Registrar e dar feedback | Execute | Implementing |
+| STAT-27 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-28 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-29 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-30 | P1: Histórico íntegro | Tasks | In Tasks |
