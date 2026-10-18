@@ -415,7 +415,7 @@ T17 → T18
 
 ---
 
-### T8: `ReaproveitamentoAdmin` só para listar e excluir
+### T8: `ReaproveitamentoAdmin` só para listar e excluir ✅
 
 **What**: O admin de `Reaproveitamento` com o mixin da AD-007, sem inclusão nem alteração.
 **Where**: `inovacoes/admin.py`
@@ -430,19 +430,21 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `ReaproveitamentoAdmin` como no design: `list_display`, `list_select_related`, `has_add_permission`/`has_change_permission` → `False`
-- [ ] Testes e2e em `inovacoes/tests/test_admin_reaproveitamento.py`:
+- [x] `ReaproveitamentoAdmin` como no design: `list_display`, `list_select_related`, `has_add_permission`/`has_change_permission` → `False`
+- [x] Testes e2e em `inovacoes/tests/test_admin_reaproveitamento.py`:
   - `ADMINISTRADOR` vê a listagem com inovação, unidade, responsável e data, e exclui um registro pela confirmação do admin (REAP-26).
   - `USUARIO` com `is_staff` e `USUARIO` com `is_superuser` recebem 403 na listagem, na tela de um registro e na exclusão, e o registro continua (REAP-26, L-003).
   - Para o `ADMINISTRADOR`: a URL de adicionar responde 403 e POST nela não cria registro; POST na URL de alteração responde 403 e não muda o registro (REAP-27).
   - A tela de exclusão de uma unidade referenciada (admin de `Unidade`) não a apaga e a lista como protegida (REAP-24).
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~798 testes passam (+11)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~798 testes passam (+11)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): permite ao administrador corrigir reaproveitamentos no admin`
+
+**Status**: ✅ Complete — 801 passed (+16); o L-003 usa um `USUARIO` com `is_staff` e todas as permissões do modelo e um `USUARIO` com `is_staff` + `is_superuser`: o admin só dá 403 a quem tem `is_staff`; o superusuário sem `is_staff` é mandado ao login do admin (302), coberto por teste próprio sem exclusão; a tela do registro abre só para leitura (sem `_save`) e o POST nela dá 403; depois da exclusão o admin volta ao índice, não à lista (não é ACs, não afirmado); REAP-24 pela tela de exclusão do admin de `Unidade` já passava (evidência). Build gate verde
 
 ---
 
