@@ -5,8 +5,8 @@
 **Reusa da F2:** `inovacoes.Inovacao` e `inovacoes.StatusInovacao` sem valores novos · status inicial "Em teste" (RN03, já implementado) · `CheckConstraint inovacao_status_valido`
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e o 404 "Inovação não encontrada." (CONS-15) · filtro por status da listagem (CONS-27), que passa a refletir o status avançado
 **Reusa da F4:** `AlteracaoDeInovacaoMixin` e a página de acesso negado (EDEX-20, EDEX-21) · padrão de confirmação por página com POST (EDEX-30 a EDEX-36) · varredura de autoria de `inovacoes/tests/test_controle_autoria.py`, que passa a cobrir a rota nova sem mudança · EDEX-08 continua valendo: a edição não muda o status
-**Altera a F3/F4:** o detalhe ganha a seção "Ciclo de vida" (estágios, ação de avançar e histórico) — ver STAT-01 a STAT-05 e STAT-24 a STAT-27
-**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · implementada em 2026-10-18; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual da STAT-37 aceito pelo usuário (`validation.md`)
+**Altera a F3/F4:** o detalhe ganha a seção "Ciclo de vida" (estágios, ação de avançar e histórico) — ver STAT-01 a STAT-05, STAT-24 a STAT-27 e STAT-38 a STAT-41
+**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · implementada em 2026-10-18; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual da STAT-37 aceito pelo usuário (`validation.md`) · **passe de design em 2026-10-18** (design-spec §10 F5): STAT-04 e STAT-05 emendadas, STAT-38 a STAT-41 novas
 **Escopo (auto-sizing):** **Large** — o mapa previa Medium, mas o histórico de mudanças acrescenta modelo, migration e tela de confirmação. Roda Design e Tasks formais.
 **Contexto da discussão:** `.specs/features/ciclo-de-vida-status/context.md`
 
@@ -67,8 +67,8 @@ Toda ambiguidade está resolvida ou registrada aqui — nada fica silenciosament
 | Confirmação antes de avançar | Página própria "Avançar status", como a exclusão da F4; só o POST dela grava | Avançar não tem volta, e a RN12 cobre "toda ação destrutiva ou irreversível"; a confirmação também impede que um link seguido por engano ou pré-carregado mude o status (H3, H5) | y |
 | Rota | `/inovacoes/<id>/status/`: GET mostra a confirmação, POST avança | Mesmo padrão de `/editar/` e `/excluir/`; parâmetro `pk`, que a varredura da AD-009 já cobre | y |
 | Texto da confirmação | "Você vai avançar a inovação “<título>” de “<status atual>” para “<próximo status>”. Depois de avançar, não é possível voltar ao status anterior.", botão "Avançar para “<próximo status>”" e link "Cancelar" para o detalhe | Diz o estado atual, o efeito e que não tem volta | y |
-| Inovação já no estágio final | O detalhe mostra "Último estágio do ciclo." no lugar da ação; GET em `/status/` responde 200 com "Esta inovação já está em “Disponível para replicação”, o último estágio do ciclo.", sem botão, e o link "Voltar para a inovação" | design-spec §10 F5: transição inválida é desabilitada com explicação, não escondida sem motivo | y |
-| Usuário sem permissão | Vê os estágios e o histórico, não vê a ação de avançar; GET e POST em `/status/` respondem 403 com a página da EDEX-20 | EDEX-24 e design-spec §10 F4: quem não pode não vê a ação | y |
+| Inovação já no estágio final | O detalhe mostra "Último estágio do ciclo."; para quem pode alterar, também o botão "Avançar status" desabilitado (`aria-disabled`), descrito por esse texto (emenda de 2026-10-18, passe de design); GET em `/status/` responde 200 com "Esta inovação já está em “Disponível para replicação”, o último estágio do ciclo.", sem botão, e o link "Voltar para a inovação" | design-spec §10 F5: transição inválida é desabilitada com explicação, não escondida sem motivo | y |
+| Usuário sem permissão | Vê os estágios e o histórico, não vê a ação de avançar (nem desabilitada) e lê "Só quem cadastrou a inovação ou um administrador pode avançar o status." enquanto houver próximo estágio (emenda de 2026-10-18); GET e POST em `/status/` respondem 403 com a página da EDEX-20 | EDEX-24 e design-spec §10 F4: quem não pode não vê a ação | y |
 | Texto do acesso negado | O mesmo da EDEX-20 ("Você não tem permissão para alterar esta inovação." / "Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la.") | AD-009 fixa uma página só; reescrever a segunda frase mexeria nos testes da F4. A frase não cita o status, mas continua verdadeira | y |
 | Proteção contra duplo envio e corrida | O formulário de confirmação envia o status que a pessoa viu; o POST trava a linha e só avança se o status gravado for igual ao enviado | Sem isso, dois cliques ou duas pessoas ao mesmo tempo levariam "Em teste" direto a "Disponível para replicação", pulando um estágio | y |
 | Mensagem de conflito | Nada muda; redirect ao detalhe com "O status desta inovação já foi alterado para “<status gravado>”. Confira o status atual antes de avançar." (nível aviso) | Explica por que nada aconteceu e o que fazer (H9) | y |
@@ -79,6 +79,7 @@ Toda ambiguidade está resolvida ou registrada aqui — nada fica silenciosament
 | Exclusão da conta responsável | A conta que fez uma mudança não pode ser apagada enquanto houver registro dela (proteção, como em `Inovacao.autor`) | Mesmo critério da F2: excluir uma conta não apaga o conhecimento registrado | y |
 | Validade das transições no banco | O banco recusa um registro de histórico cujo par (anterior, novo) não seja uma das duas transições | Mesmo critério da `inovacao_status_valido`: a regra não depende só da view | y |
 | Banco indisponível | Página 500 do projeto, sem detalhes; nem status nem histórico gravados pela metade | Mesmo padrão da EDEX-44 | y |
+| Passe de design (2026-10-18) | design-spec §10 F5 "transições inválidas desabilitadas, não escondidas sem explicação": no estágio final, botão desabilitado com explicação para quem pode alterar; sem permissão, só a explicação; com ação, ajuda "O status avança um estágio por vez e não volta ao anterior." ligada ao link. Nenhum estilo novo (`button[aria-disabled=true]` e `.helptext` da `kira.css`) | Decidido com o usuário em 2026-10-18; mantém a decisão do Specify de não mostrar a ação a quem não pode alterar | y |
 | Idioma dos critérios de aceite | EARS em inglês, restante em português | Mesmo padrão das features anteriores; `validate_spec.py` exige `SHALL` | y |
 
 **Open questions:** none - as quatro decisões de produto foram tomadas com o usuário em 2026-10-18; os defaults do agente foram confirmados na aprovação da spec em 2026-10-18.
@@ -117,12 +118,16 @@ inovação está e o que falta, para saber se é um experimento ou uma prática 
 1. **STAT-01** — WHEN an authenticated user requests `/inovacoes/<id>/` THEN the system SHALL display a section with the heading "Ciclo de vida" containing an ordered list of the three stages in this order: "Em teste", "Validada", "Disponível para replicação".
 2. **STAT-02** — The system SHALL mark the Inovacao's current stage in that list with the visible text "(status atual)" and SHALL NOT mark any other stage with it.
 3. **STAT-03** — WHILE the logged-in user can alter the Inovacao (`Inovacao.pode_ser_alterada_por`) and its status is "Em teste" or "Validada" the system SHALL display in the "Ciclo de vida" section a link labeled "Avançar para “<próximo status>”" pointing to `/inovacoes/<id>/status/`.
-4. **STAT-04** — WHILE the Inovacao's status is "Disponível para replicação" the system SHALL display in the "Ciclo de vida" section the text "Último estágio do ciclo." and SHALL NOT display an "Avançar" link, for any user.
-5. **STAT-05** — WHILE the logged-in user can not alter the Inovacao the system SHALL NOT display the "Avançar" link on its detail page.
+4. **STAT-04** — WHILE the Inovacao's status is "Disponível para replicação" the system SHALL display in the "Ciclo de vida" section the text "Último estágio do ciclo." and SHALL NOT display any link to `/inovacoes/<id>/status/`, for any user. *(emendada em 2026-10-18: proibia qualquer "Avançar"; agora o botão desabilitado da STAT-38 é permitido)*
+5. **STAT-05** — WHILE the logged-in user can not alter the Inovacao the system SHALL NOT display any "Avançar" link or button on its detail page. *(emendada em 2026-10-18: cobre também o botão desabilitado)*
+6. **STAT-38** — WHILE the logged-in user can alter the Inovacao and its status is "Disponível para replicação" the system SHALL display in the "Ciclo de vida" section a button labeled "Avançar status" marked `aria-disabled="true"`. *(passe de design, 2026-10-18)*
+7. **STAT-39** — WHILE the logged-in user can not alter the Inovacao and its status is "Em teste" or "Validada" the system SHALL display in the "Ciclo de vida" section the text "Só quem cadastrou a inovação ou um administrador pode avançar o status." *(passe de design, 2026-10-18)*
+8. **STAT-40** — WHILE the logged-in user can alter the Inovacao and its status is "Em teste" or "Validada" the system SHALL display in the "Ciclo de vida" section the help text "O status avança um estágio por vez e não volta ao anterior." *(passe de design, 2026-10-18)*
 
 **Independent Test**: como `maria`, abrir uma inovação própria em "Em teste" e ver os três estágios,
-"Em teste (status atual)" e o link "Avançar para “Validada”"; abrir uma do `joao` e ver os estágios
-sem o link.
+"Em teste (status atual)", o link "Avançar para “Validada”" e a ajuda de um estágio por vez; abrir uma
+do `joao` e ver os estágios sem o link, com a explicação de quem pode avançar; numa inovação própria em
+"Disponível para replicação", ver o botão "Avançar status" desabilitado e "Último estágio do ciclo.".
 
 ---
 
@@ -230,6 +235,7 @@ avançá-lo sem depender de mouse ou de cor.
 
 1. **STAT-34** — The system SHALL build the "Ciclo de vida" section, the "Histórico de status" section and the "Avançar status" page only from native HTML elements (`ol`/`ul`, links, a `form` with a `button`), without any positive `tabindex`, with a visible focus indicator on each link and button, and SHALL give the "Avançar status" page a single `h1` and a `<title>` both reading "Avançar status".
 2. **STAT-37** — The system SHALL convey the current stage by text (STAT-02) and SHALL meet the contrast pairs of DS-08 for every color the cycle control and the history add to `kira.css`.
+3. **STAT-41** — The system SHALL keep the disabled "Avançar status" button focusable (no `disabled` attribute, no positive `tabindex`), SHALL reference the text "Último estágio do ciclo." from it through `aria-describedby`, SHALL reference the STAT-40 help text from the "Avançar para" link through `aria-describedby`, and SHALL give the disabled button no action (`type="button"`, outside any `form`). *(passe de design, 2026-10-18)*
 
 **Independent Test**: só com teclado, a partir do detalhe: Tab até "Avançar para “Validada”", Enter,
 Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as cores desligadas
@@ -257,8 +263,8 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-01 | P1: Ver o estágio | Execute | Verified |
 | STAT-02 | P1: Ver o estágio | Execute | Verified |
 | STAT-03 | P1: Ver o estágio | Execute | Verified |
-| STAT-04 | P1: Ver o estágio | Execute | Verified |
-| STAT-05 | P1: Ver o estágio | Execute | Verified |
+| STAT-04 | P1: Ver o estágio | Tasks | In Tasks (emendada) |
+| STAT-05 | P1: Ver o estágio | Tasks | In Tasks (emendada) |
 | STAT-06 | P1: Avançar o status | Execute | Verified |
 | STAT-07 | P1: Avançar o status | Execute | Verified |
 | STAT-08 | P1: Avançar o status | Execute | Verified |
@@ -291,10 +297,14 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-35 | Edge Cases | Execute | Verified |
 | STAT-36 | Edge Cases | Execute | Verified |
 | STAT-37 | P1: Acessível | Execute | Implementing (risco residual aceito) |
+| STAT-38 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-39 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-40 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-41 | P1: Acessível | Tasks | In Tasks |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 
-**Coverage:** 37 total, 37 mapeados para tasks (T1 a T15). 36 `Verified` (`validation.md`, iterações 1–3). STAT-37 fica `Implementing`: produção conforme, mas o teste de contraste tem lacuna aceita pelo usuário em 2026-10-18 (`validation.md`, Decisão do usuário).
+**Coverage:** 41 total (37 originais + STAT-38 a STAT-41 do passe de design de 2026-10-18), 41 mapeados para tasks (T1 a T17). 34 `Verified` (`validation.md`, iterações 1–3); STAT-04 e STAT-05 emendadas e STAT-38 a STAT-41 novas voltam a `In Tasks`; STAT-37 fica `Implementing` com risco residual aceito pelo usuário (`validation.md`, Decisão do usuário).
 
 ---
 
@@ -306,11 +316,11 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | RN03 | STAT-01, STAT-02, STAT-04, STAT-09, STAT-10, STAT-31, STAT-32 |
 | RF12 | STAT-10, STAT-12, STAT-16 |
 | RF14 / RN12 | STAT-06, STAT-11 (confirmação, cancelar, GET não grava) |
-| RN05 / RNF07 | STAT-05, STAT-17 … STAT-23, STAT-36 |
+| RN05 / RNF07 | STAT-05, STAT-39, STAT-17 … STAT-23, STAT-36 |
 | RN08 | STAT-18 (autor não muda) |
 | RNF05 | STAT-15, STAT-28, STAT-29, STAT-31 |
-| RNF09 | STAT-02, STAT-34, STAT-37 |
-| RNF01 (Nielsen) | H1: STAT-01, STAT-02, STAT-16, STAT-24 · H3: STAT-06 · H5: STAT-06, STAT-12 · H9: STAT-10, STAT-12 |
+| RNF09 | STAT-02, STAT-34, STAT-37, STAT-41 |
+| RNF01 (Nielsen) | H1: STAT-01, STAT-02, STAT-16, STAT-24, STAT-38 · H10: STAT-39, STAT-40 · H3: STAT-06 · H5: STAT-06, STAT-12 · H9: STAT-10, STAT-12 |
 
 ---
 

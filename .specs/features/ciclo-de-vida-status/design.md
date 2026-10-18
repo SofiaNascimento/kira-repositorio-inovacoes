@@ -143,10 +143,26 @@ sequenceDiagram
 
 | Template | Mudança |
 | -------- | ------- |
-| `inovacoes/inovacao_detail.html` | Depois do cartão da ficha: `<section aria-labelledby="ciclo-titulo">` com `<h2 id="ciclo-titulo">Ciclo de vida</h2>`, `<ol class="ciclo">` com um `<li>` por etapa; a atual com `aria-current="step"` e `<strong>… (status atual)</strong>` (STAT-02); abaixo, `<p class="acoes"><a href="…/status/">Avançar para “<próximo>”</a></p>` ou `<p>Último estágio do ciclo.</p>` (STAT-03, STAT-04). Depois, `<section aria-labelledby="historico-titulo">` com `<h2 id="historico-titulo">Histórico de status</h2>` e `<ol class="historico">` ou `<p class="vazio">Nenhuma mudança de status registrada.</p>` (STAT-24 a STAT-27). Item: `{{ m.data|date:"d/m/Y H:i" }} — de “{{ m.get_status_anterior_display }}” para “{{ m.get_status_novo_display }}”, por {{ m.responsavel.get_full_name|default:m.responsavel.get_username }}` |
+| `inovacoes/inovacao_detail.html` | Depois do cartão da ficha: `<section aria-labelledby="ciclo-titulo">` com `<h2 id="ciclo-titulo">Ciclo de vida</h2>`, `<ol class="ciclo">` com um `<li>` por etapa; a atual com `aria-current="step"` e `<strong>… (status atual)</strong>` (STAT-02); abaixo, o **controle de transição** (passe de design de 2026-10-18, design-spec §10 F5 — ver "Controle de transição" abaixo) (STAT-03 a STAT-05, STAT-38 a STAT-40). Depois, `<section aria-labelledby="historico-titulo">` com `<h2 id="historico-titulo">Histórico de status</h2>` e `<ol class="historico">` ou `<p class="vazio">Nenhuma mudança de status registrada.</p>` (STAT-24 a STAT-27). Item: `{{ m.data|date:"d/m/Y H:i" }} — de “{{ m.get_status_anterior_display }}” para “{{ m.get_status_novo_display }}”, por {{ m.responsavel.get_full_name|default:m.responsavel.get_username }}` |
 | `inovacoes/inovacao_status.html` (novo) | Estende o base; `{% block title %}Avançar status{% endblock %}`, `<h1>Avançar status</h1>`, `div.cartao`. Com próximo: o texto da STAT-06, `<form method="post" class="acoes">` com `{% csrf_token %}`, `<input type="hidden" name="status_visto" value="{{ inovacao.status }}">`, `<button type="submit">Avançar para “<próximo>”</button>` (primário, DS-14) e `<a href="{{ inovacao.get_absolute_url }}">Cancelar</a>`. Sem próximo: `MENSAGEM_ULTIMO_ESTAGIO` e `<p class="acoes"><a …>Voltar para a inovação</a></p>`, sem `form` (STAT-10) |
 
 A seção do ciclo usa `<strong>` para o texto "(status atual)": a marcação é texto, não cor (STAT-37).
+
+#### Controle de transição (passe de design, 2026-10-18)
+
+design-spec §10 F5: "transições inválidas desabilitadas, não escondidas sem explicação". Depois da
+lista do ciclo, um texto com `id="ciclo-explicacao"` explica o estado da ação, e o controle aponta
+para ele por `aria-describedby`:
+
+| Estado | Controle | Texto `#ciclo-explicacao` |
+| ------ | -------- | ------------------------- |
+| Pode alterar, há próximo | `<p class="acoes"><a href="…/status/" aria-describedby="ciclo-explicacao">Avançar para “<próximo>”</a></p>` | `<p class="helptext">O status avança um estágio por vez e não volta ao anterior.</p>` (STAT-40) |
+| Pode alterar, estágio final | `<p class="acoes"><button type="button" aria-disabled="true" aria-describedby="ciclo-explicacao">Avançar status</button></p>`, fora de `form`, sem `disabled` (continua focável) | `<p>Último estágio do ciclo.</p>` (STAT-04, STAT-38, STAT-41) |
+| Não pode alterar, há próximo | nenhum (decisão do Specify, padrão da F4) | `<p>Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>` (STAT-05, STAT-39) |
+| Não pode alterar, estágio final | nenhum | `<p>Último estágio do ciclo.</p>` (STAT-04) |
+
+`aria-disabled` em vez de `disabled`: o botão continua no Tab, o leitor de tela anuncia
+"indisponível" e lê a explicação (design-spec §6, estado desabilitado; §8, `aria-disabled`).
 
 ### CSS — `templates/kira.css` (AD-010)
 
@@ -154,6 +170,7 @@ A seção do ciclo usa `<strong>` para o texto "(status atual)": a marcação é
 - `.ciclo [aria-current=step]`: borda `--brand-blue` de 2px e texto `--brand-navy` (pares já no DS-08: `brand-navy`/`surface`, `brand-navy`/`bg`).
 - `.historico`: lista sem marcador, itens separados por borda `--border`, data em `--text-muted`.
 - **Nenhuma cor nova**: todos os pares já estão em `PARES_DE_TEXTO`, então o DS-08 continua cobrindo (STAT-37). Regras da AD-010: seletor de atributo sem aspas, sem `="` nem `<`.
+- **Controle de transição**: nenhuma regra nova. O botão desabilitado usa `button[aria-disabled=true]` (opacidade reduzida, `cursor: not-allowed`) e a ajuda usa `.helptext`, os dois já na `kira.css`.
 
 ---
 
@@ -254,7 +271,8 @@ class MudancaDeStatus(models.Model):
 | Requisito | Componente |
 | --------- | ---------- |
 | STAT-01, STAT-02 | `InovacaoDetailView` (`etapas`) + `inovacao_detail.html` (`ol.ciclo`, `aria-current`, "(status atual)") |
-| STAT-03 a STAT-05 | `pode_alterar` + `Inovacao.proximo_status` no detalhe |
+| STAT-03 a STAT-05, STAT-38 a STAT-40 | `pode_alterar` + `Inovacao.proximo_status` no detalhe; controle de transição |
+| STAT-41 | Botão `aria-disabled` focável + `aria-describedby="ciclo-explicacao"` |
 | STAT-06, STAT-10, STAT-11 | `InovacaoStatusView` GET + `inovacao_status.html` |
 | STAT-07 a STAT-09, STAT-14, STAT-15 | `Inovacao.avancar_status` + `PROXIMO_STATUS` |
 | STAT-12, STAT-13 | `avancar_status` (`select_for_update` + `status_visto`) + aviso na view |

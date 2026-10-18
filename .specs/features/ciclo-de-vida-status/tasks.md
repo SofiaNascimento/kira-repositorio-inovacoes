@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: ✅ Concluída com ressalva — T1–T15 implementadas; Verifier iterações 1–3 FAIL só por lacunas de teste (produção inalterada desde a iteração 1 e conforme). Limite de 3 iterações atingido; o usuário aceitou o risco residual da STAT-37 (lacuna A6/A7 do teste de contraste) e pediu o fechamento em 2026-10-18; T15 corrigiu a regressão A1/A2 da T14 sem nova verificação (`validation.md`, Decisão do usuário)
+**Status**: In Progress — passe de design (Fase 8, T16–T17) sobre a F5 concluída com ressalva em 2026-10-18 (T1–T15; risco residual da STAT-37 aceito pelo usuário, `validation.md`)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -138,6 +138,19 @@ sem nova iteração do Verifier.
 
 ```
 T15
+```
+
+### Phase 8: Passe de design — controle de transição (design-spec §10 F5)
+
+Pedido do usuário em 2026-10-18: aplicar o design-spec à F5, com "transições inválidas desabilitadas,
+não escondidas sem explicação". Decisão do usuário: botão desabilitado com explicação no estágio
+final; sem permissão, só a explicação. Emendas STAT-04 e STAT-05 e ACs novas STAT-38 a STAT-41. Nenhum
+estilo novo. **Testes existentes que mudam, autorizados pela decisão:** `test_ultimo_estagio_explica_e_ninguem_ve_o_link`
+e `test_terceiro_nao_ve_o_link_de_avancar` (`test_views_detalhe.py`), que proibiam a palavra
+"Avançar" e passam a seguir as STAT-04 e STAT-05 emendadas.
+
+```
+T16 → T17
 ```
 
 ---
@@ -588,10 +601,64 @@ T15
 
 ---
 
+### T16: Controle de transição no detalhe
+
+**What**: A seção "Ciclo de vida" ganha o texto de explicação `#ciclo-explicacao` e o botão "Avançar status" desabilitado no estágio final, conforme a tabela "Controle de transição" do design.
+**Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
+**Depends on**: T15
+**Reuses**: `pode_alterar` e `inovacao.proximo_status` do contexto do detalhe; `button[aria-disabled=true]` e `.helptext` da `kira.css`
+**Requirement**: STAT-03, STAT-04, STAT-05, STAT-38, STAT-39, STAT-40
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Template com os quatro estados da tabela do design; nenhuma mudança na view, no CSS ou nas outras seções
+- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: autor e administrador em "Em teste"/"Validada" veem o link e a ajuda exata da STAT-40 (STAT-03, STAT-40); autor e administrador no estágio final veem "Último estágio do ciclo." e exatamente um `button` "Avançar status" com `aria-disabled="true"`, sem link para `/status/` (STAT-04, STAT-38); terceiro no estágio final vê "Último estágio do ciclo.", nenhum `button` nem link "Avançar" (STAT-04, STAT-05); `nao_autor_usuario` (terceiro, staff, superusuário) em "Em teste"/"Validada" vê o texto exato da STAT-39 e nenhum link ou botão "Avançar" (STAT-05, STAT-39, L-003); a ajuda da STAT-40 e o texto da STAT-39 nunca aparecem juntos nem no estágio final
+- [ ] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` e `test_terceiro_nao_ve_o_link_de_avancar` passam a afirmar as STAT-04 e STAT-05 emendadas (sem link para `/status/`; nenhum controle "Avançar" para quem não pode alterar), sem perder nenhuma outra asserção
+- [ ] Gate check passa: `.venv/bin/pytest -q`
+- [ ] Test count: ~695 testes passam (+~10)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `feat(inovacoes): mostra transicoes indisponiveis do ciclo com explicacao`
+
+---
+
+### T17: Acessibilidade do controle de transição
+
+**What**: A evidência da STAT-41 e da STAT-34 para o botão desabilitado e para a ajuda do link.
+**Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
+**Depends on**: T16
+**Reuses**: `_afirma_so_nativos`, `_analisar`, `_secao` e o teste de foco visível do mesmo arquivo
+**Requirement**: STAT-34, STAT-41
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Testes e2e: no detalhe em estágio final visto pelo autor, o `button` tem `type="button"`, `aria-disabled="true"`, nenhum atributo `disabled`, nenhum `tabindex` positivo, não está dentro de `form` e tem `aria-describedby` apontando para um elemento existente cujo texto é "Último estágio do ciclo." (STAT-41); no detalhe com próximo estágio, o link "Avançar para" tem `aria-describedby` apontando para o texto exato da STAT-40 (STAT-41); a seção do ciclo no estágio final passa pelo critério de controles nativos e o CSS real da página dá foco visível ao botão (STAT-34)
+- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [ ] Test count: ~699 testes passam (+~4)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): prova a acessibilidade do controle de transicao`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4
@@ -600,6 +667,7 @@ Phase 4:  T8 → T9 → T10 → T11
 Phase 5:  T12 → T13
 Phase 6:  T14
 Phase 7:  T15
+Phase 8:  T16 → T17
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -611,6 +679,7 @@ T7 → T8
 T11 → T12
 T13 → T14
 T14 → T15
+T15 → T16
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -634,6 +703,8 @@ fronteira de fase: **lote 1** = Fases 1+2+3 (7 tasks: modelo, tela e detalhe), *
 | T7 | 1 folha de estilo (+ checagens do sistema de design) | ✅ Granular |
 | T8, T9, T10, T11 | 1 arquivo de teste cada (o código já existe) | ✅ Granular |
 | T12, T13, T14, T15 | 1 arquivo de teste cada (correções da validação) | ✅ Granular |
+| T16 | 1 trecho de template (+ testes) | ✅ Granular |
+| T17 | 1 arquivo de teste | ✅ Granular |
 
 **Nota sobre T1 e T3:** a migration é gerada pelo `makemigrations`, não escrita à mão, e o gate de
 build (`--check`) falharia sem ela. Uma view Django não é testável sem rota e template. O `Where`
@@ -664,6 +735,8 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T13 | T12 | T12 → T13 | ✅ Match |
 | T14 | T13 | T13 → T14 (arco de fronteira) | ✅ Match |
 | T15 | T14 | T14 → T15 (arco de fronteira) | ✅ Match |
+| T16 | T15 | T15 → T16 (arco de fronteira) | ✅ Match |
+| T17 | T16 | T16 → T17 | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior.
 
@@ -688,6 +761,8 @@ Nenhuma dependência aponta para uma fase posterior.
 | T13: contraste por par | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
 | T14: par efetivo herdado | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
 | T15: todo background* conferido | Folha de estilo (evidência) | e2e | e2e | ✅ OK |
+| T16: controle de transição | Template do detalhe | e2e | e2e | ✅ OK |
+| T17: acessibilidade do controle | Templates (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
@@ -697,8 +772,11 @@ Nenhuma task tem `Tests: none`.
 
 | Requisito | Tasks |
 | --------- | ----- |
-| STAT-01, 02, 03, 04 | T5 |
-| STAT-05 | T5, T8 |
+| STAT-01, 02 | T5 |
+| STAT-03, 04 | T5, T16 |
+| STAT-05 | T5, T8, T16 |
+| STAT-38, 39, 40 | T16 |
+| STAT-41 | T17 |
 | STAT-06, 11 | T3 |
 | STAT-07, 08 | T2, T4 |
 | STAT-09 | T1, T2 |
@@ -715,8 +793,8 @@ Nenhuma task tem `Tests: none`.
 | STAT-25, 27 | T6 |
 | STAT-28, 29, 31 | T1 |
 | STAT-30, 32, 33 | T9 |
-| STAT-34 | T7, T10 |
+| STAT-34 | T7, T10, T17 |
 | STAT-35, 36 | T11 |
 | STAT-37 | T7, T10, T13, T14, T15 |
 
-**Coverage:** 37 de 37 requisitos mapeados para tasks.
+**Coverage:** 41 de 41 requisitos mapeados para tasks (STAT-38 a STAT-41 no passe de design).
