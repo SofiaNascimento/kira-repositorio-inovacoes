@@ -424,9 +424,12 @@ def test_quem_nao_pode_alterar_le_quem_pode_avancar(
 ):
     """STAT-39, STAT-05: a acao nao aparece, mas a explicacao sim (L-003: staff e superuser)."""
     inovacao = criar_inovacao(status=status)
-    secao = _ciclo(client, nao_autor_usuario, inovacao)
+    client.force_login(nao_autor_usuario)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    secao = _secao(html, "ciclo-titulo")
     assert _explicacao(secao) == QUEM_PODE_AVANCAR
-    assert "Avançar" not in secao
+    # STAT-05: nenhum controle "Avancar" em lugar nenhum da pagina, para as tres contas.
+    assert "Avançar" not in html
     assert _botoes(secao) == []
     assert AJUDA_DO_AVANCO not in secao
 

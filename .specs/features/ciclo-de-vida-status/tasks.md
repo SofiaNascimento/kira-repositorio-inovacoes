@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — passe de design: T16–T20 feitas; Verifier iteração 4 FAIL (R1, R2, D12) → Fase 9 (T18–T20) concluída → aguardando o Verifier, iteração 5. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
+**Status**: In Progress — passe de design: T16–T20 feitas; Verifier iteração 4 FAIL → Fase 9; iteração 5 FAIL (E2b; E9/E10/E11/E16 `hidden`) → Fase 10 (T21–T22), segunda e última rodada autorizada. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -162,6 +162,17 @@ Decisão do usuário: corrigir os três e reverificar. Só testes e spec mudam.
 
 ```
 T18 → T19 → T20
+```
+
+### Phase 10: Correções da validação do passe de design (iteração 5)
+
+Fix tasks do `validation.md` (iteração 5, FAIL): E2b (STAT-05) sobreviveu porque a checagem de página
+inteira de "Avançar" só valia para o terceiro simples; E9, E10, E11 e E16 (STAT-03, STAT-38, STAT-40)
+sobreviveram porque nenhum teste recusava `hidden` num ancestral, no botão ou na ajuda. Segunda e
+última rodada autorizada pelo usuário para este passe. Só testes mudam.
+
+```
+T21 → T22
 ```
 
 ---
@@ -758,10 +769,66 @@ T18 → T19 → T20
 
 ---
 
+### T21: "Avançar" ausente da página para toda conta sem permissão, com próximo estágio (Fix 7, E2b) ✅
+
+**What**: `test_quem_nao_pode_alterar_le_quem_pode_avancar` afirma `"Avançar" not in html` na página inteira para as três variantes de `nao_autor_usuario`.
+**Where**: `inovacoes/tests/test_views_detalhe.py`
+**Depends on**: T20
+**Reuses**: `test_quem_nao_pode_alterar_le_quem_pode_avancar` (T16)
+**Requirement**: STAT-05
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] Checagem de página inteira para terceiro, staff e superusuário, em "Em teste" e "Validada"; as checagens da seção continuam
+- [x] O mutante E2b (botão "Avançar status" fora da seção para `USUARIO` com `is_staff`) derruba o teste, conferido numa worktree temporária
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 704 testes passam (+0)
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): exige Avancar ausente da pagina para toda conta sem permissao`
+
+**Status**: ✅ Complete — 704 passed (+0); E2b (botão fora da seção para `USUARIO` com `is_staff`, com próximo estágio) conferido numa worktree temporária: derruba `test_quem_nao_pode_alterar_le_quem_pode_avancar[staff-EM_TESTE]` e `[staff-VALIDADA]` (2 failed, 62 passed); worktree removida e árvore real intacta
+
+---
+
+### T22: Nada escondido na seção do ciclo (Fix 8, E9/E10/E11/E16/E17)
+
+**What**: Teste que recusa `hidden`, `inert` e `aria-hidden="true"` em qualquer elemento da seção "Ciclo de vida", nos quatro estados do controle de transição.
+**Where**: `inovacoes/tests/test_views_detalhe.py`
+**Depends on**: T21
+**Reuses**: `_secao`, `_ciclo`; fixtures `autor`, `terceiro`, `criar_inovacao`
+**Requirement**: STAT-03, STAT-38, STAT-39, STAT-40 (exibidos de fato); STAT-34 (`inert` tira o link da operação por teclado)
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [ ] Teste parametrizado por (conta que pode / não pode alterar) × ("Em teste", "Validada", "Disponível para replicação"): nenhuma tag da seção tem o atributo `hidden`, o atributo `inert` ou `aria-hidden="true"`
+- [ ] Os mutantes E9 (`hidden` no `p` do link), E10 (`hidden` no `p` do botão), E11 (`hidden` no botão), E16 (`hidden` na ajuda) e E17 (`inert` no `p` do link) derrubam o teste, conferidos numa worktree temporária
+- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [ ] Test count: ~710 testes passam (+6)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): recusa controle escondido na secao do ciclo`
+
+---
+
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 9
+Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 9 → Phase 10
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4
@@ -772,6 +839,7 @@ Phase 6:  T14
 Phase 7:  T15
 Phase 8:  T16 → T17
 Phase 9:  T18 → T19 → T20
+Phase 10: T21 → T22
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -785,6 +853,7 @@ T13 → T14
 T14 → T15
 T15 → T16
 T17 → T18
+T20 → T21
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -811,6 +880,7 @@ fronteira de fase: **lote 1** = Fases 1+2+3 (7 tasks: modelo, tela e detalhe), *
 | T16 | 1 trecho de template (+ testes) | ✅ Granular |
 | T17 | 1 arquivo de teste | ✅ Granular |
 | T18, T19, T20 | 1 arquivo de teste cada (correções da iteração 4) | ✅ Granular |
+| T21, T22 | 1 arquivo de teste cada (correções da iteração 5) | ✅ Granular |
 
 **Nota sobre T1 e T3:** a migration é gerada pelo `makemigrations`, não escrita à mão, e o gate de
 build (`--check`) falharia sem ela. Uma view Django não é testável sem rota e template. O `Where`
@@ -846,6 +916,8 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T18 | T17 | T17 → T18 (arco de fronteira) | ✅ Match |
 | T19 | T18 | T18 → T19 | ✅ Match |
 | T20 | T19 | T19 → T20 | ✅ Match |
+| T21 | T20 | T20 → T21 (arco de fronteira) | ✅ Match |
+| T22 | T21 | T21 → T22 | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior.
 
@@ -873,6 +945,7 @@ Nenhuma dependência aponta para uma fase posterior.
 | T16: controle de transição | Template do detalhe | e2e | e2e | ✅ OK |
 | T17: acessibilidade do controle | Templates (evidência) | e2e | e2e | ✅ OK |
 | T18–T20: correções da iteração 4 | Templates (evidência) | e2e | e2e | ✅ OK |
+| T21–T22: correções da iteração 5 | Templates (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
@@ -883,9 +956,9 @@ Nenhuma task tem `Tests: none`.
 | Requisito | Tasks |
 | --------- | ----- |
 | STAT-01, 02 | T5 |
-| STAT-03, 04 | T5, T16, T19 (STAT-03) |
-| STAT-05 | T5, T8, T16, T18 |
-| STAT-38, 39, 40 | T16 |
+| STAT-03, 04 | T5, T16, T19 e T22 (STAT-03) |
+| STAT-05 | T5, T8, T16, T18, T21 |
+| STAT-38, 39, 40 | T16, T22 |
 | STAT-41 | T17, T20 |
 | STAT-06, 11 | T3 |
 | STAT-07, 08 | T2, T4 |
