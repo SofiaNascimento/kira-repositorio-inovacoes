@@ -383,7 +383,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T10: Acessibilidade do ciclo, do histórico e da confirmação
+### T10: Acessibilidade do ciclo, do histórico e da confirmação ✅
 
 **What**: A evidência da STAT-34 e da parte textual da STAT-37 nas três telas novas.
 **Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
@@ -398,14 +398,16 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] Testes e2e: página "Avançar status" com um único `h1` e `<title>` "Avançar status"; ciclo, histórico e confirmação só com `ol`/`ul`, `a`, `form` e `button` nativos, sem `tabindex` positivo; o CSS real da página tem indicador de foco para os links e o botão (mesma checagem da EDEX-42); as seções "Ciclo de vida" e "Histórico de status" são `section` rotuladas pelo seu `h2` (`aria-labelledby`); sem o CSS, o estágio atual continua identificável pelo texto "(status atual)" (STAT-37)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~671 testes passam (+6)
+- [x] Testes e2e: página "Avançar status" com um único `h1` e `<title>` "Avançar status"; ciclo, histórico e confirmação só com `ol`/`ul`, `a`, `form` e `button` nativos, sem `tabindex` positivo; o CSS real da página tem indicador de foco para os links e o botão (mesma checagem da EDEX-42); as seções "Ciclo de vida" e "Histórico de status" são `section` rotuladas pelo seu `h2` (`aria-labelledby`); sem o CSS, o estágio atual continua identificável pelo texto "(status atual)" (STAT-37)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~671 testes passam (+6)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a acessibilidade do ciclo de vida do status`
+
+**Status**: ✅ Complete — 681 passed (+10); a confirmação e a variante do estágio final passam pelo critério da EDEX-42 (nenhum papel de controle, nenhum `tabindex` positivo), com um `button type="submit"` dentro do `form` e um único link para o detalhe; cada seção do detalhe é `section aria-labelledby` com o seu `h2`, uma só lista `ol` e, no ciclo, só o link para `/status/`; o `:focus-visible` com contorno é lido do CSS real da confirmação, do estágio final e do detalhe; sem o `<style>`, os itens do ciclo leem "Em teste", "Validada (status atual)", "Disponível para replicação" (STAT-37). **Lacuna de precisão da spec (STAT-34):** a AC pede o `<title>` "Avançar status", mas o `base.html` acrescenta " · Repositório de Inovações"; vale o precedente da EDEX-43 (o `<title>` começa pelo nome da página) e o `base.html` não muda. Nenhuma mudança em código de produção
 
 ---
 
