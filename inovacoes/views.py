@@ -124,8 +124,11 @@ class InovacaoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         # EDEX-03, EDEX-24: as acoes so aparecem para quem pode alterar (AD-009).
+        # STAT-01: a ordem do enum ja e a ordem do ciclo.
         return super().get_context_data(
-            pode_alterar=self.object.pode_ser_alterada_por(self.request.user), **kwargs
+            pode_alterar=self.object.pode_ser_alterada_por(self.request.user),
+            etapas=StatusInovacao.choices,
+            **kwargs,
         )
 
 

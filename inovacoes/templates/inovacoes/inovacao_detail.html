@@ -40,5 +40,25 @@
   </dl>
   </div>
 
+  <section aria-labelledby="ciclo-titulo">
+    <h2 id="ciclo-titulo">Ciclo de vida</h2>
+    {# STAT-01, STAT-02: o estagio atual marcado por texto, nao so por cor (STAT-37). #}
+    <ol class="ciclo">
+      {% for valor, rotulo in etapas %}
+        {% if valor == inovacao.status %}
+          <li aria-current="step"><strong>{{ rotulo }} (status atual)</strong></li>
+        {% else %}
+          <li>{{ rotulo }}</li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+    {# STAT-03 a STAT-05: o link so para quem pode alterar; o estagio final se explica. #}
+    {% if not inovacao.proximo_status %}
+      <p>Último estágio do ciclo.</p>
+    {% elif pode_alterar %}
+      <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
+    {% endif %}
+  </section>
+
   <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

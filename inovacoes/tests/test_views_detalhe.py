@@ -275,3 +275,89 @@ def test_administrador_rebaixado_deixa_de_ver_os_links_na_requisicao_seguinte(
     assert _links(html, "Excluir") == []
     assert f"/inovacoes/{inovacao.pk}/editar/" not in html
     assert f"/inovacoes/{inovacao.pk}/excluir/" not in html
+
+
+# --- F5: secao "Ciclo de vida" ---------------------------------------------------
+
+EM_TESTE = StatusInovacao.EM_TESTE
+VALIDADA = StatusInovacao.VALIDADA
+DISPONIVEL = StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+ETAPAS = ["Em teste", "Validada", "Disponível para replicação"]
+
+
+def _secao(html, titulo_id):
+    """A <section> rotulada pelo h2 de id titulo_id."""
+    inicio = html.index(f'<section aria-labelledby="{titulo_id}">')
+    return html[inicio : html.index("</section>", inicio)]
+
+
+def _ciclo(client, conta, inovacao):
+    client.force_login(conta)
+    return _secao(client.get(f"/inovacoes/{inovacao.pk}/").content.decode(), "ciclo-titulo")
+
+
+def _itens_do_ciclo(secao):
+    lista = re.search(r'<ol class="ciclo">(.*?)</ol>', secao, re.S).group(1)
+    itens = re.findall(r"<li\b[^>]*>(.*?)</li>", lista, re.S)
+    return [re.sub(r"<[^>]+>", "", item).strip() for item in itens]
+
+
+def test_ciclo_de_vida_lista_os_tres_estagios_em_ordem(client, autor, criar_inovacao):
+    """STAT-01: h2 "Ciclo de vida" e uma lista ordenada na ordem do ciclo."""
+    secao = _ciclo(client, autor, criar_inovacao())
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Ciclo de vida"]
+    itens = _itens_do_ciclo(secao)
+    assert [item.removesuffix(" (status atual)") for item in itens] == ETAPAS
+
+
+@pytest.mark.parametrize(
+    ("status", "atual"), [(EM_TESTE, 0), (VALIDADA, 1), (DISPONIVEL, 2)], ids=str
+)
+def test_ciclo_marca_so_o_estagio_atual_com_texto(client, autor, criar_inovacao, status, atual):
+    """STAT-02: "(status atual)" uma vez, junto do rotulo do estagio gravado."""
+    inovacao = criar_inovacao(status=status)
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert html.count("(status atual)") == 1
+    esperado = list(ETAPAS)
+    esperado[atual] = f"{ETAPAS[atual]} (status atual)"
+    assert _itens_do_ciclo(_secao(html, "ciclo-titulo")) == esperado
+
+
+@pytest.mark.parametrize("conta", ["autor", "administrador"])
+@pytest.mark.parametrize(
+    ("status", "proximo"),
+    [(EM_TESTE, "Validada"), (VALIDADA, "Disponível para replicação")],
+    ids=["em_teste", "validada"],
+)
+def test_quem_pode_alterar_ve_o_link_de_avancar(
+    client, criar_inovacao, request, conta, status, proximo
+):
+    """STAT-03: autor e administrador veem "Avancar para" o proximo, para /status/."""
+    inovacao = criar_inovacao(status=status)
+    secao = _ciclo(client, request.getfixturevalue(conta), inovacao)
+    assert _links(secao, f"Avançar para “{proximo}”") == [f"/inovacoes/{inovacao.pk}/status/"]
+    assert "Último estágio do ciclo." not in secao
+
+
+@pytest.mark.parametrize("conta", ["autor", "administrador", "terceiro"])
+def test_ultimo_estagio_explica_e_ninguem_ve_o_link(client, criar_inovacao, request, conta):
+    """STAT-04: "Ultimo estagio do ciclo." e nenhum link para /status/, para qualquer conta."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    client.force_login(request.getfixturevalue(conta))
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert "<p>Último estágio do ciclo.</p>" in _secao(html, "ciclo-titulo")
+    assert "Avançar" not in html
+    assert f"/inovacoes/{inovacao.pk}/status/" not in html
+
+
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
+def test_terceiro_nao_ve_o_link_de_avancar(client, terceiro, criar_inovacao, status):
+    """STAT-05: quem nao pode alterar ve o ciclo sem a acao."""
+    inovacao = criar_inovacao(status=status)
+    client.force_login(terceiro)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert len(_itens_do_ciclo(_secao(html, "ciclo-titulo"))) == 3
+    assert "Avançar" not in html
+    assert f"/inovacoes/{inovacao.pk}/status/" not in html
+    assert "Último estágio do ciclo." not in html

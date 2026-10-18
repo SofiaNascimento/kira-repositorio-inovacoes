@@ -254,10 +254,10 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| STAT-01 | P1: Ver o estágio | Tasks | In Tasks |
-| STAT-02 | P1: Ver o estágio | Tasks | In Tasks |
-| STAT-03 | P1: Ver o estágio | Tasks | In Tasks |
-| STAT-04 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-01 | P1: Ver o estágio | Execute | Implementing |
+| STAT-02 | P1: Ver o estágio | Execute | Implementing |
+| STAT-03 | P1: Ver o estágio | Execute | Implementing |
+| STAT-04 | P1: Ver o estágio | Execute | Implementing |
 | STAT-05 | P1: Ver o estágio | Tasks | In Tasks |
 | STAT-06 | P1: Avançar o status | Execute | Implementing |
 | STAT-07 | P1: Avançar o status | Execute | Implementing |

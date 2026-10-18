@@ -237,7 +237,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T5: Seção "Ciclo de vida" no detalhe
+### T5: Seção "Ciclo de vida" no detalhe ✅
 
 **What**: A lista ordenada dos três estágios com o atual marcado por texto, o link "Avançar para “<próximo>”" para quem pode alterar e "Último estágio do ciclo." no final.
 **Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
@@ -252,16 +252,18 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `InovacaoDetailView.get_context_data` acrescenta `etapas`; o template ganha a `section` com `h2` "Ciclo de vida", `ol.ciclo`, `aria-current="step"` e `<strong>… (status atual)</strong>` na etapa atual, e o link ou o texto do estágio final, como no design; a `p.acoes` de Editar/Excluir não muda
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: `h2` "Ciclo de vida" e os três rótulos na ordem do ciclo dentro de um `ol` (STAT-01); para cada um dos três status, "(status atual)" aparece **uma** vez e junto do rótulo certo (STAT-02); autor e `administrador` veem "Avançar para “Validada”" com `href` `/inovacoes/<id>/status/` em "Em teste" e "Avançar para “Disponível para replicação”" em "Validada" (STAT-03); em "Disponível para replicação", "Último estágio do ciclo." e nenhum link para `/status/` para autor, administrador e terceiro (STAT-04); terceiro em "Em teste" não vê link para `/status/` (STAT-05)
-- [ ] Os testes existentes do detalhe (CONS-12, EDEX-03, EDEX-24) passam sem alteração
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~634 testes passam (+9)
+- [x] `InovacaoDetailView.get_context_data` acrescenta `etapas`; o template ganha a `section` com `h2` "Ciclo de vida", `ol.ciclo`, `aria-current="step"` e `<strong>… (status atual)</strong>` na etapa atual, e o link ou o texto do estágio final, como no design; a `p.acoes` de Editar/Excluir não muda
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`: `h2` "Ciclo de vida" e os três rótulos na ordem do ciclo dentro de um `ol` (STAT-01); para cada um dos três status, "(status atual)" aparece **uma** vez e junto do rótulo certo (STAT-02); autor e `administrador` veem "Avançar para “Validada”" com `href` `/inovacoes/<id>/status/` em "Em teste" e "Avançar para “Disponível para replicação”" em "Validada" (STAT-03); em "Disponível para replicação", "Último estágio do ciclo." e nenhum link para `/status/` para autor, administrador e terceiro (STAT-04); terceiro em "Em teste" não vê link para `/status/` (STAT-05)
+- [x] Os testes existentes do detalhe (CONS-12, EDEX-03, EDEX-24) passam sem alteração
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~634 testes passam (+9)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): mostra o ciclo de vida do status no detalhe`
+
+**Status**: ✅ Complete — 645 passed (+13); a seção é lida pela `section aria-labelledby="ciclo-titulo"`; a STAT-02 confere a lista inteira, com "(status atual)" uma vez na página, nos três status; o link usa `inovacao.proximo_status.label` e não acrescenta consulta (`CONSULTAS_DO_DETALHE` continua 6 até a T6); testes da CONS-12, EDEX-03 e EDEX-24 sem alteração. STAT-05 fica In Tasks até a T8 (staff/superuser)
 
 ---
 
