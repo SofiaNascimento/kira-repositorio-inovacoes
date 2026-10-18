@@ -254,47 +254,47 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| STAT-01 | P1: Ver o estágio | Design | Pending |
-| STAT-02 | P1: Ver o estágio | Design | Pending |
-| STAT-03 | P1: Ver o estágio | Design | Pending |
-| STAT-04 | P1: Ver o estágio | Design | Pending |
-| STAT-05 | P1: Ver o estágio | Design | Pending |
-| STAT-06 | P1: Avançar o status | Design | Pending |
-| STAT-07 | P1: Avançar o status | Design | Pending |
-| STAT-08 | P1: Avançar o status | Design | Pending |
-| STAT-09 | P1: Avançar o status | Design | Pending |
-| STAT-10 | P1: Avançar o status | Design | Pending |
-| STAT-11 | P1: Avançar o status | Design | Pending |
-| STAT-12 | P1: Avançar o status | Design | Pending |
-| STAT-13 | P1: Avançar o status | Design | Pending |
-| STAT-14 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-15 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-16 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-17 | P1: Só autor ou administrador | Design | Pending |
-| STAT-18 | P1: Só autor ou administrador | Design | Pending |
-| STAT-19 | P1: Só autor ou administrador | Design | Pending |
-| STAT-20 | P1: Só autor ou administrador | Design | Pending |
-| STAT-21 | P1: Só autor ou administrador | Design | Pending |
-| STAT-22 | P1: Só autor ou administrador | Design | Pending |
-| STAT-23 | P1: Só autor ou administrador | Design | Pending |
-| STAT-24 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-25 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-26 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-27 | P1: Registrar e dar feedback | Design | Pending |
-| STAT-28 | P1: Histórico íntegro | Design | Pending |
-| STAT-29 | P1: Histórico íntegro | Design | Pending |
-| STAT-30 | P1: Histórico íntegro | Design | Pending |
-| STAT-31 | P1: Histórico íntegro | Design | Pending |
-| STAT-32 | P1: Histórico íntegro | Design | Pending |
-| STAT-33 | P1: Histórico íntegro | Design | Pending |
-| STAT-34 | P1: Acessível | Design | Pending |
-| STAT-35 | Edge Cases | Design | Pending |
-| STAT-36 | Edge Cases | Design | Pending |
-| STAT-37 | P1: Acessível | Design | Pending |
+| STAT-01 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-02 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-03 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-04 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-05 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-06 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-07 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-08 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-09 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-10 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-11 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-12 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-13 | P1: Avançar o status | Tasks | In Tasks |
+| STAT-14 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-15 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-16 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-17 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-18 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-19 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-20 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-21 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-22 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-23 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-24 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-25 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-26 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-27 | P1: Registrar e dar feedback | Tasks | In Tasks |
+| STAT-28 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-29 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-30 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-31 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-32 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-33 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-34 | P1: Acessível | Tasks | In Tasks |
+| STAT-35 | Edge Cases | Tasks | In Tasks |
+| STAT-36 | Edge Cases | Tasks | In Tasks |
+| STAT-37 | P1: Acessível | Tasks | In Tasks |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).
 
-**Coverage:** 37 total, 0 mapeados para tasks, 37 sem mapeamento ⚠️ (esperado antes do Design).
+**Coverage:** 37 total, 37 mapeados para tasks (`tasks.md`, T1 a T11), 0 sem mapeamento.
 
 ---
 
