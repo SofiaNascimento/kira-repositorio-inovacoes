@@ -326,7 +326,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T8: Autorização da rota de status (AD-009, L-003)
+### T8: Autorização da rota de status (AD-009, L-003) ✅
 
 **What**: A evidência de que só autor e administrador avançam, pela varredura e por testes dirigidos à rota nova, incluindo staff/superuser, rebaixamento e anônimo.
 **Where**: `inovacoes/tests/test_views_status.py`
@@ -341,15 +341,17 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] `test_varredura_encontra_as_rotas_de_alteracao` passa a exigir `inovacoes:status` em `ROTAS_DE_ALTERACAO` (acréscimo à sanidade, nada removido)
-- [ ] Testes e2e: `nao_autor_usuario` (três variantes) com GET e com POST de `status_visto` **correto** → 403, `acesso_negado.html`, status igual e zero registros (STAT-19, STAT-20); as mesmas três contas não veem link para `/status/` no detalhe (STAT-05, L-003); `administrador` rebaixado a `USUARIO` → 403 no POST seguinte, nada gravado (STAT-21); anônimo com GET e POST → login com `next=/inovacoes/<id>/status/`, status igual (STAT-23)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~661 testes passam (+11)
+- [x] `test_varredura_encontra_as_rotas_de_alteracao` passa a exigir `inovacoes:status` em `ROTAS_DE_ALTERACAO` (acréscimo à sanidade, nada removido)
+- [x] Testes e2e: `nao_autor_usuario` (três variantes) com GET e com POST de `status_visto` **correto** → 403, `acesso_negado.html`, status igual e zero registros (STAT-19, STAT-20); as mesmas três contas não veem link para `/status/` no detalhe (STAT-05, L-003); `administrador` rebaixado a `USUARIO` → 403 no POST seguinte, nada gravado (STAT-21); anônimo com GET e POST → login com `next=/inovacoes/<id>/status/`, status igual (STAT-23)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~661 testes passam (+11)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova a autorizacao da troca de status`
+
+**Status**: ✅ Complete — 666 passed (+12); a sanidade da varredura passou a exigir `inovacoes:status` (único acréscimo em teste existente); os testes novos ficam em `test_views_status.py`: GET e POST com `status_visto` correto para as três variantes de `nao_autor_usuario` → 403 com `acesso_negado.html`, status e histórico iguais; as mesmas contas não veem `/status/` nem "Avançar para" no detalhe; o administrador rebaixado mantém o `is_staff` e recebe 403 no POST seguinte; anônimo em GET e POST vai a `/entrar/?next=/inovacoes/<id>/status/`. Nenhuma mudança em código de produção
 
 ---
 

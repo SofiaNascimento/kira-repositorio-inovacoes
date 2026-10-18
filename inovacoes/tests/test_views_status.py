@@ -5,6 +5,7 @@ import re
 import pytest
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
+from contas.models import Usuario
 from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao
 from inovacoes.views import InovacaoStatusView
 
@@ -299,4 +300,72 @@ def test_envio_para_id_sem_inovacao_responde_404(client, autor):
     resposta = _entrar(client, autor).post("/inovacoes/999999/status/", {"status_visto": EM_TESTE})
     assert resposta.status_code == 404
     assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    assert MudancaDeStatus.objects.count() == 0
+
+
+# --- Autorizacao (AD-009, L-003) -----------------------------------------------
+
+
+@pytest.mark.parametrize("metodo", ["get", "post"])
+def test_nao_autor_usuario_recebe_403_e_nada_muda(
+    client, nao_autor_usuario, criar_inovacao, metodo
+):
+    """STAT-19, STAT-20: terceiro, staff e superusuario USUARIO, com o status_visto correto.
+
+    O POST levaria a "Validada" se a regra falhasse; o mixin nega antes do post().
+    """
+    inovacao = criar_inovacao()
+    logado = _entrar(client, nao_autor_usuario)
+    if metodo == "post":
+        resposta = logado.post(_status(inovacao), {"status_visto": EM_TESTE})
+    else:
+        resposta = logado.get(_status(inovacao))
+    assert resposta.status_code == 403
+    assertTemplateUsed(resposta, "inovacoes/acesso_negado.html")
+    assert NEGADO in resposta.content.decode()
+    assert _status_no_banco(inovacao) == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+
+
+def test_nao_autor_usuario_nao_ve_o_link_de_avancar(client, nao_autor_usuario, criar_inovacao):
+    """STAT-05, L-003: nem com is_staff ou is_superuser o link aparece no detalhe."""
+    inovacao = criar_inovacao()
+    html = _entrar(client, nao_autor_usuario).get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert "Ciclo de vida" in html
+    assert _status(inovacao) not in html
+    assert "Avançar para" not in html
+
+
+def test_administrador_rebaixado_recebe_403_no_envio_seguinte(
+    client, administrador, criar_inovacao
+):
+    """STAT-21: o perfil e lido na requisicao do POST, nunca guardado na sessao."""
+    inovacao = criar_inovacao()
+    logado = _entrar(client, administrador)
+    assert logado.get(_status(inovacao)).status_code == 200
+
+    # update() nao passa pelo save(): o rebaixado mantem o is_staff (L-003).
+    Usuario.objects.filter(pk=administrador.pk).update(perfil=Usuario.Perfil.USUARIO)
+    rebaixado = Usuario.objects.get(pk=administrador.pk)
+    assert (rebaixado.perfil, rebaixado.is_staff) == (Usuario.Perfil.USUARIO, True)
+
+    resposta = logado.post(_status(inovacao), {"status_visto": EM_TESTE})
+    assert resposta.status_code == 403
+    assertTemplateUsed(resposta, "inovacoes/acesso_negado.html")
+    assert _status_no_banco(inovacao) == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("metodo", ["get", "post"])
+def test_anonimo_vai_ao_login_com_next_e_nada_muda(client, criar_inovacao, metodo):
+    """STAT-23: GET e POST de visitante sem sessao."""
+    inovacao = criar_inovacao()
+    caminho = _status(inovacao)
+    if metodo == "post":
+        resposta = client.post(caminho, {"status_visto": EM_TESTE})
+    else:
+        resposta = client.get(caminho)
+    assertRedirects(resposta, f"/entrar/?next={caminho}", fetch_redirect_response=False)
+    assert _status_no_banco(inovacao) == EM_TESTE
     assert MudancaDeStatus.objects.count() == 0

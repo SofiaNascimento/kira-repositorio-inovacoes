@@ -47,7 +47,7 @@ ROTAS_DE_ALTERACAO = [rota for rota in ROTAS_COM_PK if rota not in ROTAS_DE_LEIT
 def test_varredura_encontra_as_rotas_de_alteracao():
     """Sanidade: uma coleta vazia nao pode passar em silencio."""
     assert "inovacoes:detalhe" in ROTAS_COM_PK
-    assert {"inovacoes:editar", "inovacoes:excluir"} <= set(ROTAS_DE_ALTERACAO)
+    assert {"inovacoes:editar", "inovacoes:excluir", "inovacoes:status"} <= set(ROTAS_DE_ALTERACAO)
 
 
 def _view_qualquer(request, **kwargs):

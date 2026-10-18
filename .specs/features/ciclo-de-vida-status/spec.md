@@ -258,7 +258,7 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-02 | P1: Ver o estágio | Execute | Implementing |
 | STAT-03 | P1: Ver o estágio | Execute | Implementing |
 | STAT-04 | P1: Ver o estágio | Execute | Implementing |
-| STAT-05 | P1: Ver o estágio | Tasks | In Tasks |
+| STAT-05 | P1: Ver o estágio | Execute | Implementing |
 | STAT-06 | P1: Avançar o status | Execute | Implementing |
 | STAT-07 | P1: Avançar o status | Execute | Implementing |
 | STAT-08 | P1: Avançar o status | Execute | Implementing |
@@ -272,11 +272,11 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-16 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-17 | P1: Só autor ou administrador | Execute | Implementing |
 | STAT-18 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-19 | P1: Só autor ou administrador | Tasks | In Tasks |
-| STAT-20 | P1: Só autor ou administrador | Tasks | In Tasks |
-| STAT-21 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-19 | P1: Só autor ou administrador | Execute | Implementing |
+| STAT-20 | P1: Só autor ou administrador | Execute | Implementing |
+| STAT-21 | P1: Só autor ou administrador | Execute | Implementing |
 | STAT-22 | P1: Só autor ou administrador | Execute | Implementing |
-| STAT-23 | P1: Só autor ou administrador | Tasks | In Tasks |
+| STAT-23 | P1: Só autor ou administrador | Execute | Implementing |
 | STAT-24 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-25 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-26 | P1: Registrar e dar feedback | Execute | Implementing |
