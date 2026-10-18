@@ -573,7 +573,11 @@ def _cor_desenhada(seletor, propriedade):
     """Token de color ou de fundo que vale no seletor, lido do CSS e herdado."""
     for origem in [seletor, *CADEIA_DO_COMPONENTE[seletor], "body"]:
         for nome, valor in reversed(_declaracoes(_corpos(origem))):
-            if nome == propriedade or (propriedade == "background" and nome == "background-color"):
+            # Toda propriedade de fundo conta, inclusive background-image: um fundo
+            # que nao seja var(--token) de um par do DS-08 derruba o teste.
+            if nome == propriedade or (
+                propriedade == "background" and nome.startswith("background")
+            ):
                 return _token_de(valor)
     raise AssertionError(f"{seletor}: sem {propriedade} nem no body")
 
@@ -595,7 +599,7 @@ def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
             for token in re.findall(r"var\(--([\w-]+)\)", valor):
                 assert _token(token), (seletores, token)
         nomes = {nome for nome, _ in declaracoes}
-        if "color" not in nomes and not {"background", "background-color"} & nomes:
+        if "color" not in nomes and not any(nome.startswith("background") for nome in nomes):
             continue
         for seletor in (s.strip() for s in seletores.split(",")):
             assert seletor in CADEIA_DO_COMPONENTE, f"{seletor}: declare a cadeia"
