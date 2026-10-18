@@ -324,7 +324,8 @@ def test_botao_desabilitado_continua_focavel_e_le_a_explicacao(client, autor, cr
     assert atributos.get("type") == "button"
     assert atributos.get("aria-disabled") == "true"
     assert "disabled" not in atributos
-    assert int(atributos.get("tabindex", "0")) <= 0
+    # STAT-41 (emendada): na ordem do Tab, entao tabindex ausente ou 0; -1 o tiraria.
+    assert atributos.get("tabindex", "0") == "0"
     assert no_form is False
     assert _texto_do_id(trecho, atributos["aria-describedby"]) == "Último estágio do ciclo."
 

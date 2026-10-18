@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — passe de design: T16–T17 feitas; Verifier iteração 4 FAIL (R1, R2 por lacuna de teste; D12 lacuna de precisão) → Fase 9 (T18–T20). Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
+**Status**: In Progress — passe de design: T16–T20 feitas; Verifier iteração 4 FAIL (R1, R2, D12) → Fase 9 (T18–T20) concluída → aguardando o Verifier, iteração 5. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -729,7 +729,7 @@ T18 → T19 → T20
 
 ---
 
-### T20: Botão desabilitado na ordem do Tab (STAT-41 emendada, D12)
+### T20: Botão desabilitado na ordem do Tab (STAT-41 emendada, D12) ✅
 
 **What**: O teste de acessibilidade do botão desabilitado exige `tabindex` ausente ou `0`.
 **Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
@@ -744,15 +744,17 @@ T18 → T19 → T20
 
 **Done when**:
 
-- [ ] A asserção `int(tabindex) <= 0` vira `tabindex` ausente ou `"0"`; as demais checagens da T17 ficam
-- [ ] O mutante D12 (`tabindex="-1"` no botão) derruba o teste, conferido numa worktree temporária
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: 704 testes passam (+0)
+- [x] A asserção `int(tabindex) <= 0` vira `tabindex` ausente ou `"0"`; as demais checagens da T17 ficam
+- [x] O mutante D12 (`tabindex="-1"` no botão) derruba o teste, conferido numa worktree temporária
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 704 testes passam (+0)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): exige o botao desabilitado na ordem do tab`
+
+**Status**: ✅ Complete — 704 passed (+0); D12 (`tabindex="-1"` no botão) conferido numa worktree temporária: derruba `test_botao_desabilitado_continua_focavel_e_le_a_explicacao` (1 failed, 26 passed); worktree removida e árvore real intacta. Build gate verde
 
 ---
 
