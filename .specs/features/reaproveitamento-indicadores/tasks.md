@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Design**: `.specs/features/reaproveitamento-indicadores/design.md`
-**Status**: Draft (aguardando aprovação)
+**Status**: ⏸ Pausada em 2026-10-18 na linha de corte — T1–T10 ✅ (RF11 completo, 813 testes); T11–T18 (painel) não iniciadas; Verifier ainda não rodou. Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes (lotes 1 e 2 concluídos)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F5.
 

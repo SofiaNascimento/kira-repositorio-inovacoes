@@ -85,6 +85,7 @@ Fecha o eixo "Dados, Inteligência e Infra" do ENADE.
 - **RNF:** RNF08
 - **Descrição:** botão de "reaproveitei esta inovação" registrando a entidade Reaproveitamento, e um dashboard com total, distribuição por categoria/unidade e contagem de reusos.
 - **Notas:** Desejável. Se o prazo apertar, entregue RF11 + um dashboard mínimo e trate RF10 completo como incremento. (A reclassificação de RF10 Desejável→Importante continua sendo sua decisão em aberto; se subir para Importante, esta feature sai de "corta primeiro".)
+- **Andamento (2026-10-18):** Specify, Design e Tasks aprovados (`.specs/features/reaproveitamento-indicadores/`); confirmada como Large. Decisões: unidade escolhida no formulário, uma sinalização por unidade, qualquer usuário autenticado sinaliza, painel com cards + gráficos SVG + tabelas; regra da RN09 em `Inovacao.registrar_reaproveitamento` (AD-012) e painel numa app `indicadores`. Tasks ordenadas com o RF11 primeiro e o RF10 por último, para poder cortar. **Execute pausado na linha de corte:** RF11 implementado (T1–T10); painel (T11–T18) não iniciado; Verifier pendente.
 
 ---
 

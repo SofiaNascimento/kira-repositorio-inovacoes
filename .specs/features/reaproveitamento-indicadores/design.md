@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Context**: `.specs/features/reaproveitamento-indicadores/context.md`
-**Status**: Approved (2026-10-18)
+**Status**: Approved (2026-10-18) · implementação parcial: sinalização (RF11) feita em T1–T10; painel (RF10) não iniciado
 **Abordagem**: regra da RN09 num método do modelo, e painel numa app nova `indicadores` só de leitura, escolhidas pelo usuário em 2026-10-18 (ver Tech Decisions)
 **Conforma com**: AD-001 a AD-011, sem supersedir nenhuma. **Cria**: AD-012 (todo `Reaproveitamento` nasce por `Inovacao.registrar_reaproveitamento`)
 **Lições aplicadas**: L-003 (o `USUARIO` com `is_staff`/`is_superuser` é negado nas páginas do admin de `Reaproveitamento`, não só fica sem o link) · L-005 (cada cláusula com efeito em tela é afirmada por HTTP: a guarda de status tem teste no modelo, REAP-10, **e** na rota, REAP-09)
@@ -142,12 +142,12 @@ graph LR
           if constraint_name(erro) != "reaproveitamento_unico_por_unidade":
               raise  # outra violação vira 500
           raise ValidationError(
-              MENSAGEM_REPETIDA.format(unidade=unidade.nome), code="unidade_ja_reaproveitou"
+              MENSAGEM_REPETIDO.format(unidade=unidade.nome), code="unidade_ja_reaproveitou"
           )
   ```
 - **Por que travar a linha**: o status só avança (AD-011), mas a trava serializa duas sinalizações da mesma inovação, de modo que a segunda vê a primeira já gravada e cai no erro da constraint em vez de numa corrida. A trava também impede a exclusão concorrente da inovação no meio do INSERT (a FK do Django é `DEFERRABLE INITIALLY DEFERRED` e só falharia no COMMIT).
 - **Não faz**: não decide autorização (todo autenticado pode, REAP-19), não grava nenhum campo da `Inovacao` (REAP-07, AD-008, AD-011).
-- **Mensagens**: constantes de módulo em `inovacoes/models.py` (`MENSAGEM_REAPROVEITAMENTO_STATUS`, `…_ORIGEM`, `…_REPETIDA`), com o texto exato da spec.
+- **Mensagens**: constantes de módulo em `inovacoes/models.py` (`MENSAGEM_REAPROVEITAMENTO_STATUS`, `…_ORIGEM`, `…_REPETIDO`), com o texto exato da spec. *(Implementado na T2 com o nome `MENSAGEM_REAPROVEITAMENTO_REPETIDO`, o de `tasks.md`.)*
 
 ### `CategoriaQuerySet.com_total_de_inovacoes` e `UnidadeQuerySet.com_indicadores` (novos, em `inovacoes/models.py`)
 
@@ -171,7 +171,7 @@ graph LR
 - **Base**: `FormView`, **sem** `AlteracaoDeInovacaoMixin`, porque a sinalização não altera a `Inovacao` (AD-009, REAP-19).
 - **Interfaces**:
   - `dispatch`: busca `Inovacao.objects.select_related("unidade")` pelo `pk`. Se a inovação não existe, devolve `_inovacao_nao_encontrada` (REAP-16). Se `not pode_ser_reaproveitada()`, grava `messages.warning(MENSAGEM_REAPROVEITAMENTO_STATUS…)` e devolve 302 ao detalhe em GET **e** POST (REAP-09), sem renderizar formulário.
-  - `get_form_kwargs`: acrescenta `inovacao`.
+  - `get_form_kwargs`: devolve só `data` (o POST, ou `None` no GET) e `inovacao`. *(SPEC_DEVIATION da T4: o design previa acrescentar `inovacao` aos kwargs do `super()`, mas o `FormView` manda `initial` e `prefix`, que a assinatura `ReaproveitamentoForm(data=None, *, inovacao)` não aceita.)*
   - `get_context_data`: `inovacao` e `sem_elegiveis = not form.fields["unidade"].queryset.exists()`. O template mostra a REAP-15 no lugar do formulário.
   - `form_valid`: chama `inovacao.registrar_reaproveitamento(unidade=…, por=request.user)`.
     - `status_indisponivel` → aviso e 302, como no `dispatch` (corrida improvável, mesmo resultado).
@@ -301,7 +301,7 @@ Componentes novos, só com tokens existentes e sem cor nova:
 | `.grafico figcaption` | título do gráfico | `brand-navy` sobre `surface` |
 | `.grafico__nome`, `.grafico__valor` | `fill` do texto do SVG | `text` sobre `surface` (4.5:1) |
 | `.grafico__barra` | `fill` da barra | `brand-blue` sobre `surface` (≥ 3:1, WCAG 1.4.11) |
-| `.reaproveitamentos` | lista do detalhe, mesmo desenho da `.historico` | `text` sobre `bg` |
+| `.reaproveitamentos` | lista do detalhe, mesmo desenho da `.historico` | `text` e, na data em `<time>`, `text-muted` sobre `bg` (implementado na T7; os dois pares já estavam no DS-08) |
 
 Seletores sem aspas e sem `<` (AD-010). O teste de cores do componente hoje lê `color` e `background`. Ele passa a ler também `fill` dos seletores `.grafico__*`, conferindo `fill` contra o fundo do `.cartao` (REAP-48).
 
@@ -508,7 +508,8 @@ ORDER BY u.nome ASC;
 | Anônimo | `LoginRequiredMiddleware` (AD-006) | Login com `next` (REAP-20, REAP-40) |
 | POST sem CSRF | `CsrfViewMiddleware` | 403, nada gravado (REAP-21) |
 | Banco indisponível | `OperationalError` sobe até o handler 500 | 500 sem detalhe de conexão (REAP-49) |
-| Admin: `USUARIO` com `is_staff`/`is_superuser` | `AcessoSomenteAdministradorMixin` | 403 nas páginas do admin de reaproveitamento (REAP-26) |
+| Admin: `USUARIO` com `is_staff` (com ou sem `is_superuser`) | `AcessoSomenteAdministradorMixin` | 403 nas páginas do admin de reaproveitamento (REAP-26) |
+| Admin: `USUARIO` com `is_superuser` sem `is_staff` | Porteiro do próprio admin do Django | 302 para `/admin/login/`, registro intacto (achado da T8; a spec fala em "negar", não define 403 para esse caso) |
 | Admin: URL de adicionar/alterar | `has_add_permission`/`has_change_permission` = `False` | 403 no POST, nada gravado (REAP-27) |
 | Unidade protegida no admin | `PROTECT` na tela de exclusão do admin | Admin lista os reaproveitamentos que a protegem, nada é apagado (REAP-24) |
 

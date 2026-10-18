@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-10-18
 **Spec:** `.specs/features/reaproveitamento-indicadores/spec.md`
-**Status:** Spec e Design aprovados em 2026-10-18 · Tasks em revisão
+**Status:** Spec, Design e Tasks aprovados em 2026-10-18 · Execute pausado na linha de corte (T1–T10, RF11 completo; painel T11–T18 não iniciado)
 
 ---
 
