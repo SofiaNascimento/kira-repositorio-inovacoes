@@ -288,8 +288,8 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-32 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-33 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-34 | P1: Acessível | Execute | Implementing |
-| STAT-35 | Edge Cases | Tasks | In Tasks |
-| STAT-36 | Edge Cases | Tasks | In Tasks |
+| STAT-35 | Edge Cases | Execute | Implementing |
+| STAT-36 | Edge Cases | Execute | Implementing |
 | STAT-37 | P1: Acessível | Execute | Implementing |
 
 **ID format:** `STAT-NN`. A numeração segue a ordem de escrita, não a das seções (STAT-17 a STAT-23 ficam na história de autorização).

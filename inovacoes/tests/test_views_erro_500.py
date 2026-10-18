@@ -6,10 +6,13 @@ INOV-42 e CONS-53. O pytest-django roda com DEBUG=False, como em producao.
 import pytest
 from django.conf import settings
 from django.db import OperationalError
+from django.test import Client
 from pytest_django.asserts import assertTemplateUsed
 
-from inovacoes.models import Inovacao, InovacaoQuerySet
+from inovacoes.models import Inovacao, InovacaoQuerySet, MudancaDeStatus, StatusInovacao
 from inovacoes.views import InovacaoDetailView
+
+EM_TESTE = StatusInovacao.EM_TESTE
 
 DETALHE_DA_CONEXAO = (
     'connection to server at "db.interno.kira" (10.0.0.7), port 5433 failed: '
@@ -131,3 +134,50 @@ def test_banco_indisponivel_na_alteracao_devolve_500_sem_mudar_nada(
         assert trecho not in html, trecho
     assert DETALHE_DA_CONEXAO not in html
     assert Inovacao.objects.values().get(pk=inovacao.pk) == antes
+
+
+# --- F5: troca de status (STAT-35, STAT-36) -------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("alvo", "metodo"),
+    [(Inovacao, "save"), (MudancaDeStatus.objects, "create")],
+    ids=["gravacao-do-status", "criacao-do-registro"],
+)
+def test_banco_indisponivel_na_troca_de_status_devolve_500_sem_gravar(
+    monkeypatch, client, autor, criar_inovacao, alvo, metodo
+):
+    """STAT-35: pagina 500 do projeto, sem detalhes da conexao, nem status nem registro.
+
+    Na criacao do registro o status ja foi gravado na transacao: o rollback o desfaz.
+    """
+    inovacao = criar_inovacao()
+
+    def falhar(*args, **kwargs):
+        raise OperationalError(DETALHE_DA_CONEXAO)
+
+    monkeypatch.setattr(alvo, metodo, falhar)
+    client.force_login(autor)
+    client.raise_request_exception = False
+    resposta = client.post(f"/inovacoes/{inovacao.pk}/status/", {"status_visto": EM_TESTE})
+    assert resposta.status_code == 500
+    assertTemplateUsed(resposta, "500.html")
+    html = resposta.content.decode()
+    for trecho in ["db.interno.kira", "kira_app", "s3gr3d0-do-banco", "Traceback"]:
+        assert trecho not in html, trecho
+    assert DETALHE_DA_CONEXAO not in html
+    assert Inovacao.objects.values_list("status", flat=True).get(pk=inovacao.pk) == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+
+
+def test_troca_de_status_sem_token_csrf_e_recusada(autor, criar_inovacao):
+    """STAT-36: o proprio autor, com o status_visto correto, sem token CSRF: 403 e nada muda."""
+    inovacao = criar_inovacao()
+    cliente = Client(enforce_csrf_checks=True)
+    cliente.force_login(autor)
+    resposta = cliente.post(f"/inovacoes/{inovacao.pk}/status/", {"status_visto": EM_TESTE})
+    assert resposta.status_code == 403
+    # O autor pode alterar: a recusa e do CSRF, nao a pagina de acesso negado.
+    assert "Você não tem permissão para alterar esta inovação." not in resposta.content.decode()
+    assert Inovacao.objects.values_list("status", flat=True).get(pk=inovacao.pk) == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0

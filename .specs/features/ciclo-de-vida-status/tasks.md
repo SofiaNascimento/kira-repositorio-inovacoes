@@ -411,7 +411,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T11: Banco indisponível e CSRF na troca de status
+### T11: Banco indisponível e CSRF na troca de status ✅
 
 **What**: A evidência da STAT-35 e da STAT-36.
 **Where**: `inovacoes/tests/test_views_erro_500.py`
@@ -426,14 +426,16 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] Testes e2e: `OperationalError` na gravação do status e, em outro caso, na criação do registro → 500 com `500.html`, sem detalhes da conexão, status igual e zero registros (STAT-35); POST com `Client(enforce_csrf_checks=True)` sem token → 403, status igual e zero registros (STAT-36)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~674 testes passam (+3)
+- [x] Testes e2e: `OperationalError` na gravação do status e, em outro caso, na criação do registro → 500 com `500.html`, sem detalhes da conexão, status igual e zero registros (STAT-35); POST com `Client(enforce_csrf_checks=True)` sem token → 403, status igual e zero registros (STAT-36)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~674 testes passam (+3)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): prova falha de banco e CSRF na troca de status`
+
+**Status**: ✅ Complete — 684 passed (+3); `OperationalError` em `Inovacao.save` e, em outro caso, em `MudancaDeStatus.objects.create` (depois de o status já ter sido gravado na transação) → 500 com `500.html`, sem host, usuário, senha nem traceback, status "Em teste" e zero registros; o projeto não usa `ATOMIC_REQUESTS`, então o rollback provado é o do `avancar_status` (STAT-35); o próprio autor com `status_visto` correto e `Client(enforce_csrf_checks=True)` → 403 que não é a página de acesso negado, nada gravado (STAT-36). Todos os STAT-01 a STAT-37 ficam Implementing. Nenhuma mudança em código de produção. Build gate verde
 
 ---
 
