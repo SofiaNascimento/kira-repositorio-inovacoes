@@ -434,6 +434,21 @@ def test_quem_nao_pode_alterar_le_quem_pode_avancar(
     assert AJUDA_DO_AVANCO not in secao
 
 
+# Atributos que tiram um elemento da tela, do leitor de tela ou do teclado.
+ESCONDE = re.compile(r'\s(?:hidden|inert)(?=[\s=/>])|\saria-hidden="true"')
+
+
+@pytest.mark.parametrize("conta", ["autor", "terceiro"])
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA, DISPONIVEL], ids=str)
+def test_nada_na_secao_do_ciclo_fica_escondido(client, criar_inovacao, request, conta, status):
+    """STAT-03, STAT-38 a STAT-40 exibidos de fato; STAT-34: inert tira o link do teclado."""
+    inovacao = criar_inovacao(status=status)
+    secao = _ciclo(client, request.getfixturevalue(conta), inovacao)
+    tags = re.findall(r"<[a-z][^>]*>", secao)
+    assert tags, "secao vazia"
+    assert [tag for tag in tags if ESCONDE.search(tag)] == []
+
+
 @pytest.mark.parametrize("conta", ["autor", "administrador"])
 @pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
 def test_quem_pode_alterar_le_a_ajuda_de_um_estagio_por_vez(

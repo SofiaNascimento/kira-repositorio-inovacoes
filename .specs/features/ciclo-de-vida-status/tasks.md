@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — passe de design: T16–T20 feitas; Verifier iteração 4 FAIL → Fase 9; iteração 5 FAIL (E2b; E9/E10/E11/E16 `hidden`) → Fase 10 (T21–T22), segunda e última rodada autorizada. Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
+**Status**: In Progress — passe de design: T16–T22 feitas; Verifier iterações 4 e 5 FAIL só por lacunas de teste → Fases 9 e 10 concluídas → aguardando o Verifier, iteração 6 (última rodada autorizada para o passe). Risco residual da STAT-37 aceito pelo usuário (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -798,7 +798,7 @@ T21 → T22
 
 ---
 
-### T22: Nada escondido na seção do ciclo (Fix 8, E9/E10/E11/E16/E17)
+### T22: Nada escondido na seção do ciclo (Fix 8, E9/E10/E11/E16/E17) ✅
 
 **What**: Teste que recusa `hidden`, `inert` e `aria-hidden="true"` em qualquer elemento da seção "Ciclo de vida", nos quatro estados do controle de transição.
 **Where**: `inovacoes/tests/test_views_detalhe.py`
@@ -813,15 +813,17 @@ T21 → T22
 
 **Done when**:
 
-- [ ] Teste parametrizado por (conta que pode / não pode alterar) × ("Em teste", "Validada", "Disponível para replicação"): nenhuma tag da seção tem o atributo `hidden`, o atributo `inert` ou `aria-hidden="true"`
-- [ ] Os mutantes E9 (`hidden` no `p` do link), E10 (`hidden` no `p` do botão), E11 (`hidden` no botão), E16 (`hidden` na ajuda) e E17 (`inert` no `p` do link) derrubam o teste, conferidos numa worktree temporária
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~710 testes passam (+6)
+- [x] Teste parametrizado por (conta que pode / não pode alterar) × ("Em teste", "Validada", "Disponível para replicação"): nenhuma tag da seção tem o atributo `hidden`, o atributo `inert` ou `aria-hidden="true"`
+- [x] Os mutantes E9 (`hidden` no `p` do link), E10 (`hidden` no `p` do botão), E11 (`hidden` no botão), E16 (`hidden` na ajuda) e E17 (`inert` no `p` do link) derrubam o teste, conferidos numa worktree temporária
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~710 testes passam (+6)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): recusa controle escondido na secao do ciclo`
+
+**Status**: ✅ Complete — 710 passed (+6); `test_nada_na_secao_do_ciclo_fica_escondido` parametrizado por autor/terceiro × três status; seis mutantes conferidos numa worktree temporária, cada um com exatamente um alvo no template: E9 (2 failed), E10 (1), E11 (1), E16 (2), E17 `inert` (2) e `aria-hidden` no texto da STAT-39 (8); worktree removida e árvore real intacta. A `kira.css` não tem classe que esconda conteúdo e o `style=` já é proibido nas telas (DS-01). Build gate verde
 
 ---
 
