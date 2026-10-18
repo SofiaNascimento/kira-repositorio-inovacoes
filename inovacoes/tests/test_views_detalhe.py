@@ -374,6 +374,9 @@ def test_ultimo_estagio_explica_e_ninguem_ve_o_link(client, criar_inovacao, requ
     assert "Avançar para" not in html
     assert AJUDA_DO_AVANCO not in html
     assert QUEM_PODE_AVANCAR not in html
+    if conta == "terceiro":
+        # STAT-05: quem nao pode alterar nao ve controle "Avancar" em lugar nenhum da pagina.
+        assert "Avançar" not in html
 
 
 @pytest.mark.parametrize("conta", ["autor", "administrador"])
@@ -393,9 +396,11 @@ def test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar(
 ):
     """STAT-04, STAT-05: no estagio final, quem nao pode alterar nao ve controle algum."""
     inovacao = criar_inovacao(status=DISPONIVEL)
-    secao = _ciclo(client, nao_autor_usuario, inovacao)
+    client.force_login(nao_autor_usuario)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    secao = _secao(html, "ciclo-titulo")
     assert _botoes(secao) == []
-    assert "Avançar" not in secao
+    assert "Avançar" not in html
     assert _explicacao(secao) == "Último estágio do ciclo."
 
 

@@ -670,7 +670,7 @@ T18 → T19 → T20
 
 ---
 
-### T18: "Avançar" ausente da página inteira para quem não pode alterar (Fix 5, R1)
+### T18: "Avançar" ausente da página inteira para quem não pode alterar (Fix 5, R1) ✅
 
 **What**: Os testes do estágio final voltam a afirmar, na página inteira, que quem não pode alterar não vê nenhum controle "Avançar".
 **Where**: `inovacoes/tests/test_views_detalhe.py`
@@ -685,16 +685,18 @@ T18 → T19 → T20
 
 **Done when**:
 
-- [ ] `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar` afirma `"Avançar" not in html` na página inteira (terceiro, staff, superusuário), além das checagens da seção
-- [ ] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` recupera, para `terceiro`, a asserção `"Avançar" not in html` que a T16 removeu
-- [ ] O mutante R1 (botão desabilitado fora da seção, para quem não pode alterar) derruba os testes, conferido numa worktree temporária
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 704 testes passam (+0)
+- [x] `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar` afirma `"Avançar" not in html` na página inteira (terceiro, staff, superusuário), além das checagens da seção
+- [x] `test_ultimo_estagio_explica_e_ninguem_ve_o_link` recupera, para `terceiro`, a asserção `"Avançar" not in html` que a T16 removeu
+- [x] O mutante R1 (botão desabilitado fora da seção, para quem não pode alterar) derruba os testes, conferido numa worktree temporária
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 704 testes passam (+0)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): volta a exigir Avancar ausente da pagina para terceiros`
+
+**Status**: ✅ Complete — 704 passed (+0); R1 conferido numa worktree temporária: derruba `test_ultimo_estagio_explica_e_ninguem_ve_o_link[terceiro]` e as três variantes de `test_ultimo_estagio_nao_mostra_botao_a_quem_nao_pode_alterar` (4 failed, 60 passed); worktree removida e árvore real intacta. Corrige a afirmação errada do status da T16 de que nenhuma asserção tinha sido perdida
 
 ---
 
