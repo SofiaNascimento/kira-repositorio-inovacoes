@@ -283,10 +283,10 @@ Tab até "Cancelar" e até o botão, Enter; foco visível em cada passo. Com as 
 | STAT-27 | P1: Registrar e dar feedback | Execute | Implementing |
 | STAT-28 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-29 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-30 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-30 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-31 | P1: Histórico íntegro | Execute | Implementing |
-| STAT-32 | P1: Histórico íntegro | Tasks | In Tasks |
-| STAT-33 | P1: Histórico íntegro | Tasks | In Tasks |
+| STAT-32 | P1: Histórico íntegro | Execute | Implementing |
+| STAT-33 | P1: Histórico íntegro | Execute | Implementing |
 | STAT-34 | P1: Acessível | Tasks | In Tasks |
 | STAT-35 | Edge Cases | Tasks | In Tasks |
 | STAT-36 | Edge Cases | Tasks | In Tasks |

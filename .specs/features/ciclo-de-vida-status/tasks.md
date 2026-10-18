@@ -355,7 +355,7 @@ T8 → T9 → T10 → T11
 
 ---
 
-### T9: Integridade do ciclo fora da rota de status
+### T9: Integridade do ciclo fora da rota de status ✅
 
 **What**: A evidência de que cadastro, edição e admin não mexem no ciclo nem no histórico.
 **Where**: `inovacoes/tests/test_ciclo_de_vida.py`
@@ -370,14 +370,16 @@ T8 → T9 → T10 → T11
 
 **Done when**:
 
-- [ ] Testes e2e: cadastro pela rota `nova` → status "Em teste" e zero registros (STAT-32); POST de edição com `status=DISPONIVEL_PARA_REPLICACAO` → status igual e zero registros (STAT-33); `MudancaDeStatus` não está em `admin.site._registry` e `/admin/inovacoes/mudancadestatus/` responde 404 para o `admin` (STAT-30); nenhuma rota do namespace `inovacoes` tem nome ou view que edite ou apague `MudancaDeStatus` (lista das rotas = `lista`, `nova`, `detalhe`, `editar`, `excluir`, `status`) (STAT-30)
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~665 testes passam (+4)
+- [x] Testes e2e: cadastro pela rota `nova` → status "Em teste" e zero registros (STAT-32); POST de edição com `status=DISPONIVEL_PARA_REPLICACAO` → status igual e zero registros (STAT-33); `MudancaDeStatus` não está em `admin.site._registry` e `/admin/inovacoes/mudancadestatus/` responde 404 para o `admin` (STAT-30); nenhuma rota do namespace `inovacoes` tem nome ou view que edite ou apague `MudancaDeStatus` (lista das rotas = `lista`, `nova`, `detalhe`, `editar`, `excluir`, `status`) (STAT-30)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~665 testes passam (+4)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): prova que cadastro, edicao e admin nao mexem no ciclo`
+
+**Status**: ✅ Complete — 671 passed (+5); o cadastro recebe um `status` forjado e nasce "Em teste" sem registro (STAT-32); a edição é parametrizada com `VALIDADA` e `DISPONIVEL_PARA_REPLICACAO` e grava o título sem mexer em status nem histórico (STAT-33); um `ADMINISTRADOR` superusuário abre `/admin/` (200) mas recebe 404 na lista, na alteração e na exclusão de `mudancadestatus`, e o registro continua; as rotas do namespace são exatamente as seis e nenhuma view tem `MudancaDeStatus` como modelo (STAT-30). Nenhuma mudança em código de produção
 
 ---
 

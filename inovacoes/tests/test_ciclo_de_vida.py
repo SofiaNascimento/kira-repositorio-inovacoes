@@ -9,11 +9,14 @@ from itertools import product
 from unittest import mock
 
 import pytest
+from django.contrib import admin
 from django.db import IntegrityError, connection
 from django.db.models import ProtectedError
 from django.test.utils import CaptureQueriesContext
+from django.urls import URLResolver, get_resolver
 from django.utils import timezone
 
+from contas.models import Usuario
 from inovacoes.busca import texto_de_busca
 from inovacoes.models import (
     Inovacao,
@@ -256,3 +259,78 @@ def test_avancar_grava_so_o_status(criar_inovacao, autor):
     assert gravada.status == VALIDADA
     assert gravada.titulo == novo_titulo
     assert gravada.texto_busca == texto_de_busca(novo_titulo, inovacao.problema, inovacao.solucao)
+
+
+# --- Integridade do ciclo fora da rota de status (STAT-30, STAT-32, STAT-33) ---
+
+
+def _envio(unidade, categoria, **extra):
+    """POST valido do formulario de cadastro e edicao, com campos a mais."""
+    return {
+        "titulo": "Conciliação de caixa diária",
+        "unidade": str(unidade.pk),
+        "categoria": str(categoria.pk),
+        "problema": "Diferenças de caixa descobertas só no fim do mês.",
+        "solucao": "Conferência diária com planilha compartilhada.",
+        "resultado": "Diferenças achadas no mesmo dia.",
+        "contato": "Ana Souza (ana@x.com)",
+        **extra,
+    }
+
+
+def test_cadastro_nasce_em_teste_sem_historico(client, autor, unidade, categoria):
+    """STAT-32: nem um status forjado no envio muda o inicio do ciclo."""
+    client.force_login(autor)
+    resposta = client.post("/inovacoes/nova/", _envio(unidade, categoria, status=DISPONIVEL))
+    assert resposta.status_code == 302
+    inovacao = Inovacao.objects.get()
+    assert inovacao.status == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+
+
+@pytest.mark.parametrize("enviado", [VALIDADA, DISPONIVEL])
+def test_edicao_com_status_nao_muda_o_ciclo(
+    client, autor, unidade, categoria, criar_inovacao, enviado
+):
+    """STAT-33 (EDEX-08 estendida ao historico): a edicao grava, o status e o historico nao."""
+    inovacao = criar_inovacao()
+    client.force_login(autor)
+    resposta = client.post(
+        f"/inovacoes/{inovacao.pk}/editar/", _envio(unidade, categoria, status=enviado)
+    )
+    assert resposta.status_code == 302
+    gravada = Inovacao.objects.get(pk=inovacao.pk)
+    assert gravada.titulo == "Conciliação de caixa diária"
+    assert gravada.status == EM_TESTE
+    assert MudancaDeStatus.objects.count() == 0
+
+
+def test_historico_fica_fora_do_admin(client, criar_inovacao, autor):
+    """STAT-30, AD-007: nem um administrador superusuario acha tela do historico."""
+    registro = _registrar(criar_inovacao(), autor)
+    assert MudancaDeStatus not in admin.site._registry
+    conta = Usuario.objects.create_superuser(
+        username="gil", email="gil@x.com", password="x", perfil=Usuario.Perfil.ADMINISTRADOR
+    )
+    client.force_login(conta)
+    assert client.get("/admin/").status_code == 200
+    lista = "/admin/inovacoes/mudancadestatus/"
+    for caminho in (lista, f"{lista}{registro.pk}/change/", f"{lista}{registro.pk}/delete/"):
+        assert client.get(caminho).status_code == 404
+    assert MudancaDeStatus.objects.filter(pk=registro.pk).exists()
+
+
+def test_nenhuma_rota_de_inovacoes_altera_o_historico():
+    """STAT-30: as rotas de inovacoes sao as seis conhecidas e nenhuma serve MudancaDeStatus."""
+    (namespace,) = (
+        p
+        for p in get_resolver().url_patterns
+        if isinstance(p, URLResolver) and p.namespace == "inovacoes"
+    )
+    rotas = {p.name: p.callback.view_class for p in namespace.url_patterns}
+    assert set(rotas) == {"lista", "nova", "detalhe", "editar", "excluir", "status"}
+    for view in rotas.values():
+        modelos = {getattr(view, "model", None)}
+        if getattr(view, "queryset", None) is not None:
+            modelos.add(view.queryset.model)
+        assert MudancaDeStatus not in modelos, view
