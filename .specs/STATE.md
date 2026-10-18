@@ -82,9 +82,17 @@
 - **Date**: 2026-10-11
 - **Status**: active
 
+### AD-011
+- **Decision**: Depois do cadastro, o status de uma `Inovacao` só muda por `Inovacao.avancar_status(por=, status_visto=)`, que trava a linha (`select_for_update`), confere o status visto, avança um estágio por `PROXIMO_STATUS` e cria o `MudancaDeStatus` na mesma transação. O banco recusa um `MudancaDeStatus` fora das duas transições (CHECK `mudanca_de_status_transicao_valida`).
+- **Reason**: A F5 promete que o histórico conta como cada inovação chegou ao estágio atual (RN03, STAT-14, STAT-15). Uma escrita direta em `status` (view nova, script, F6) mudaria o estado sem deixar registro, e o histórico deixaria de ser prova. Um método no modelo dá uma regra única, testável sem HTTP (AD-002), como o `pode_ser_alterada_por` da AD-009.
+- **Trade-off**: A regra é de convenção na aplicação: o banco valida o histórico, não a coluna `Inovacao.status`, e `QuerySet.update(status=…)` ou um `save()` com status trocado continuam possíveis. Uma trigger fecharia isso, mas seria a primeira lógica procedural no banco, invisível ao Django. A carga de demonstração cria inovações já com status: isso é cadastro, não mudança, e fica fora da regra.
+- **Scope**: F5 (ciclo-de-vida-status), F6 (que lê o status e o histórico) e qualquer view, comando ou script que altere o status de uma inovação existente.
+- **Date**: 2026-10-18
+- **Status**: active
+
 ## Handoff
 
-- **Feature atual (2026-10-18)**: ciclo-de-vida-status (F5) — `.specs/features/ciclo-de-vida-status/`. **Specify aprovado em 2026-10-18**: `spec.md` (STAT-01 a STAT-37, `validate_spec.py` limpo) e `context.md`. Decidido com o usuário: ação separada em `/inovacoes/<id>/status/`; só avançar, um passo; histórico de mudanças (inovação, anterior, novo, responsável, data/hora) no detalhe; autor ou administrador (AD-009). Reclassificada de Medium para **Large** (modelo de histórico + migration + confirmação). **Próximo passo**: Design formal (carregar AD-001 a AD-010 e as lições L-003, L-005).
+- **Feature atual (2026-10-18)**: ciclo-de-vida-status (F5) — `.specs/features/ciclo-de-vida-status/`. **Specify aprovado em 2026-10-18**: `spec.md` (STAT-01 a STAT-37, `validate_spec.py` limpo) e `context.md`. Decidido com o usuário: ação separada em `/inovacoes/<id>/status/`; só avançar, um passo; histórico de mudanças (inovação, anterior, novo, responsável, data/hora) no detalhe; autor ou administrador (AD-009). Reclassificada de Medium para **Large** (modelo de histórico + migration + confirmação). **Design aprovado em 2026-10-18** (`design.md`, abordagem "método no modelo"; cria a AD-011). **Tasks em rascunho**: `tasks.md` com T1 a T11 em 4 fases, `validate_tasks.py` limpo; linha de base 574 testes coletados. **Próximo passo**: aprovação das tasks, depois Execute (2 lotes ⇒ oferecer sub-agentes).
 
 - **Feature**: sistema-de-design — `.specs/features/sistema-de-design/`. **Concluído** em 2026-10-11: Verifier PASS na iteração 2 (`validation.md`). Passe de design sobre a F1–F4, guiado por `docs/design-spec.md`; decisão AD-010. A F4 (edicao-exclusao) segue concluída (Verifier PASS, conferência manual 20/20).
 - **Phase / Task**: Specify ✅ (spec breve com Code Reuse Analysis, DS-01 a DS-16) · Design e Tasks dispensados (plano inline de 4 passos) · Execute ✅ · Verifier ✅ PASS (iteração 2: 16/16 ACs, 33/34 mutantes mortos; o sobrevivente `outline: thin solid` está fora da spec).
