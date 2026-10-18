@@ -480,7 +480,7 @@ T17 → T18
 
 ---
 
-### T10: Acessibilidade da sinalização
+### T10: Acessibilidade da sinalização ✅
 
 **What**: Evidências de rótulo associado, erro com `aria-invalid`/`aria-describedby`, título e ordem de foco na tela de sinalização.
 **Where**: `inovacoes/tests/test_views_acessibilidade_alteracao.py`
@@ -495,17 +495,19 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `<label for>` do select aponta para o `id` do `<select>` (REAP-44)
-- [ ] Depois de POST inválido (REAP-11, REAP-12, REAP-13): o select tem `aria-invalid="true"` e `aria-describedby` com o `id` do elemento que contém a mensagem exata (REAP-45); sem erro, não há `aria-invalid`
-- [ ] Ordem dos focáveis do `main`: select → botão "Sinalizar reaproveitamento" → "Cancelar"
-- [ ] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~811 testes passam (+6)
+- [x] `<label for>` do select aponta para o `id` do `<select>` (REAP-44)
+- [x] Depois de POST inválido (REAP-11, REAP-12, REAP-13): o select tem `aria-invalid="true"` e `aria-describedby` com o `id` do elemento que contém a mensagem exata (REAP-45); sem erro, não há `aria-invalid`
+- [x] Ordem dos focáveis do `main`: select → botão "Sinalizar reaproveitamento" → "Cancelar"
+- [x] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~811 testes passam (+6)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(inovacoes): cobre a acessibilidade da sinalizacao de reaproveitamento`
+
+**Status**: ✅ Complete — 813 passed (+6); todas as evidências passaram sem correção de produção, então o commit fica `test`; o `aria-describedby` do select é seguido até o elemento e o texto dele precisa conter a mensagem exata da REAP-11, REAP-12 e REAP-13; a ordem de foco é lida do `<main>` (o cabeçalho tem o "Sair") e o `main` não tem `tabindex`. Build gate verde. RF11 completo (linha de corte)
 
 ---
 
