@@ -700,7 +700,7 @@ T18 → T19 → T20
 
 ---
 
-### T19: `_links` aceita só o `aria-describedby` depois do `href` (Fix 6, R2)
+### T19: `_links` aceita só o `aria-describedby` depois do `href` (Fix 6, R2) ✅
 
 **What**: O helper `_links` deixa de aceitar atributos arbitrários: só um `aria-describedby` opcional depois do `href`, de modo que um link com `hidden` ou `aria-hidden` não conta como exibido.
 **Where**: `inovacoes/tests/test_views_detalhe.py`
@@ -715,15 +715,17 @@ T18 → T19 → T20
 
 **Done when**:
 
-- [ ] Regex `<a href="…"(?: aria-describedby="…")?>rótulo</a>`; os testes que usam `_links` passam sem outra alteração
-- [ ] O mutante R2 (`hidden` no link de avançar) derruba o teste da STAT-03, conferido numa worktree temporária
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: 704 testes passam (+0)
+- [x] Regex `<a href="…"(?: aria-describedby="…")?>rótulo</a>`; os testes que usam `_links` passam sem outra alteração
+- [x] O mutante R2 (`hidden` no link de avançar) derruba o teste da STAT-03, conferido numa worktree temporária
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: 704 testes passam (+0)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(inovacoes): restringe o helper de links ao aria-describedby`
+
+**Status**: ✅ Complete — 704 passed (+0); os testes de EDEX-03, EDEX-24 e STAT-03 passam sem outra alteração; R2 (`hidden` só no link "Avançar para") conferido numa worktree temporária: derruba as quatro variantes de `test_quem_pode_alterar_ve_o_link_de_avancar` (4 failed, 60 passed); worktree removida e árvore real intacta
 
 ---
 

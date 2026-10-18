@@ -191,10 +191,10 @@ CONSULTAS_DO_DETALHE = 7
 def _links(html, rotulo):
     """hrefs de todos os links com o texto exato do rotulo.
 
-    Aceita atributos depois do href: o link de avancar aponta para a explicacao
-    por aria-describedby (STAT-41).
+    Depois do href, so um aria-describedby opcional (STAT-41): hidden ou
+    aria-hidden fazem o link nao contar como exibido.
     """
-    return re.findall(rf'<a href="([^"]*)"[^>]*>\s*{rotulo}\s*</a>', html)
+    return re.findall(rf'<a href="([^"]*)"(?: aria-describedby="[^"]*")?>\s*{rotulo}\s*</a>', html)
 
 
 def test_autor_ve_o_link_editar_no_detalhe(logado, criar_inovacao):
