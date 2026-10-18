@@ -8,7 +8,8 @@ import re
 import pytest
 from pytest_django.asserts import assertTemplateUsed
 
-from inovacoes.models import Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.models import Inovacao, Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.views import InovacaoReaproveitarView
 
 EM_TESTE = StatusInovacao.EM_TESTE
 VALIDADA = StatusInovacao.VALIDADA
@@ -171,3 +172,169 @@ def test_usuario_que_nao_e_o_autor_abre_o_formulario(client, disponivel, nao_aut
 def test_administrador_abre_o_formulario(client, disponivel, administrador):
     """REAP-19 (GET): o administrador, sem ser o autor."""
     _afirma_formulario_aberto(_entrar(client, administrador).get(_reaproveitar(disponivel)))
+
+
+# --- Registro (POST) ------------------------------------------------------------
+
+ORIGEM = "A unidade de origem não pode reaproveitar a própria inovação."
+SELECIONE = "Selecione a unidade que reaproveitou a inovação."
+
+
+def _repetida(nome):
+    return f"A unidade “{nome}” já sinalizou o reaproveitamento desta inovação."
+
+
+def _sucesso(nome):
+    return f"Reaproveitamento da inovação “Controle de Caixa” pela unidade “{nome}” registrado."
+
+
+def _erros_do_select(html):
+    """Mensagens da lista de erro ligada ao select (id_unidade_error)."""
+    lista = re.search(r'<ul class="errorlist" id="id_unidade_error">(.*?)</ul>', html, re.S)
+    assert lista, "sem lista de erro do select"
+    return re.findall(r"<li>(.*?)</li>", lista.group(1), re.S)
+
+
+def _afirma_formulario_com_erro(resposta, mensagem):
+    """REAP-11 a REAP-13: 200, o formulario refeito e o erro junto do select."""
+    assert resposta.status_code == 200
+    assertTemplateUsed(resposta, "inovacoes/inovacao_reaproveitar.html")
+    conteudo = _conteudo(resposta.content.decode())
+    assert '<select name="unidade"' in conteudo
+    assert _erros_do_select(conteudo) == [mensagem]
+
+
+@pytest.fixture
+def sede(db):
+    return Unidade.objects.get(nome="Sede")
+
+
+def test_post_com_unidade_elegivel_registra_e_volta_ao_detalhe(client, terceiro, disponivel, sede):
+    """REAP-05: um registro com a unidade, a conta logada e a hora; 302 ao detalhe."""
+    resposta = _entrar(client, terceiro).post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    assert resposta.status_code == 302
+    assert resposta["Location"] == f"/inovacoes/{disponivel.pk}/"
+    registro = Reaproveitamento.objects.get()
+    assert registro.inovacao_id == disponivel.pk
+    assert registro.unidade_id == sede.pk
+    assert registro.registrado_por_id == terceiro.pk
+    assert registro.data is not None
+
+
+def test_mensagem_de_sucesso_aparece_uma_vez(client, autor, disponivel, sede):
+    """REAP-06: o detalhe seguido mostra a mensagem, e o seguinte nao a repete."""
+    logado = _entrar(client, autor)
+    resposta = logado.post(_reaproveitar(disponivel), {"unidade": sede.pk}, follow=True)
+    assert resposta.redirect_chain == [(f"/inovacoes/{disponivel.pk}/", 302)]
+    assertTemplateUsed(resposta, "inovacoes/inovacao_detail.html")
+    assert _mensagens(resposta.content.decode()) == [("success", _sucesso("Sede"))]
+    recarregado = logado.get(f"/inovacoes/{disponivel.pk}/").content.decode()
+    assert _mensagens(recarregado) == []
+    assert _sucesso("Sede") not in recarregado
+
+
+@pytest.mark.parametrize(("status", "rotulo"), [(EM_TESTE, "Em teste"), (VALIDADA, "Validada")])
+def test_post_fora_de_disponivel_volta_ao_detalhe_com_aviso(
+    client, autor, criar_inovacao, sede, status, rotulo
+):
+    """REAP-09 (POST): 302, o aviso uma vez e nada gravado."""
+    inovacao = criar_inovacao(status=status)
+    resposta = _entrar(client, autor).post(
+        _reaproveitar(inovacao), {"unidade": sede.pk}, follow=True
+    )
+    assert resposta.redirect_chain == [(f"/inovacoes/{inovacao.pk}/", 302)]
+    assert _mensagens(resposta.content.decode()) == [("warning", _aviso_de_status(rotulo))]
+    assert Reaproveitamento.objects.count() == 0
+
+
+def test_post_com_a_unidade_de_origem_e_recusado(client, autor, unidade, disponivel):
+    """REAP-11: POST forjado com a origem; erro de campo e nada gravado."""
+    resposta = _entrar(client, autor).post(_reaproveitar(disponivel), {"unidade": unidade.pk})
+    _afirma_formulario_com_erro(resposta, ORIGEM)
+    assert Reaproveitamento.objects.count() == 0
+
+
+def test_post_com_unidade_ja_registrada_e_recusado(client, autor, disponivel, sede):
+    """REAP-12: o erro cita a unidade, e o registro continua um so."""
+    disponivel.registrar_reaproveitamento(unidade=sede, por=autor)
+    resposta = _entrar(client, autor).post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    _afirma_formulario_com_erro(resposta, _repetida("Sede"))
+    assert Reaproveitamento.objects.count() == 1
+
+
+@pytest.mark.parametrize("valor", ["", "999999", "abc"])
+def test_post_sem_unidade_valida_e_recusado(client, autor, disponivel, valor):
+    """REAP-13: vazio, id inexistente e nao numerico; a mesma mensagem."""
+    resposta = _entrar(client, autor).post(_reaproveitar(disponivel), {"unidade": valor})
+    _afirma_formulario_com_erro(resposta, SELECIONE)
+    assert Reaproveitamento.objects.count() == 0
+
+
+def test_corrida_na_mesma_unidade_termina_no_erro_de_repetida(
+    client, autor, terceiro, disponivel, sede, monkeypatch
+):
+    """REAP-14: outra sinalizacao grava entre a validacao e o metodo; nunca 500."""
+    original = InovacaoReaproveitarView.form_valid
+
+    def outra_conexao_grava_antes(self, form):
+        disponivel.registrar_reaproveitamento(unidade=sede, por=terceiro)
+        return original(self, form)
+
+    monkeypatch.setattr(InovacaoReaproveitarView, "form_valid", outra_conexao_grava_antes)
+    resposta = _entrar(client, autor).post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    _afirma_formulario_com_erro(resposta, _repetida("Sede"))
+    assert Reaproveitamento.objects.get().registrado_por_id == terceiro.pk
+
+
+def test_inovacao_excluida_durante_o_envio_responde_404(
+    client, autor, disponivel, sede, monkeypatch
+):
+    """REAP-16 (POST): apagada entre o dispatch() e o metodo; nada gravado."""
+    original = InovacaoReaproveitarView.form_valid
+
+    def apagar_antes(self, form):
+        Inovacao.objects.filter(pk=disponivel.pk).delete()
+        return original(self, form)
+
+    monkeypatch.setattr(InovacaoReaproveitarView, "form_valid", apagar_antes)
+    resposta = _entrar(client, autor).post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    assert resposta.status_code == 404
+    assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
+    assert Reaproveitamento.objects.count() == 0
+
+
+def test_post_ignora_responsavel_data_e_inovacao_forjados(
+    client, autor, terceiro, criar_inovacao, disponivel, sede
+):
+    """REAP-22: so a unidade vem do corpo; o resto e da sessao e do servidor."""
+    outra = criar_inovacao(titulo="Outra Inovacao", status=DISPONIVEL)
+    resposta = _entrar(client, terceiro).post(
+        _reaproveitar(disponivel),
+        {
+            "unidade": sede.pk,
+            "registrado_por": autor.pk,
+            "data": "2001-01-01T00:00:00",
+            "inovacao": outra.pk,
+        },
+    )
+    assert resposta.status_code == 302
+    registro = Reaproveitamento.objects.get()
+    assert registro.registrado_por_id == terceiro.pk
+    assert registro.inovacao_id == disponivel.pk
+    assert registro.data.year != 2001
+
+
+def test_usuario_que_nao_e_o_autor_registra(client, disponivel, sede, nao_autor_usuario):
+    """REAP-19 (POST): USUARIO comum, com is_staff e com is_superuser; nunca 403."""
+    resposta = _entrar(client, nao_autor_usuario).post(
+        _reaproveitar(disponivel), {"unidade": sede.pk}
+    )
+    assert resposta.status_code == 302
+    assert Reaproveitamento.objects.get().registrado_por_id == nao_autor_usuario.pk
+
+
+def test_administrador_registra(client, disponivel, sede, administrador):
+    """REAP-19 (POST): o administrador, sem ser o autor."""
+    resposta = _entrar(client, administrador).post(_reaproveitar(disponivel), {"unidade": sede.pk})
+    assert resposta.status_code == 302
+    assert Reaproveitamento.objects.get().registrado_por_id == administrador.pk

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
@@ -290,6 +291,30 @@ class InovacaoReaproveitarView(FormView):
     def get_form_kwargs(self):
         dados = self.request.POST if self.request.method == "POST" else None
         return {"data": dados, "inovacao": self.inovacao}
+
+    def form_valid(self, form):
+        unidade = form.cleaned_data["unidade"]
+        try:
+            self.inovacao.registrar_reaproveitamento(unidade=unidade, por=self.request.user)
+        except ValidationError as recusa:
+            if recusa.code == "status_indisponivel":
+                # REAP-09: o status mudou depois do dispatch(); o mesmo aviso e 302.
+                messages.warning(self.request, recusa.messages[0])
+                return HttpResponseRedirect(self.inovacao.get_absolute_url())
+            # REAP-11, REAP-12, REAP-14: erro de campo junto do select, com 200.
+            form.add_error("unidade", recusa)
+            return self.form_invalid(form)
+        except Inovacao.DoesNotExist:
+            # REAP-16: apagada entre o dispatch() e a trava; o 404 da CONS-15.
+            return _inovacao_nao_encontrada(self.request)
+        # REAP-06: diz o que foi registrado, em qual inovacao e por qual unidade (RF12).
+        messages.success(
+            self.request,
+            f"Reaproveitamento da inovação “{self.inovacao.titulo}” pela unidade "
+            f"“{unidade.nome}” registrado.",
+        )
+        # REAP-05: volta ao detalhe.
+        return HttpResponseRedirect(self.inovacao.get_absolute_url())
 
     def get_context_data(self, **kwargs):
         contexto = super().get_context_data(inovacao=self.inovacao, **kwargs)

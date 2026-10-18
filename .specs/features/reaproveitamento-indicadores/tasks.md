@@ -311,7 +311,7 @@ T17 → T18
 
 ---
 
-### T5: Registro do reaproveitamento (POST) com mensagens
+### T5: Registro do reaproveitamento (POST) com mensagens ✅
 
 **What**: O `form_valid` que chama `registrar_reaproveitamento` e traduz cada resultado em mensagem, erro de campo ou 404.
 **Where**: `inovacoes/views.py`
@@ -326,8 +326,8 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `form_valid` como no design: sucesso → `messages.success` com o texto exato da REAP-06 e 302 ao detalhe; `unidade_de_origem`/`unidade_ja_reaproveitou` → `add_error("unidade", …)` e 200; `status_indisponivel` → aviso e 302; `Inovacao.DoesNotExist` → 404 da CONS-15
-- [ ] Testes e2e em `inovacoes/tests/test_views_reaproveitar.py`:
+- [x] `form_valid` como no design: sucesso → `messages.success` com o texto exato da REAP-06 e 302 ao detalhe; `unidade_de_origem`/`unidade_ja_reaproveitou` → `add_error("unidade", …)` e 200; `status_indisponivel` → aviso e 302; `Inovacao.DoesNotExist` → 404 da CONS-15
+- [x] Testes e2e em `inovacoes/tests/test_views_reaproveitar.py`:
   - POST com unidade elegível → 302 para `/inovacoes/<pk>/`; um registro com a unidade, `registrado_por` = conta logada e `data` preenchida (REAP-05).
   - O detalhe seguido mostra a mensagem exata da REAP-06 **uma vez**, e a página depois dele não a repete.
   - POST de "Em teste"/"Validada" → 302 com o aviso da REAP-09 e zero registros.
@@ -338,13 +338,15 @@ T17 → T18
   - Inovação apagada entre o `dispatch` e o método (`mock`) → 404, zero registros (REAP-16).
   - POST com `registrado_por`, `data` e `inovacao` forjados no corpo → ignorados (REAP-22).
   - Terceiro `USUARIO` (comum, staff, superuser) e administrador registram com sucesso (REAP-19).
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~772 testes passam (+16)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~772 testes passam (+16)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): registra o reaproveitamento pela tela de sinalizacao`
+
+**Status**: ✅ Complete — 769 passed (+16); toda recusa confere a contagem de registros no banco, e todo erro de campo é lido na lista `id_unidade_error` do select; a corrida (REAP-14) e a exclusão no meio do envio (REAP-16) usam monkeypatch no `form_valid`, que grava ou apaga antes de chamar o original, no padrão da STAT-13/STAT-22; o aviso de status no `form_valid` reusa a mensagem da `ValidationError` do método; o REAP-19 do POST cobre `USUARIO` comum, staff, superuser e administrador
 
 ---
 
