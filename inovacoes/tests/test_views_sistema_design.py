@@ -561,6 +561,11 @@ CADEIA_DO_COMPONENTE = {
     ".historico li": [".historico"],
     ".historico li:first-child": [".historico li", ".historico"],
     ".historico time": [".historico li", ".historico"],
+    # REAP-48: a lista de reaproveitamentos do detalhe, no desenho da .historico.
+    ".reaproveitamentos": [],
+    ".reaproveitamentos li": [".reaproveitamentos"],
+    ".reaproveitamentos li:first-child": [".reaproveitamentos li", ".reaproveitamentos"],
+    ".reaproveitamentos time": [".reaproveitamentos li", ".reaproveitamentos"],
 }
 
 
@@ -588,7 +593,7 @@ def _cor_desenhada(seletor, propriedade):
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("classe", [".ciclo", ".historico"])
+@pytest.mark.parametrize("classe", [".ciclo", ".historico", ".reaproveitamentos"])
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
     """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.
 

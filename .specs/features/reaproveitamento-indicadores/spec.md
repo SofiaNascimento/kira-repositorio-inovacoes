@@ -351,7 +351,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-45 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-46 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-47 | P1: Acessibilidade | Tasks | In Tasks |
-| REAP-48 | P1: Acessibilidade | Tasks | In Tasks |
+| REAP-48 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-49 | Edge Cases | Tasks | In Tasks |
 
 **Coverage:** 49 total, 49 mapped to tasks (T1–T18, ver `tasks.md` → Requirement Coverage), 0 unmapped

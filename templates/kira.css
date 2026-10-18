@@ -522,6 +522,14 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 .historico li:first-child { border-top: 0; }
 .historico time { color: var(--text-muted); }
 
+/* --- Reaproveitamentos no detalhe (§10 F6) ------------------------------- */
+
+/* Mesmo desenho da .historico: texto sobre o fundo da pagina (REAP-48). */
+.reaproveitamentos { margin: 0 0 var(--space-5); padding: 0; list-style: none; color: var(--text); }
+.reaproveitamentos li { padding: var(--space-2) 0; border-top: 1px solid var(--border); }
+.reaproveitamentos li:first-child { border-top: 0; }
+.reaproveitamentos time { color: var(--text-muted); }
+
 /* --- Busca (§10 F3) ------------------------------------------------------ */
 
 .busca {

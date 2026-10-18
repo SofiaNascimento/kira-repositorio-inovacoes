@@ -386,7 +386,7 @@ T17 → T18
 
 ---
 
-### T7: Componente `.reaproveitamentos` na `kira.css`
+### T7: Componente `.reaproveitamentos` na `kira.css` ✅
 
 **What**: O estilo da lista de reaproveitamentos do detalhe, no mesmo desenho da `.historico`, só com tokens de pares do DS-08.
 **Where**: `templates/kira.css`
@@ -401,15 +401,17 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Regras `.reaproveitamentos` (e itens) na `kira.css`, sem `="`, sem `<`, sem cor literal
-- [ ] `test_views_sistema_design.py`: o teste de cores do componente passa a cobrir `.reaproveitamentos` (parametrize + entradas em `CADEIA_DO_COMPONENTE`); todo par desenhado está em `PARES_DE_TEXTO`
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~787 testes passam (+1)
+- [x] Regras `.reaproveitamentos` (e itens) na `kira.css`, sem `="`, sem `<`, sem cor literal
+- [x] `test_views_sistema_design.py`: o teste de cores do componente passa a cobrir `.reaproveitamentos` (parametrize + entradas em `CADEIA_DO_COMPONENTE`); todo par desenhado está em `PARES_DE_TEXTO`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~787 testes passam (+1)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `style(inovacoes): estiliza a lista de reaproveitamentos do detalhe`
+
+**Status**: ✅ Complete — 785 passed (+1); teste antigo alterado como autorizado: o teste de cores do componente em `test_views_sistema_design.py` ganha `.reaproveitamentos` no parametrize e quatro entradas em `CADEIA_DO_COMPONENTE`; o componente repete o desenho da `.historico` (`text` e `text-muted` sobre `bg`, pares já no DS-08), sem cor nova. REAP-48 segue para o painel (T16). Build gate verde
 
 ---
 
