@@ -426,6 +426,33 @@ def test_terceiro_ve_o_historico(client, autor, terceiro, criar_inovacao):
     assert _historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]
 
 
+def test_historico_lista_so_as_mudancas_da_inovacao_aberta(
+    logado, autor, administrador, criar_inovacao
+):
+    """STAT-24, STAT-26: o historico de outra inovacao nao aparece no detalhe."""
+    primeira = criar_inovacao(titulo="Planilha de Caixa", status=VALIDADA)
+    segunda = criar_inovacao(titulo="Robo de Conciliacao", status=DISPONIVEL)
+    sem_historico = criar_inovacao(titulo="Fila de Reembolso", status=EM_TESTE)
+    _mudanca(primeira, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    _mudanca(segunda, administrador, EM_TESTE, VALIDADA, _utc(2026, 10, 3, 13, 0))
+    _mudanca(segunda, administrador, VALIDADA, DISPONIVEL, _utc(2026, 10, 4, 14, 30))
+
+    html = logado.get(f"/inovacoes/{primeira.pk}/").content.decode()
+    assert _historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]
+
+    html = logado.get(f"/inovacoes/{segunda.pk}/").content.decode()
+    assert _historico(html) == [
+        "03/10/2026 10:00 — de “Em teste” para “Validada”, por carla",
+        "04/10/2026 11:30 — de “Validada” para “Disponível para replicação”, por carla",
+    ]
+
+    secao = _secao(
+        logado.get(f"/inovacoes/{sem_historico.pk}/").content.decode(), "historico-titulo"
+    )
+    assert '<p class="vazio">Nenhuma mudança de status registrada.</p>' in secao
+    assert "<li" not in secao
+
+
 @pytest.mark.parametrize("quantidade", [0, 3])
 def test_historico_nao_cresce_em_consultas_com_os_registros(
     logado, autor, administrador, terceiro, criar_inovacao, django_assert_num_queries, quantidade
