@@ -1,13 +1,16 @@
 # Ciclo de Vida do Status (F5) Validation
 
 **Date**: 2026-10-18
-**Iteration**: 2 (a iteração 1 fica abaixo, intacta; a iteração 2 está em [Iteração 2](#iteração-2), no fim)
+**Iteration**: 3, a última antes de escalar (a iteração 1 fica abaixo, intacta; as iterações 2 e 3 estão em [Iteração 2](#iteração-2) e [Iteração 3](#iteração-3), no fim)
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md` (STAT-01 … STAT-37)
+**Diff range (iteração 3)**: feature `6616da1..5e0fd25` em `main` (HEAD = `5e0fd25`). Correção: `5e0fd25` (T14), só em `inovacoes/tests/test_views_sistema_design.py` e no `tasks.md`. `git diff f48bb1a..5e0fd25 -- . ':!inovacoes/tests' ':!.specs'` vazio: nenhum código de produção mudou desde a iteração 1.
 **Diff range (iteração 2)**: feature `6616da1..ef25406` em `main` (HEAD = `ef25406`). Correções: `f1d3de1` (T12) e `ef25406` (T13), só em `inovacoes/tests/`. `git diff f48bb1a..ef25406 -- ':!inovacoes/tests' ':!.specs'` vazio: nenhum código de produção mudou desde a iteração 1.
 **Diff range (iteração 1)**: `6616da1..f48bb1a` em `main` (HEAD = `f48bb1a`), 11 commits (T1 `fd1ee9c`, T2 `0f09ede`, T3 `0a6307d`, T4 `8ad7dad`, T5 `10603fd`, T6 `73eccf5`, T7 `9f417d1`, T8 `4a48733`, T9 `0b4f8f4`, T10 `36fa95a`, T11 `f48bb1a`). 17 arquivos, +1604/−115. Produção: `inovacoes/models.py`, `views.py`, `urls.py`, `migrations/0007_mudancadestatus.py`, `templates/inovacoes/inovacao_detail.html`, `inovacao_status.html` e `templates/kira.css`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ (iteração 2, HEAD `ef25406`)
+**Verdict**: FAIL ❌ (iteração 3, HEAD `5e0fd25`; limite de 3 iterações atingido, escalar ao usuário)
+
+**Iteração 3 em resumo:** o gate passa com 685 testes, e o código de produção continua igual ao da iteração 1. A T14 mata a N14, a M27 e a M11 continuam mortas, e a `CADEIA_DO_COMPONENTE` confere com o DOM e o layout reais. Mas a T14 **enfraqueceu uma checagem anterior**. Antes, todo `background*` (inclusive `background-image`) de `.ciclo`/`.historico` tinha de ser `var(--token)` de um fundo do DS-08. Agora (`test_views_sistema_design.py:597-599`), a regra só é conferida se declarar `color`, `background` ou `background-color`. Com isso, **A1** (`.historico li { background-image: linear-gradient(var(--brand-blue), var(--brand-blue)) }`) e **A2** (`background-image: var(--brand-gradient)`) em `templates/kira.css:521` passam a suíte inteira. As duas morriam no teste do `ef25406`, o que prova a regressão. Sobreviveram também **A6** (`ol.historico li { background: var(--brand-blue) }`) e **A7** (`section .ciclo li { color: var(--surface) }`): o teste só lê regras cujo seletor *começa* pela classe (`:536-543`). Essa lacuna já existia antes da T14. A STAT-37 cobre os quatro casos ("every color the cycle control and the history add to `kira.css`"). Resultado: 36/37 ACs, sensor 17/22. Fix 4 abaixo, só de teste. Como esta é a terceira iteração, o próximo passo é decisão do usuário.
 
 **Iteração 2 em resumo:** o gate passa com 685 testes. T12 mata a M11 e T13 mata a M27, e as duas correções afirmam o valor da spec sem enfraquecer nenhuma checagem anterior. Das 15 mutações novas, 14 morrem. A **N14** sobrevive: `.historico li { background: var(--brand-blue) }` (`templates/kira.css:521`) põe o texto do histórico a 2,48:1 e a data a 1,0:1, e a suíte inteira passa. O teste da STAT-37 só confere o par das regras que declaram `color`. Uma regra que só declara fundo não tem o texto herdado conferido, e o `FUNDO_HERDADO` é fixo, não derivado do fundo do ancestral. A STAT-37 cobre o caso ("every color the cycle control and the history add"), então a lacuna é de teste: 36/37 ACs, Fix 3 abaixo. Nenhum código de produção precisa mudar.
 
@@ -402,3 +405,199 @@ Não aplicada (FAIL). Proposta para a iteração 3:
 **Lessons**: L-020 (candidate) recorreu nesta feature com a N14, e o `lessons.py add` acrescentou a evidência; L-019 não recorreu (M11 morta); L-021 continua (o título segue como spec-precision gap), e o `lessons.py add` acrescentou a evidência. Nenhuma lição nova; nenhuma promovida, porque a recorrência é na mesma feature.
 
 **Next steps**: o orquestrador encaminha o Fix 3 a um implementador, que só mexe em teste, e depois despacha a iteração 3 do Verifier (a última antes de escalar).
+
+---
+
+## Iteração 3
+
+**Date**: 2026-10-18
+**HEAD**: `5e0fd25` (feature `6616da1..5e0fd25`; correção `5e0fd25`, T14)
+**Verifier**: novo sub-agente independente. Não escreveu código, testes nem correções, e re-derivou a cobertura da spec.
+**Produção inalterada**: `git diff --stat f48bb1a..5e0fd25 -- . ':!inovacoes/tests' ':!.specs'` vazio. A T14 só toca `inovacoes/tests/test_views_sistema_design.py` (+35/−25 no teste) e o `tasks.md`.
+
+### Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T1–T13 | ✅ Done | Inalteradas desde a iteração 2 |
+| T14 (Fix 3) | ⚠️ Done com regressão | `5e0fd25`: `test_views_sistema_design.py:546-603`. Mata a N14, mas deixa de conferir `background-image` (ver abaixo). 685 passed (+0) |
+
+### Reconferência da T14 (STAT-37)
+
+Comparei com `git show 5e0fd25^:inovacoes/tests/test_views_sistema_design.py`.
+
+**O que melhorou.** O par efetivo `(color, background)` agora é calculado a partir do CSS real. `_cor_desenhada` (`:572-578`) percorre o seletor, a cadeia de `CADEIA_DO_COMPONENTE` e o `body`, e em cada passo vale a última declaração. Isso acontece em toda regra que declara `color`, `background` ou `background-color` (`:597-603`). Um seletor de uma lista que não está na cadeia faz o teste falhar (`:601`). A N14 morre.
+
+**`CADEIA_DO_COMPONENTE` contra o DOM e o layout reais.** A cadeia (`:550-559`) confere:
+
+- **Estágio atual.** `.ciclo [aria-current=step]` é o próprio `li` (`inovacao_detail.html:49`), então a cadeia `.ciclo li` → `.ciclo` está certa. O `<strong>` interno não tem regra na `kira.css`.
+- **Separador.** O `::before` é filho do `li`.
+- **Data do histórico.** `.historico time` fica dentro do `li` de `ol.historico` (`:67-69`).
+- **Ancestrais sem fundo.** As duas `section` ficam fora do `.cartao` (`:20-41` contra `:43-75`). `main` não tem fundo (`kira.css:165-171`). Nenhuma regra genérica de `section`, `ol`, `li`, `time` ou `strong` define cor.
+- **Fundo efetivo.** Com isso, o fundo efetivo é o do `body` (`--bg`, `kira.css:71`), e a cor do texto também vem do `body` (`--text`, `:72`).
+
+**O que foi enfraquecido (regressão).**
+
+- **Antes da T14:** `fundos = [_token_de(v) for p, v in propriedades.items() if p.startswith("background")]` (linha 574 do `ef25406`) exigia que **todo** `background*`, inclusive `background-image`, fosse `var(--token)` de um fundo de par do DS-08.
+- **Depois da T14:**
+  - **Regra pulada.** Uma regra que só declara `background-image` é pulada (`:597-599`). Restam apenas as checagens de cor literal e de token existente.
+  - **Ancestral ignorado.** `_cor_desenhada` também ignora `background-image` de um ancestral (`:576`).
+- **Prova da regressão:** A1 e A2, abaixo, morrem com o arquivo de teste do `ef25406` (`1 failed, 79 passed` em `test_views_sistema_design.py`) e sobrevivem no HEAD.
+
+As demais checagens anteriores continuam:
+
+- nenhuma cor literal (`:592`);
+- todo `var()` existe no `:root` (`:594-596`);
+- `color`, `background` e `background-color` só por `var(--token)`, garantido pelo `fullmatch` de `_token_de` (`:562-565`);
+- pertinência do par (`:603`), que implica a pertinência antiga do texto e do fundo.
+
+**Lacuna anterior, não criada pela T14.** `_regras_do_componente` (`:536-543`) só lê regras com algum seletor que *começa* por `.ciclo`/`.historico`, e `_corpos` só casa o seletor exato (`:54-61`). Uma regra como `ol.historico li` ou `section .ciclo li` fica invisível. A6 e A7 sobrevivem também com o teste do `ef25406`.
+
+### Spec-Anchored Acceptance Criteria (re-derivado no HEAD `5e0fd25`)
+
+Os arquivos de teste das ACs STAT-01 a STAT-36 não mudaram desde `ef25406`, e a T14 só tocou `test_views_sistema_design.py`. Reli independentemente 14 linhas da tabela da iteração 2 e conferi o valor da spec em cada uma:
+
+| AC | `file:line` + assertion (relido no HEAD) | Result |
+| -- | ---------------------------------------- | ------ |
+| STAT-03 | `test_views_detalhe.py:340` `_links(secao, f"Avançar para “{proximo}”") == [f"/inovacoes/{pk}/status/"]` | ✅ |
+| STAT-06 | `test_views_status.py:46-67` 200, `h1 == ["Avançar status"]`, texto exato, um botão `type="submit"` com o rótulo exato, `method="post"`, `status_visto` oculto com o valor gravado, `cancelar == [f"/inovacoes/{pk}/"]`; `<title>` por prefixo (`:50`) | ✅ ⚠️ (título) |
+| STAT-07 | `test_views_status.py:175-176` `assertRedirects(…, f"/inovacoes/{pk}/")`, `== VALIDADA` | ✅ (B5 morta) |
+| STAT-10 | GET `test_views_status.py:98-105`; POST `:231-234` `[("warning", ULTIMO_ESTAGIO)]`, `count() == 0` | ✅ |
+| STAT-12 | `test_views_status.py:244-247` `[("warning", _conflito("Em teste"))]`, `== EM_TESTE`, `count() == 0` | ✅ (B4 morta) |
+| STAT-14 | `test_views_status.py:177-183` registro exato (`inovacao_id`, anterior, novo), `responsavel == autor` | ✅ |
+| STAT-16 | `test_views_status.py:194-197` `[("success", _sucesso(...))]` na região `role="status"` (`:153-157`); recarregado `== []` | ✅ (B2 morta) |
+| STAT-19 | `test_views_status.py:323-327` 403, `acesso_negado.html`, `NEGADO`, status e contagem | ✅ |
+| STAT-23 | `test_views_status.py:369-371` `assertRedirects(…, f"/entrar/?next={caminho}")`, nada gravado | ✅ |
+| STAT-25 | `test_views_detalhe.py:398-401` lista exata com nome completo e username; `:409` fuso | ✅ |
+| STAT-28 | `test_ciclo_de_vida.py:85-87` `== [da_outra]` | ✅ |
+| STAT-29 | `test_ciclo_de_vida.py:94-97` `ProtectedError`, registro e `responsavel_id` | ✅ |
+| STAT-31 | `test_ciclo_de_vida.py:69-73` `IntegrityError` com `mudanca_de_status_transicao_valida`, 7 pares | ✅ (B1 morta) |
+| STAT-36 | `test_views_erro_500.py:179-183` 403 que não é o acesso negado, `== EM_TESTE`, `count() == 0` | ✅ |
+
+As demais (STAT-01, 02, 04, 05, 08, 09, 11, 13, 15, 17, 18, 20–22, 24, 26, 27, 30, 32–35) foram herdadas da iteração 2. Os arquivos não mudaram, e as mutações B3, B6, M11 e as das iterações anteriores continuam valendo como discriminação. Não as reli linha a linha.
+
+**STAT-37 (re-derivada por inteiro).** A AC tem duas cláusulas:
+
+- **"by text (STAT-02)".** `test_views_acessibilidade_alteracao.py:286-294`: sem o `<style>` e sem `style=`, os itens leem `["Em teste", "Validada (status atual)", "Disponível para replicação"]`. ✅
+- **"every color the cycle control and the history add to `kira.css`" nos pares do DS-08.** Pertinência do par: `test_views_sistema_design.py:603` `par in PARES_DE_TEXTO`. Contraste dos pares ≥ 4,5: `:278-282`. Borda do estágio atual (3:1): `:286-289` e `:606-611`. O CSS atual cumpre a cláusula; conferi à mão:
+  - `.ciclo li`: `text` sobre `surface`;
+  - `::before`: `text-muted` sobre `surface`;
+  - estágio atual: `brand-navy` sobre `surface`, com borda `brand-blue`;
+  - `.historico li`: `text` sobre `bg`;
+  - `.historico time`: `text-muted` sobre `bg`.
+
+  **O teste, porém, não discrimina:**
+  - **`background-image`.** Um fundo novo por `background-image` passa (A1: o texto `--text` fica a 2,48:1 sobre `--brand-blue`, e a data a 1,0:1; A2: `--brand-gradient`, com o texto a 1,42:1 sobre a ponta navy).
+  - **Seletor que não começa pela classe.** Passa também uma regra do componente escrita assim (A6, a mesma cor da N14; A7, texto branco sobre o branco do `li`, 1,0:1). ❌ GAP
+
+**Status**: ❌ 36/37 ACs com o valor da spec afirmado e discriminante. A STAT-37 tem asserção, mas ela não distingue A1, A2, A6 e A7. Há 1 spec-precision gap de redação (título), que não bloqueia.
+
+### Discrimination Sensor (iteração 3)
+
+Rodei o sensor num `git worktree add --detach` em `scratchpad/wt3`, a partir de `5e0fd25`:
+
+- **Preparação.** Copiei o `.env` e usei o PostgreSQL de teste (porta 5433). `inovacoes.__file__` resolve para a worktree, e a linha de base nela é 685 passed.
+- **Execução.** Cada mutação foi feita por substituição exata de texto, com o trecho conferido como único (`count == 1`). Para cada uma rodei a suíte inteira com `.venv/bin/pytest -q -p no:cacheprovider` e depois `git checkout -- .` e `git diff --quiet`. A1, A2, A6 e A7 rodaram também contra o teste do `ef25406` (`git checkout ef25406 -- inovacoes/tests/test_views_sistema_design.py` na worktree, depois restaurado).
+- **Limpeza e isolamento.** No fim, `git worktree remove --force` e `git worktree prune`. O `git status --porcelain` da árvore real ficou vazio antes e depois (idêntico à linha de base gravada), o HEAD continua `5e0fd25` e `git worktree list` só mostra a árvore principal.
+
+#### Sobreviventes anteriores, re-injetadas como descritas
+
+| # | File:line | Mutação | Killed? |
+| - | --------- | ------- | ------- |
+| N14 | `templates/kira.css:521` | `.historico li { …; background: var(--brand-blue); }` | ✅ `test_ciclo_e_historico_so_usam_cores_de_pares_conferidos[.historico]` (único) |
+| M11 | `inovacoes/views.py:132` | `mudancas = MudancaDeStatus.objects.select_related("responsavel")` (todas as inovações) | ✅ `test_views_detalhe.py::test_historico_lista_so_as_mudancas_da_inovacao_aberta` (único) |
+| M27 | `templates/kira.css:510` | `.ciclo li { …; color: var(--surface) }` | ✅ `test_ciclo_e_historico_so_usam_cores_de_pares_conferidos[.ciclo]` (único) |
+
+#### Mutações novas contra a lógica da T14
+
+| # | File:line | Mutação | Killed? | AC |
+| - | --------- | ------- | ------- | -- |
+| **A1** | `templates/kira.css:521` | `.historico li` ganha `background-image: linear-gradient(var(--brand-blue), var(--brand-blue))` | ❌ **Survived** (685 passed). Morta com o teste do `ef25406` → **regressão da T14** | STAT-37 |
+| **A2** | `templates/kira.css:521` | `.historico li` ganha `background-image: var(--brand-gradient)` | ❌ **Survived** (685 passed). Morta com o teste do `ef25406` → **regressão da T14** | STAT-37 |
+| A3 | `templates/kira.css:521` | `.historico li` ganha `background: linear-gradient(var(--brand-blue), var(--brand-blue))` (gradiente no atalho) | ✅ `[.historico]` (`_token_de` exige `var()` puro) | STAT-37 |
+| A4 | `templates/kira.css:521` (regra nova) | lista de seletores `.vazio, .historico li { background: var(--brand-blue); }` | ✅ `[.historico]` (`.vazio` sem cadeia) | STAT-37 |
+| A5 | `templates/kira.css:520` | `color: var(--surface)` no ancestral `.historico` | ✅ `[.historico]` (herdado por `.historico li`) | STAT-37 |
+| **A6** | `templates/kira.css:521` (regra nova) | `ol.historico li { background: var(--brand-blue); }` | ❌ **Survived** (685 passed; também com o teste do `ef25406`) | STAT-37 |
+| **A7** | `templates/kira.css:521` (regra nova) | `section .ciclo li { color: var(--surface); }` (branco sobre o branco do `li`) | ❌ **Survived** (685 passed; também com o teste do `ef25406`) | STAT-37 |
+| A8 | `templates/kira.css:521` (regra nova) | `.ciclo [aria-current=step] strong { color: var(--surface); }` | ✅ `[.ciclo]` (seletor sem cadeia) | STAT-37 |
+| A9 | `templates/kira.css:509` | `.ciclo li` com `background-color: var(--brand-navy)` no lugar do `background: var(--surface)` | ✅ `[.ciclo]` | STAT-37 |
+| A10 | `templates/kira.css:521` | `.historico li` ganha `opacity: 0.3` | ⚪ Survived, **fora da spec** (opacidade não é cor; a STAT-37 fala de "every color … add") | nota |
+
+#### Mutações novas de comportamento
+
+| # | File:line | Mutação | Killed? (testes que falharam) |
+| - | --------- | ------- | ----------------------------- |
+| B1 | `inovacoes/migrations/0007_mudancadestatus.py` (CheckConstraint) | a constraint do banco passa a aceitar também ("Disponível para replicação", "Em teste") | ✅ `test_transicao_invalida_e_recusada_pelo_banco[DISPONIVEL_PARA_REPLICACAO-EM_TESTE]` |
+| B2 | `inovacoes/views.py:238` | mensagem de sucesso com nível `info` em vez de `success` | ✅ 4: `test_autor_avanca_de_em_teste…`, `…_de_validada…`, `test_mensagem_de_sucesso_nao_reaparece…`, `test_administrador_avanca…` |
+| B3 | `inovacao_status.html:14` | `<form method="get">` na confirmação | ✅ 3: `test_autor_ve_a_confirmacao…[2]`, `test_administrador_ve_a_confirmacao…` |
+| B4 | `inovacoes/views.py:220` | `status_visto` lido de `request.GET` | ✅ 8+: sucesso, reenvio, estágio final e `test_views_erro_500…[2]` |
+| B5 | `inovacoes/views.py:244` | redirect 301 (`HttpResponsePermanentRedirect`) em vez de 302 | ✅ 11: todo POST de `test_views_status.py` que volta ao detalhe |
+| B6 | `inovacao_detail.html:46,54` | `<ol class="ciclo">` → `<ul>` | ✅ 8: `test_ciclo_de_vida_lista_os_tres_estagios_em_ordem`, `test_ciclo_marca_so_o_estagio_atual…[3]`, `test_secoes_do_detalhe…[ciclo]`, `test_terceiro_nao_ve_o_link…[2]` |
+| B7 | `inovacoes/models.py:291` | `ordering = ["data"]` (sem o desempate pelo id) | ⚪ Survived, **fora da spec**. A STAT-24 não define ordem para datas iguais. `test_ciclo_de_vida.py:108-115` existe, mas o PostgreSQL devolve as linhas na ordem física, então o mutante é equivalente na prática (`auto_now_add` com microssegundos torna o empate irrealista) |
+
+**Sensor depth**: expandido (integridade de transição de estado, autorização e acessibilidade): 3 re-injeções e 17 mutações novas (10 contra a T14, 7 de comportamento).
+**Result**: 14/20 mortas. 6 sobreviveram: A1, A2, A6 e A7, cobertas pela STAT-37; A10 e B7, fora da spec e registradas só como nota. FAIL ❌
+
+### Gate Check (iteração 3)
+
+- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (árvore real, HEAD `5e0fd25`)
+- **Result**: exit 0. `ruff check`: All checks passed · `ruff format --check`: 110 files already formatted · `makemigrations --check`: No changes detected · `pytest -q`: 685 passed, 0 failed, 0 skipped (15.8 s)
+- **Test count**: 574 antes da feature → 684 (iteração 1) → 685 (iteração 2) → 685 agora (a T14 reescreveu o teste no lugar). Nenhum teste removido. **Uma checagem foi enfraquecida**: `background-image` deixou de ser conferido (ver *Reconferência da T14*)
+
+### Spec-Precision Gaps (iteração 3): novo julgamento do `<title>`
+
+**STAT-06 / STAT-34, `<title>` "reading 'Avançar status'"**: mantenho o julgamento da iteração 2. É um **spec-precision gap de redação e não bloqueia**.
+
+- **O que a página renderiza.** `Avançar status · Repositório de Inovações` (`templates/base.html:6`, convenção global anterior à F5).
+- **O que os testes afirmam.** O prefixo (`test_views_status.py:50`, `test_views_acessibilidade_alteracao.py:278`) e o `h1` exato (`:51`, `:276`). A N11 (iteração 2), que trocava o nome da página no título, morre.
+- **Precedente.** A EDEX-43 da F4 aceitou o mesmo formato.
+- **Sem edição de AC.** Não editei a AC. Sugestão para a próxima revisão da spec: "a `<title>` that begins with 'Avançar status'".
+
+### Fix Plans (iteração 3)
+
+#### Fix 4: STAT-37 não confere `background-image` nem regras cujo seletor não começa pela classe (A1, A2, A6, A7) — Minor, só teste
+
+- **Root cause**:
+  - **Regressão da T14.** `test_views_sistema_design.py:597-599` só confere regras com `color`/`background`/`background-color`, e `_cor_desenhada` (`:576`) ignora as outras propriedades `background-*`. A checagem antiga `p.startswith("background")` sumiu.
+  - **Lacuna antiga.** `_regras_do_componente` (`:536-543`) e `_corpos` (`:54-61`) só enxergam seletores que começam pela classe ou que são iguais a ela.
+- **Fix task** (em `inovacoes/tests/test_views_sistema_design.py`):
+  1. Tratar **toda** propriedade que começa por `background` como fundo. Ela entra na condição de `:598`, e `_cor_desenhada` a lê, para que `background-image` ou um gradiente falhe no `_token_de` ou no par. Alternativa aceitável: restaurar a checagem antiga, com todo `background*` = `var(--token)` de um fundo de par do DS-08, ao lado da nova.
+  2. Selecionar as regras do componente por qualquer seletor que **contenha** `.ciclo`/`.historico` (por exemplo `re.search(r"\.ciclo\b", s)`). Exigir que cada um desses seletores esteja em `CADEIA_DO_COMPONENTE`, para que `ol.historico li` e `section .ciclo li` falhem com "declare a cadeia".
+- **Verify**: num scratch, A1, A2, A6 e A7 fazem o teste falhar; N14, M27, A3, A4, A5, A8 e A9 continuam mortas; no HEAD o teste passa.
+- **Done when**: os 4 mutantes estão mortos, o gate de build está verde e nenhum código de produção foi alterado.
+- **Priority**: Minor. O CSS atual cumpre o DS-08; o risco é uma regressão futura de contraste não detectada.
+
+### Requirement Traceability Update (iteração 3)
+
+Não aplicada (FAIL). Proposta:
+
+| Requirement | Previous Status | New Status |
+| ----------- | --------------- | ---------- |
+| STAT-01 … STAT-36 | Implementing | ✅ Verified (evidência nas tabelas acima) |
+| STAT-37 | Implementing | ❌ Needs Fix (Fix 4) |
+
+### Histórico (continuação)
+
+- **Iteração 3** (HEAD `5e0fd25`): FAIL ❌. 36/37 ACs; 14/20 mutantes mortos. A N14, a M11 e a M27 morrem. A T14 deixou de conferir `background-image` (A1 e A2, regressão provada contra o teste do `ef25406`). Além disso, seletores que não começam pela classe ficam fora do teste (A6 e A7, lacuna anterior). As quatro sobreviventes estão na mesma AC (STAT-37) e o código de produção cumpre a AC. **Limite de 3 iterações atingido: escalar ao usuário.**
+
+### Summary (iteração 3)
+
+**Overall**: ❌ Not Ready. Evidência: `templates/kira.css:521` sob A1/A2/A6 e uma regra `section .ciclo li` (A7), com 685 passed; `inovacoes/tests/test_views_sistema_design.py:597-599` pula regras com só `background-image`; `:536-543` só lê seletores que começam pela classe.
+
+**Spec-anchored check**: 36/37 ACs com o valor da spec afirmado e discriminante; 1 spec-precision gap de redação (título, não bloqueia)
+**Sensor**: 14/20 mortas. Sobreviventes cobertas pela STAT-37: A1, A2, A6, A7. Fora da spec: A10, B7
+**Gate**: 685 passed, 0 failed
+**validate_state.py**: `python3 .claude/skills/tlc-spec-driven/scripts/validate_state.py ciclo-de-vida-status` → exit 1, "validation.md verdict is FAIL - route the ranked gaps to fix tasks, then re-verify (feature is not done)". É o resultado esperado para um FAIL.
+
+**What works**: tudo o que as iterações 1 e 2 provaram continua provado. A T14 fecha o caso da N14, porque o fundo herdado agora vem do CSS real e não de um valor fixo no teste. As 7 mutações novas de comportamento (constraint do banco, nível da mensagem, método do formulário, origem do `status_visto`, código do redirect, `ol` do ciclo) morrem.
+
+**Issues found**: Fix 4 (STAT-37: A1, A2, A6, A7), só de teste.
+
+**Lessons**:
+- **L-020 (candidate).** O caso dela (par não conferido: M27, N14) agora morre. Os sobreviventes novos são de outro tipo e viraram duas lições novas, ambas `candidate`: **L-022** (A1/A2: toda propriedade `background-*` conta como fundo numa checagem estática de cor) e **L-023** (A6/A7: selecionar as regras do componente por qualquer seletor que contenha a classe). Nenhuma foi promovida, porque tudo aconteceu numa feature só.
+- **L-021.** Continua: o título segue como spec-precision gap.
+- **L-019.** Não recorreu.
+
+**Next steps**: escalar ao usuário. Opções:
+1. Autorizar uma 4ª rodada: Fix 4, só de teste, e nova verificação.
+2. Aceitar o risco residual da STAT-37, já que o CSS de produção cumpre o DS-08, e registrar a decisão no `STATE.md`.

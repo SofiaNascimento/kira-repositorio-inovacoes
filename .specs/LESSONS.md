@@ -135,8 +135,20 @@ Seen once or not yet corroborated. Tracked, not trusted.
 ### L-021 - When the base layout appends a site suffix to the page title, write title criteria as starting with the page name, not as an exact value
 - signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
 - features: ciclo-de-vida-status
-- evidence: STAT-06/STAT-34 title, test_views_status.py:50 (specs) (+1 more)
-- last seen: 2026-10-18T20:31:51Z
+- evidence: STAT-06/STAT-34 title, test_views_status.py:50 (specs) (+2 more)
+- last seen: 2026-10-18T20:45:23Z
+
+### L-022 - In static CSS color checks, treat every background longhand such as background-image as a background, not only background and background-color
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 3 A1/A2 (templates/kira.css:521, STAT-37; test_views_sistema_design.py:597-599) (css)
+- last seen: 2026-10-18T20:45:23Z
+
+### L-023 - Select a component's CSS rules by any selector that contains its class, not only selectors that start with it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: ciclo-de-vida-status
+- evidence: validation.md iteracao 3 A6/A7 (templates/kira.css:521, STAT-37; test_views_sistema_design.py:536-543) (css)
+- last seen: 2026-10-18T20:45:23Z
 
 ## Quarantined (failed when applied - ignore)
 
