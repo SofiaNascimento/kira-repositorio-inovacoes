@@ -69,6 +69,8 @@ def _token(nome):
 def paginas(client, autor, terceiro, criar_inovacao):
     """HTML de cada tela que estende o base: anonimo, autenticado, erro e 500."""
     inovacao = criar_inovacao()
+    # REAP-03: a sinalizacao so abre em inovacao "Disponível para replicação".
+    disponivel = criar_inovacao(titulo="Inovacao Disponivel", status="DISPONIVEL_PARA_REPLICACAO")
     html = {"login": client.get("/entrar/").content.decode()}
     client.force_login(autor)
     for nome, url in {
@@ -79,6 +81,8 @@ def paginas(client, autor, terceiro, criar_inovacao):
         "excluir": f"/inovacoes/{inovacao.pk}/excluir/",
         # F5: a confirmacao do avanco de status (STAT-34).
         "status": f"/inovacoes/{inovacao.pk}/status/",
+        # F6: a sinalizacao de reaproveitamento (REAP-03).
+        "reaproveitar": f"/inovacoes/{disponivel.pk}/reaproveitar/",
         "nao_encontrada": "/inovacoes/999999/",
     }.items():
         html[nome] = client.get(url).content.decode()
@@ -391,7 +395,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     """DS-01."""
     telas = dict(_telas())
     # STAT-06, STAT-34: a F5 acrescenta a tela "Avançar status".
-    assert len(telas) == 9
+    # REAP-03: a F6 acrescenta a tela "Sinalizar reaproveitamento".
+    assert len(telas) == 10
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

@@ -86,6 +86,7 @@ admin de `Reaproveitamento`, não só fica sem o link) · L-005 (REAP-09/REAP-10
 | ----- | ------- | ---- |
 | `inovacoes/tests/test_controle_autoria.py` | Conjunto novo `ROTAS_SEM_AUTORIA = {"inovacoes:reaproveitar"}`, excluído de `ROTAS_DE_ALTERACAO`; a sanidade passa a exigir que a rota seja achada | T4 |
 | `inovacoes/tests/test_views_sistema_design.py` | DS-01 9 → 10 telas; fixture `paginas` ganha "reaproveitar" | T4 |
+| `inovacoes/tests/test_ciclo_de_vida.py` | `test_nenhuma_rota_de_inovacoes_altera_o_historico` (STAT-30): o conjunto de rotas ganha `"reaproveitar"` e a docstring passa de "seis" para "sete"; a checagem de que nenhuma view serve `MudancaDeStatus` fica igual (autorizado pelo usuário em 2026-10-18, durante o Execute) | T4 |
 | `inovacoes/tests/test_views_detalhe.py` | `CONSULTAS_DO_DETALHE` 7 → 8 | T6 |
 | `inovacoes/tests/test_views_sistema_design.py` | Teste de cores do componente ganha `.reaproveitamentos` | T7 |
 | `inovacoes/tests/test_views_sistema_design.py` | `RAIZES` ganha `indicadores/templates`; DS-01 10 → 11; fixture `paginas` ganha "painel" | T13 |
@@ -270,7 +271,7 @@ T17 → T18
 
 ---
 
-### T4: Formulário de sinalização (GET) em `/inovacoes/<pk>/reaproveitar/`
+### T4: Formulário de sinalização (GET) em `/inovacoes/<pk>/reaproveitar/` ✅
 
 **What**: A rota `reaproveitar`, a `InovacaoReaproveitarView` com `dispatch` e GET, e o template `inovacao_reaproveitar.html` com o formulário e a variante sem unidade elegível.
 **Where**: `inovacoes/views.py`
@@ -285,12 +286,12 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `path("<int:pk>/reaproveitar/", …, name="reaproveitar")` em `inovacoes/urls.py`
-- [ ] `InovacaoReaproveitarView(FormView)` **sem** `AlteracaoDeInovacaoMixin`, com `dispatch`, `get_form_kwargs` e `get_context_data` como no design; comentário citando REAP-19 e AD-012
-- [ ] `inovacoes/templates/inovacoes/inovacao_reaproveitar.html` estende o base; `title` "Sinalizar reaproveitamento"; texto, select, botão "Sinalizar reaproveitamento", "Cancelar" e o ramo `sem_elegiveis` com o texto da REAP-15 e "Voltar para a inovação"
-- [ ] `test_controle_autoria.py`: `ROTAS_SEM_AUTORIA = {"inovacoes:reaproveitar"}` fora de `ROTAS_DE_ALTERACAO`, com comentário citando REAP-19; a sanidade exige `inovacoes:reaproveitar` em `ROTAS_COM_PK`
-- [ ] `test_views_sistema_design.py`: DS-01 passa de 9 para 10 telas (comentário citando REAP-03); a fixture `paginas` ganha "reaproveitar" (inovação criada em "Disponível para replicação")
-- [ ] Testes e2e em `inovacoes/tests/test_views_reaproveitar.py`:
+- [x] `path("<int:pk>/reaproveitar/", …, name="reaproveitar")` em `inovacoes/urls.py`
+- [x] `InovacaoReaproveitarView(FormView)` **sem** `AlteracaoDeInovacaoMixin`, com `dispatch`, `get_form_kwargs` e `get_context_data` como no design; comentário citando REAP-19 e AD-012
+- [x] `inovacoes/templates/inovacoes/inovacao_reaproveitar.html` estende o base; `title` "Sinalizar reaproveitamento"; texto, select, botão "Sinalizar reaproveitamento", "Cancelar" e o ramo `sem_elegiveis` com o texto da REAP-15 e "Voltar para a inovação"
+- [x] `test_controle_autoria.py`: `ROTAS_SEM_AUTORIA = {"inovacoes:reaproveitar"}` fora de `ROTAS_DE_ALTERACAO`, com comentário citando REAP-19; a sanidade exige `inovacoes:reaproveitar` em `ROTAS_COM_PK`
+- [x] `test_views_sistema_design.py`: DS-01 passa de 9 para 10 telas (comentário citando REAP-03); a fixture `paginas` ganha "reaproveitar" (inovação criada em "Disponível para replicação")
+- [x] Testes e2e em `inovacoes/tests/test_views_reaproveitar.py`:
   - GET de inovação "Disponível" → 200, `<title>` começando por "Sinalizar reaproveitamento", texto da REAP-03 com título e unidade de origem, `<select>` com `<label>` "Unidade que reaproveitou", botão e link "Cancelar" com `href="/inovacoes/<pk>/"` (REAP-03).
   - As `<option>` renderizadas são exatamente as elegíveis, em ordem, sem a origem e sem as já registradas (REAP-04).
   - GET nunca cria registro (REAP-08).
@@ -298,13 +299,15 @@ T17 → T18
   - Todas as outras unidades já registradas, e cenário com só a unidade de origem cadastrada → 200, texto da REAP-15, link "Voltar para a inovação", sem `<select>` nem botão (REAP-15).
   - Id inexistente → 404 com "Inovação não encontrada." (REAP-16).
   - Terceiro `USUARIO` (fixture `nao_autor_usuario`: comum, staff, superuser) e administrador → 200 no GET, nunca 403 (REAP-19).
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~756 testes passam (+15)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~756 testes passam (+15)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona a tela de sinalizacao de reaproveitamento`
+
+**Status**: ✅ Complete — 753 passed (+12); testes antigos alterados como autorizado: `ROTAS_SEM_AUTORIA` em `test_controle_autoria.py`, DS-01 9 → 10 e `paginas` com "reaproveitar" em `test_views_sistema_design.py`, e o conjunto de rotas da STAT-30 em `test_ciclo_de_vida.py` (autorizado pelo usuário durante o Execute); SPEC_DEVIATION em `get_form_kwargs`: monta só `data` e `inovacao`, porque o `FormView` manda `initial` e `prefix`, que a assinatura do form da T3 não aceita; o REAP-19 do GET cobre `USUARIO` comum, staff, superuser e administrador. Build gate verde
 
 ---
 

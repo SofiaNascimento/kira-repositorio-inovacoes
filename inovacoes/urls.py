@@ -5,6 +5,7 @@ from inovacoes.views import (
     InovacaoDeleteView,
     InovacaoDetailView,
     InovacaoListView,
+    InovacaoReaproveitarView,
     InovacaoStatusView,
     InovacaoUpdateView,
 )
@@ -18,4 +19,5 @@ urlpatterns = [
     path("<int:pk>/editar/", InovacaoUpdateView.as_view(), name="editar"),
     path("<int:pk>/excluir/", InovacaoDeleteView.as_view(), name="excluir"),
     path("<int:pk>/status/", InovacaoStatusView.as_view(), name="status"),
+    path("<int:pk>/reaproveitar/", InovacaoReaproveitarView.as_view(), name="reaproveitar"),
 ]

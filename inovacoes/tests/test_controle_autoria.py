@@ -13,6 +13,9 @@ from inovacoes.models import Inovacao
 
 # Unica rota com pk que um terceiro pode abrir: o detalhe e de leitura (CONS-08).
 ROTAS_DE_LEITURA = {"inovacoes:detalhe"}
+# REAP-19, AD-012: a sinalizacao nao altera a Inovacao; todo autenticado pode.
+# O teste proprio fica em test_views_reaproveitar.py.
+ROTAS_SEM_AUTORIA = {"inovacoes:reaproveitar"}
 
 
 def _rotas_com_pk(padroes, namespace=None):
@@ -41,12 +44,15 @@ def _rotas_com_pk(padroes, namespace=None):
 
 
 ROTAS_COM_PK = sorted(set(_rotas_com_pk(get_resolver().url_patterns)))
-ROTAS_DE_ALTERACAO = [rota for rota in ROTAS_COM_PK if rota not in ROTAS_DE_LEITURA]
+ROTAS_DE_ALTERACAO = [
+    rota for rota in ROTAS_COM_PK if rota not in ROTAS_DE_LEITURA | ROTAS_SEM_AUTORIA
+]
 
 
 def test_varredura_encontra_as_rotas_de_alteracao():
     """Sanidade: uma coleta vazia nao pode passar em silencio."""
     assert "inovacoes:detalhe" in ROTAS_COM_PK
+    assert "inovacoes:reaproveitar" in ROTAS_COM_PK
     assert {"inovacoes:editar", "inovacoes:excluir", "inovacoes:status"} <= set(ROTAS_DE_ALTERACAO)
 
 

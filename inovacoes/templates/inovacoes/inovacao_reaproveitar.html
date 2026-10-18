@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Sinalizar reaproveitamento{% endblock %}
+
+{% block conteudo %}
+  <h1>Sinalizar reaproveitamento</h1>
+
+  <div class="cartao">
+  {% if sem_elegiveis %}
+    {# REAP-15: nenhuma unidade elegivel; a pagina explica, sem select nem botao. #}
+    <p>Todas as outras unidades já sinalizaram o reaproveitamento desta inovação.</p>
+    <p class="acoes"><a href="{{ inovacao.get_absolute_url }}">Voltar para a inovação</a></p>
+  {% else %}
+    {# REAP-03: qual inovacao e de qual unidade ela veio. #}
+    <p>Registre a unidade que reaproveitou a inovação “{{ inovacao.titulo }}”, criada na unidade “{{ inovacao.unidade.nome }}”.</p>
+
+    {# novalidate: a mensagem da REAP-13 e a do servidor; o atributo required continua no HTML. #}
+    <form method="post" novalidate class="formulario">
+      {% csrf_token %}
+      <div class="campo">{{ form.unidade.as_field_group }}</div>
+      <div class="acoes">
+        <button type="submit">Sinalizar reaproveitamento</button>
+        {# RF14: cancelar volta ao detalhe sem gravar. #}
+        <a href="{{ inovacao.get_absolute_url }}">Cancelar</a>
+      </div>
+    </form>
+  {% endif %}
+  </div>
+{% endblock %}

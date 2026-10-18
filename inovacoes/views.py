@@ -3,10 +3,23 @@ from django.db import IntegrityError, transaction
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
+from django.views.generic import (
+    CreateView,
+    DeleteView,
+    DetailView,
+    FormView,
+    ListView,
+    UpdateView,
+)
 
-from inovacoes.forms import BuscaForm, InovacaoForm
-from inovacoes.models import Inovacao, StatusDesatualizado, StatusInovacao, UltimoEstagioDoCiclo
+from inovacoes.forms import BuscaForm, InovacaoForm, ReaproveitamentoForm
+from inovacoes.models import (
+    MENSAGEM_REAPROVEITAMENTO_STATUS,
+    Inovacao,
+    StatusDesatualizado,
+    StatusInovacao,
+    UltimoEstagioDoCiclo,
+)
 
 CONSTRAINT_TITULO = "inovacao_titulo_unico_por_unidade"
 
@@ -242,6 +255,47 @@ class InovacaoStatusView(AlteracaoDeInovacaoMixin, DetailView):
                 f"“{mudanca.get_status_novo_display()}”.",
             )
         return HttpResponseRedirect(inovacao.get_absolute_url())
+
+
+# Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, REAP-20).
+class InovacaoReaproveitarView(FormView):
+    """Sinalizacao de que uma unidade reaproveitou a inovacao (RF11, RN09).
+
+    REAP-19: sem AlteracaoDeInovacaoMixin. A sinalizacao nao altera a Inovacao
+    (AD-009), entao todo autenticado pode, autor ou nao. O registro nasce so por
+    Inovacao.registrar_reaproveitamento (AD-012).
+    """
+
+    form_class = ReaproveitamentoForm
+    template_name = "inovacoes/inovacao_reaproveitar.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.inovacao = Inovacao.objects.select_related("unidade").get(pk=kwargs["pk"])
+        except Inovacao.DoesNotExist:
+            # REAP-16: o 404 da CONS-15.
+            return _inovacao_nao_encontrada(request)
+        if not self.inovacao.pode_ser_reaproveitada():
+            # REAP-09: GET e POST voltam ao detalhe com o aviso, sem formulario.
+            self._avisar_status_indisponivel(self.inovacao.get_status_display())
+            return HttpResponseRedirect(self.inovacao.get_absolute_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def _avisar_status_indisponivel(self, rotulo):
+        messages.warning(self.request, MENSAGEM_REAPROVEITAMENTO_STATUS.format(status=rotulo))
+
+    # SPEC_DEVIATION: o design acrescenta inovacao aos kwargs do super().
+    # Reason: o FormView manda initial e prefix, que a assinatura
+    # ReaproveitamentoForm(data=None, *, inovacao) da T3 nao aceita.
+    def get_form_kwargs(self):
+        dados = self.request.POST if self.request.method == "POST" else None
+        return {"data": dados, "inovacao": self.inovacao}
+
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(inovacao=self.inovacao, **kwargs)
+        # REAP-15: sem unidade elegivel, a pagina explica em vez de mostrar o select.
+        contexto["sem_elegiveis"] = not contexto["form"].fields["unidade"].queryset.exists()
+        return contexto
 
 
 # Sem decorator: o LoginRequiredMiddleware ja nega o anonimo (AD-006, CONS-07).

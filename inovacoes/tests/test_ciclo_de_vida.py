@@ -321,14 +321,23 @@ def test_historico_fica_fora_do_admin(client, criar_inovacao, autor):
 
 
 def test_nenhuma_rota_de_inovacoes_altera_o_historico():
-    """STAT-30: as rotas de inovacoes sao as seis conhecidas e nenhuma serve MudancaDeStatus."""
+    """STAT-30: as rotas de inovacoes sao as sete conhecidas e nenhuma serve MudancaDeStatus."""
     (namespace,) = (
         p
         for p in get_resolver().url_patterns
         if isinstance(p, URLResolver) and p.namespace == "inovacoes"
     )
     rotas = {p.name: p.callback.view_class for p in namespace.url_patterns}
-    assert set(rotas) == {"lista", "nova", "detalhe", "editar", "excluir", "status"}
+    # REAP-03: a F6 acrescenta a sinalizacao de reaproveitamento.
+    assert set(rotas) == {
+        "lista",
+        "nova",
+        "detalhe",
+        "editar",
+        "excluir",
+        "status",
+        "reaproveitar",
+    }
     for view in rotas.values():
         modelos = {getattr(view, "model", None)}
         if getattr(view, "queryset", None) is not None:
