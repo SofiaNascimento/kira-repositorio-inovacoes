@@ -144,6 +144,8 @@ class InovacaoDetailView(DetailView):
             etapas=StatusInovacao.choices,
             # STAT-24, STAT-25: uma consulta so, com o responsavel junto (sem N+1).
             mudancas=self.object.mudancas_de_status.select_related("responsavel"),
+            # REAP-18, REAP-43: uma consulta so, com a unidade junto (sem N+1).
+            reaproveitamentos=self.object.reaproveitamentos.select_related("unidade"),
             **kwargs,
         )
 

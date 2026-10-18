@@ -81,5 +81,28 @@
     {% endif %}
   </section>
 
+  {# REAP-01, REAP-02: o link so existe em inovacao "Disponivel para replicacao", para qualquer usuario. #}
+  {% if inovacao.pode_ser_reaproveitada %}
+    <p class="acoes"><a href="{% url 'inovacoes:reaproveitar' inovacao.pk %}">Sinalizar reaproveitamento</a></p>
+  {% endif %}
+
+  <section aria-labelledby="reaproveitamentos-titulo">
+    <h2 id="reaproveitamentos-titulo">Reaproveitamentos</h2>
+    {# REAP-17: a contagem sai da lista ja carregada, sem COUNT a parte (REAP-43). #}
+    {% with total=reaproveitamentos|length %}
+      {% if total == 0 %}
+        <p class="vazio">Nenhum reaproveitamento registrado.</p>
+      {% else %}
+        <p>Reaproveitada por {{ total }} unidade{{ total|pluralize:"s" }}.</p>
+        {# REAP-18: do mais antigo ao mais recente (Meta.ordering de Reaproveitamento). #}
+        <ol class="reaproveitamentos">
+          {% for r in reaproveitamentos %}
+            <li>{{ r.unidade.nome }} — <time>{{ r.data|date:"d/m/Y" }}</time></li>
+          {% endfor %}
+        </ol>
+      {% endif %}
+    {% endwith %}
+  </section>
+
   <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

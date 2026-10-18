@@ -350,7 +350,7 @@ T17 → T18
 
 ---
 
-### T6: Link de sinalização e seção "Reaproveitamentos" no detalhe
+### T6: Link de sinalização e seção "Reaproveitamentos" no detalhe ✅
 
 **What**: O contexto `reaproveitamentos` na `InovacaoDetailView` e, no template do detalhe, o link condicionado ao status e a seção com contagem e lista.
 **Where**: `inovacoes/templates/inovacoes/inovacao_detail.html`
@@ -365,22 +365,24 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `InovacaoDetailView.get_context_data` ganha `reaproveitamentos=self.object.reaproveitamentos.select_related("unidade")`
-- [ ] Template: link "Sinalizar reaproveitamento" só com `pode_ser_reaproveitada`; `<section aria-labelledby="reaproveitamentos-titulo">` com `h2` "Reaproveitamentos", os três textos da REAP-17 e `<ol class="reaproveitamentos">`
-- [ ] `CONSULTAS_DO_DETALHE` 7 → 8, com comentário citando REAP-43
-- [ ] Testes e2e em `inovacoes/tests/test_views_detalhe.py`:
+- [x] `InovacaoDetailView.get_context_data` ganha `reaproveitamentos=self.object.reaproveitamentos.select_related("unidade")`
+- [x] Template: link "Sinalizar reaproveitamento" só com `pode_ser_reaproveitada`; `<section aria-labelledby="reaproveitamentos-titulo">` com `h2` "Reaproveitamentos", os três textos da REAP-17 e `<ol class="reaproveitamentos">`
+- [x] `CONSULTAS_DO_DETALHE` 7 → 8, com comentário citando REAP-43
+- [x] Testes e2e em `inovacoes/tests/test_views_detalhe.py`:
   - "Disponível" → exatamente um link "Sinalizar reaproveitamento" com `href="/inovacoes/<pk>/reaproveitar/"` para autor, terceiro `USUARIO` (comum, staff, superuser) e administrador (REAP-01).
   - "Em teste" e "Validada" → nenhum `href` para `/reaproveitar/` e nenhum texto "Sinalizar reaproveitamento" na página inteira, para todos esses perfis (REAP-02).
   - 0, 1 e 2 reaproveitamentos → "Nenhum reaproveitamento registrado.", "Reaproveitada por 1 unidade.", "Reaproveitada por 2 unidades." (REAP-17).
   - Lista com "<unidade> — <dd/mm/aaaa>" do mais antigo ao mais recente, com `data` forçada fora da ordem do `id`; reaproveitamentos de outra inovação não aparecem (REAP-18).
   - Número de consultas igual com 1 e com 4 reaproveitamentos (REAP-43).
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~786 testes passam (+14)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~786 testes passam (+14)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(inovacoes): mostra os reaproveitamentos no detalhe da inovacao`
+
+**Status**: ✅ Complete — 784 passed (+15); teste antigo alterado como autorizado: `CONSULTAS_DO_DETALHE` 7 → 8 em `test_views_detalhe.py`, com comentário citando REAP-43; REAP-01 e REAP-02 percorrem autor, administrador e `nao_autor_usuario` (comum, staff, superuser) dentro do teste; REAP-18 força a `data` contra a ordem do `id`; registros de teste nascem pelo `registrar_reaproveitamento` (AD-012); contagem e plural no template a partir da lista já carregada
 
 ---
 

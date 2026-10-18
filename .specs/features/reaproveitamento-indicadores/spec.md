@@ -304,8 +304,8 @@ indicadores sem depender de cor ou de mouse.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| REAP-01 | P1: Sinalizar | Tasks | In Tasks |
-| REAP-02 | P1: Sinalizar | Tasks | In Tasks |
+| REAP-01 | P1: Sinalizar | Tasks | Implementing |
+| REAP-02 | P1: Sinalizar | Tasks | Implementing |
 | REAP-03 | P1: Sinalizar | Tasks | Implementing |
 | REAP-04 | P1: Sinalizar | Tasks | Implementing |
 | REAP-05 | P1: Sinalizar | Tasks | Implementing |
@@ -320,8 +320,8 @@ indicadores sem depender de cor ou de mouse.
 | REAP-14 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-15 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-16 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-17 | P1: Detalhe | Tasks | In Tasks |
-| REAP-18 | P1: Detalhe | Tasks | In Tasks |
+| REAP-17 | P1: Detalhe | Tasks | Implementing |
+| REAP-18 | P1: Detalhe | Tasks | Implementing |
 | REAP-19 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-20 | P1: Acesso e integridade | Tasks | In Tasks |
 | REAP-21 | P1: Acesso e integridade | Tasks | In Tasks |
@@ -346,7 +346,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-40 | P1: Painel | Tasks | In Tasks |
 | REAP-41 | P2: Desempenho | Tasks | In Tasks |
 | REAP-42 | P2: Desempenho | Tasks | In Tasks |
-| REAP-43 | P2: Desempenho | Tasks | In Tasks |
+| REAP-43 | P2: Desempenho | Tasks | Implementing |
 | REAP-44 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-45 | P1: Acessibilidade | Tasks | In Tasks |
 | REAP-46 | P1: Acessibilidade | Tasks | In Tasks |

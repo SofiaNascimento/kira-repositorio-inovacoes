@@ -8,7 +8,7 @@ from django.utils.html import escape
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao
+from inovacoes.models import Inovacao, MudancaDeStatus, Reaproveitamento, StatusInovacao, Unidade
 
 ROTULOS = [
     "Título",
@@ -185,7 +185,8 @@ def test_id_nao_numerico_nao_mostra_a_mensagem_de_inovacao(logado):
 # Consultas do detalhe antes da F4 (sessao, conta, inovacao com select_related e
 # a gravacao da sessao): o pode_alterar le autor_id e o perfil ja carregados.
 # STAT-24: a F5 acrescenta uma, o historico de status com o responsavel junto.
-CONSULTAS_DO_DETALHE = 7
+# REAP-43: a F6 acrescenta uma, os reaproveitamentos com a unidade junto.
+CONSULTAS_DO_DETALHE = 8
 
 
 def _links(html, rotulo):
@@ -562,3 +563,100 @@ def test_historico_nao_cresce_em_consultas_com_os_registros(
     with django_assert_num_queries(CONSULTAS_DO_DETALHE):
         resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
     assert len(_historico(resposta.content.decode())) == quantidade
+
+
+# --- F6: sinalizacao e secao "Reaproveitamentos" ---------------------------------
+
+SINALIZAR = "Sinalizar reaproveitamento"
+
+
+def _reaproveitamento(inovacao, nome, por, data=None):
+    """Registra pelo metodo do modelo (AD-012) e, se pedido, forca a data."""
+    registro = inovacao.registrar_reaproveitamento(unidade=Unidade.objects.get(nome=nome), por=por)
+    if data is not None:
+        Reaproveitamento.objects.filter(pk=registro.pk).update(data=data)
+    return registro
+
+
+def _reaproveitamentos(html):
+    """(textos fora de lista, itens da lista) da secao "Reaproveitamentos"."""
+    secao = _secao(html, "reaproveitamentos-titulo")
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Reaproveitamentos"]
+    lista = re.search(r'<ol class="reaproveitamentos">(.*?)</ol>', secao, re.S)
+    itens = re.findall(r"<li\b[^>]*>(.*?)</li>", lista.group(1), re.S) if lista else []
+    return secao, [re.sub(r"<[^>]+>", "", item).strip() for item in itens]
+
+
+def test_disponivel_mostra_o_link_de_sinalizar_a_todo_perfil(
+    client, autor, administrador, nao_autor_usuario, criar_inovacao
+):
+    """REAP-01: autor, terceiro USUARIO (comum, staff, superuser) e administrador."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    for conta in [autor, administrador, nao_autor_usuario]:
+        client.force_login(conta)
+        html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+        assert _links(html, SINALIZAR) == [f"/inovacoes/{inovacao.pk}/reaproveitar/"], conta
+
+
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
+def test_fora_de_disponivel_nao_ha_link_nem_texto_de_sinalizar(
+    client, autor, administrador, nao_autor_usuario, criar_inovacao, status
+):
+    """REAP-02: nenhum href para /reaproveitar/ nem o texto, para nenhum perfil."""
+    inovacao = criar_inovacao(status=status)
+    for conta in [autor, administrador, nao_autor_usuario]:
+        client.force_login(conta)
+        html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+        assert "/reaproveitar/" not in html, conta
+        assert SINALIZAR not in html, conta
+
+
+@pytest.mark.parametrize(
+    ("nomes", "texto"),
+    [
+        ([], "Nenhum reaproveitamento registrado."),
+        (["Sede"], "Reaproveitada por 1 unidade."),
+        (["Sede", "Filial Norte"], "Reaproveitada por 2 unidades."),
+    ],
+    ids=["zero", "um", "dois"],
+)
+def test_secao_reaproveitamentos_mostra_a_contagem(logado, autor, criar_inovacao, nomes, texto):
+    """REAP-17: o texto muda com zero, um e N reaproveitamentos."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    for nome in nomes:
+        _reaproveitamento(inovacao, nome, autor)
+    secao, itens = _reaproveitamentos(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode())
+    textos = [
+        "Nenhum reaproveitamento registrado.",
+        "Reaproveitada por 1 unidade.",
+        "Reaproveitada por 2 unidades.",
+    ]
+    assert [t for t in textos if t in secao] == [texto]
+    assert len(itens) == len(nomes)
+
+
+def test_secao_lista_unidade_e_data_do_mais_antigo_ao_mais_recente(
+    logado, autor, terceiro, criar_inovacao
+):
+    """REAP-18: a data manda, mesmo contra a ordem do id; outra inovacao nao aparece."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    outra = criar_inovacao(titulo="Robo de Conciliacao", status=DISPONIVEL)
+    # Criado primeiro, mas com a data mais recente.
+    _reaproveitamento(inovacao, "Sede", autor, _utc(2026, 10, 5, 15, 0))
+    _reaproveitamento(inovacao, "Filial Norte", terceiro, _utc(2026, 10, 2, 15, 0))
+    _reaproveitamento(outra, "Filial Sul", autor, _utc(2026, 10, 3, 15, 0))
+    _, itens = _reaproveitamentos(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode())
+    assert itens == ["Filial Norte — 02/10/2026", "Sede — 05/10/2026"]
+
+
+@pytest.mark.parametrize("quantidade", [1, 4])
+def test_reaproveitamentos_nao_crescem_em_consultas(
+    logado, autor, criar_inovacao, django_assert_num_queries, quantidade
+):
+    """REAP-43: 1 e 4 reaproveitamentos custam o mesmo numero de consultas."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    for nome in ["Sede", "Filial Norte", "Filial Sul", "Filial Leste"][:quantidade]:
+        _reaproveitamento(inovacao, nome, autor)
+    with django_assert_num_queries(CONSULTAS_DO_DETALHE):
+        resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
+    assert len(_reaproveitamentos(resposta.content.decode())[1]) == quantidade
