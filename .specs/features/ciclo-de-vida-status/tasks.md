@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/ciclo-de-vida-status/spec.md`
 **Design**: `.specs/features/ciclo-de-vida-status/design.md`
-**Status**: In Progress — T1–T11 implementadas; Verifier iteração 1 FAIL (2 mutantes sobreviventes por lacuna de teste, `validation.md`) → Fase 5 (T12, T13)
+**Status**: In Progress — T1–T13 implementadas; Verifier iteração 1 FAIL (2 mutantes sobreviventes por lacuna de teste) → Fase 5 (T12, T13) concluída → aguardando o Verifier, iteração 2
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F4.
 
@@ -477,7 +477,7 @@ T12 → T13
 
 ---
 
-### T13: Contraste do ciclo e do histórico conferido por par renderizado (Fix 2, M27)
+### T13: Contraste do ciclo e do histórico conferido por par renderizado (Fix 2, M27) ✅
 
 **What**: O teste de cores do ciclo e do histórico passa a conferir o par texto/fundo que cada regra realmente desenha contra `PARES_DE_TEXTO`, em vez de cada token isolado.
 **Where**: `inovacoes/tests/test_views_sistema_design.py`
@@ -492,16 +492,18 @@ T12 → T13
 
 **Done when**:
 
-- [ ] Toda regra de `.ciclo`/`.historico` com `color` tem fundo conhecido: o `background` da própria regra ou o fundo declarado num mapa explícito do teste (`.ciclo li + li::before` e `.ciclo [aria-current=step]` sobre `surface`, do `li`; `.historico time` sobre `bg`, porque as seções ficam fora do cartão); regra com `color` sem fundo conhecido faz o teste falhar; o par (texto, fundo) está em `PARES_DE_TEXTO`
-- [ ] As checagens atuais (cor literal, token existente no `:root`) continuam
-- [ ] O teste falha com o mutante M27 (`.ciclo li { color: var(--surface) }`), conferido numa worktree temporária
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~685 testes passam (+0: reforça um teste parametrizado existente da T7)
+- [x] Toda regra de `.ciclo`/`.historico` com `color` tem fundo conhecido: o `background` da própria regra ou o fundo declarado num mapa explícito do teste (`.ciclo li + li::before` e `.ciclo [aria-current=step]` sobre `surface`, do `li`; `.historico time` sobre `bg`, porque as seções ficam fora do cartão); regra com `color` sem fundo conhecido faz o teste falhar; o par (texto, fundo) está em `PARES_DE_TEXTO`
+- [x] As checagens atuais (cor literal, token existente no `:root`) continuam
+- [x] O teste falha com o mutante M27 (`.ciclo li { color: var(--surface) }`), conferido numa worktree temporária
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~685 testes passam (+0: reforça um teste parametrizado existente da T7)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(design): confere o contraste do ciclo pelo par texto e fundo`
+
+**Status**: ✅ Complete — 685 passed (+0); `FUNDO_HERDADO` declara o fundo de `.ciclo li + li::before`, `.ciclo [aria-current=step]` (surface, do `li`) e `.historico time` (bg); regra com `color` sem fundo próprio nem declarado falha; as checagens anteriores (cor literal, token no `:root`, todo `background`/`background-color` ser fundo de um par do DS-08) continuam. M27 conferido numa worktree temporária: só `[.ciclo]` falha (1 failed, 592 passed na suíte de `inovacoes/tests/`); worktree removida e árvore real intacta. Build gate verde
 
 ---
 

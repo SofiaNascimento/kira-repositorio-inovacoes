@@ -543,25 +543,46 @@ def _regras_do_componente(classe):
     ]
 
 
+# Fundo sobre o qual cada regra sem background proprio desenha o texto. O ::before
+# e o estagio atual ficam no li, que tem fundo surface; o historico fica fora do
+# cartao, direto no bg da pagina. Regra nova com color precisa entrar aqui.
+FUNDO_HERDADO = {
+    ".ciclo li + li::before": "surface",
+    ".ciclo [aria-current=step]": "surface",
+    ".historico time": "bg",
+}
+
+
+def _token_de(valor):
+    achado = re.fullmatch(r"var\(--([\w-]+)\)", valor.strip())
+    assert achado, valor
+    return achado.group(1)
+
+
 @pytest.mark.unit
 @pytest.mark.parametrize("classe", [".ciclo", ".historico"])
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
-    """STAT-37, AD-010: nenhuma cor nova; texto e fundo so de pares do DS-08."""
+    """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08."""
     regras = _regras_do_componente(classe)
     assert [s for s, _ in regras if s == classe], f"falta a regra {classe}"
-    textos = {texto for texto, _ in PARES_DE_TEXTO}
-    fundos = {fundo for _, fundo in PARES_DE_TEXTO}
     for seletores, corpo in regras:
         assert not CORES_LITERAIS.search(corpo), seletores
-        for propriedade, valor in re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo):
+        propriedades = dict(re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo))
+        for valor in propriedades.values():
             for token in re.findall(r"var\(--([\w-]+)\)", valor):
                 assert _token(token), (seletores, token)
-            if propriedade == "color":
-                assert re.fullmatch(r"var\(--([\w-]+)\)", valor.strip()), seletores
-                assert valor.strip()[6:-1] in textos, seletores
-            if propriedade.startswith("background"):
-                assert re.fullmatch(r"var\(--([\w-]+)\)", valor.strip()), seletores
-                assert valor.strip()[6:-1] in fundos, seletores
+        fundos = [_token_de(v) for p, v in propriedades.items() if p.startswith("background")]
+        for fundo in fundos:
+            assert fundo in {f for _, f in PARES_DE_TEXTO}, (seletores, fundo)
+        if "color" not in propriedades:
+            continue
+        texto = _token_de(propriedades["color"])
+        if fundos:
+            (fundo,) = fundos
+        else:
+            assert seletores in FUNDO_HERDADO, f"{seletores}: declare o fundo em FUNDO_HERDADO"
+            fundo = FUNDO_HERDADO[seletores]
+        assert (texto, fundo) in PARES_DE_TEXTO, (seletores, texto, fundo)
 
 
 @pytest.mark.unit
