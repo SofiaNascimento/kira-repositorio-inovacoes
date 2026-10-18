@@ -24,7 +24,7 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
 | F2 | cadastro-inovacao | Large | Essencial | F1 |
 | F3 | consulta-inovacoes | Large | Essencial | F2 |
 | F4 | edicao-exclusao | Large | Essencial (RF07) / Importante (RF08) | F1, F2 |
-| F5 | ciclo-de-vida-status | Medium | Importante | F2 |
+| F5 | ciclo-de-vida-status | Large | Importante | F2 |
 | F6 | reaproveitamento-indicadores | Large | Desejável | F3, F5 |
 
 ---
@@ -74,7 +74,7 @@ Onde a política de permissões vira comportamento observável.
 - **RF:** RF09 (gestão de status)
 - **RN:** RN03 (transição Em teste → Validada → Disponível para replicação)
 - **Descrição:** operação que avança o status da inovação ao longo do ciclo.
-- **Notas:** Medium — pula Design/Tasks formais e implementa inline, mas o Execute ainda lista os passos atômicos antes de codar.
+- **Notas:** Reclassificada de Medium para Large no Specify (2026-10-18): o histórico de mudanças acrescenta modelo, migration e tela de confirmação; roda Design e Tasks formais. Conforma com AD-009 e AD-010.
 
 ## F6 — reaproveitamento-indicadores
 

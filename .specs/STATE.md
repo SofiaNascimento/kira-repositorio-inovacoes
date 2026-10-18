@@ -84,6 +84,8 @@
 
 ## Handoff
 
+- **Feature atual (2026-10-18)**: ciclo-de-vida-status (F5) — `.specs/features/ciclo-de-vida-status/`. **Specify aprovado em 2026-10-18**: `spec.md` (STAT-01 a STAT-37, `validate_spec.py` limpo) e `context.md`. Decidido com o usuário: ação separada em `/inovacoes/<id>/status/`; só avançar, um passo; histórico de mudanças (inovação, anterior, novo, responsável, data/hora) no detalhe; autor ou administrador (AD-009). Reclassificada de Medium para **Large** (modelo de histórico + migration + confirmação). **Próximo passo**: Design formal (carregar AD-001 a AD-010 e as lições L-003, L-005).
+
 - **Feature**: sistema-de-design — `.specs/features/sistema-de-design/`. **Concluído** em 2026-10-11: Verifier PASS na iteração 2 (`validation.md`). Passe de design sobre a F1–F4, guiado por `docs/design-spec.md`; decisão AD-010. A F4 (edicao-exclusao) segue concluída (Verifier PASS, conferência manual 20/20).
 - **Phase / Task**: Specify ✅ (spec breve com Code Reuse Analysis, DS-01 a DS-16) · Design e Tasks dispensados (plano inline de 4 passos) · Execute ✅ · Verifier ✅ PASS (iteração 2: 16/16 ACs, 33/34 mutantes mortos; o sobrevivente `outline: thin solid` está fora da spec).
 - **Completed**: `7f90d0d` (spec), `3bbc99b` (base + kira.css), `a7b9d9a` (telas), `50b8818` (AD-010), `7918c00` (validação iteração 1: FAIL, comentário do CSS satisfazia o `"ana" in html` da AUTH-01 e DS-07 fraco), `4db5be8` (correção), fechamento (commit desta atualização). Nenhum teste da F1–F4 alterado.
