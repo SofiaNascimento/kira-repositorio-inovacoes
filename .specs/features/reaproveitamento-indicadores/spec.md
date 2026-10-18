@@ -307,7 +307,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-01 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-02 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-03 | P1: Sinalizar | Tasks | In Tasks |
-| REAP-04 | P1: Sinalizar | Tasks | In Tasks |
+| REAP-04 | P1: Sinalizar | Tasks | Implementing |
 | REAP-05 | P1: Sinalizar | Tasks | Implementing |
 | REAP-06 | P1: Sinalizar | Tasks | In Tasks |
 | REAP-07 | P1: Sinalizar | Tasks | Implementing |
@@ -316,7 +316,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-10 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-11 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-12 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-13 | P1: Guardas da RN09 | Tasks | In Tasks |
+| REAP-13 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-14 | P1: Guardas da RN09 | Tasks | Implementing |
 | REAP-15 | P1: Guardas da RN09 | Tasks | In Tasks |
 | REAP-16 | P1: Guardas da RN09 | Tasks | In Tasks |

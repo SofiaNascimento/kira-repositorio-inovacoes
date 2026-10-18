@@ -235,7 +235,7 @@ T17 → T18
 
 ---
 
-### T3: `ReaproveitamentoForm` com `UnidadeElegivelField`
+### T3: `ReaproveitamentoForm` com `UnidadeElegivelField` ✅
 
 **What**: O formulário de uma escolha que exibe só as unidades elegíveis e aceita qualquer unidade existente, com a mensagem única de entrada.
 **Where**: `inovacoes/forms.py`
@@ -250,21 +250,23 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `UnidadeElegivelField(ModelChoiceField)` com `to_python` buscando em `Unidade.objects.all()` e docstring do porquê (REAP-11/REAP-12 chegam ao método)
-- [ ] `ReaproveitamentoForm(data=None, *, inovacao)` com `queryset` = Q6, `label="Unidade que reaproveitou"`, `empty_label="Selecione a unidade"`, `required` e `invalid_choice` = "Selecione a unidade que reaproveitou a inovação."
-- [ ] Testes de integração em `inovacoes/tests/test_forms_reaproveitamento.py`:
+- [x] `UnidadeElegivelField(ModelChoiceField)` com `to_python` buscando em `Unidade.objects.all()` e docstring do porquê (REAP-11/REAP-12 chegam ao método)
+- [x] `ReaproveitamentoForm(data=None, *, inovacao)` com `queryset` = Q6, `label="Unidade que reaproveitou"`, `empty_label="Selecione a unidade"`, `required` e `invalid_choice` = "Selecione a unidade que reaproveitou a inovação."
+- [x] Testes de integração em `inovacoes/tests/test_forms_reaproveitamento.py`:
   - Opções exibidas = todas as unidades menos a origem e menos as já registradas, em ordem alfabética; a primeira opção é a vazia "Selecione a unidade" e nenhuma vem selecionada (REAP-04).
   - Unidade elegível → válido, com `cleaned_data["unidade"]` = a instância.
   - Origem e unidade já registrada → **válido** no form (a recusa é do método).
   - Vazio, id inexistente e `"abc"` → inválido com exatamente a mensagem da REAP-13.
   - Unidade sinalizada para **outra** inovação continua elegível.
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~741 testes passam (+9)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~741 testes passam (+9)
 
 **Tests**: integration
 **Gate**: full
 
 **Commit**: `feat(inovacoes): adiciona o formulario de sinalizacao de reaproveitamento`
+
+**Status**: ✅ Complete — 741 passed (+9); as opções são conferidas no select renderizado contra uma lista literal (unidades da migration 0004 mais "Almoxarifado", criada por último para separar a ordem do nome da ordem do id); "nenhuma vem selecionada" é lido como nenhuma unidade com `selected`: o Django marca a opção vazia "Selecione a unidade" como `selected` no form não vinculado; os registros de teste nascem pelo `registrar_reaproveitamento` (AD-012)
 
 ---
 

@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 
 from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
@@ -138,3 +139,59 @@ class BuscaForm(forms.Form):
         # A ajuda vai abaixo do controle (CONS-52); o padrao do Django a poe acima.
         for campo in self.fields.values():
             campo.template_name = "inovacoes/campo.html"
+
+
+# REAP-13: ausente, inexistente ou nao numerica; uma mensagem so.
+MENSAGEM_UNIDADE_QUE_REAPROVEITOU = "Selecione a unidade que reaproveitou a inovação."
+
+
+class UnidadeElegivelField(forms.ModelChoiceField):
+    """Exibe so as unidades elegiveis, mas aceita qualquer unidade existente.
+
+    O queryset define as opcoes do select (REAP-04). A busca do valor vai em
+    todas as unidades: a origem e a ja registrada, vindas de POST forjado,
+    chegam a Inovacao.registrar_reaproveitamento, que da a mensagem especifica
+    (REAP-11, REAP-12) em vez do generico "Faca uma escolha valida".
+    """
+
+    def to_python(self, value):
+        if value in self.empty_values:
+            return None
+        try:
+            return Unidade.objects.get(pk=value)
+        except (ValueError, TypeError, Unidade.DoesNotExist):
+            raise ValidationError(
+                self.error_messages["invalid_choice"],
+                code="invalid_choice",
+                params={"value": value},
+            ) from None
+
+
+class ReaproveitamentoForm(forms.Form):
+    """Escolha da unidade que reaproveitou a inovacao (RF11).
+
+    So a unidade: inovacao, responsavel e data nunca vem do POST (REAP-22).
+    """
+
+    unidade = UnidadeElegivelField(
+        Unidade.objects.none(),
+        label="Unidade que reaproveitou",
+        empty_label="Selecione a unidade",
+        required=True,
+        error_messages={
+            "required": MENSAGEM_UNIDADE_QUE_REAPROVEITOU,
+            "invalid_choice": MENSAGEM_UNIDADE_QUE_REAPROVEITOU,
+        },
+    )
+
+    def __init__(self, data=None, *, inovacao):
+        super().__init__(data, label_suffix="")
+        campo = self.fields["unidade"]
+        # REAP-04: todas menos a origem e as que ja sinalizaram, em ordem alfabetica.
+        campo.queryset = (
+            Unidade.objects.exclude(pk=inovacao.unidade_id)
+            .exclude(reaproveitamentos__inovacao=inovacao)
+            .order_by("nome")
+        )
+        # REAP-44, REAP-45: rotulo, erro e ARIA pelo parcial do projeto.
+        campo.template_name = "inovacoes/campo.html"
