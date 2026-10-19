@@ -106,6 +106,8 @@ def test_painel_abre_com_titulo_e_h1(client, request, perfil):
     html = _html(client, request.getfixturevalue(perfil))
     assert re.search(r"<title>Painel de indicadores", html)
     assert re.search(r"<h1>Painel de indicadores</h1>", html)
+    # L-028, L-030: o titulo fica na tela e no leitor de tela.
+    assert re.search(r"<h1>Painel de indicadores</h1>", exibido(html))
 
 
 @pytest.mark.django_db
@@ -183,6 +185,8 @@ def test_com_inovacao_nao_mostra_o_convite_ao_cadastro(client, disponivel, terce
     html = _html(client, terceiro)
     assert "Nenhuma inovação cadastrada ainda." not in html
     assert html.count("<table") == 2
+    # L-028, L-030: as duas tabelas ficam na tela e no leitor de tela.
+    assert exibido(html).count("<table") == 2
 
 
 @pytest.mark.django_db
@@ -427,7 +431,11 @@ def _celulas(linha):
 @pytest.mark.django_db
 def test_tabelas_tem_caption_e_cabecalhos_com_scope(client, cenario, terceiro):
     """REAP-46: caption, th scope=col nas colunas e th scope=row na primeira celula."""
-    tabelas = _todos(_arvore(_html(client, terceiro)), "table")
+    html = _html(client, terceiro)
+    tabelas = _todos(_arvore(html), "table")
+    # L-028, L-030: cada tabela, caption e celula incluidos, fica na tela e no leitor de tela.
+    visiveis = _todos(_arvore(exibido(html)), "table")
+    assert [_texto(t) for t in visiveis] == [_texto(t) for t in tabelas]
     assert [_texto(_todos(t, "caption")[0]) for t in tabelas] == [
         "Inovações por categoria",
         "Inovações por unidade",
@@ -452,7 +460,11 @@ def test_cada_grafico_fica_na_secao_da_tabela_com_os_mesmos_numeros(client, cena
 
     Todo par (nome, valor) do grafico e uma linha da coluna correspondente da tabela.
     """
-    secoes = _todos(_arvore(_html(client, terceiro)), "section")
+    html = _html(client, terceiro)
+    secoes = _todos(_arvore(html), "section")
+    # L-028, L-030: cada secao, grafico e tabela incluidos, fica na tela e no leitor de tela.
+    visiveis = _todos(_arvore(exibido(html)), "section")
+    assert [_texto(s) for s in visiveis] == [_texto(s) for s in secoes]
     colunas = {TITULOS[0]: 1, TITULOS[1]: 1, TITULOS[2]: 2}
     vistos = []
     for secao in secoes:
@@ -483,21 +495,33 @@ def test_cada_grafico_fica_na_secao_da_tabela_com_os_mesmos_numeros(client, cena
 @pytest.mark.django_db
 def test_cards_usam_lista_de_definicao_com_rotulo_e_numero(client, cenario, terceiro):
     """Cards: rotulo em dt e numero em dd, dentro do dl.metricas."""
-    elementos = _elementos(_html(client, terceiro))
-    inicio = next(
-        i
-        for i, (tag, atributos, _) in enumerate(elementos)
-        if tag == "dl" and "metricas" in atributos.get("class", "").split()
-    )
-    pares = [
-        (tag, texto.strip()) for tag, _, texto in elementos[inicio + 1 :] if tag in {"dt", "dd"}
-    ][:4]
-    assert pares == [
+    html = _html(client, terceiro)
+    esperado = [
         ("dt", "Inovações cadastradas"),
         ("dd", "4"),
         ("dt", "Reaproveitamentos registrados"),
         ("dd", "2"),
     ]
+    assert _pares_dos_cards(html) == esperado
+    # L-028, L-030: o dl e cada card ficam na tela e no leitor de tela.
+    assert _pares_dos_cards(exibido(html)) == esperado
+
+
+def _pares_dos_cards(html):
+    elementos = _elementos(html)
+    inicio = next(
+        (
+            i
+            for i, (tag, atributos, _) in enumerate(elementos)
+            if tag == "dl" and "metricas" in atributos.get("class", "").split()
+        ),
+        None,
+    )
+    if inicio is None:
+        return None
+    return [
+        (tag, texto.strip()) for tag, _, texto in elementos[inicio + 1 :] if tag in {"dt", "dd"}
+    ][:4]
 
 
 @pytest.mark.django_db

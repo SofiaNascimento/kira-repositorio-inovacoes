@@ -16,6 +16,7 @@ from django.test.utils import CaptureQueriesContext
 
 from inovacoes.models import Categoria, Inovacao, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.tests.test_desempenho import LIMITE_EM_SEGUNDOS, demonstracao  # noqa: F401
+from inovacoes.tests.visibilidade import exibido
 
 URL = "/indicadores/"
 REAPROVEITAMENTOS_DA_CARGA = 200
@@ -69,6 +70,10 @@ def test_painel_com_a_demonstracao_e_200_reaproveitamentos_responde_em_menos_de_
     html = resposta.content.decode()
     assert _card(html, "Inovações cadastradas") == "500"
     assert _card(html, "Reaproveitamentos registrados") == "200"
+    # L-028, L-030: os cards ficam na tela e no leitor de tela.
+    visivel = exibido(html)
+    assert _card(visivel, "Inovações cadastradas") == "500"
+    assert _card(visivel, "Reaproveitamentos registrados") == "200"
     assert segundos < LIMITE_EM_SEGUNDOS
 
 

@@ -12,6 +12,7 @@ from django.utils import formats, timezone
 
 from contas.models import Usuario
 from inovacoes.models import Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import exibido
 
 LISTA = "/admin/inovacoes/reaproveitamento/"
 
@@ -78,6 +79,10 @@ def test_administrador_ve_a_listagem_com_os_quatro_campos(logado_como_administra
     assert _celula(html, "registrado_por") == "bruno"
     data = formats.localize(timezone.template_localtime(registro.data))
     assert _celula(html, "data") == data
+    # L-028, L-030: as quatro celulas ficam na tela e no leitor de tela.
+    visivel = exibido(html)
+    for campo in ["inovacao", "unidade", "registrado_por", "data"]:
+        assert _celula(visivel, campo) == _celula(html, campo), campo
 
 
 def test_administrador_exclui_pela_confirmacao_do_admin(logado_como_administrador, registro):

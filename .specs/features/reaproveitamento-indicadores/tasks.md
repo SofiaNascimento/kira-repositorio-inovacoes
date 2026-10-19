@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Design**: `.specs/features/reaproveitamento-indicadores/design.md`
-**Status**: T1–T19 ✅ (865 testes). Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes, todos concluídos (lotes 3 e 4 retomados em 2026-10-19). Verifier FAIL na iteração 1 só por lacuna de teste (M41, M43, M44, M45); a T19 (Fix 1) reforça as asserções de exibido; re-verificação pendente (iteração 2)
+**Status**: T1–T20 ✅ (865 testes). Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes, todos concluídos (lotes 3 e 4 retomados em 2026-10-19). Verifier FAIL na iteração 1 (M41, M43, M44, M45) e na iteração 2 (X01, Y01, Y02), só por lacuna de teste; a T19 (Fix 1) e a T20 (Fix 2) levam a checagem de visibilidade a toda asserção de exibido da F6; re-verificação pendente (iteração 3)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F5.
 
@@ -170,6 +170,16 @@ produção. Só arquivos de teste mudam, e só ficam mais fortes.
 
 ```
 T19
+```
+
+### Phase 9: Correção da validação, iteração 2
+
+Fix task do `validation.md` (iteração 2, FAIL): três mutantes sobreviveram pela mesma classe de
+lacuna (X01, Y01, Y02), em asserções de exibido que a T19 não alcançou. Pela L-040, a correção
+cobre toda asserção de exibido dos testes da F6, não só as três. Só arquivos de teste mudam.
+
+```
+T20
 ```
 
 ---
@@ -818,13 +828,44 @@ T19
 
 **Status**: ✅ Complete — 865 passed (+0: só reforço); novo `inovacoes/tests/visibilidade.py` com `exibido(html)`, um `HTMLParser` que devolve o HTML com o texto original das tags, menos comentários e subárvores escondidas, para que os helpers de regex rodem sem mudança sobre ele; numa página sem nada escondido o resultado é idêntico ao cru (154 testes das três suítes passam sem diferença). Asserções novas: REAP-01 `_links(exibido(html), SINALIZAR)`; `_reaproveitamentos` exige a seção exibida igual à crua; o teste da REAP-03 e o `_afirma_sem_elegiveis` exigem o `<main>` exibido igual ao cru; `_card`, `_tabela` e `_graficos` exigem o mesmo resultado nos dois HTMLs, e `_card`/`_tabela` agora dizem explicitamente quando não acham o elemento (antes, `AttributeError`); o `.vazio` da REAP-37 também. Nenhuma asserção antiga mudou; o `Arvore` da T18 e o `ESCONDE` da F5 ficam como estão, porque o filtro reaproveita os helpers de regex inteiros em vez de reescrevê-los sobre a árvore. Mutações numa worktree temporária, todas mortas (16): M41 (3 falhas), M43 (9), M44 (3), M45 (2), `hidden` na seção "Reaproveitamentos" (6), no `<ol class="reaproveitamentos">` (5), no `<form>` (1), na seção "Por categoria" (8), no `<li>` do item (5) e no `<p>` da contagem (5), `aria-hidden="TRUE"` no `<p class="acoes">` do M41 (3), `aria-hidden="true"` no `<dl class="metricas">` (3) e no "Nenhum reaproveitamento registrado." (1), `inert` na seção "Por unidade" (9) e `INERT` no `.cartao` da sinalização sem unidade elegível (3); worktree removida e árvore real limpa. Build gate verde
 
+### T20: Toda asserção de exibido da F6 usa o HTML visível (Fix 2, X01/Y01/Y02) ✅
+
+**What**: Toda asserção dos testes da F6 que afirma que algo aparece na página (texto, link, botão, título, mensagem, tabela, item, rótulo, campo ou gráfico) passa também pelo `exibido(html)` da T19. Fecha X01 (REAP-28), Y01 (REAP-29) e Y02 (REAP-06, REAP-09) e varre o resto da feature (L-028, L-030, L-040).
+**Where**: `inovacoes/tests/test_views_cabecalho.py` (só o teste da T15), `indicadores/tests/test_views_painel.py`, `inovacoes/tests/test_views_reaproveitar.py`, `inovacoes/tests/test_views_acessibilidade_alteracao.py` (só o bloco da F6), `inovacoes/tests/test_forms_reaproveitamento.py`, `inovacoes/tests/test_admin_reaproveitamento.py`, `indicadores/tests/test_desempenho_painel.py`
+**Depends on**: T19
+**Reuses**: `exibido(html)` de `inovacoes/tests/visibilidade.py` (T19) e o padrão "extraído do exibido == extraído do cru"; os helpers de F1–F5 (`_navegacao_principal`, `_analisar`, `_controles`, `_texto_do_id`, `_elementos`) são chamados sobre o `exibido`, sem mudança
+**Requirement**: REAP-28, REAP-29, REAP-06, REAP-09, REAP-04, REAP-11, REAP-12, REAP-13, REAP-14, REAP-16, REAP-19, REAP-26, REAP-30, REAP-31, REAP-37, REAP-41, REAP-44, REAP-45, REAP-46, REAP-47
+
+**Tools**:
+
+- MCP: NONE
+- Skill: NONE
+
+**Done when**:
+
+- [x] REAP-28: o `nav` "Principal" exibido é idêntico ao cru, com o link "Indicadores" depois de "Cadastrar inovação" (X01)
+- [x] REAP-29: o `h1` "Painel de indicadores" é achado no HTML exibido (Y01)
+- [x] REAP-06, REAP-09: `_mensagens` exige a mesma lista de mensagens na região `role="status"` crua e na exibida (Y02)
+- [x] Varredura: cada asserção de exibido dos testes da F6 (`git diff --name-only eb957d2..HEAD -- '*tests*'`) passa pelo HTML exibido ou é reforçada; a lista fica no Status
+- [x] Nenhuma asserção antiga removida, enfraquecida ou pulada; nenhum teste da F1 a F5 tocado; nenhum helper compartilhado com a F1–F5 alterado; código de produção intacto
+- [x] Morrem numa worktree temporária: X01, Y01, Y02 e uma ocultação (`hidden`, `inert` ou `aria-hidden`) por asserção reforçada; M41, M43, M44 e M45 continuam mortas
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: 865 testes passam (+0: reforça testes existentes)
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `test(inovacoes): estende a checagem de visibilidade a todas as assercoes da F6`
+
+**Status**: ✅ Complete — 865 passed (+0: só reforço). **Varredura** (16 arquivos de teste da F6; `ind/` = `indicadores/tests/`, `inv/` = `inovacoes/tests/`). *Já cobertas pela T19*: `ind/test_views_painel.py` `_card`, `_tabela`, `_graficos` (REAP-30 a REAP-38, REAP-34 a REAP-36, nome longo) e o `.vazio` (REAP-37); `inv/test_views_detalhe.py` `_reaproveitamentos` (REAP-17, REAP-18, REAP-43) e o link de sinalizar (REAP-01); `inv/test_views_reaproveitar.py` o `<main>` da REAP-03 e o `_afirma_sem_elegiveis` (REAP-15). *Reforçadas aqui* (18 asserções): `inv/test_views_cabecalho.py:80` nav exibido == cru (REAP-28, X01); `ind/test_views_painel.py:110` `h1` no exibido (REAP-29, Y01), `:189` duas `<table` no exibido (REAP-37 ao contrário), `:437` texto de cada tabela igual no exibido (REAP-46), `:466` texto de cada `<section>` igual no exibido (REAP-47), `:507` pares `dt`/`dd` dos cards no exibido; `inv/test_views_reaproveitar.py:50` `_mensagens` (REAP-06, REAP-09 GET e POST, Y02), `:119` opções do select no exibido (REAP-04), `:180` `h1` do 404 (REAP-16), `:190` `<main>` do formulário aberto (REAP-19), `:232` `<main>` com o erro do select (REAP-11 a REAP-14); `inv/test_forms_reaproveitamento.py:28` opções do widget (REAP-04); `inv/test_views_acessibilidade_alteracao.py:374` select e rótulo (REAP-44), `:403` select e mensagem do `aria-describedby` (REAP-45), `:445` ordem de foco; `inv/test_admin_reaproveitamento.py:83` as quatro células da listagem (REAP-26); `ind/test_desempenho_painel.py:74` os cards da REAP-41. *Fora do alcance, sem mudança*: `<title>` (no `<head>`, sem `hidden` possível), asserções de ausência (REAP-02, REAP-27, REAP-37, REAP-49, anônimo da REAP-28), atributos ARIA lidos da tag (REAP-45 sem erro, REAP-47 `role`/`aria-labelledby`), status HTTP, redirecionamentos e banco, os módulos sem HTML (`test_reaproveitamento.py`, `test_agregacoes.py`, `test_graficos.py`, `conftest.py`), as rotas de `test_ciclo_de_vida.py` e `test_controle_autoria.py`, e o `test_views_sistema_design.py`, onde a F6 só acrescenta telas e seletores aos testes da F1–F5. Helpers compartilhados com a F1–F5 ficam como estão; `_mensagens`, `_opcoes` e `_pares_dos_cards` são da F6 e ganham a forma "cru e exibido". **Mutações** numa worktree temporária, todas mortas (19): X01 (`<span hidden>` no link do `nav`, 4 falhas), Y01 (`<div hidden>` no `h1`, 2), Y02 (`<ul class="mensagens" hidden>`, 5), `hidden` na `<option>` "Sede" (13) e no `<select>` (20), `<div hidden>` no `h1` do 404 (1), `<div class="campo" hidden>` (17), `<div hidden>` nos erros do `campo.html` (14), `<span hidden>` no rótulo (12), `inert` no "Cancelar" (12), `hidden` no primeiro `.tabela` (6), `<caption hidden>` (5), `aria-hidden="true"` no valor do gráfico (8), `inert` no primeiro card (5), célula "unidade" do admin num `<span hidden>` (1), e de novo M41 (3), M43 (12), M44 (5, inclusive a REAP-41) e M45 (2). Com o `exibido` neutralizado (devolve o cru), X01, Y01, Y02, o 404, os erros, o rótulo, o card e o admin voltam a sobreviver: a morte vem das asserções novas. Worktree removida; `git worktree list` só com a árvore principal e árvore real limpa. Build gate verde
+
 ---
 
 ## Phase Execution Map
 
 ```
-Phase 1 → Phase 2 → Phase 3 → Phase 4 ║ Phase 5 → Phase 6 → Phase 7 → Phase 8
-                       RF11            ║ (linha de corte)   RF10       correção
+Phase 1 → Phase 2 → Phase 3 → Phase 4 ║ Phase 5 → Phase 6 → Phase 7 → Phase 8 → Phase 9
+                       RF11            ║ (linha de corte)   RF10       correção   correção
 
 Phase 1:  T1 → T2
 Phase 2:  T3 → T4 → T5
@@ -834,6 +875,7 @@ Phase 5:  T11 → T12 → T13
 Phase 6:  T14 → T15 → T16
 Phase 7:  T17 → T18
 Phase 8:  T19
+Phase 9:  T20
 ```
 
 Arcos de fronteira entre fases (a primeira task de cada fase depende da última da anterior):
@@ -846,6 +888,7 @@ T10 → T11
 T13 → T14
 T16 → T17
 T18 → T19
+T19 → T20
 ```
 
 A execução é estritamente sequencial — não há paralelismo dentro de uma fase.
@@ -860,6 +903,7 @@ fronteira de fase:
 | 3 | 5 + 6 | 6 | Painel: dados, página, gráficos, menu, estilo |
 | 4 | 7 | 2 | Evidências do painel |
 | Correção | 8 | 1 | Fix 1 da iteração 1 (T19), um worker só |
+| Correção 2 | 9 | 1 | Fix 2 da iteração 2 (T20), um worker só |
 
 Os lotes 1 e 2 fecham o RF11. O corte por prazo cai exatamente entre os lotes 2 e 3. Mais de um lote
 ⇒ o Execute deve **oferecer** sub-agentes antes de começar.
@@ -887,6 +931,7 @@ Os lotes 1 e 2 fecham o RF11. O corte por prazo cai exatamente entre os lotes 2 
 | T16 | 1 grupo de componentes de CSS | ✅ Granular |
 | T17, T18 | 1 arquivo de teste cada | ✅ Granular |
 | T19 | 1 helper de teste + reforço de 3 arquivos de teste (correção da validação) | ⚠️ coeso, uma só lacuna |
+| T20 | reforço de 7 arquivos de teste com o helper da T19 (correção da validação) | ⚠️ coeso, uma só lacuna |
 
 **Nota sobre T4 e T13:** uma view Django não é testável sem rota e template. O `Where` nomeia o
 arquivo principal; os demais estão no `Done when` e cobertos pelos mesmos testes. É o mesmo merge
@@ -924,6 +969,7 @@ A task é a evidência das ACs; se a evidência acusar falta, o ajuste entra na 
 | T17 | T16 | T16 → T17 (arco de fronteira) | ✅ Match |
 | T18 | T17 | T17 → T18 | ✅ Match |
 | T19 | T18 | T18 → T19 (arco de fronteira) | ✅ Match |
+| T20 | T19 | T19 → T20 (arco de fronteira) | ✅ Match |
 
 Nenhuma dependência aponta para uma fase posterior. Nenhuma task das Fases 1–4 depende das Fases 5–7.
 
@@ -952,6 +998,7 @@ Nenhuma dependência aponta para uma fase posterior. Nenhuma task das Fases 1–
 | T17: desempenho | Desempenho | e2e | e2e | ✅ OK |
 | T18: acessibilidade e 500 | Templates (evidência) | e2e | e2e | ✅ OK |
 | T19: exibido sem escondidos | Templates (evidência) | e2e | e2e | ✅ OK |
+| T20: toda asserção de exibido | Templates (evidência) | e2e | e2e | ✅ OK |
 
 Nenhuma task tem `Tests: none`.
 
@@ -964,40 +1011,42 @@ Nenhuma task tem `Tests: none`.
 | REAP-01 | T6, T19 |
 | REAP-02 | T6 |
 | REAP-03 | T4, T19 |
-| REAP-04 | T3, T4 |
+| REAP-04 | T3, T4, T20 |
 | REAP-05 | T2, T5 |
-| REAP-06 | T5 |
+| REAP-06 | T5, T20 |
 | REAP-07 | T2 |
 | REAP-08 | T4 |
-| REAP-09 | T4, T5 |
+| REAP-09 | T4, T5, T20 |
 | REAP-10 | T2 |
-| REAP-11, REAP-12 | T2, T5 |
-| REAP-13 | T3, T5 |
-| REAP-14 | T1, T2, T5 |
+| REAP-11, REAP-12 | T2, T5, T20 |
+| REAP-13 | T3, T5, T20 |
+| REAP-14 | T1, T2, T5, T20 |
 | REAP-15 | T4, T19 |
-| REAP-16 | T4, T5 |
+| REAP-16 | T4, T5, T20 |
 | REAP-17, REAP-18 | T6, T19 |
-| REAP-19 | T4, T5 |
+| REAP-19 | T4, T5, T20 |
 | REAP-20, REAP-21 | T9 |
 | REAP-22 | T2, T5 |
 | REAP-23 | T1, T9 |
 | REAP-24 | T1, T8 |
 | REAP-25 | T1 |
-| REAP-26, REAP-27 | T8 |
-| REAP-28 | T15 |
-| REAP-29 | T13 |
-| REAP-30, REAP-31 | T13, T19 |
+| REAP-26 | T8, T20 |
+| REAP-27 | T8 |
+| REAP-28 | T15, T20 |
+| REAP-29 | T13, T20 |
+| REAP-30, REAP-31 | T13, T19, T20 |
 | REAP-32 | T11, T13 |
 | REAP-33 | T11, T13, T19 |
 | REAP-34 | T14, T19 |
 | REAP-35, REAP-36 | T12, T14 |
-| REAP-37 | T13, T19 |
+| REAP-37 | T13, T19, T20 |
 | REAP-38, REAP-39, REAP-40 | T13 |
-| REAP-41, REAP-42 | T17 |
+| REAP-41 | T17, T20 |
+| REAP-42 | T17 |
 | REAP-43 | T6 |
-| REAP-44, REAP-45 | T10 |
-| REAP-46 | T18 |
-| REAP-47 | T14, T18 |
+| REAP-44, REAP-45 | T10, T20 |
+| REAP-46 | T18, T20 |
+| REAP-47 | T14, T18, T20 |
 | REAP-48 | T7, T16 |
 | REAP-49 | T9, T18 |
 

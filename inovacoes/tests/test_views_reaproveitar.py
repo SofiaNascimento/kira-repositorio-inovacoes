@@ -44,6 +44,16 @@ def _conteudo(html):
 
 def _mensagens(html):
     """Itens da regiao role="status" do base, com o nivel de cada um."""
+    mensagens = _mensagens_no(html)
+    assert mensagens is not None, "sem a regiao role=status"
+    # L-028, L-030: a regiao e cada mensagem ficam na tela e no leitor de tela.
+    assert _mensagens_no(exibido(html)) == mensagens
+    return mensagens
+
+
+def _mensagens_no(html):
+    if '<div role="status">' not in html:
+        return None
     inicio = html.index('<div role="status">')
     regiao = html[inicio : html.index("</div>", inicio)]
     return re.findall(r'<li class="alerta alerta--(\w+)">(.*?)</li>', regiao, re.S)
@@ -103,7 +113,10 @@ def test_select_oferece_so_as_unidades_elegiveis_em_ordem(client, autor, disponi
         unidade=Unidade.objects.get(nome="Filial Norte"), por=autor
     )
     html = _entrar(client, autor).get(_reaproveitar(disponivel)).content.decode()
-    assert _opcoes(html) == ["Almoxarifado", "Filial Leste", "Filial Oeste", "Filial Sul", "Sede"]
+    elegiveis = ["Almoxarifado", "Filial Leste", "Filial Oeste", "Filial Sul", "Sede"]
+    assert _opcoes(html) == elegiveis
+    # L-028, L-030: o select e cada opcao ficam na tela e no leitor de tela.
+    assert _opcoes(exibido(html)) == elegiveis
 
 
 def test_get_nunca_cria_reaproveitamento(client, autor, disponivel):
@@ -163,12 +176,18 @@ def test_id_sem_inovacao_responde_404_com_pagina_propria(client, autor):
     assert resposta.status_code == 404
     assertTemplateUsed(resposta, "inovacoes/inovacao_nao_encontrada.html")
     assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", resposta.content.decode())
+    # L-028, L-030: o titulo fica na tela e no leitor de tela.
+    visivel = exibido(resposta.content.decode())
+    assert re.search(r"<h1[^>]*>\s*Inovação não encontrada\.\s*</h1>", visivel)
 
 
 def _afirma_formulario_aberto(resposta):
     assert resposta.status_code == 200
     assertTemplateUsed(resposta, "inovacoes/inovacao_reaproveitar.html")
     assert '<select name="unidade"' in resposta.content.decode()
+    # L-028, L-030: nada do <main>, formulario incluido, sai da tela ou do leitor de tela.
+    html = resposta.content.decode()
+    assert _conteudo(exibido(html)) == _conteudo(html)
 
 
 def test_usuario_que_nao_e_o_autor_abre_o_formulario(client, disponivel, nao_autor_usuario):
@@ -209,6 +228,8 @@ def _afirma_formulario_com_erro(resposta, mensagem):
     conteudo = _conteudo(resposta.content.decode())
     assert '<select name="unidade"' in conteudo
     assert _erros_do_select(conteudo) == [mensagem]
+    # L-028, L-030: o select e o erro ficam na tela e no leitor de tela.
+    assert _conteudo(exibido(resposta.content.decode())) == conteudo
 
 
 @pytest.fixture

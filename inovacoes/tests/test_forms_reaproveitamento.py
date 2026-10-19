@@ -10,6 +10,7 @@ import pytest
 
 from inovacoes.forms import ReaproveitamentoForm
 from inovacoes.models import StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import exibido
 
 MENSAGEM = "Selecione a unidade que reaproveitou a inovação."
 
@@ -21,10 +22,18 @@ def inovacao(criar_inovacao):
 
 def _opcoes(form):
     """(valor, texto, selecionada) de cada <option> do select renderizado."""
+    html = str(form["unidade"])
+    opcoes = _opcoes_no(html)
+    # L-028, L-030: o select e cada opcao ficam na tela e no leitor de tela.
+    assert _opcoes_no(exibido(html)) == opcoes
+    return opcoes
+
+
+def _opcoes_no(html):
     return [
         (valor, texto, " selected" in atributos)
         for valor, atributos, texto in re.findall(
-            r'<option value="([^"]*)"([^>]*)>([^<]*)</option>', str(form["unidade"])
+            r'<option value="([^"]*)"([^>]*)>([^<]*)</option>', html
         )
     ]
 

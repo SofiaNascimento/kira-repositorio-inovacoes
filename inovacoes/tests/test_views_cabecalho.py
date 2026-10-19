@@ -4,6 +4,8 @@ import re
 
 import pytest
 
+from inovacoes.tests.visibilidade import exibido
+
 LINK = re.compile(r'<a href="/inovacoes/nova/">\s*Cadastrar inovação\s*</a>')
 
 
@@ -74,6 +76,8 @@ def test_cabecalho_autenticado_leva_ao_painel_depois_do_cadastro(
     link = LINK_INDICADORES.search(navegacao)
     assert link
     assert link.start() > LINK.search(navegacao).start()
+    # L-028, L-030: o nav e o link ficam na tela e no leitor de tela.
+    assert _navegacao_principal(exibido(resposta.content.decode())) == navegacao
 
 
 @pytest.mark.django_db

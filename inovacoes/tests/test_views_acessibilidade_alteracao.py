@@ -9,6 +9,7 @@ import pytest
 
 from inovacoes.models import MudancaDeStatus, StatusInovacao, Unidade
 from inovacoes.tests.test_views_acessibilidade import PAPEIS_DE_CONTROLE, Pagina
+from inovacoes.tests.visibilidade import exibido
 
 CAMPOS = ["titulo", "unidade", "categoria", "problema", "solucao", "resultado", "contato"]
 OBRIGATORIOS = ["titulo", "unidade", "categoria", "problema", "solucao", "contato"]
@@ -362,12 +363,17 @@ def sinalizacao(client, autor, criar_inovacao):
 def test_select_da_sinalizacao_tem_rotulo_ligado_pelo_for(sinalizacao):
     """REAP-44: o label visivel aponta para o id do select."""
     cliente, url, _ = sinalizacao
-    pagina = _analisar(cliente.get(url).content.decode())
+    html = cliente.get(url).content.decode()
+    pagina = _analisar(html)
     controles = _controles(pagina)
     assert list(controles) == ["unidade"]
     select = controles["unidade"]
     assert select["id"]
     assert pagina.rotulos.get(select["id"], "").strip() == "Unidade que reaproveitou"
+    # L-028, L-030: o select e o rotulo ficam na tela e no leitor de tela.
+    visivel = _analisar(exibido(html))
+    assert _controles(visivel) == controles
+    assert visivel.rotulos.get(select["id"], "").strip() == "Unidade que reaproveitou"
 
 
 def _erro(caso, inovacao, autor):
@@ -393,6 +399,10 @@ def test_select_com_erro_fica_invalido_e_ligado_a_mensagem(sinalizacao, autor, c
     assert select.get("aria-invalid") == "true"
     textos = [_texto_do_id(html, id_) for id_ in select["aria-describedby"].split()]
     assert mensagem in textos
+    # L-028, L-030: o select e a mensagem ficam na tela e no leitor de tela.
+    visivel = exibido(html)
+    assert _controles(_analisar(visivel))["unidade"] == select
+    assert mensagem in [_texto_do_id(visivel, id_) for id_ in select["aria-describedby"].split()]
 
 
 def test_select_sem_erro_nao_tem_aria_invalid(sinalizacao):
@@ -422,10 +432,14 @@ def _focaveis(html):
 def test_ordem_de_foco_da_sinalizacao(sinalizacao):
     """REAP-44, RNF09: select, botao "Sinalizar reaproveitamento" e "Cancelar"."""
     cliente, url, _ = sinalizacao
-    main = _main(cliente.get(url).content.decode())
-    assert _focaveis(main) == [
+    html = cliente.get(url).content.decode()
+    main = _main(html)
+    ordem = [
         ("select", "unidade"),
         ("button", "Sinalizar reaproveitamento"),
         ("a", "Cancelar"),
     ]
+    assert _focaveis(main) == ordem
     assert "tabindex" not in main
+    # L-028, L-030: os tres controles ficam na tela, no leitor de tela e no teclado.
+    assert _focaveis(_main(exibido(html))) == ordem
