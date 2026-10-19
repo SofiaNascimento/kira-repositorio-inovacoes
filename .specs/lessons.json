@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 33,
+  "next_id": 40,
   "lessons": [
     {
       "id": "L-001",
@@ -504,17 +504,19 @@
       "text": "When asserting that a control or text is displayed, reject hidden, inert and aria-hidden on the element and on every ancestor, not only on the matched tag",
       "signal": "surviving_mutant",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "ciclo-de-vida-status"
+        "ciclo-de-vida-status",
+        "reaproveitamento-indicadores"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests)"
+        "validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests)",
+        "validation.md M45 (REAP-15) (tests)"
       ],
       "created": "2026-10-18T21:40:53Z",
-      "last_seen": "2026-10-18T21:40:53Z"
+      "last_seen": "2026-10-19T17:11:28Z"
     },
     {
       "id": "L-029",
@@ -540,17 +542,19 @@
       "text": "Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML",
       "signal": "surviving_mutant",
       "scope": "tests",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "ciclo-de-vida-status"
+        "ciclo-de-vida-status",
+        "reaproveitamento-indicadores"
       ],
-      "recurrence": 1,
+      "recurrence": 2,
       "harmful": 0,
       "evidence": [
-        "validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests)"
+        "validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests)",
+        "validation.md M41, M43, M44 (REAP-01, REAP-33, REAP-30) (tests)"
       ],
       "created": "2026-10-18T21:57:48Z",
-      "last_seen": "2026-10-18T21:57:48Z"
+      "last_seen": "2026-10-19T17:11:28Z"
     },
     {
       "id": "L-031",
@@ -587,6 +591,132 @@
       ],
       "created": "2026-10-18T21:57:48Z",
       "last_seen": "2026-10-18T21:57:48Z"
+    },
+    {
+      "id": "L-033",
+      "key": "surviving_mutant::do not add defensive branches for states the spec declares impossible because no test can reach them and they survive mutation",
+      "text": "Do not add defensive branches for states the spec declares impossible, because no test can reach them and they survive mutation",
+      "signal": "surviving_mutant",
+      "scope": "views",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M09 (inovacoes/views.py InovacaoReaproveitarView.form_valid) (views)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-034",
+      "key": "surviving_mutant::do not add an empty order by to clear meta ordering in a django group by subquery because django 3 1 and later already ignore meta ordering there",
+      "text": "Do not add an empty order_by() to clear Meta.ordering in a Django GROUP BY subquery, because Django 3.1 and later already ignore Meta.ordering there",
+      "signal": "surviving_mutant",
+      "scope": "models",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M17 (inovacoes/models.py UnidadeQuerySet.com_indicadores) (models)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-035",
+      "key": "surviving_mutant::do not nest a savepoint inside a method s own atomic block when the caught database error is re raised as another exception because the outer block already rolls back",
+      "text": "Do not nest a savepoint inside a method's own atomic block when the caught database error is re-raised as another exception, because the outer block already rolls back",
+      "signal": "surviving_mutant",
+      "scope": "models",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M06 (inovacoes/models.py registrar_reaproveitamento) (models)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-036",
+      "key": "spec_precision_gap::when an ac says a select has no preselected option state whether the empty placeholder option that django renders as selected counts",
+      "text": "When an AC says a select has no preselected option, state whether the empty placeholder option that Django renders as selected counts",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G1 (REAP-04) (specs)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-037",
+      "key": "spec_precision_gap::when an ac denies django admin pages to a role state the expected response per account flag because staff accounts get 403 and non staff accounts are redirected to the admin login",
+      "text": "When an AC denies Django admin pages to a role, state the expected response per account flag, because staff accounts get 403 and non-staff accounts are redirected to the admin login",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G2 (REAP-26) (specs)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-038",
+      "key": "spec_precision_gap::when an ac fixes chart geometry state the plot width in drawing units and the numeric format of the rendered attributes",
+      "text": "When an AC fixes chart geometry, state the plot width in drawing units and the numeric format of the rendered attributes",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G4 (REAP-35) (specs)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
+    },
+    {
+      "id": "L-039",
+      "key": "spec_precision_gap::when an ac requires a visible label for every chart item state the truncation rule for long labels and where the full text stays available",
+      "text": "When an AC requires a visible label for every chart item, state the truncation rule for long labels and where the full text stays available",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G5 (REAP-36) (specs)"
+      ],
+      "created": "2026-10-19T17:11:28Z",
+      "last_seen": "2026-10-19T17:11:28Z"
     }
   ]
 }

@@ -20,6 +20,18 @@ Corroborated across multiple features. Safe to apply as guidance.
 - evidence: AUTH-13 AUTH-23 AUTH-07 validation.md Fix 4 (routes) (+1 more)
 - last seen: 2026-10-11T18:10:26Z
 
+### L-028 - When asserting that a control or text is displayed, reject hidden, inert and aria-hidden on the element and on every ancestor, not only on the matched tag
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status, reaproveitamento-indicadores
+- evidence: validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests) (+1 more)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-030 - Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
+- features: ciclo-de-vida-status, reaproveitamento-indicadores
+- evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests) (+1 more)
+- last seen: 2026-10-19T17:11:28Z
+
 ## Candidates (under observation - do NOT load as guidance yet)
 
 Seen once or not yet corroborated. Tracked, not trusted.
@@ -174,23 +186,11 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 5, E2b (STAT-05), inovacao_detail.html:68 (tests)
 - last seen: 2026-10-18T21:40:53Z
 
-### L-028 - When asserting that a control or text is displayed, reject hidden, inert and aria-hidden on the element and on every ancestor, not only on the matched tag
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: ciclo-de-vida-status
-- evidence: validation.md iteracao 5, E9/E10/E11/E16 (STAT-03, STAT-38, STAT-40), inovacao_detail.html:59-64 (tests)
-- last seen: 2026-10-18T21:40:53Z
-
 ### L-029 - When an AC requires an action link to be displayed, also require it in the sequential Tab order and exposed to assistive technology
 - signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
 - features: ciclo-de-vida-status
 - evidence: validation.md iteracao 5, E17 (STAT-03, STAT-34), inovacao_detail.html:63 (specs)
 - last seen: 2026-10-18T21:40:53Z
-
-### L-030 - Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: ciclo-de-vida-status
-- evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests)
-- last seen: 2026-10-18T21:57:48Z
 
 ### L-031 - Decode HTML entities before a page-wide negative text assertion, so an encoded label cannot slip past it
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
@@ -203,6 +203,48 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: ciclo-de-vida-status
 - evidence: validation.md iteracao 6, F15/F19 (STAT-38, STAT-40) (specs)
 - last seen: 2026-10-18T21:57:48Z
+
+### L-033 - Do not add defensive branches for states the spec declares impossible, because no test can reach them and they survive mutation
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `views` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md M09 (inovacoes/views.py InovacaoReaproveitarView.form_valid) (views)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-034 - Do not add an empty order_by() to clear Meta.ordering in a Django GROUP BY subquery, because Django 3.1 and later already ignore Meta.ordering there
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `models` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md M17 (inovacoes/models.py UnidadeQuerySet.com_indicadores) (models)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-035 - Do not nest a savepoint inside a method's own atomic block when the caught database error is re-raised as another exception, because the outer block already rolls back
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `models` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md M06 (inovacoes/models.py registrar_reaproveitamento) (models)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-036 - When an AC says a select has no preselected option, state whether the empty placeholder option that Django renders as selected counts
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md G1 (REAP-04) (specs)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-037 - When an AC denies Django admin pages to a role, state the expected response per account flag, because staff accounts get 403 and non-staff accounts are redirected to the admin login
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md G2 (REAP-26) (specs)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-038 - When an AC fixes chart geometry, state the plot width in drawing units and the numeric format of the rendered attributes
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md G4 (REAP-35) (specs)
+- last seen: 2026-10-19T17:11:28Z
+
+### L-039 - When an AC requires a visible label for every chart item, state the truncation rule for long labels and where the full text stays available
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md G5 (REAP-36) (specs)
+- last seen: 2026-10-19T17:11:28Z
 
 ## Quarantined (failed when applied - ignore)
 
