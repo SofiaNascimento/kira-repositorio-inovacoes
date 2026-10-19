@@ -29,8 +29,8 @@ Corroborated across multiple features. Safe to apply as guidance.
 ### L-030 - Assert that content is displayed on the parsed DOM of the whole page, skipping comments, template, closed details and any ancestor with hidden, inert or aria-hidden in any case, not by regex on the raw HTML
 - signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `tests` · harmful: 0
 - features: ciclo-de-vida-status, reaproveitamento-indicadores
-- evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests) (+1 more)
-- last seen: 2026-10-19T17:11:28Z
+- evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests) (+2 more)
+- last seen: 2026-10-19T17:39:06Z
 
 ## Candidates (under observation - do NOT load as guidance yet)
 
@@ -245,6 +245,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: reaproveitamento-indicadores
 - evidence: validation.md G5 (REAP-36) (specs)
 - last seen: 2026-10-19T17:11:28Z
+
+### L-040 - When fixing a weak assertion pattern, apply the fix to every test of the feature that asserts the same kind of outcome, not only to the tests named by the surviving mutants
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 2, X01/Y01 (REAP-28, REAP-29) left out of Fix 1 (tests)
+- last seen: 2026-10-19T17:39:06Z
+
+### L-041 - Do not add a conjunct to a guard when another conjunct already implies it, because the redundant condition survives mutation
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `domain` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 2, C07 (indicadores/graficos.py:46) (domain)
+- last seen: 2026-10-19T17:39:06Z
 
 ## Quarantined (failed when applied - ignore)
 
