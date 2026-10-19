@@ -6,7 +6,7 @@
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e o 404 "Inovação não encontrada." (CONS-15) · conjunto de demonstração e a medição de tempo do RNF08 (CONS-46)
 **Reusa da F4/F5:** padrão de página própria com POST e link "Cancelar" (EDEX-30, STAT-06) · mensagens do framework no detalhe (RF12)
 **Altera a F3/F4/F5:** o detalhe ganha a seção "Reaproveitamentos" (REAP-17, REAP-18) e o link de sinalização (REAP-01) · o menu principal ganha "Indicadores" (REAP-28) · `CONSULTAS_DO_DETALHE` em `inovacoes/tests/test_views_detalhe.py` muda de 7 para o valor medido depois da seção nova · a allowlist da varredura de autoria ganha `inovacoes:reaproveitar` — alterações de teste antigo autorizadas na aprovação desta spec
-**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · Design aprovado em 2026-10-18 (AD-012) · Tasks aprovadas em 2026-10-18 · **Execute retomado em 2026-10-19**: RF11 (T1–T10) e painel RF10 (T11–T18) implementados, ACs em `Implementing`; Verifier pendente
+**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · Design aprovado em 2026-10-18 (AD-012) · Tasks aprovadas em 2026-10-18 · **Execute concluído em 2026-10-19**: RF11 (T1–T10), painel RF10 (T11–T18) e correções de teste T19–T20; Verifier FAIL nas 3 iterações só por lacunas de teste; fechada com risco residual L1–L4 aceito pelo usuário (`validation.md`, Decisão do usuário)
 **Escopo (auto-sizing):** **Large** — modelo e migration novos, duas telas novas, componentes novos na `kira.css` e testes de desempenho. Roda Design e Tasks formais.
 **Contexto da discussão:** `.specs/features/reaproveitamento-indicadores/context.md`
 
@@ -304,57 +304,57 @@ indicadores sem depender de cor ou de mouse.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| REAP-01 | P1: Sinalizar | Tasks | Implementing |
-| REAP-02 | P1: Sinalizar | Tasks | Implementing |
-| REAP-03 | P1: Sinalizar | Tasks | Implementing |
-| REAP-04 | P1: Sinalizar | Tasks | Implementing |
-| REAP-05 | P1: Sinalizar | Tasks | Implementing |
-| REAP-06 | P1: Sinalizar | Tasks | Implementing |
-| REAP-07 | P1: Sinalizar | Tasks | Implementing |
-| REAP-08 | P1: Sinalizar | Tasks | Implementing |
-| REAP-09 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-10 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-11 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-12 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-13 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-14 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-15 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-16 | P1: Guardas da RN09 | Tasks | Implementing |
-| REAP-17 | P1: Detalhe | Tasks | Implementing |
-| REAP-18 | P1: Detalhe | Tasks | Implementing |
-| REAP-19 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-20 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-21 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-22 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-23 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-24 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-25 | P1: Acesso e integridade | Tasks | Implementing |
-| REAP-26 | P2: Correção pelo administrador | Tasks | Implementing |
-| REAP-27 | P2: Correção pelo administrador | Tasks | Implementing |
-| REAP-28 | P1: Painel | Tasks | Implementing |
-| REAP-29 | P1: Painel | Tasks | Implementing |
-| REAP-30 | P1: Painel | Tasks | Implementing |
-| REAP-31 | P1: Painel | Tasks | Implementing |
-| REAP-32 | P1: Painel | Tasks | Implementing |
-| REAP-33 | P1: Painel | Tasks | Implementing |
-| REAP-34 | P1: Painel | Tasks | Implementing |
-| REAP-35 | P1: Painel | Tasks | Implementing |
-| REAP-36 | P1: Painel | Tasks | Implementing |
-| REAP-37 | P1: Painel | Tasks | Implementing |
-| REAP-38 | P1: Painel | Tasks | Implementing |
-| REAP-39 | P1: Painel | Tasks | Implementing |
-| REAP-40 | P1: Painel | Tasks | Implementing |
-| REAP-41 | P2: Desempenho | Tasks | Implementing |
-| REAP-42 | P2: Desempenho | Tasks | Implementing |
-| REAP-43 | P2: Desempenho | Tasks | Implementing |
-| REAP-44 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-45 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-46 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-47 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-48 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-49 | Edge Cases | Tasks | Implementing |
+| REAP-01 | P1: Sinalizar | Execute | Verified |
+| REAP-02 | P1: Sinalizar | Execute | Verified |
+| REAP-03 | P1: Sinalizar | Execute | Implementing (risco residual aceito) |
+| REAP-04 | P1: Sinalizar | Execute | Verified |
+| REAP-05 | P1: Sinalizar | Execute | Verified |
+| REAP-06 | P1: Sinalizar | Execute | Verified |
+| REAP-07 | P1: Sinalizar | Execute | Verified |
+| REAP-08 | P1: Sinalizar | Execute | Verified |
+| REAP-09 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-10 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-11 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-12 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-13 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-14 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-15 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-16 | P1: Guardas da RN09 | Execute | Verified |
+| REAP-17 | P1: Detalhe | Execute | Verified |
+| REAP-18 | P1: Detalhe | Execute | Verified |
+| REAP-19 | P1: Acesso e integridade | Execute | Verified |
+| REAP-20 | P1: Acesso e integridade | Execute | Verified |
+| REAP-21 | P1: Acesso e integridade | Execute | Verified |
+| REAP-22 | P1: Acesso e integridade | Execute | Verified |
+| REAP-23 | P1: Acesso e integridade | Execute | Verified |
+| REAP-24 | P1: Acesso e integridade | Execute | Verified |
+| REAP-25 | P1: Acesso e integridade | Execute | Verified |
+| REAP-26 | P2: Correção pelo administrador | Execute | Verified |
+| REAP-27 | P2: Correção pelo administrador | Execute | Verified |
+| REAP-28 | P1: Painel | Execute | Verified |
+| REAP-29 | P1: Painel | Execute | Verified |
+| REAP-30 | P1: Painel | Execute | Implementing (risco residual aceito) |
+| REAP-31 | P1: Painel | Execute | Implementing (risco residual aceito) |
+| REAP-32 | P1: Painel | Execute | Verified |
+| REAP-33 | P1: Painel | Execute | Verified |
+| REAP-34 | P1: Painel | Execute | Verified |
+| REAP-35 | P1: Painel | Execute | Verified |
+| REAP-36 | P1: Painel | Execute | Implementing (risco residual aceito) |
+| REAP-37 | P1: Painel | Execute | Verified |
+| REAP-38 | P1: Painel | Execute | Verified |
+| REAP-39 | P1: Painel | Execute | Verified |
+| REAP-40 | P1: Painel | Execute | Verified |
+| REAP-41 | P2: Desempenho | Execute | Verified |
+| REAP-42 | P2: Desempenho | Execute | Verified |
+| REAP-43 | P2: Desempenho | Execute | Verified |
+| REAP-44 | P1: Acessibilidade | Execute | Implementing (risco residual aceito) |
+| REAP-45 | P1: Acessibilidade | Execute | Verified |
+| REAP-46 | P1: Acessibilidade | Execute | Implementing (risco residual aceito) |
+| REAP-47 | P1: Acessibilidade | Execute | Verified |
+| REAP-48 | P1: Acessibilidade | Execute | Verified |
+| REAP-49 | Edge Cases | Execute | Verified |
 
-**Coverage:** 49 total, 49 mapped to tasks (T1–T18, ver `tasks.md` → Requirement Coverage), 0 unmapped
+**Coverage:** 49 total (43 `Verified`, 6 com risco residual aceito), 49 mapped to tasks (T1–T20, ver `tasks.md` → Requirement Coverage), 0 unmapped
 
 ---
 

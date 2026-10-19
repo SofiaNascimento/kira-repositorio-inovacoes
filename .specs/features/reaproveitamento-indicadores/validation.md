@@ -8,7 +8,7 @@
 **Diff range (iteração 1)**: `eb957d2..e755a45` em `main` (HEAD = `e755a45`), 21 commits, 19 de código e teste (T1 `69f655d` … T18 `985bfa4`) e 2 de pausa (`0bd904a`, `50d41ce`) mais o `e755a45`, só artefatos. 41 arquivos, +4805/−16; sem `.specs` e `docs`, 35 arquivos, +2789/−16. Produção: `inovacoes/models.py`, `forms.py`, `views.py`, `admin.py`, `urls.py`, `migrations/0008_reaproveitamento.py`, os templates `inovacao_detail.html` e `inovacao_reaproveitar.html`, a app `indicadores/` (`graficos.py`, `views.py`, `urls.py`, `painel.html`, `grafico.html`), `templates/base.html`, `templates/kira.css` e `config/`.
 **Verifier**: sub-agente independente (autor ≠ verifier)
 
-**Verdict**: FAIL ❌ na iteração 3 (HEAD `4b3dae2`), a última do loop: **escalar ao usuário**. A T20 fecha a classe das iterações 1 e 2. X01, Y01 e Y02 morrem, M41–M46 continuam mortas e, com o `exibido()` neutralizado, X01/Y01/Y02 voltam a sobreviver, então a morte vem das asserções novas. A minha varredura independente não achou nenhuma asserção de "exibido" da F6 que ainda leia só o HTML cru. As regras centrais seguem mortas (RN09 com trava, fan-out, geometria, acesso, admin, consultas). O FAIL vem de **4 vetores de ocultação novos**, que ficam fora do modelo do `exibido()` (só atributos HTML): **L1** atributos de apresentação SVG no texto do gráfico (N01 `display="none"`, N12 `fill-opacity="0"`; REAP-36), **L2** controle desabilitado (N04 `<button disabled>`, N13 `<fieldset disabled>`; REAP-03), **L3** ocultação por CSS na `kira.css` (N02 `.metricas`, N10 `.grafico__valor`; REAP-30/31/36), **L4** `role="presentation"` na tabela (N05; REAP-46). O código de produção está correto. As quatro são lacunas de teste. A decisão de rodar um Fix 3 ou fechar com risco registrado é do usuário.
+**Verdict**: FAIL ❌ na iteração 3 (HEAD `4b3dae2`), **com risco residual de teste aceito pelo usuário em 2026-10-19**: ver [Decisão do usuário](#decisão-do-usuário-2026-10-19). O veredito do Verifier não foi reescrito; a feature foi fechada por decisão, não por PASS. Registro original: a última do loop, **escalar ao usuário**. A T20 fecha a classe das iterações 1 e 2. X01, Y01 e Y02 morrem, M41–M46 continuam mortas e, com o `exibido()` neutralizado, X01/Y01/Y02 voltam a sobreviver, então a morte vem das asserções novas. A minha varredura independente não achou nenhuma asserção de "exibido" da F6 que ainda leia só o HTML cru. As regras centrais seguem mortas (RN09 com trava, fan-out, geometria, acesso, admin, consultas). O FAIL vem de **4 vetores de ocultação novos**, que ficam fora do modelo do `exibido()` (só atributos HTML): **L1** atributos de apresentação SVG no texto do gráfico (N01 `display="none"`, N12 `fill-opacity="0"`; REAP-36), **L2** controle desabilitado (N04 `<button disabled>`, N13 `<fieldset disabled>`; REAP-03), **L3** ocultação por CSS na `kira.css` (N02 `.metricas`, N10 `.grafico__valor`; REAP-30/31/36), **L4** `role="presentation"` na tabela (N05; REAP-46). O código de produção está correto. As quatro são lacunas de teste. A decisão de rodar um Fix 3 ou fechar com risco registrado é do usuário.
 
 **Verdict anterior (iteração 2)**: FAIL ❌ (HEAD `865fe7a`). A T19 mata os quatro sobreviventes da iteração 1 (M41, M43, M44, M45), e M42/M46 agora morrem também pela visibilidade. O helper `exibido()` esconde o que deve esconder e as asserções dependem dele: neutralizado, M41, M43, M44 e M45 voltam a sobreviver. Nenhuma regra central afrouxou. Mas sobrevivem dois mutantes novos da mesma classe, em código e ACs da F6 que a T19 não alcançou: **X01**, o link "Indicadores" do `nav` "Principal" dentro de um `<span hidden>` (REAP-28, `templates/base.html:23`), e **Y01**, o `h1` "Painel de indicadores" dentro de um `<div hidden>` (REAP-29, `indicadores/templates/indicadores/painel.html:6`). Os testes das duas ACs ainda leem o HTML cru (`inovacoes/tests/test_views_cabecalho.py:75`, `indicadores/tests/test_views_painel.py:108`). Um terceiro sobrevivente, **Y02** (`<ul class="mensagens" hidden>`, REAP-06/REAP-09), fica em código anterior à F6 e entra como lacuna de menor prioridade. Fix 2 abaixo, só de teste. A próxima é a iteração 3, a última antes de escalar. Antes: FAIL ❌ na iteração 1 (HEAD `e755a45`), com 4 sobreviventes de ocultação (M41, M43, M44, M45).
 
@@ -679,3 +679,35 @@ A T20 aplicou a L-040 e varreu toda a feature. A minha varredura independente co
 **Gate**: 865 passed
 
 **Next steps**: o loop de 3 iterações terminou, e a decisão é do usuário. (a) Rodar um Fix 3 só de teste com L1–L4 (L2 e L1 primeiro) e uma re-verificação fora do loop. (b) Fechar a F6 com L1–L4 registradas como risco residual, como na F5. O `validate_state.py` só passa com um veredito PASS neste arquivo.
+
+---
+
+## Decisão do usuário (2026-10-19)
+
+Registrada pelo orquestrador depois da escalada (limite de 3 iterações atingido). Não é uma
+iteração do Verifier.
+
+- **Decisão**: fechar a F6 com as lacunas L1–L4 registradas como risco residual de teste. Sem Fix 3
+  e sem iteração 4.
+- **Base**: o código de produção não mudou desde a iteração 1 e cumpre a spec nas 49 ACs. As regras
+  centrais (RN09 com trava, fan-out da Q4, geometria das barras, acesso, admin e consultas) morreram
+  no sensor das três iterações. A classe "asserção de exibido que lê o HTML cru" foi fechada pela
+  T19 e pela T20, e a varredura independente da iteração 3 confirmou isso.
+- **Risco residual aceito**: os testes não detectam ocultação ou inutilização por vetores fora do
+  `exibido()`, que só reconhece atributos HTML:
+  - **L1** (REAP-36): `display="none"` ou `fill-opacity="0"` no `<text>` do gráfico SVG (N01, N12);
+  - **L2** (REAP-03, REAP-44): botão submit ou `<fieldset>` ancestral com `disabled` (N04, N13); os
+    POSTs dos testes são forjados pelo `client` e não passam pelo botão;
+  - **L3** (REAP-30, REAP-31, REAP-36): `display:none`, `visibility:hidden` ou `opacity:0` na
+    `kira.css` sobre `.metricas` ou `.grafico__valor` (N02, N10);
+  - **L4** (REAP-46): `role="presentation"` na tabela do painel (N05).
+
+  Nenhum desses defeitos existe nos templates nem na folha de hoje. Mitigação: a auditoria de
+  acessibilidade final do RNF09 e a conferência manual no navegador. A ideia de correção fica em
+  `context.md` (Deferred Ideas), e as lições candidatas L-042 a L-045 registram cada vetor.
+- **Spec-precision gaps abertos (não bloqueiam)**: G1–G6, como na iteração 3.
+- **Status das ACs**: REAP-03, REAP-30, REAP-31, REAP-36, REAP-44 e REAP-46 ficam em
+  `Implementing (risco residual aceito)`; as outras 43 passam a `Verified`.
+- **`validate_state.py`**: sai com código 1, porque o veredito registrado é FAIL. É o resultado
+  esperado: a feature foi fechada por decisão do usuário, e o gate determinístico continua dizendo
+  a verdade sobre o veredito.

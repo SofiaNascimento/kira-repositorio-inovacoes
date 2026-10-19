@@ -83,3 +83,4 @@ criados pelo teste.
 - Comentário sobre como a unidade adaptou a solução ao reaproveitar.
 - Unidade de lotação no modelo de usuário (pré-preencheria o select).
 - Carga de demonstração com reaproveitamentos.
+- Estender o `exibido()` (ou um teste próprio) para fechar o risco residual L1–L4 aceito no fechamento da F6 (`validation.md`, Decisão do usuário): rejeitar `disabled` no controle e em `fieldset` ancestral (L2); aceitar só os atributos esperados em `<text>` e `<rect>` do gráfico (L1); recusar `display:none`, `visibility:hidden`, `opacity:0` e `clip` nas regras da `kira.css` que selecionam conteúdo da F6 (L3); exigir `role` ausente na tabela e nas células do painel (L4). Lições candidatas L-042 a L-045.

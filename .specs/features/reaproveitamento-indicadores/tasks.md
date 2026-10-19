@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Design**: `.specs/features/reaproveitamento-indicadores/design.md`
-**Status**: T1–T20 ✅ (865 testes). Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes, todos concluídos (lotes 3 e 4 retomados em 2026-10-19). Verifier FAIL na iteração 1 (M41, M43, M44, M45) e na iteração 2 (X01, Y01, Y02), só por lacuna de teste; a T19 (Fix 1) e a T20 (Fix 2) levam a checagem de visibilidade a toda asserção de exibido da F6; re-verificação pendente (iteração 3)
+**Status**: T1–T20 ✅ (865 testes). Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes, todos concluídos (lotes 3 e 4 retomados em 2026-10-19). Verifier FAIL na iteração 1 (M41, M43, M44, M45) e na iteração 2 (X01, Y01, Y02), só por lacuna de teste; a T19 (Fix 1) e a T20 (Fix 2) levam a checagem de visibilidade a toda asserção de exibido da F6; iteração 3 FAIL por 4 vetores novos (L1–L4); **fechada em 2026-10-19 com risco residual aceito pelo usuário** (`validation.md`, Decisão do usuário)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F5.
 
