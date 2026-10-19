@@ -6,7 +6,7 @@
 **Reusa da F3:** detalhe `/inovacoes/<id>/` e o 404 "Inovação não encontrada." (CONS-15) · conjunto de demonstração e a medição de tempo do RNF08 (CONS-46)
 **Reusa da F4/F5:** padrão de página própria com POST e link "Cancelar" (EDEX-30, STAT-06) · mensagens do framework no detalhe (RF12)
 **Altera a F3/F4/F5:** o detalhe ganha a seção "Reaproveitamentos" (REAP-17, REAP-18) e o link de sinalização (REAP-01) · o menu principal ganha "Indicadores" (REAP-28) · `CONSULTAS_DO_DETALHE` em `inovacoes/tests/test_views_detalhe.py` muda de 7 para o valor medido depois da seção nova · a allowlist da varredura de autoria ganha `inovacoes:reaproveitar` — alterações de teste antigo autorizadas na aprovação desta spec
-**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · Design aprovado em 2026-10-18 (AD-012) · Tasks aprovadas em 2026-10-18 · **Execute pausado em 2026-10-18**: RF11 implementado (T1–T10, ACs em `Implementing`), painel RF10 (T11–T18) não iniciado, Verifier ainda não rodou
+**Status:** Aprovada pelo usuário em 2026-10-18 (assumptions confirmadas na aprovação) · Design aprovado em 2026-10-18 (AD-012) · Tasks aprovadas em 2026-10-18 · **Execute retomado em 2026-10-19**: RF11 (T1–T10) e painel RF10 (T11–T18) implementados, ACs em `Implementing`; Verifier pendente
 **Escopo (auto-sizing):** **Large** — modelo e migration novos, duas telas novas, componentes novos na `kira.css` e testes de desempenho. Roda Design e Tasks formais.
 **Contexto da discussão:** `.specs/features/reaproveitamento-indicadores/context.md`
 

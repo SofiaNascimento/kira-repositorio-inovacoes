@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Context**: `.specs/features/reaproveitamento-indicadores/context.md`
-**Status**: Approved (2026-10-18) · implementação parcial: sinalização (RF11) feita em T1–T10; painel (RF10) não iniciado
+**Status**: Approved (2026-10-18) · implementação completa: sinalização (RF11) em T1–T10 e painel (RF10) em T11–T18; Verifier pendente
 **Abordagem**: regra da RN09 num método do modelo, e painel numa app nova `indicadores` só de leitura, escolhidas pelo usuário em 2026-10-18 (ver Tech Decisions)
 **Conforma com**: AD-001 a AD-011, sem supersedir nenhuma. **Cria**: AD-012 (todo `Reaproveitamento` nasce por `Inovacao.registrar_reaproveitamento`)
 **Lições aplicadas**: L-003 (o `USUARIO` com `is_staff`/`is_superuser` é negado nas páginas do admin de `Reaproveitamento`, não só fica sem o link) · L-005 (cada cláusula com efeito em tela é afirmada por HTTP: a guarda de status tem teste no modelo, REAP-10, **e** na rota, REAP-09)
