@@ -11,6 +11,7 @@ from django.test import Client
 from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from inovacoes.models import Inovacao, Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import exibido
 from inovacoes.views import InovacaoReaproveitarView
 
 EM_TESTE = StatusInovacao.EM_TESTE
@@ -71,6 +72,8 @@ def test_get_mostra_o_formulario_de_sinalizacao(client, autor, disponivel):
     titulo = re.search(r"<title>(.*?)</title>", html, re.S).group(1).strip()
     assert titulo.startswith("Sinalizar reaproveitamento")
     conteudo = _conteudo(html)
+    # L-028, L-030: nada do <main>, formulario incluido, sai da tela ou do leitor de tela.
+    assert _conteudo(exibido(html)) == conteudo
     assert (
         "Registre a unidade que reaproveitou a inovação “Controle de Caixa”, "
         "criada na unidade “Teste Unidade”."
@@ -129,6 +132,8 @@ def test_get_fora_de_disponivel_volta_ao_detalhe_com_aviso(
 def _afirma_sem_elegiveis(resposta, inovacao):
     assert resposta.status_code == 200
     conteudo = _conteudo(resposta.content.decode())
+    # L-028, L-030: o texto e o link ficam na tela e no leitor de tela.
+    assert _conteudo(exibido(resposta.content.decode())) == conteudo
     assert TODAS_SINALIZARAM in conteudo
     voltar = re.findall(r'<a href="([^"]*)">\s*Voltar para a inovação\s*</a>', conteudo)
     assert voltar == [f"/inovacoes/{inovacao.pk}/"]

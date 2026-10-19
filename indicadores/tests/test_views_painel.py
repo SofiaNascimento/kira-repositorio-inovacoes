@@ -22,6 +22,7 @@ from inovacoes.models import (
 )
 from inovacoes.tests.test_views_erro_500 import DETALHE_DA_CONEXAO
 from inovacoes.tests.test_views_sistema_design import _elementos
+from inovacoes.tests.visibilidade import exibido
 
 URL = "/indicadores/"
 
@@ -61,11 +62,30 @@ def _html(client, conta):
 
 
 def _card(html, rotulo):
-    return re.search(rf"<dt>{rotulo}</dt>\s*<dd>([^<]*)</dd>", html).group(1)
+    valor = _card_no(html, rotulo)
+    assert valor is not None, rotulo
+    # L-028, L-030: o card e cada ancestral ficam na tela e no leitor de tela.
+    assert _card_no(exibido(html), rotulo) == valor, rotulo
+    return valor
+
+
+def _card_no(html, rotulo):
+    achado = re.search(rf"<dt>{rotulo}</dt>\s*<dd>([^<]*)</dd>", html)
+    return achado and achado.group(1)
 
 
 def _tabela(html, legenda):
     """(cabecalhos, linhas) da tabela com a legenda dada, so com o texto das celulas."""
+    tabela = _tabela_no(html, legenda)
+    assert tabela is not None, legenda
+    # L-028, L-030: a tabela e cada ancestral ficam na tela e no leitor de tela.
+    assert _tabela_no(exibido(html), legenda) == tabela, legenda
+    return tabela
+
+
+def _tabela_no(html, legenda):
+    if f"<caption>{legenda}</caption>" not in html:
+        return None
     corpo = re.search(rf"<caption>{legenda}</caption>(.*?)</table>", html, re.S).group(1)
     linhas = [
         [texto.strip() for texto in re.findall(r"<t[hd][^>]*>(.*?)</t[hd]>", linha, re.S)]
@@ -147,6 +167,9 @@ def test_sem_inovacao_mostra_zeros_e_o_convite_ao_cadastro(client, terceiro):
     assert _card(html, "Inovações cadastradas") == "0"
     assert _card(html, "Reaproveitamentos registrados") == "0"
     vazio = re.search(r'<div class="vazio">(.*?)</div>', html, re.S).group(1)
+    # L-028, L-030: o texto e o link ficam na tela e no leitor de tela.
+    visivel = re.search(r'<div class="vazio">(.*?)</div>', exibido(html), re.S)
+    assert visivel and visivel.group(1) == vazio
     assert "<p>Nenhuma inovação cadastrada ainda.</p>" in vazio
     assert re.search(r'<a href="/inovacoes/nova/">Cadastrar inovação</a>', vazio)
     assert "<table" not in html
@@ -218,6 +241,13 @@ TITULOS = [
 
 def _graficos(html):
     """{titulo: grafico} com figcaption, atributos do svg e linhas (nome, valor, barra)."""
+    graficos = _graficos_no(html)
+    # L-028, L-030: cada grafico e seus ancestrais ficam na tela e no leitor de tela.
+    assert _graficos_no(exibido(html)) == graficos
+    return graficos
+
+
+def _graficos_no(html):
     graficos = {}
     for figura in re.findall(r'<figure class="cartao grafico">(.*?)</figure>', html, re.S):
         id_legenda, titulo = re.search(

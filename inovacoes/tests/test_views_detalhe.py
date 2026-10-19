@@ -9,6 +9,7 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
 from inovacoes.models import Inovacao, MudancaDeStatus, Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import exibido
 
 ROTULOS = [
     "Título",
@@ -581,6 +582,8 @@ def _reaproveitamento(inovacao, nome, por, data=None):
 def _reaproveitamentos(html):
     """(textos fora de lista, itens da lista) da secao "Reaproveitamentos"."""
     secao = _secao(html, "reaproveitamentos-titulo")
+    # L-028, L-030: nada da secao, nem ela, sai da tela ou do leitor de tela.
+    assert _secao(exibido(html), "reaproveitamentos-titulo") == secao
     assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Reaproveitamentos"]
     lista = re.search(r'<ol class="reaproveitamentos">(.*?)</ol>', secao, re.S)
     itens = re.findall(r"<li\b[^>]*>(.*?)</li>", lista.group(1), re.S) if lista else []
@@ -596,6 +599,10 @@ def test_disponivel_mostra_o_link_de_sinalizar_a_todo_perfil(
         client.force_login(conta)
         html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
         assert _links(html, SINALIZAR) == [f"/inovacoes/{inovacao.pk}/reaproveitar/"], conta
+        # L-028, L-030: o link e cada ancestral ficam na tela e no leitor de tela.
+        assert _links(exibido(html), SINALIZAR) == [f"/inovacoes/{inovacao.pk}/reaproveitar/"], (
+            conta
+        )
 
 
 @pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
