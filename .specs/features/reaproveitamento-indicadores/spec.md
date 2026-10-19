@@ -344,8 +344,8 @@ indicadores sem depender de cor ou de mouse.
 | REAP-38 | P1: Painel | Tasks | Implementing |
 | REAP-39 | P1: Painel | Tasks | Implementing |
 | REAP-40 | P1: Painel | Tasks | Implementing |
-| REAP-41 | P2: Desempenho | Tasks | In Tasks |
-| REAP-42 | P2: Desempenho | Tasks | In Tasks |
+| REAP-41 | P2: Desempenho | Tasks | Implementing |
+| REAP-42 | P2: Desempenho | Tasks | Implementing |
 | REAP-43 | P2: Desempenho | Tasks | Implementing |
 | REAP-44 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-45 | P1: Acessibilidade | Tasks | Implementing |

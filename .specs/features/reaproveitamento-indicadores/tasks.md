@@ -715,7 +715,7 @@ T17 → T18
 
 ---
 
-### T17: Desempenho do painel (RNF08)
+### T17: Desempenho do painel (RNF08) ✅
 
 **What**: Evidências de 2 s com o conjunto de demonstração e de número fixo de consultas no painel.
 **Where**: `indicadores/tests/test_desempenho_painel.py`
@@ -730,17 +730,19 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Fixture cria 200 reaproveitamentos pelo `registrar_reaproveitamento` sobre inovações "Disponível" da demonstração, com unidades ≠ origem, fora da medição
-- [ ] GET autenticado de `/indicadores/` → 200, card com 500 inovações (ou o total da carga) e 200 reaproveitamentos, em menos de 2 s de servidor (REAP-41)
-- [ ] Número de consultas do GET igual com volume pequeno (1 inovação, 1 reaproveitamento) e com a demonstração + 200 (REAP-42)
-- [ ] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~864 testes passam (+2)
+- [x] Fixture cria 200 reaproveitamentos pelo `registrar_reaproveitamento` sobre inovações "Disponível" da demonstração, com unidades ≠ origem, fora da medição
+- [x] GET autenticado de `/indicadores/` → 200, card com 500 inovações (ou o total da carga) e 200 reaproveitamentos, em menos de 2 s de servidor (REAP-41)
+- [x] Número de consultas do GET igual com volume pequeno (1 inovação, 1 reaproveitamento) e com a demonstração + 200 (REAP-42)
+- [x] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~864 testes passam (+2)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `test(indicadores): mede o desempenho do painel com a demonstracao`
+
+**Status**: ✅ Complete — 860 passed (+2); as evidências passaram sem mudança de produção, então o commit fica `test`; reusa `LIMITE_EM_SEGUNDOS` e a fixture `demonstracao` de `inovacoes/tests/test_desempenho.py`, mas não o `_medir`, que tem a URL da listagem fixa: o arquivo tem um `_medir` próprio para `/indicadores/`; os 200 reaproveitamentos nascem pelo `registrar_reaproveitamento` (AD-012), em inovações "Disponível" da demonstração e unidades ≠ origem, fora da medição; os cards conferem 500 e 200; a REAP-42 compara 1 inovação + 1 reaproveitamento com a demonstração + 200, mais uma categoria e uma unidade extras, para que as quatro tabelas da AC cresçam; mutante conferido à mão: um `count()` por unidade na view (N+1) derruba a REAP-42
 
 ---
 
