@@ -83,6 +83,8 @@ def paginas(client, autor, terceiro, criar_inovacao):
         "status": f"/inovacoes/{inovacao.pk}/status/",
         # F6: a sinalizacao de reaproveitamento (REAP-03).
         "reaproveitar": f"/inovacoes/{disponivel.pk}/reaproveitar/",
+        # F6: o painel de indicadores (REAP-29).
+        "painel": "/indicadores/",
         "nao_encontrada": "/inovacoes/999999/",
     }.items():
         html[nome] = client.get(url).content.decode()
@@ -377,6 +379,8 @@ RAIZES = [
     Path(settings.BASE_DIR) / "templates",
     Path(settings.BASE_DIR) / "contas" / "templates",
     Path(settings.BASE_DIR) / "inovacoes" / "templates",
+    # F6: a app do painel de indicadores (REAP-29, REAP-48).
+    Path(settings.BASE_DIR) / "indicadores" / "templates",
 ]
 # Pecas incluidas, nao telas: o proprio base, a marca e o grupo de campo.
 PECAS = {"base.html", "marca.html", "inovacoes/campo.html"}
@@ -396,7 +400,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     telas = dict(_telas())
     # STAT-06, STAT-34: a F5 acrescenta a tela "Avançar status".
     # REAP-03: a F6 acrescenta a tela "Sinalizar reaproveitamento".
-    assert len(telas) == 10
+    # REAP-29: e a tela "Painel de indicadores".
+    assert len(telas) == 11
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

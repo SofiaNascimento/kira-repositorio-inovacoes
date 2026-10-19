@@ -332,18 +332,18 @@ indicadores sem depender de cor ou de mouse.
 | REAP-26 | P2: Correção pelo administrador | Tasks | Implementing |
 | REAP-27 | P2: Correção pelo administrador | Tasks | Implementing |
 | REAP-28 | P1: Painel | Tasks | In Tasks |
-| REAP-29 | P1: Painel | Tasks | In Tasks |
-| REAP-30 | P1: Painel | Tasks | In Tasks |
-| REAP-31 | P1: Painel | Tasks | In Tasks |
+| REAP-29 | P1: Painel | Tasks | Implementing |
+| REAP-30 | P1: Painel | Tasks | Implementing |
+| REAP-31 | P1: Painel | Tasks | Implementing |
 | REAP-32 | P1: Painel | Tasks | Implementing |
 | REAP-33 | P1: Painel | Tasks | Implementing |
 | REAP-34 | P1: Painel | Tasks | In Tasks |
 | REAP-35 | P1: Painel | Tasks | Implementing |
 | REAP-36 | P1: Painel | Tasks | Implementing |
-| REAP-37 | P1: Painel | Tasks | In Tasks |
-| REAP-38 | P1: Painel | Tasks | In Tasks |
-| REAP-39 | P1: Painel | Tasks | In Tasks |
-| REAP-40 | P1: Painel | Tasks | In Tasks |
+| REAP-37 | P1: Painel | Tasks | Implementing |
+| REAP-38 | P1: Painel | Tasks | Implementing |
+| REAP-39 | P1: Painel | Tasks | Implementing |
+| REAP-40 | P1: Painel | Tasks | Implementing |
 | REAP-41 | P2: Desempenho | Tasks | In Tasks |
 | REAP-42 | P2: Desempenho | Tasks | In Tasks |
 | REAP-43 | P2: Desempenho | Tasks | Implementing |

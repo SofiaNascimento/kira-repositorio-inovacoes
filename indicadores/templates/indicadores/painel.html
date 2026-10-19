@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Painel de indicadores{% endblock %}
+
+{% block conteudo %}
+  <h1>Painel de indicadores</h1>
+
+  {# REAP-30, REAP-31: os dois totais, rotulo em dt e numero em dd. #}
+  <dl class="metricas">
+    <div class="cartao metrica"><dt>Inovações cadastradas</dt><dd>{{ total_inovacoes }}</dd></div>
+    <div class="cartao metrica"><dt>Reaproveitamentos registrados</dt><dd>{{ total_reaproveitamentos }}</dd></div>
+  </dl>
+
+  {% if total_inovacoes %}
+    {# REAP-32, REAP-46: uma linha por categoria, inclusive as sem inovacao. #}
+    <section aria-labelledby="por-categoria">
+      <h2 id="por-categoria">Por categoria</h2>
+      <div class="tabela">
+      <table>
+        <caption>Inovações por categoria</caption>
+        <thead>
+          <tr>
+            <th scope="col">Categoria</th>
+            <th scope="col">Inovações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for categoria in categorias %}
+            <tr>
+              <th scope="row">{{ categoria.nome }}</th>
+              <td>{{ categoria.total }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+
+    {# REAP-33, REAP-46: uma linha por unidade, inclusive as com 0 e 0. #}
+    <section aria-labelledby="por-unidade">
+      <h2 id="por-unidade">Por unidade</h2>
+      <div class="tabela">
+      <table>
+        <caption>Inovações por unidade</caption>
+        <thead>
+          <tr>
+            <th scope="col">Unidade</th>
+            <th scope="col">Inovações de origem</th>
+            <th scope="col">Reaproveitamentos feitos</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for unidade in unidades %}
+            <tr>
+              <th scope="row">{{ unidade.nome }}</th>
+              <td>{{ unidade.inovacoes_de_origem }}</td>
+              <td>{{ unidade.reaproveitamentos_feitos }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      </div>
+    </section>
+  {% else %}
+    {# REAP-37: repositorio vazio, sem tabela nem grafico. #}
+    <div class="vazio">
+      <p>Nenhuma inovação cadastrada ainda.</p>
+      <p class="acoes"><a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a></p>
+    </div>
+  {% endif %}
+{% endblock %}

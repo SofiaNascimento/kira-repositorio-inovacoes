@@ -580,7 +580,7 @@ T17 → T18
 
 ---
 
-### T13: Página do painel com cards e tabelas
+### T13: Página do painel com cards e tabelas ✅
 
 **What**: A `PainelView`, a rota `/indicadores/` e o template `painel.html` com os dois cards, as duas tabelas e o estado vazio.
 **Where**: `indicadores/views.py`
@@ -595,11 +595,11 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `indicadores/urls.py` (`app_name = "indicadores"`, `name="painel"`) e `path("indicadores/", include("indicadores.urls"))` em `config/urls.py`
-- [ ] `PainelView.get_context_data` como no design (já monta `graficos`, que a T14 desenha)
-- [ ] `indicadores/templates/indicadores/painel.html` estende o base: `title`/`h1` "Painel de indicadores", `dl.metricas` com os dois cards, seções com as tabelas e o ramo vazio
-- [ ] `test_views_sistema_design.py`: `RAIZES` ganha `indicadores/templates`; DS-01 10 → 11; `paginas` ganha "painel"
-- [ ] Testes e2e em `indicadores/tests/test_views_painel.py`:
+- [x] `indicadores/urls.py` (`app_name = "indicadores"`, `name="painel"`) e `path("indicadores/", include("indicadores.urls"))` em `config/urls.py`
+- [x] `PainelView.get_context_data` como no design (já monta `graficos`, que a T14 desenha)
+- [x] `indicadores/templates/indicadores/painel.html` estende o base: `title`/`h1` "Painel de indicadores", `dl.metricas` com os dois cards, seções com as tabelas e o ramo vazio
+- [x] `test_views_sistema_design.py`: `RAIZES` ganha `indicadores/templates`; DS-01 10 → 11; `paginas` ganha "painel"
+- [x] Testes e2e em `indicadores/tests/test_views_painel.py`:
   - 200, `<title>` começando por "Painel de indicadores" e `h1` (REAP-29).
   - Card "Inovações cadastradas" = total de inovações nos três status (REAP-30); card "Reaproveitamentos registrados" = total de registros (REAP-31).
   - Tabela "Inovações por categoria": cabeçalhos, uma linha por categoria inclusive zero, na ordem da REAP-32, conferida contra contagem feita no teste sem o QuerySet novo.
@@ -609,13 +609,15 @@ T17 → T18
   - Nenhuma linha de `Inovacao`, `Reaproveitamento`, `Categoria` ou `Unidade` muda com o GET (REAP-39).
   - Anônimo → login com `next` (REAP-40).
   - `USUARIO` comum e administrador → 200.
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~843 testes passam (+15)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~843 testes passam (+15)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(indicadores): adiciona o painel com totais e distribuicoes`
+
+**Status**: ✅ Complete — 841 passed (+10); teste antigo alterado como autorizado: `RAIZES` ganha `indicadores/templates`, DS-01 10 → 11 e `paginas` ganha "painel" em `test_views_sistema_design.py`; as tabelas são conferidas duas vezes, contra a contagem feita no teste por `filter().count()` e contra uma lista literal; REAP-38 cobre sinalizar, criar e apagar entre requisições; REAP-39 compara `values()` dos quatro modelos antes e depois do GET; REAP-37 confere o link "Cadastrar inovação" dentro do `.vazio`, porque o menu tem um link igual; o `painel.html` ainda não inclui os gráficos (a peça nasce na T14), mas a view já monta `graficos`; as fixtures de `inovacoes/tests/conftest.py` são reexportadas por `indicadores/tests/conftest.py`, sem cópia. Build gate verde
 
 ---
 
