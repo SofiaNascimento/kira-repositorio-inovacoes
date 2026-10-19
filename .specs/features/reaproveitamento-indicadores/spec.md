@@ -338,8 +338,8 @@ indicadores sem depender de cor ou de mouse.
 | REAP-32 | P1: Painel | Tasks | Implementing |
 | REAP-33 | P1: Painel | Tasks | Implementing |
 | REAP-34 | P1: Painel | Tasks | In Tasks |
-| REAP-35 | P1: Painel | Tasks | In Tasks |
-| REAP-36 | P1: Painel | Tasks | In Tasks |
+| REAP-35 | P1: Painel | Tasks | Implementing |
+| REAP-36 | P1: Painel | Tasks | Implementing |
 | REAP-37 | P1: Painel | Tasks | In Tasks |
 | REAP-38 | P1: Painel | Tasks | In Tasks |
 | REAP-39 | P1: Painel | Tasks | In Tasks |

@@ -546,7 +546,7 @@ T17 → T18
 
 ---
 
-### T12: App `indicadores` e a geometria das barras
+### T12: App `indicadores` e a geometria das barras ✅
 
 **What**: A app `indicadores` registrada em `INSTALLED_APPS` e o módulo `graficos.py` com `Barra`, `Grafico` e `barras()` puros.
 **Where**: `indicadores/graficos.py`
@@ -561,20 +561,22 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `indicadores/__init__.py`, `indicadores/apps.py` (`IndicadoresConfig`), `indicadores/tests/__init__.py`; `"indicadores"` em `INSTALLED_APPS` depois de `"inovacoes"`
-- [ ] `graficos.py`: `Barra(nome, valor, y, comprimento, x_valor)`, `Grafico(id, titulo, barras, altura)`, `barras(itens, atributo)` como no design
-- [ ] Testes unitários (`@pytest.mark.unit`, sem banco) em `indicadores/tests/test_graficos.py`:
+- [x] `indicadores/__init__.py`, `indicadores/apps.py` (`IndicadoresConfig`), `indicadores/tests/__init__.py`; `"indicadores"` em `INSTALLED_APPS` depois de `"inovacoes"`
+- [x] `graficos.py`: `Barra(nome, valor, y, comprimento, x_valor)`, `Grafico(id, titulo, barras, altura)`, `barras(itens, atributo)` como no design
+- [x] Testes unitários (`@pytest.mark.unit`, sem banco) em `indicadores/tests/test_graficos.py`:
   - O maior valor tem `comprimento == 480`; os outros são proporcionais com 2 casas (ex.: 1 de 3 → 160.0).
   - Valor 0 → `comprimento == 0` e `x_valor == 8`; todos zero → nenhum comprimento > 0 e sem `ZeroDivisionError`; lista vazia → `[]`.
   - `y` cresce 44 por linha; `x_valor = comprimento + 8`; ordem de entrada preservada.
   - `altura == len(barras) * 44`.
-- [ ] Gate check passa: `.venv/bin/pytest -q -m unit`
-- [ ] Test count: ~828 testes passam (+8)
+- [x] Gate check passa: `.venv/bin/pytest -q -m unit`
+- [x] Test count: ~828 testes passam (+8)
 
 **Tests**: unit
 **Gate**: quick
 
 **Commit**: `feat(indicadores): cria a app e a geometria dos graficos de barras`
+
+**Status**: ✅ Complete — 831 passed (+11; 100 no gate quick `-m unit`); `Barra` e `Grafico` são `NamedTuple`; desvio pequeno do design: a altura vem de `Grafico.de(id, titulo, barras)`, porque o design chama `Grafico` com três argumentos e define quatro campos, e a função pública chama `barras` (nome do `tasks.md`), não `_barras`; as proporções esperadas são contas feitas à mão (3/7, 1/7, 2/7 de 480 com 2 casas, e 1 de 3 = 160.0); app registrada depois de `inovacoes` em `INSTALLED_APPS`
 
 ---
 

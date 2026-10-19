@@ -229,7 +229,7 @@ graph LR
   - `y = i * ALTURA_DA_LINHA` com `ALTURA_DA_LINHA = 44`.
   - `x_valor = comprimento + 8`: o número fica logo depois da barra, ou no início quando o valor é 0 (REAP-36).
   - A altura do SVG é `len(barras) * 44`.
-- **`Grafico = namedtuple(id, titulo, barras, altura)`**, com `altura = len(barras) * ALTURA_DA_LINHA` calculada em Python (o template do Django não multiplica).
+- **`Grafico = namedtuple(id, titulo, barras, altura)`**, com `altura = len(barras) * ALTURA_DA_LINHA` calculada em Python (o template do Django não multiplica). *(Implementado na T12 em `indicadores/graficos.py`: `Barra` e `Grafico` são `NamedTuple`, a função pública é `barras(itens, atributo)` e a view monta cada gráfico por `Grafico.de(id, titulo, barras)`, que calcula a altura.)*
 
 ### `indicadores/painel.html` (novo)
 
