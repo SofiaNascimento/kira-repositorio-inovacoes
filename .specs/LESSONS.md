@@ -258,6 +258,30 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 2, C07 (indicadores/graficos.py:46) (domain)
 - last seen: 2026-10-19T17:39:06Z
 
+### L-042 - When asserting that a form control is offered, reject disabled on the control and on every ancestor fieldset, because a disabled control still renders but cannot be used
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 3, N04/N13 (REAP-03), inovacao_reaproveitar.html:18-22 (tests)
+- last seen: 2026-10-19T18:41:08Z
+
+### L-043 - Whitelist the attributes of every SVG element a test asserts as visible text, because display, visibility and opacity presentation attributes hide it without hidden or aria-hidden
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 3, N01/N12 (REAP-36), indicadores/templates/indicadores/grafico.html:10-12 (tests)
+- last seen: 2026-10-19T18:41:08Z
+
+### L-044 - When asserting that content is displayed, also forbid display none, visibility hidden and zero opacity in the stylesheet rules that select it, because a DOM check cannot see CSS hiding
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `templates-css` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css)
+- last seen: 2026-10-19T18:41:08Z
+
+### L-045 - When asserting table semantics, reject a role attribute on the table or its cells that overrides the native role
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: reaproveitamento-indicadores
+- evidence: validation.md iteracao 3, N05 (REAP-46), indicadores/templates/indicadores/painel.html:20 (tests)
+- last seen: 2026-10-19T18:41:08Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

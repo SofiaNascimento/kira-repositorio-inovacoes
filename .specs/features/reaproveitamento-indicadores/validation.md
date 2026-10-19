@@ -1,13 +1,18 @@
 # Reaproveitamento e Indicadores (F6) Validation
 
 **Date**: 2026-10-19
-**Iteration**: 2 de 3 (a iteração 1 fica abaixo, intacta; a iteração 2 está em [Iteração 2](#iteração-2), no fim)
+**Iteration**: 3 de 3, a última (as iterações 1 e 2 ficam abaixo, intactas; a iteração 3 está em [Iteração 3](#iteração-3), no fim)
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md` (REAP-01 … REAP-49)
+**Diff range (iteração 3)**: feature `eb957d2..4b3dae2` em `main` (HEAD = `4b3dae2`), 25 commits, 45 arquivos, +5836/−39. Correção: `4b3dae2` (T20, Fix 2), só em 7 arquivos de teste e no `tasks.md`. `git diff ebbc35e..4b3dae2 -- . ':!.specs'` só toca `inovacoes/tests/` e `indicadores/tests/`: nenhum código de produção mudou desde a iteração 1.
 **Diff range (iteração 2)**: feature `eb957d2..865fe7a` em `main` (HEAD = `865fe7a`), 23 commits, 45 arquivos, +5450/−39. Correção: `865fe7a` (T19, Fix 1), só em `inovacoes/tests/` (`visibilidade.py` novo, `test_views_detalhe.py`, `test_views_reaproveitar.py`), `indicadores/tests/test_views_painel.py` e o `tasks.md`. `git diff e755a45..865fe7a -- . ':!inovacoes/tests' ':!indicadores/tests' ':!.specs'` vazio: nenhum código de produção mudou desde a iteração 1.
 **Diff range (iteração 1)**: `eb957d2..e755a45` em `main` (HEAD = `e755a45`), 21 commits, 19 de código e teste (T1 `69f655d` … T18 `985bfa4`) e 2 de pausa (`0bd904a`, `50d41ce`) mais o `e755a45`, só artefatos. 41 arquivos, +4805/−16; sem `.specs` e `docs`, 35 arquivos, +2789/−16. Produção: `inovacoes/models.py`, `forms.py`, `views.py`, `admin.py`, `urls.py`, `migrations/0008_reaproveitamento.py`, os templates `inovacao_detail.html` e `inovacao_reaproveitar.html`, a app `indicadores/` (`graficos.py`, `views.py`, `urls.py`, `painel.html`, `grafico.html`), `templates/base.html`, `templates/kira.css` e `config/`.
 **Verifier**: sub-agente independente (autor ≠ verifier)
 
-**Verdict**: FAIL ❌ na iteração 2 (HEAD `865fe7a`). A T19 mata os quatro sobreviventes da iteração 1 (M41, M43, M44, M45), e M42/M46 agora morrem também pela visibilidade. O helper `exibido()` esconde o que deve esconder e as asserções dependem dele: neutralizado, M41, M43, M44 e M45 voltam a sobreviver. Nenhuma regra central afrouxou. Mas sobrevivem dois mutantes novos da mesma classe, em código e ACs da F6 que a T19 não alcançou: **X01**, o link "Indicadores" do `nav` "Principal" dentro de um `<span hidden>` (REAP-28, `templates/base.html:23`), e **Y01**, o `h1` "Painel de indicadores" dentro de um `<div hidden>` (REAP-29, `indicadores/templates/indicadores/painel.html:6`). Os testes das duas ACs ainda leem o HTML cru (`inovacoes/tests/test_views_cabecalho.py:75`, `indicadores/tests/test_views_painel.py:108`). Um terceiro sobrevivente, **Y02** (`<ul class="mensagens" hidden>`, REAP-06/REAP-09), fica em código anterior à F6 e entra como lacuna de menor prioridade. Fix 2 abaixo, só de teste. A próxima é a iteração 3, a última antes de escalar. Antes: FAIL ❌ na iteração 1 (HEAD `e755a45`), com 4 sobreviventes de ocultação (M41, M43, M44, M45).
+**Verdict**: FAIL ❌ na iteração 3 (HEAD `4b3dae2`), a última do loop: **escalar ao usuário**. A T20 fecha a classe das iterações 1 e 2. X01, Y01 e Y02 morrem, M41–M46 continuam mortas e, com o `exibido()` neutralizado, X01/Y01/Y02 voltam a sobreviver, então a morte vem das asserções novas. A minha varredura independente não achou nenhuma asserção de "exibido" da F6 que ainda leia só o HTML cru. As regras centrais seguem mortas (RN09 com trava, fan-out, geometria, acesso, admin, consultas). O FAIL vem de **4 vetores de ocultação novos**, que ficam fora do modelo do `exibido()` (só atributos HTML): **L1** atributos de apresentação SVG no texto do gráfico (N01 `display="none"`, N12 `fill-opacity="0"`; REAP-36), **L2** controle desabilitado (N04 `<button disabled>`, N13 `<fieldset disabled>`; REAP-03), **L3** ocultação por CSS na `kira.css` (N02 `.metricas`, N10 `.grafico__valor`; REAP-30/31/36), **L4** `role="presentation"` na tabela (N05; REAP-46). O código de produção está correto. As quatro são lacunas de teste. A decisão de rodar um Fix 3 ou fechar com risco registrado é do usuário.
+
+**Verdict anterior (iteração 2)**: FAIL ❌ (HEAD `865fe7a`). A T19 mata os quatro sobreviventes da iteração 1 (M41, M43, M44, M45), e M42/M46 agora morrem também pela visibilidade. O helper `exibido()` esconde o que deve esconder e as asserções dependem dele: neutralizado, M41, M43, M44 e M45 voltam a sobreviver. Nenhuma regra central afrouxou. Mas sobrevivem dois mutantes novos da mesma classe, em código e ACs da F6 que a T19 não alcançou: **X01**, o link "Indicadores" do `nav` "Principal" dentro de um `<span hidden>` (REAP-28, `templates/base.html:23`), e **Y01**, o `h1` "Painel de indicadores" dentro de um `<div hidden>` (REAP-29, `indicadores/templates/indicadores/painel.html:6`). Os testes das duas ACs ainda leem o HTML cru (`inovacoes/tests/test_views_cabecalho.py:75`, `indicadores/tests/test_views_painel.py:108`). Um terceiro sobrevivente, **Y02** (`<ul class="mensagens" hidden>`, REAP-06/REAP-09), fica em código anterior à F6 e entra como lacuna de menor prioridade. Fix 2 abaixo, só de teste. A próxima é a iteração 3, a última antes de escalar. Antes: FAIL ❌ na iteração 1 (HEAD `e755a45`), com 4 sobreviventes de ocultação (M41, M43, M44, M45).
+
+**Iteração 3 em resumo:** o gate passa com 865 testes. A checagem ancorada na spec dá 49/49, e REAP-28/REAP-29 voltam a ✅. O sensor rodou 40 mutações válidas: 33 mortas e 7 sobreviventes, todas lacunas e nenhuma equivalente, agrupadas em L1–L4. G1–G6 e os equivalentes M06, M09, M17 e C07 se mantêm.
 
 **Iteração 2 em resumo:** o gate passa com 865 testes e o código de produção é o mesmo da iteração 1. A checagem ancorada na spec segue 49/49, com as linhas reconferidas no HEAD. O sensor rodou 47 mutações válidas (mais 13 combinações de auditoria do helper): 44 mortas, 3 sobreviventes de lacuna (X01, Y01, Y02) e 1 equivalente nova (C07). G1–G6 e os equivalentes M06, M09 e M17 se mantêm.
 
@@ -476,3 +481,201 @@ M41–M46 morrem todas, e a amostra das regras centrais (RN09 com trava, fan-out
 **Gate**: 865 passed
 
 **Next steps**: rodar o Fix 2 como task de teste e reexecutar o Verifier na iteração 3, a última antes de escalar. Se sobrar só risco de teste nessa rodada, a decisão de fechar com risco registrado é do usuário, como na F5.
+
+---
+
+## Iteração 3
+
+**Date**: 2026-10-19 · **HEAD**: `4b3dae2` · **Diff range**: `eb957d2..4b3dae2` (correção `ebbc35e..4b3dae2`, T20, só teste)
+
+### Task Completion
+
+| Task | Status | Notes |
+| ---- | ------ | ----- |
+| T1–T19 | ✅ Done | Inalteradas desde a iteração 2 |
+| T20 (Fix 2) | ✅ Done | `4b3dae2`. Tocou 7 arquivos de teste e somou 18 asserções sobre o `exibido(html)`, sem remover nenhuma antiga. Helpers da F1–F5 e produção ficaram intactos (conferido no diff). A contagem continua 865 |
+
+### Varredura da T20, refeita de forma independente
+
+Li toda asserção dos 16 arquivos de `git diff --name-only eb957d2..HEAD -- '*tests*'` que afirma que algo aparece. **Conclusão: a classe "asserção de exibido que só lê o HTML cru" está fechada na F6.** Toda asserção de presença sobre elemento da F6 passa pelo `exibido()`, direto ou por um helper que compara o recorte do exibido com o do cru: `_card` e `_tabela` (`ind/test_views_painel.py:68`, `:82`), `_graficos` (`:250`), `.vazio` (`:173`), tabelas (`:437`), seções (`:466`), cards `dl` (`:507`), `h1` (`:110`); `_reaproveitamentos` e o link de sinalizar (`inv/test_views_detalhe.py:586`, `:603`); `_mensagens` (`inv/test_views_reaproveitar.py:50`), o `<main>` da REAP-03 (`:86`), das opções (`:119`), da REAP-15 (`:149`), do 404 (`:181`), do formulário aberto (`:190`) e com erro (`:232`); o `nav` (`inv/test_views_cabecalho.py:80`); as opções do widget (`inv/test_forms_reaproveitamento.py:28`); o select, o rótulo e a mensagem (`inv/test_views_acessibilidade_alteracao.py:374-376`, `:403-405`) e a ordem de foco (`:445`); as células do admin (`inv/test_admin_reaproveitamento.py:83-85`); os cards da REAP-41 (`ind/test_desempenho_painel.py:74-76`).
+
+Exclusões da T20, julgadas uma a uma:
+
+| Exclusão | Se sustenta? | Por quê |
+| -------- | ------------ | ------- |
+| `<title>` | Sim | Fica no `<head>`. `hidden` não muda o título do documento nem o que o leitor de tela anuncia |
+| Ausências (REAP-02, REAP-27, REAP-37, REAP-49, anônimo da REAP-28) | Sim | Ausência no cru implica ausência no exibido. Afirmar sobre o cru é **mais** forte |
+| Atributos ARIA lidos da tag (REAP-45 sem erro, REAP-47 `role`/`aria-labelledby`) | Sim | O `svg` vem de `_graficos`, que já exige exibido == cru. `aria-invalid` ausente é uma ausência |
+| Status HTTP, redirecionamentos, banco | Sim | Não há conteúdo exibido a conferir |
+| Módulos sem HTML, rotas de `test_ciclo_de_vida.py`/`test_controle_autoria.py`, `test_views_sistema_design.py` | Sim | Não afirmam presença de conteúdo da F6 na tela |
+| Não listado pela T20: `ind/test_desempenho_painel.py:97-98`, `:111-112` (cards crus no teste da REAP-42) | Sim | São sanidade do teste de número de consultas. A visibilidade dos cards está em `:74-76` e em `ind/test_views_painel.py:68` |
+
+Controle: com o `exibido()` trocado por `return html` no scratch, X01, Y01 e Y02 voltam a sobreviver (865 passam). A morte vem das asserções novas, não de efeito colateral.
+
+**Limite do modelo, que é o que sobrevive abaixo:** o `exibido()` só reconhece ocultação por atributo HTML (`hidden`, `inert`, `aria-hidden`, `<template>`, `<details>` fechado). Atributos de apresentação SVG, CSS, `disabled` e um `role` que anula a semântica nativa ficam fora dele. A varredura da T20 fechou o que prometia. Os sobreviventes são vetores novos que escolhi nesta iteração.
+
+### Spec-Anchored Acceptance Criteria (re-derivado no HEAD `4b3dae2`)
+
+`inv/` = `inovacoes/tests/`, `ind/` = `indicadores/tests/`. Os arquivos que a T20 não tocou (`inv/test_reaproveitamento.py`, `inv/test_agregacoes.py`, `inv/test_views_detalhe.py`, `inv/test_views_sistema_design.py`, `ind/test_graficos.py`) mantêm as linhas da iteração 2. As linhas abaixo foram relidas nos arquivos alterados.
+
+| AC | Spec-defined outcome | `file:line` + assertion (HEAD `4b3dae2`) | Result |
+| -- | -------------------- | ---------------------------------------- | ------ |
+| REAP-01 | link exibido a todo autenticado em "Disponível" | `inv/test_views_detalhe.py:601`, `:603` | ✅ PASS (M41, N03, N03b mortas) |
+| REAP-02 | nenhum href nem texto fora de "Disponível" | `inv/test_views_detalhe.py:617-618` | ✅ PASS |
+| REAP-03 | 200, `<title>`, texto, select obrigatório rotulado, botão submit, "Cancelar" | `inv/test_views_reaproveitar.py:79`, `:83`, `:86` `_conteudo(exibido(html)) == conteudo`, `:93`, `:95`, `:103-104`, `:106` | ✅ PASS ⚠️ **L2**: N04 (`<button disabled>`) e N13 (`<fieldset disabled>`) sobrevivem |
+| REAP-04 | elegíveis em ordem alfabética, sem pré-seleção, exibidas | `inv/test_forms_reaproveitamento.py:28`, `:55`, `:68-69`, `:112`; `inv/test_views_reaproveitar.py:117`, `:119` | ✅ PASS ⚠️ G1 |
+| REAP-05 | um registro, conta logada, hora do servidor, 302 | `inv/test_views_reaproveitar.py:243-249`; `inv/test_reaproveitamento.py:159` | ✅ PASS (C09 morta) |
+| REAP-06 | mensagem exata uma vez, exibida | `inv/test_views_reaproveitar.py:258`, `:260-261`, via `_mensagens` (`:50`) | ✅ PASS (Y02, N06 mortas) |
+| REAP-07 | nenhum campo da inovação muda | `inv/test_reaproveitamento.py:280` | ✅ PASS |
+| REAP-08 | GET nunca grava | `inv/test_views_reaproveitar.py:126-127` | ✅ PASS |
+| REAP-09 | fora de "Disponível": nada gravado, 302, aviso uma vez | GET `inv/test_views_reaproveitar.py:138-142`; POST `:273-275` | ✅ PASS (C08, Y02 mortas) |
+| REAP-10 | o modelo recusa e não grava | `inv/test_reaproveitamento.py:171-176`, `:189-191` | ✅ PASS (C01 morta) |
+| REAP-11 | origem → 200, erro exato, nada gravado | `inv/test_views_reaproveitar.py:278-282`, via `_afirma_formulario_com_erro` (`:230`, `:232`) | ✅ PASS (C02 morta) |
+| REAP-12 | repetida → 200, erro com o nome | `inv/test_views_reaproveitar.py:285-290`; `inv/test_reaproveitamento.py:227-231` | ✅ PASS (C04 morta) |
+| REAP-13 | vazio, inexistente, não numérico → mensagem exata | `inv/test_views_reaproveitar.py:294-298`; `inv/test_forms_reaproveitamento.py:99-100` | ✅ PASS |
+| REAP-14 | constraint no banco; corrida → REAP-12, sem 500 | `inv/test_reaproveitamento.py:49`, `:259-260`; `inv/test_views_reaproveitar.py:301-314` | ✅ PASS (C03b, C04 mortas) |
+| REAP-15 | texto, "Voltar para a inovação", sem select nem botão, exibidos | `inv/test_views_reaproveitar.py:146-154` (`:149` exibido), cenários `:157`, `:165` | ✅ PASS (M45, N11 mortas) |
+| REAP-16 | 404 com "Inovação não encontrada." | `inv/test_views_reaproveitar.py:176-181`, `:329-331` | ✅ PASS |
+| REAP-17 | h2 e texto de 0, 1 e N, exibidos | `inv/test_views_detalhe.py:586`, `:641` | ✅ PASS (M42 morta) |
+| REAP-18 | itens do mais antigo ao mais recente, "<unidade> — dd/mm/aaaa" | `inv/test_views_detalhe.py:656` | ✅ PASS (M46, N09 mortas) |
+| REAP-19 | todo autenticado, nunca 403 | `inv/test_views_reaproveitar.py:185-190`, `:193-199`, `:355-368` | ✅ PASS |
+| REAP-20 | anônimo → login com `next` | `inv/test_views_reaproveitar.py:382-383` | ✅ PASS |
+| REAP-21 | sem CSRF → 403 | `inv/test_views_reaproveitar.py:392-393` | ✅ PASS |
+| REAP-22 | campos do corpo ignorados | `inv/test_views_reaproveitar.py:348-352` | ✅ PASS |
+| REAP-23 | excluir a inovação leva os registros dela | `inv/test_reaproveitamento.py:83`; `inv/test_views_reaproveitar.py:406-408` | ✅ PASS |
+| REAP-24, REAP-25 | unidade e conta referenciadas protegidas | `inv/test_reaproveitamento.py:90-94`, `:101-105`; `inv/test_admin_reaproveitamento.py:182-185` | ✅ PASS |
+| REAP-26 | admin lista e exclui só para ADMINISTRADOR | `inv/test_admin_reaproveitamento.py:77-85`, `:90-93`, `:102-103`, `:112-113`, `:122-125` | ✅ PASS ⚠️ G2, G3 (C12 morta) |
+| REAP-27 | ninguém inclui nem altera | `inv/test_admin_reaproveitamento.py:131`, `:141-151`, `:158`, `:172-173` | ✅ PASS (C11 morta) |
+| REAP-28 | link "Indicadores" exibido no `nav` "Principal" | `inv/test_views_cabecalho.py:77-78`, `:80` `_navegacao_principal(exibido(...)) == navegacao`; anônimo `:87-88` | ✅ PASS (X01, N07 mortas) |
+| REAP-29 | 200, `<title>`, `h1` exibido | `ind/test_views_painel.py:60`, `:107`, `:110` | ✅ PASS (Y01 morta) |
+| REAP-30, REAP-31 | cards com todas as inovações e todos os reaproveitamentos, exibidos | `ind/test_views_painel.py:118-119` via `_card` (`:68`), `:505`, `:507`; `ind/test_desempenho_painel.py:74-76` | ✅ PASS (M44 morta) ⚠️ **L3**: N02 (`.metricas { display: none; }` na `kira.css`) sobrevive |
+| REAP-32 | tabela por categoria, ordem e zeros, exibida | `ind/test_views_painel.py:129-131` via `_tabela` (`:82`) | ✅ PASS (C14 morta) |
+| REAP-33 | tabela por unidade, sem fan-out, ordem, exibida | `ind/test_views_painel.py:153-155`; `inv/test_agregacoes.py:89-90` | ✅ PASS (M43, C05, C16 mortas) |
+| REAP-34 | três gráficos com título, uma barra por linha, ordem da tabela | `ind/test_views_painel.py:250`, `:281`, `:308` | ✅ PASS (N08 morta) |
+| REAP-35 | proporção ao maior, 0 sem barra, tudo 0 sem barras | `ind/test_graficos.py:18`, `:25-26`, `:33`, `:42`; `ind/test_views_painel.py:324-325`, `:337`, `:348` | ✅ PASS ⚠️ G4 (C06, C07 mortas) |
+| REAP-36 | nome e valor **visíveis** junto de cada barra, inclusive "0" | `ind/test_views_painel.py:308`, `:336`, `:350`, via `_graficos` (`:250`) | ✅ PASS ⚠️ G5 · **L1**: N01 (`display="none"` no `<text>` do valor) e N12 (`fill-opacity="0"` no nome) sobrevivem · **L3**: N10 (`.grafico__valor { display: none; }`) sobrevive |
+| REAP-37 | vazio: cards "0", texto e link exibidos, sem tabela nem gráfico | `ind/test_views_painel.py:169-178`, `:186-189` | ✅ PASS |
+| REAP-38 | números do banco a cada requisição | `ind/test_views_painel.py:197-214` | ✅ PASS |
+| REAP-39 | o painel não altera nada | `ind/test_views_painel.py:227` | ✅ PASS |
+| REAP-40 | anônimo → login | `ind/test_views_painel.py:234` | ✅ PASS (C13 morta) |
+| REAP-41 | demonstração + 200 em até 2 s | `ind/test_desempenho_painel.py:63-64`, `:77` | ✅ PASS |
+| REAP-42 | consultas do painel fixas | `ind/test_desempenho_painel.py:113` | ✅ PASS (C15 morta) |
+| REAP-43 | consultas do detalhe fixas | `inv/test_views_detalhe.py:667` | ✅ PASS (C10 morta) |
+| REAP-44 | label ligado por `for`/`id`, exibido | `inv/test_views_acessibilidade_alteracao.py:368-376` | ✅ PASS |
+| REAP-45 | `aria-invalid="true"` e `aria-describedby` → mensagem | `inv/test_views_acessibilidade_alteracao.py:399-405`, sem erro `:408` | ✅ PASS |
+| REAP-46 | `caption`, `th scope="col"`, primeira célula `th scope="row"` | `ind/test_views_painel.py:437-454` | ✅ PASS ⚠️ **L4**: N05 (`<table role="presentation">`) sobrevive |
+| REAP-47 | `role="img"`, nome = título, tabela na seção | `ind/test_views_painel.py:290-291`, `:466-492` | ✅ PASS |
+| REAP-48 | componentes da `kira.css`, contrastes | `inv/test_views_sistema_design.py:653`, `:631`, `:405-409` | ✅ PASS |
+| REAP-49 | 500 do projeto, nada gravado, sem detalhes | `inv/test_views_reaproveitar.py:429-436`; `ind/test_views_painel.py:549-561` | ✅ PASS |
+
+**Status**: 49/49 ACs com evidência que afirma o valor da spec · ❌ 4 ACs com sobrevivente de um vetor de ocultação novo (REAP-03 L2, REAP-30/31 L3, REAP-36 L1+L3, REAP-46 L4) · ⚠️ 6 spec-precision gaps (mantidos)
+
+### Spec-Precision Gaps e equivalentes (reavaliados)
+
+| # | Decisão | Justificativa |
+| - | ------- | ------------- |
+| G1 (REAP-04) | Mantido | spec igual; `inv/test_forms_reaproveitamento.py:69` |
+| G2 (REAP-26) | Mantido | `inv/test_admin_reaproveitamento.py:122-125` |
+| G3 (destino após excluir no admin) | Mantido | só `status_code == 302` (`inv/test_admin_reaproveitamento.py:92`) |
+| G4 (REAP-35) | Mantido | `ind/test_views_painel.py:324-325` |
+| G5 (REAP-36, truncamento em 70) | Mantido | `ind/test_views_painel.py:354-368` |
+| G6 (T18, "ordem de leitura") | Mantido | nenhuma AC nem Done-when cita |
+| M06, M09, M17, C07 | Equivalentes, mantidos | `inovacoes/models.py`, `inovacoes/views.py` e `indicadores/graficos.py` sem mudança desde a iteração 1 |
+| L2 e L4 diante da letra da spec | Lacuna de teste, não gap da spec | Um botão `disabled` continua "a submit button" e uma tabela com `role="presentation"` continua tendo `caption` e `scope`, mas a REAP-03 existe para o usuário enviar o formulário e a REAP-46 para o leitor de tela ler a tabela (RNF09). As duas mutações quebram o propósito declarado da AC |
+
+### Discrimination Sensor (iteração 3)
+
+Worktree temporário (`git worktree add --detach <scratchpad>/vwt3 HEAD`, `.env` copiado). Cada mutação rodou a suíte inteira (`pytest -q -x -p no:cacheprovider`) pelo `.venv` da raiz em caminho absoluto, foi desfeita com `git checkout` no worktree e teve o `git status --porcelain` do worktree conferido limpo. No fim, `git worktree remove --force` e `git worktree prune`. `git worktree list` mostra só a árvore principal, e o `git status --porcelain` da árvore real ficou vazio antes e depois, igual à linha de base. Profundidade: **P0 expandida**, 40 mutações válidas (uma âncora ambígua, C03, refeita como C03b), mais 3 rodadas de controle com o helper neutralizado.
+
+| Mutação | File | Descrição | Resultado |
+| ------- | ---- | --------- | --------- |
+| X01 | `templates/base.html:23` | link "Indicadores" num `<span hidden>` | ✅ Morta (`inv/test_views_cabecalho.py:80`) |
+| Y01 | `indicadores/templates/indicadores/painel.html:6` | `<div hidden><h1>…</h1></div>` | ✅ Morta (`ind/test_views_painel.py:110`) |
+| Y02 | `templates/base.html:41` | `<ul class="mensagens" hidden>` | ✅ Morta (`inv/test_views_reaproveitar.py:50`) |
+| M41 | `inovacao_detail.html:86` | `<p class="acoes" hidden>` no link de sinalizar | ✅ Morta (`:603`) |
+| M42 | `inovacao_detail.html:89` | seção "Reaproveitamentos" com `hidden` | ✅ Morta |
+| M43 | `painel.html:41` | seção "Por unidade" com `hidden` | ✅ Morta (`ind/test_views_painel.py:82`) |
+| M44 | `painel.html:9` | `<dl class="metricas" hidden>` | ✅ Morta |
+| M45 | `inovacao_reaproveitar.html:11` | `<p hidden>Todas as outras…` | ✅ Morta (`:149`) |
+| M46 | `inovacao_detail.html:98` | `<ol class="reaproveitamentos" hidden>` | ✅ Morta (`:586`) |
+| N03 | `inovacao_detail.html:86` | `tabindex="-1"` antes do `href` do link de sinalizar | ✅ Morta, pelo regex estrito de `_links` (`inv/test_views_detalhe.py:199`) |
+| N03b | `inovacao_detail.html:86` | `tabindex="-1"` depois do `href` | ✅ Morta, idem (o regex só aceita `aria-describedby` depois do `href`) |
+| N06 | `templates/base.html:41` | `<ul class="mensagens" aria-hidden="true">` | ✅ Morta |
+| N07 | `templates/base.html:19` | `<nav aria-label="Principal" inert>` | ✅ Morta (incidental: o `index` cru de `_navegacao_principal`, teste da F1) |
+| N08 | `grafico.html:5` | `<figcaption hidden>` (título do gráfico) | ✅ Morta |
+| N09 | `inovacao_detail.html:100` | `<time hidden>` nos itens | ✅ Morta |
+| N11 | `inovacao_reaproveitar.html:12` | `inert` no "Voltar para a inovação" | ✅ Morta |
+| N15 | `inovacao_reaproveitar.html:24` | `tabindex="-1"` no "Cancelar" | ✅ Morta (`inv/test_views_acessibilidade_alteracao.py:443`) |
+| **N01** | `indicadores/templates/indicadores/grafico.html:12` | `<text display="none" class="grafico__valor">` | ❌ **Sobrevive** → L1 (REAP-36) |
+| **N12** | `grafico.html:10` | `<text fill-opacity="0" class="grafico__nome">` | ❌ **Sobrevive** → L1 (REAP-36) |
+| **N04** | `inovacao_reaproveitar.html:22` | `<button type="submit" disabled>` | ❌ **Sobrevive** → L2 (REAP-03) |
+| **N13** | `inovacao_reaproveitar.html:20` | `<fieldset disabled>` em volta do select e do botão | ❌ **Sobrevive** → L2 (REAP-03, REAP-44) |
+| **N02** | `templates/kira.css:542` | `.metricas { display: none; }` | ❌ **Sobrevive** → L3 (REAP-30, REAP-31) |
+| **N10** | `templates/kira.css:563` | `.grafico__valor { …; display: none; }` | ❌ **Sobrevive** → L3 (REAP-36) |
+| **N05** | `painel.html:20` | `<table role="presentation">` na tabela por categoria | ❌ **Sobrevive** → L4 (REAP-46) |
+| C01 | `inovacoes/models.py:317` | guarda de status da RN09 removida | ✅ Morta |
+| C02 | `inovacoes/models.py:322` | guarda da unidade de origem removida | ✅ Morta |
+| C03 | — | âncora ambígua (`avancar_status` também tem `select_for_update`) | inválida, refeita como C03b |
+| C03b | `inovacoes/models.py:313` | `select_for_update()` removido do `registrar_reaproveitamento` | ✅ Morta (`inv/test_reaproveitamento.py:260`) |
+| C04 | `inovacoes/models.py:333` | teste do nome da constraint invertido | ✅ Morta |
+| C05 | `inovacoes/models.py:81-82` | Q4 com duas `Count()` (fan-out) | ✅ Morta (`ind/test_views_painel.py:154`) |
+| C06 | `indicadores/graficos.py:46` | proporção sobre a soma | ✅ Morta (`:324`) |
+| C07 | `grafico.html:11` | barra desenhada para o valor 0 | ✅ Morta (`:337`) |
+| C08 | `inovacoes/views.py:281` | `dispatch` não recusa fora de "Disponível" | ✅ Morta |
+| C09 | `inovacoes/views.py:300` | `por=` o autor da inovação | ✅ Morta (`inv/test_views_reaproveitar.py:248`) |
+| C10 | `inovacoes/views.py:148` | detalhe sem `select_related("unidade")` | ✅ Morta (REAP-43) |
+| C11 | `inovacoes/admin.py:43-44` | `has_add_permission` → True | ✅ Morta |
+| C12 | `inovacoes/admin.py:31` | admin sem `AcessoSomenteAdministradorMixin` | ✅ Morta |
+| C13 | `indicadores/urls.py:8` | painel com `login_not_required` | ✅ Morta (`contas/tests/test_controle_acesso.py`) |
+| C14 | `inovacoes/models.py:91` | categorias só por nome | ✅ Morta |
+| C15 | `painel.html:60` | `unidade.reaproveitamentos.count` por linha (N+1) | ✅ Morta (REAP-42, `ind/test_desempenho_painel.py:113`) |
+| C16 | `inovacoes/models.py:83` | unidades ordenadas por reaproveitamentos feitos | ✅ Morta |
+
+Controle do helper: `exibido()` trocado por `return html` + X01, + Y01, + Y02 → as três **sobrevivem** (865 passam). A morte delas vem do `exibido`.
+
+**Sensor depth**: P0 expandida (40 mutações válidas; ≥ 5 exigidas)
+**Result**: 33 mortas, 7 sobreviventes, nenhuma equivalente. As 7 são lacunas de teste em 4 vetores (L1–L4). FAIL ❌
+
+### Gate Check (iteração 3)
+
+- **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- **Result**: ruff "All checks passed!"; format "131 files already formatted"; makemigrations "No changes detected"; pytest **865 passed**, 0 failed, 0 skipped (17.73 s); exit 0
+- **Test count**: 865, igual às iterações 1 e 2 (a T20 só endurece asserções). Antes da feature: 710; delta +155
+- **Asserções enfraquecidas**: nenhuma. O diff da T20 só soma linhas de asserção; as que mudaram de forma (`_mensagens`, `_opcoes`, `_pares_dos_cards`) mantêm a checagem crua e somam a exibida
+
+### Lacunas ranqueadas (para o usuário decidir: Fix 3 ou risco registrado)
+
+| # | Lacuna | AC | `file:line` | Correção (só teste) | Severidade |
+| - | ------ | -- | ----------- | ------------------- | ---------- |
+| L2 | Botão ou `fieldset` `disabled` passa: o formulário aparece mas não envia, e os POSTs dos testes são forjados pelo `client` | REAP-03 (REAP-44) | produção `inovacoes/templates/inovacoes/inovacao_reaproveitar.html:18-22`; teste `inv/test_views_reaproveitar.py:86`, `:103-104`; `inv/test_views_acessibilidade_alteracao.py:445` | No teste da REAP-03 e na ordem de foco, exigir que o `<select>` e o `<button type="submit">` não tenham `disabled` e não fiquem dentro de um `<fieldset disabled>` | Major (o caminho de tela do RF11 quebra com a suíte verde) |
+| L1 | Atributo de apresentação SVG (`display="none"`, `visibility="hidden"`, `opacity`/`fill-opacity="0"`) esconde o nome ou o valor da barra | REAP-36 | produção `indicadores/templates/indicadores/grafico.html:10-12`; teste `ind/test_views_painel.py:250` (`_graficos`) | Em `_graficos`, aceitar só os atributos esperados: `<text>` com `class`, `x`, `y`; `<rect>` com `class`, `x`, `y`, `width`, `height` (L-025) | Major (a AC existe para nenhum valor depender só da barra) |
+| L3 | Ocultação por CSS na `kira.css` (`display: none` em `.metricas`, `.grafico__valor`) | REAP-30, REAP-31, REAP-36 | produção `templates/kira.css:536-565`; teste `inv/test_views_sistema_design.py` (sem checagem de ocultação) | Na suíte de DS, recusar `display: none`, `visibility: hidden`, `opacity: 0` e `clip` nas regras que selecionam `.metrica*`, `.metricas`, `.grafico*`, `.reaproveitamentos` e `.tabela` | Minor (exige editar a folha central de propósito) |
+| L4 | `role="presentation"` (ou `none`) na `<table>` anula a semântica para o leitor de tela | REAP-46 | produção `indicadores/templates/indicadores/painel.html:20`, `:46`; teste `ind/test_views_painel.py:437-454` | Exigir `role` ausente (ou `"table"`) em cada `<table>` e nos `th`/`td` | Minor |
+
+### L-040 nesta iteração
+
+A T20 aplicou a L-040 e varreu toda a feature. A minha varredura independente confirma que a classe "asserção crua" fechou: nenhum sobrevivente desta iteração vem de uma asserção que esqueceu o `exibido()`. Pelas regras do `lessons.md`, isso **não** é registrado no `lessons.py`: um acerto não é sinal de falha, e a promoção exige outra feature, não outra iteração da mesma. A L-040 fica `candidate` (x1) até reaparecer numa feature diferente.
+
+### Requirement Traceability Update (iteração 3)
+
+| Requirement | Previous Status | New Status |
+| ----------- | --------------- | ---------- |
+| REAP-28, REAP-29 | ❌ Needs Fix | ✅ Verified (T20) |
+| REAP-03, REAP-30, REAP-31, REAP-36, REAP-46 | ✅ Verified | ⚠️ Verified com lacuna de teste aberta (L1–L4), decisão do usuário |
+| Demais | ✅ Verified | ✅ Verified |
+
+### Histórico
+
+- **Iteração 1** (HEAD `e755a45`): FAIL ❌. Sensor 39/46; M41, M43, M44 e M45 sobrevivem (ocultação). Fix 1 → T19.
+- **Iteração 2** (HEAD `865fe7a`): FAIL ❌. A T19 mata M41–M46. X01, Y01 e Y02 sobrevivem (asserções cruas fora do Fix 1). Fix 2 → T20.
+- **Iteração 3** (HEAD `4b3dae2`): FAIL ❌. A T20 fecha a classe crua (X01, Y01, Y02 mortas; o controle prova a origem). Sobrevivem 7 mutantes em 4 vetores novos fora do modelo do `exibido()` (L1–L4). O loop terminou: escalar ao usuário.
+
+### Summary (iteração 3)
+
+**Overall**: ❌ Not Ready pelo critério do sensor. Produção correta, e as lacunas são só de teste.
+
+**Spec-anchored check**: 49/49 ACs com evidência · 4 ACs com lacuna de vetor novo (REAP-03, REAP-30/31, REAP-36, REAP-46) · 6 spec-precision gaps mantidos
+**Sensor**: 33/40 mortas, 7 sobreviventes (L1–L4), nenhuma equivalente
+**Gate**: 865 passed
+
+**Next steps**: o loop de 3 iterações terminou, e a decisão é do usuário. (a) Rodar um Fix 3 só de teste com L1–L4 (L2 e L1 primeiro) e uma re-verificação fora do loop. (b) Fechar a F6 com L1–L4 registradas como risco residual, como na F5. O `validate_state.py` só passa com um veredito PASS neste arquivo.

@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 42,
+  "next_id": 46,
   "lessons": [
     {
       "id": "L-001",
@@ -754,6 +754,78 @@
       ],
       "created": "2026-10-19T17:39:06Z",
       "last_seen": "2026-10-19T17:39:06Z"
+    },
+    {
+      "id": "L-042",
+      "key": "surviving_mutant::when asserting that a form control is offered reject disabled on the control and on every ancestor fieldset because a disabled control still renders but cannot be used",
+      "text": "When asserting that a form control is offered, reject disabled on the control and on every ancestor fieldset, because a disabled control still renders but cannot be used",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 3, N04/N13 (REAP-03), inovacao_reaproveitar.html:18-22 (tests)"
+      ],
+      "created": "2026-10-19T18:41:08Z",
+      "last_seen": "2026-10-19T18:41:08Z"
+    },
+    {
+      "id": "L-043",
+      "key": "surviving_mutant::whitelist the attributes of every svg element a test asserts as visible text because display visibility and opacity presentation attributes hide it without hidden or aria hidden",
+      "text": "Whitelist the attributes of every SVG element a test asserts as visible text, because display, visibility and opacity presentation attributes hide it without hidden or aria-hidden",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 3, N01/N12 (REAP-36), indicadores/templates/indicadores/grafico.html:10-12 (tests)"
+      ],
+      "created": "2026-10-19T18:41:08Z",
+      "last_seen": "2026-10-19T18:41:08Z"
+    },
+    {
+      "id": "L-044",
+      "key": "surviving_mutant::when asserting that content is displayed also forbid display none visibility hidden and zero opacity in the stylesheet rules that select it because a dom check cannot see css hiding",
+      "text": "When asserting that content is displayed, also forbid display none, visibility hidden and zero opacity in the stylesheet rules that select it, because a DOM check cannot see CSS hiding",
+      "signal": "surviving_mutant",
+      "scope": "templates-css",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css)"
+      ],
+      "created": "2026-10-19T18:41:08Z",
+      "last_seen": "2026-10-19T18:41:08Z"
+    },
+    {
+      "id": "L-045",
+      "key": "surviving_mutant::when asserting table semantics reject a role attribute on the table or its cells that overrides the native role",
+      "text": "When asserting table semantics, reject a role attribute on the table or its cells that overrides the native role",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "reaproveitamento-indicadores"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 3, N05 (REAP-46), indicadores/templates/indicadores/painel.html:20 (tests)"
+      ],
+      "created": "2026-10-19T18:41:08Z",
+      "last_seen": "2026-10-19T18:41:08Z"
     }
   ]
 }
