@@ -657,7 +657,7 @@ T17 → T18
 
 ---
 
-### T15: Link "Indicadores" no menu principal
+### T15: Link "Indicadores" no menu principal ✅
 
 **What**: O link "Indicadores" no `nav` "Principal" do base, depois de "Cadastrar inovação".
 **Where**: `templates/base.html`
@@ -672,15 +672,17 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `<a href="{% url 'indicadores:painel' %}">Indicadores</a>` dentro do `nav` "Principal"
-- [ ] Testes e2e em `inovacoes/tests/test_views_cabecalho.py`: o link `href="/indicadores/"` com texto "Indicadores" está no `nav` "Principal" da listagem, do detalhe, da sinalização e do próprio painel, depois de "Cadastrar inovação"; anônimo (tela de login) não vê o link (REAP-28)
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~857 testes passam (+5)
+- [x] `<a href="{% url 'indicadores:painel' %}">Indicadores</a>` dentro do `nav` "Principal"
+- [x] Testes e2e em `inovacoes/tests/test_views_cabecalho.py`: o link `href="/indicadores/"` com texto "Indicadores" está no `nav` "Principal" da listagem, do detalhe, da sinalização e do próprio painel, depois de "Cadastrar inovação"; anônimo (tela de login) não vê o link (REAP-28)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~857 testes passam (+5)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `feat(nucleo): adiciona o link do painel de indicadores ao menu`
+
+**Status**: ✅ Complete — 853 passed (+5); testes novos acrescentados ao fim de `test_views_cabecalho.py`, sem mudar os antigos; o link é procurado só dentro do `nav` "Principal" de quatro telas (listagem, detalhe, sinalização e o próprio painel), cada uma com 200 conferido, e sua posição é comparada com a de "Cadastrar inovação"; anônimo na tela de login não tem o link nem o `href` no cabeçalho. Nenhum teste antigo de foco ou de cabeçalho precisou mudar. Build gate verde
 
 ---
 

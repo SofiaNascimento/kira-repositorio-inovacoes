@@ -19,6 +19,8 @@
         <nav aria-label="Principal">
           <a href="{% url 'inovacoes:lista' %}">Inovações</a>
           <a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>
+          {# REAP-28: o painel de indicadores (RF10). #}
+          <a href="{% url 'indicadores:painel' %}">Indicadores</a>
         </nav>
         <div class="usuario">
           <span>{{ user.get_username }}</span>

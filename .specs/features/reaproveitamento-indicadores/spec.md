@@ -331,7 +331,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-25 | P1: Acesso e integridade | Tasks | Implementing |
 | REAP-26 | P2: Correção pelo administrador | Tasks | Implementing |
 | REAP-27 | P2: Correção pelo administrador | Tasks | Implementing |
-| REAP-28 | P1: Painel | Tasks | In Tasks |
+| REAP-28 | P1: Painel | Tasks | Implementing |
 | REAP-29 | P1: Painel | Tasks | Implementing |
 | REAP-30 | P1: Painel | Tasks | Implementing |
 | REAP-31 | P1: Painel | Tasks | Implementing |

@@ -53,3 +53,32 @@ def test_cabecalho_anonimo_nao_mostra_o_link_de_inovacoes(client):
     html = client.get("/entrar/").content.decode()
     assert not LINK_INOVACOES.search(html)
     assert 'href="/inovacoes/"' not in _cabecalho(html)
+
+
+LINK_INDICADORES = re.compile(r'<a href="/indicadores/">\s*Indicadores\s*</a>')
+
+
+@pytest.mark.parametrize(
+    "pagina",
+    ["/inovacoes/", "/inovacoes/{id}/", "/inovacoes/{id}/reaproveitar/", "/indicadores/"],
+)
+def test_cabecalho_autenticado_leva_ao_painel_depois_do_cadastro(
+    client, autor, criar_inovacao, pagina
+):
+    """REAP-28: link "Indicadores" -> /indicadores/ no nav "Principal", depois do cadastro."""
+    client.force_login(autor)
+    inovacao = criar_inovacao(status="DISPONIVEL_PARA_REPLICACAO")
+    resposta = client.get(pagina.format(id=inovacao.pk))
+    assert resposta.status_code == 200
+    navegacao = _navegacao_principal(resposta.content.decode())
+    link = LINK_INDICADORES.search(navegacao)
+    assert link
+    assert link.start() > LINK.search(navegacao).start()
+
+
+@pytest.mark.django_db
+def test_cabecalho_anonimo_nao_mostra_o_link_do_painel(client):
+    """REAP-28: o link so existe com usuario autenticado."""
+    html = client.get("/entrar/").content.decode()
+    assert not LINK_INDICADORES.search(html)
+    assert 'href="/indicadores/"' not in _cabecalho(html)
