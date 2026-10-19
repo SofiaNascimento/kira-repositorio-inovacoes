@@ -5,11 +5,23 @@ Os reaproveitamentos nascem pelo metodo do modelo (AD-012).
 """
 
 import re
+from html.parser import HTMLParser
 
 import pytest
-from pytest_django.asserts import assertRedirects
+from django.db import OperationalError
+from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
-from inovacoes.models import Categoria, Inovacao, Reaproveitamento, StatusInovacao, Unidade
+from inovacoes.models import (
+    Categoria,
+    CategoriaQuerySet,
+    Inovacao,
+    Reaproveitamento,
+    StatusInovacao,
+    Unidade,
+    UnidadeQuerySet,
+)
+from inovacoes.tests.test_views_erro_500 import DETALHE_DA_CONEXAO
+from inovacoes.tests.test_views_sistema_design import _elementos
 
 URL = "/indicadores/"
 
@@ -320,3 +332,176 @@ def test_nome_longo_e_truncado_no_svg_e_inteiro_na_tabela(client, disponivel, te
     assert nome.startswith(truncado.removesuffix("…"))
     assert nome not in nomes
     assert [nome, "1"] in _tabela(html, "Inovações por categoria")[1]
+
+
+# --- T18: acessibilidade e falha de banco do painel (REAP-46, REAP-47, REAP-49) --
+
+VAZIOS = {"area", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"}
+
+
+class Arvore(HTMLParser):
+    """Arvore de elementos {tag, atributos, filhos, texto} com o aninhamento do HTML.
+
+    O Elementos do DS-01 e plano; aqui a pergunta e "esta dentro de qual secao".
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.raiz = {"tag": None, "atributos": {}, "filhos": [], "texto": ""}
+        self.pilha = [self.raiz]
+
+    def handle_starttag(self, tag, attrs):
+        no = {"tag": tag, "atributos": dict(attrs), "filhos": [], "texto": ""}
+        self.pilha[-1]["filhos"].append(no)
+        if tag not in VAZIOS:
+            self.pilha.append(no)
+
+    def handle_startendtag(self, tag, attrs):
+        self.pilha[-1]["filhos"].append(
+            {"tag": tag, "atributos": dict(attrs), "filhos": [], "texto": ""}
+        )
+
+    def handle_endtag(self, tag):
+        while len(self.pilha) > 1:
+            if self.pilha.pop()["tag"] == tag:
+                break
+
+    def handle_data(self, data):
+        self.pilha[-1]["texto"] += data
+
+
+def _arvore(html):
+    parser = Arvore()
+    parser.feed(html)
+    return parser.raiz
+
+
+def _todos(no, tag):
+    """Descendentes de `no` com a tag dada, em ordem de documento."""
+    achados = []
+    for filho in no["filhos"]:
+        if filho["tag"] == tag:
+            achados.append(filho)
+        achados.extend(_todos(filho, tag))
+    return achados
+
+
+def _texto(no):
+    return (no["texto"] + "".join(_texto(filho) for filho in no["filhos"])).strip()
+
+
+def _celulas(linha):
+    return [filho for filho in linha["filhos"] if filho["tag"] in {"th", "td"}]
+
+
+@pytest.mark.django_db
+def test_tabelas_tem_caption_e_cabecalhos_com_scope(client, cenario, terceiro):
+    """REAP-46: caption, th scope=col nas colunas e th scope=row na primeira celula."""
+    tabelas = _todos(_arvore(_html(client, terceiro)), "table")
+    assert [_texto(_todos(t, "caption")[0]) for t in tabelas] == [
+        "Inovações por categoria",
+        "Inovações por unidade",
+    ]
+    for tabela in tabelas:
+        legenda = _texto(_todos(tabela, "caption")[0])
+        (cabecalho,) = _todos(_todos(tabela, "thead")[0], "tr")
+        assert [(c["tag"], c["atributos"].get("scope")) for c in _celulas(cabecalho)] == [
+            ("th", "col")
+        ] * len(_celulas(cabecalho)), legenda
+        linhas = _todos(_todos(tabela, "tbody")[0], "tr")
+        assert len(linhas) == 6, legenda
+        for linha in linhas:
+            primeira, *resto = _celulas(linha)
+            assert (primeira["tag"], primeira["atributos"].get("scope")) == ("th", "row"), legenda
+            assert resto and all(c["tag"] == "td" for c in resto), legenda
+
+
+@pytest.mark.django_db
+def test_cada_grafico_fica_na_secao_da_tabela_com_os_mesmos_numeros(client, cenario, terceiro):
+    """REAP-47: a tabela da mesma secao e a alternativa textual de cada grafico.
+
+    Todo par (nome, valor) do grafico e uma linha da coluna correspondente da tabela.
+    """
+    secoes = _todos(_arvore(_html(client, terceiro)), "section")
+    colunas = {TITULOS[0]: 1, TITULOS[1]: 1, TITULOS[2]: 2}
+    vistos = []
+    for secao in secoes:
+        (tabela,) = _todos(secao, "table")
+        linhas = [
+            [_texto(c) for c in _celulas(linha)]
+            for linha in _todos(_todos(tabela, "tbody")[0], "tr")
+        ]
+        for figura in _todos(secao, "figure"):
+            titulo = _texto(_todos(figura, "figcaption")[0])
+            (svg,) = _todos(figura, "svg")
+            assert svg["atributos"]["role"] == "img", titulo
+            nomes = [
+                _texto(t) for t in _todos(svg, "text") if "grafico__nome" in t["atributos"]["class"]
+            ]
+            valores = [
+                _texto(t)
+                for t in _todos(svg, "text")
+                if "grafico__valor" in t["atributos"]["class"]
+            ]
+            assert list(zip(nomes, valores)) == [
+                (linha[0], linha[colunas[titulo]]) for linha in linhas
+            ], titulo
+            vistos.append(titulo)
+    assert vistos == TITULOS
+
+
+@pytest.mark.django_db
+def test_cards_usam_lista_de_definicao_com_rotulo_e_numero(client, cenario, terceiro):
+    """Cards: rotulo em dt e numero em dd, dentro do dl.metricas."""
+    elementos = _elementos(_html(client, terceiro))
+    inicio = next(
+        i
+        for i, (tag, atributos, _) in enumerate(elementos)
+        if tag == "dl" and "metricas" in atributos.get("class", "").split()
+    )
+    pares = [
+        (tag, texto.strip()) for tag, _, texto in elementos[inicio + 1 :] if tag in {"dt", "dd"}
+    ][:4]
+    assert pares == [
+        ("dt", "Inovações cadastradas"),
+        ("dd", "4"),
+        ("dt", "Reaproveitamentos registrados"),
+        ("dd", "2"),
+    ]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("alvo", "atributo"),
+    [
+        (CategoriaQuerySet, "com_total_de_inovacoes"),
+        (UnidadeQuerySet, "com_indicadores"),
+    ],
+    ids=["por-categoria", "por-unidade"],
+)
+def test_banco_indisponivel_no_painel_devolve_500_sem_detalhes(
+    monkeypatch, client, cenario, terceiro, alvo, atributo
+):
+    """REAP-49: pagina 500 do projeto, sem host, usuario, senha nem traceback; nada gravado."""
+
+    def falhar(*args, **kwargs):
+        raise OperationalError(DETALHE_DA_CONEXAO)
+
+    reaproveitamentos = Reaproveitamento.objects.count()
+    monkeypatch.setattr(alvo, atributo, falhar)
+    client.force_login(terceiro)
+    client.raise_request_exception = False
+    resposta = client.get(URL)
+    assert resposta.status_code == 500
+    assertTemplateUsed(resposta, "500.html")
+    html = resposta.content.decode()
+    for trecho in [
+        "db.interno.kira",
+        "kira_app",
+        "s3gr3d0-do-banco",
+        "OperationalError",
+        "Traceback",
+    ]:
+        assert trecho not in html, trecho
+    assert DETALHE_DA_CONEXAO not in html
+    assert Reaproveitamento.objects.count() == reaproveitamentos

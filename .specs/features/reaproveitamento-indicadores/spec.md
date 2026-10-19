@@ -349,7 +349,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-43 | P2: Desempenho | Tasks | Implementing |
 | REAP-44 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-45 | P1: Acessibilidade | Tasks | Implementing |
-| REAP-46 | P1: Acessibilidade | Tasks | In Tasks |
+| REAP-46 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-47 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-48 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-49 | Edge Cases | Tasks | Implementing |

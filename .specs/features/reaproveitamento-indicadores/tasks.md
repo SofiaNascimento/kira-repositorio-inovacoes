@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/reaproveitamento-indicadores/spec.md`
 **Design**: `.specs/features/reaproveitamento-indicadores/design.md`
-**Status**: ⏸ Pausada em 2026-10-18 na linha de corte — T1–T10 ✅ (RF11 completo, 813 testes); T11–T18 (painel) não iniciadas; Verifier ainda não rodou. Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes (lotes 1 e 2 concluídos)
+**Status**: T1–T18 ✅ (865 testes); Verifier ainda não rodou. Tasks aprovadas pelo usuário em 2026-10-18; execução por sub-agentes em 4 lotes (lotes 1 e 2 concluídos)
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 (AD-003) · pytest + pytest-django · Ruff — o mesmo da F1 a F5.
 
@@ -746,7 +746,7 @@ T17 → T18
 
 ---
 
-### T18: Acessibilidade e falha de banco do painel
+### T18: Acessibilidade e falha de banco do painel ✅
 
 **What**: Evidências de tabela semântica, alternativa textual dos gráficos, ordem de leitura e 500 sem detalhe no painel.
 **Where**: `indicadores/tests/test_views_painel.py`
@@ -761,18 +761,20 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Cada tabela tem `caption`; todo cabeçalho de coluna é `th scope="col"`; a primeira célula de cada linha é `th scope="row"` (REAP-46)
-- [ ] Cada `<figure>` de gráfico está na mesma `<section>` que a tabela com os mesmos números; todo valor de barra aparece também como célula da tabela (REAP-47)
-- [ ] Os cards usam `dl`/`dt`/`dd`, com o rótulo em `dt` e o número em `dd`
-- [ ] `OperationalError` forçado numa agregação → 500 do projeto sem o detalhe da conexão (REAP-49)
-- [ ] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~869 testes passam (+5)
+- [x] Cada tabela tem `caption`; todo cabeçalho de coluna é `th scope="col"`; a primeira célula de cada linha é `th scope="row"` (REAP-46)
+- [x] Cada `<figure>` de gráfico está na mesma `<section>` que a tabela com os mesmos números; todo valor de barra aparece também como célula da tabela (REAP-47)
+- [x] Os cards usam `dl`/`dt`/`dd`, com o rótulo em `dt` e o número em `dd`
+- [x] `OperationalError` forçado numa agregação → 500 do projeto sem o detalhe da conexão (REAP-49)
+- [x] Se alguma evidência falhar, a correção entra nesta task e o commit muda de tipo para `fix`
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~869 testes passam (+5)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `test(indicadores): cobre a acessibilidade e a falha de banco do painel`
+
+**Status**: ✅ Complete — 865 passed (+5); as evidências passaram sem mudança de produção, então o commit fica `test`; testes novos no fim de `test_views_painel.py`; das linhas existentes, só o bloco de imports mudou (ganhou `HTMLParser`, `OperationalError`, `assertTemplateUsed`, os dois QuerySets, `DETALHE_DA_CONEXAO` e `_elementos`), sem tocar asserção; o `Elementos` do DS-01 é plano, sem fechamento de tag, e serve só para os cards; a REAP-46 e a REAP-47 usam uma árvore `Arvore` (HTMLParser com aninhamento) no próprio arquivo, para provar "primeira célula da linha" e "mesma `<section>`"; a REAP-47 confere que todo par (nome, valor) de cada gráfico é uma linha da coluna certa da tabela da mesma seção; a REAP-49 força o `OperationalError` em `com_total_de_inovacoes` e em `com_indicadores` (parametrizado), com 500 do projeto, sem host, usuário, senha, `OperationalError` nem traceback, e nenhum reaproveitamento a mais; mutantes conferidos à mão: `th scope=row` → `td`, `caption` removido, `scope=col` removido, `dt` trocado por `span` e um gráfico fora da seção, todos mortos. Spec-precision gap: o `What` cita "ordem de leitura", mas nem a REAP-46/47 nem o `Done when` definem uma ordem; não há teste de ordem além da ordem dos gráficos (REAP-34, T14). Build gate verde
 
 ---
 
