@@ -686,7 +686,7 @@ T17 → T18
 
 ---
 
-### T16: Componentes `.metricas`, `.metrica` e `.grafico` na `kira.css`
+### T16: Componentes `.metricas`, `.metrica` e `.grafico` na `kira.css` ✅
 
 **What**: O estilo dos cards de métrica e dos gráficos, com `fill` por token, e a conferência de contraste do `fill`.
 **Where**: `templates/kira.css`
@@ -701,15 +701,17 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Regras da tabela "CSS" do design; sem `="`, sem `<`, sem cor literal
-- [ ] `test_views_sistema_design.py`: o teste de cores do componente cobre `.metrica` e `.grafico`; teste novo lê `fill` de `.grafico__nome`/`.grafico__valor` (par com o fundo do `.cartao` em `PARES_DE_TEXTO`, ≥ 4.5:1) e de `.grafico__barra` (≥ 3:1 contra o fundo do `.cartao`); `fill` literal derruba o teste
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~862 testes passam (+5)
+- [x] Regras da tabela "CSS" do design; sem `="`, sem `<`, sem cor literal
+- [x] `test_views_sistema_design.py`: o teste de cores do componente cobre `.metrica` e `.grafico`; teste novo lê `fill` de `.grafico__nome`/`.grafico__valor` (par com o fundo do `.cartao` em `PARES_DE_TEXTO`, ≥ 4.5:1) e de `.grafico__barra` (≥ 3:1 contra o fundo do `.cartao`); `fill` literal derruba o teste
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~862 testes passam (+5)
 
 **Tests**: e2e
 **Gate**: build
 
 **Commit**: `style(indicadores): estiliza os cards e os graficos do painel`
+
+**Status**: ✅ Complete — 858 passed (+5); teste antigo alterado como autorizado em `test_views_sistema_design.py`: o teste de cores do componente ganha `.metrica` e `.grafico` no parametrize e cinco entradas em `CADEIA_DO_COMPONENTE` (com o `.cartao` como ancestral, de onde vem o fundo `surface`), e um teste novo lê o `fill` de `.grafico__nome`, `.grafico__valor` (par do DS-08, 4.5:1) e `.grafico__barra` (3:1) contra o fundo do cartão; regras da tabela "CSS" do design, mais `.metrica` e `.grafico` com `color: var(--text)`, porque o teste de cores exige uma regra com o seletor exato da classe, e `.metricas .metrica { margin-top: 0 }`, que anula o `.cartao + .cartao` dentro do grid; nenhuma cor nova, sem `="` e sem `<`; mutantes conferidos à mão: `fill` literal na barra e `.metrica dt` com `brand-blue-light`, ambos mortos. Build gate verde
 
 ---
 

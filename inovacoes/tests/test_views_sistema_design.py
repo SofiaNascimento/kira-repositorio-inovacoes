@@ -572,6 +572,12 @@ CADEIA_DO_COMPONENTE = {
     ".reaproveitamentos li": [".reaproveitamentos"],
     ".reaproveitamentos li:first-child": [".reaproveitamentos li", ".reaproveitamentos"],
     ".reaproveitamentos time": [".reaproveitamentos li", ".reaproveitamentos"],
+    # REAP-48: os cards e os graficos do painel ficam dentro de um .cartao.
+    ".metrica": [".cartao"],
+    ".metrica dt": [".metrica", ".cartao"],
+    ".metrica dd": [".metrica", ".cartao"],
+    ".grafico": [".cartao"],
+    ".grafico figcaption": [".grafico", ".cartao"],
 }
 
 
@@ -599,7 +605,9 @@ def _cor_desenhada(seletor, propriedade):
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize("classe", [".ciclo", ".historico", ".reaproveitamentos"])
+@pytest.mark.parametrize(
+    "classe", [".ciclo", ".historico", ".reaproveitamentos", ".metrica", ".grafico"]
+)
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
     """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.
 
@@ -621,6 +629,30 @@ def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
             assert seletor in CADEIA_DO_COMPONENTE, f"{seletor}: declare a cadeia"
             par = (_cor_desenhada(seletor, "color"), _cor_desenhada(seletor, "background"))
             assert par in PARES_DE_TEXTO, (seletor, par)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("seletor", "minimo", "par_de_texto"),
+    [
+        (".grafico__nome", 4.5, True),
+        (".grafico__valor", 4.5, True),
+        (".grafico__barra", 3, False),
+    ],
+)
+def test_fill_do_grafico_usa_token_com_contraste_sobre_o_cartao(seletor, minimo, par_de_texto):
+    """REAP-48: texto do SVG com 4.5:1 e par do DS-08; barra com 3:1 (WCAG 1.4.11).
+
+    O fill precisa ser var(--token): uma cor literal derruba o teste.
+    """
+    fills = [valor for nome, valor in _declaracoes(_corpos(seletor)) if nome == "fill"]
+    assert fills, f"{seletor}: sem fill"
+    fill = _token_de(fills[-1])
+    fundo = _cor_desenhada(".grafico", "background")
+    assert fundo == "surface"
+    assert _contraste(_token(fill), _token(fundo)) >= minimo
+    if par_de_texto:
+        assert (fill, fundo) in PARES_DE_TEXTO
 
 
 @pytest.mark.unit

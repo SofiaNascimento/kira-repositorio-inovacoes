@@ -303,6 +303,8 @@ Componentes novos, só com tokens existentes e sem cor nova:
 | `.grafico__barra` | `fill` da barra | `brand-blue` sobre `surface` (≥ 3:1, WCAG 1.4.11) |
 | `.reaproveitamentos` | lista do detalhe, mesmo desenho da `.historico` | `text` e, na data em `<time>`, `text-muted` sobre `bg` (implementado na T7; os dois pares já estavam no DS-08) |
 
+*(Implementado na T16: `.metrica` e `.grafico` ganham também `color: var(--text)`, porque o teste de cores do componente exige uma regra com o seletor exato da classe, e `.metricas .metrica` zera a margem do `.cartao + .cartao` dentro do grid.)*
+
 Seletores sem aspas e sem `<` (AD-010). O teste de cores do componente hoje lê `color` e `background`. Ele passa a ler também `fill` dos seletores `.grafico__*`, conferindo `fill` contra o fundo do `.cartao` (REAP-48).
 
 ---

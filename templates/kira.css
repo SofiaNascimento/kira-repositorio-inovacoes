@@ -530,6 +530,40 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 .reaproveitamentos li:first-child { border-top: 0; }
 .reaproveitamentos time { color: var(--text-muted); }
 
+/* --- Painel de indicadores (§10 F6) ------------------------------------- */
+
+/* Cards de metrica: rotulo em dt, numero em dd, sobre o fundo do .cartao (REAP-48). */
+.metricas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-5);
+  margin: 0 0 var(--space-6);
+}
+.metricas .metrica { margin-top: 0; }
+.metrica { color: var(--text); }
+.metrica dt { color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; }
+.metrica dd {
+  margin: var(--space-2) 0 0;
+  color: var(--brand-navy);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Grafico de barras: o SVG pinta por fill, so com tokens de pares conferidos. */
+.grafico { margin: 0 0 var(--space-5); color: var(--text); }
+.grafico figcaption {
+  margin-bottom: var(--space-3);
+  color: var(--brand-navy);
+  font-weight: 600;
+}
+.grafico svg { display: block; max-width: 100%; height: auto; }
+.grafico__nome,
+.grafico__valor { fill: var(--text); font-size: var(--fs-sm); }
+.grafico__valor { font-weight: 600; }
+/* WCAG 1.4.11: a barra tem 3:1 contra o fundo do cartao. */
+.grafico__barra { fill: var(--brand-blue); }
+
 /* --- Busca (§10 F3) ------------------------------------------------------ */
 
 .busca {
