@@ -461,7 +461,7 @@ ORDER BY inovacoes_de_origem DESC, u.nome ASC;
 
 - Cada subconsulta usa o índice da FK (`inovacao.unidade_id`, `reaproveitamento.unidade_id`).
 - A subconsulta sem linha devolve `NULL`, e o `COALESCE` o troca por 0 (unidade sem nada aparece com dois zeros).
-- O `.order_by()` vazio é obrigatório: sem ele, o `Meta.ordering = ["data", "id"]` de `Reaproveitamento` entraria no `GROUP BY` da subconsulta e devolveria uma linha por data, quebrando o `Subquery`.
+- O `.order_by()` vazio é obrigatório: sem ele, o `Meta.ordering = ["data", "id"]` de `Reaproveitamento` entraria no `GROUP BY` da subconsulta e devolveria uma linha por data, quebrando o `Subquery`. *(Achado da T11: o Django 5.2 já não usa o `Meta.ordering` em consultas com `GROUP BY`, desde o 3.1, então a subconsulta sai certa mesmo sem ele. O `.order_by()` fica como proteção explícita, e o teste das duas datas prova o resultado, não o `.order_by()`.)*
 
 **Q5 — reaproveitamentos no detalhe (REAP-17, REAP-18, REAP-43)**
 

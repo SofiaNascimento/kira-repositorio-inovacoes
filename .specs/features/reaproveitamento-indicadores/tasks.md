@@ -511,7 +511,7 @@ T17 → T18
 
 ---
 
-### T11: Agregações de `Categoria` e `Unidade`
+### T11: Agregações de `Categoria` e `Unidade` ✅
 
 **What**: `CategoriaQuerySet.com_total_de_inovacoes` (Q3) e `UnidadeQuerySet.com_indicadores` (Q4), ligados como managers.
 **Where**: `inovacoes/models.py`
@@ -526,21 +526,23 @@ T17 → T18
 
 **Done when**:
 
-- [ ] `Categoria.objects = CategoriaQuerySet.as_manager()` e `Unidade.objects = UnidadeQuerySet.as_manager()`; Q3 e Q4 exatamente como no design, com o comentário do `.order_by()` vazio; `makemigrations --check` sem migration nova
-- [ ] Testes de integração em `inovacoes/tests/test_agregacoes.py`:
+- [x] `Categoria.objects = CategoriaQuerySet.as_manager()` e `Unidade.objects = UnidadeQuerySet.as_manager()`; Q3 e Q4 exatamente como no design, com o comentário do `.order_by()` vazio; `makemigrations --check` sem migration nova
+- [x] Testes de integração em `inovacoes/tests/test_agregacoes.py`:
   - Categoria sem inovação aparece com `total == 0`; contagens corretas; ordem por total decrescente e nome no empate (REAP-32).
   - Unidade sem nada aparece com `0` e `0`; uma unidade com 2 inovações de origem e 3 reaproveitamentos feitos dá **2 e 3**, não 6 (fan-out).
   - Dois reaproveitamentos da mesma unidade em datas diferentes não quebram a subconsulta.
   - Ordem por inovações de origem decrescente e nome no empate (REAP-33).
   - Cada agregação é **uma** consulta (`django_assert_num_queries(1)`).
   - Os registros das listas iniciais da migration 0004 entram na contagem.
-- [ ] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- [ ] Test count: ~820 testes passam (+9)
+- [x] Gate check passa: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
+- [x] Test count: ~820 testes passam (+9)
 
 **Tests**: integration
 **Gate**: build
 
 **Commit**: `feat(inovacoes): adiciona as agregacoes por categoria e por unidade`
+
+**Status**: ✅ Complete — 820 passed (+7); Q3 e Q4 exatamente como no design, sem migration nova; as contagens esperadas são listas literais montadas no teste, com as cinco categorias e as cinco unidades da migration 0004 dentro; o fan-out é provado com 2 de origem e 3 feitos (2 e 3, não 6); empates por nome cobertos nas duas agregações; cada agregação é uma consulta. Achado: o mutante sem o `.order_by()` vazio da Q4 sobrevive, porque o Django 5.2 já ignora o `Meta.ordering` em consultas com `GROUP BY` (desde o 3.1); o `.order_by()` fica, como no design, e o teste das duas datas fica como evidência do resultado, sem discriminar o `.order_by()`. Registros de teste pelo `registrar_reaproveitamento` (AD-012); a `data` é forçada por `update()` depois, como na T6. Build gate verde
 
 ---
 

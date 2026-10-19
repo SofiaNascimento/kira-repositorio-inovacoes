@@ -4,8 +4,8 @@ from operator import or_
 from django.conf import settings
 from django.core.exceptions import NON_FIELD_ERRORS, ValidationError
 from django.db import IntegrityError, models, transaction
-from django.db.models import Q
-from django.db.models.functions import Lower
+from django.db.models import Count, OuterRef, Q, Subquery
+from django.db.models.functions import Coalesce, Lower
 from django.urls import reverse
 
 from inovacoes.busca import palavras, texto_de_busca
@@ -55,13 +55,53 @@ class ItemDeLista(models.Model):
         return self.nome
 
 
+class UnidadeQuerySet(models.QuerySet):
+    """Agregacoes do painel por unidade (AD-002, REAP-33)."""
+
+    def com_indicadores(self):
+        """Inovacoes de origem e reaproveitamentos feitos, com zeros.
+
+        Uma subconsulta correlacionada por contagem: duas Count() no mesmo
+        annotate fariam dois JOINs e multiplicariam as linhas (fan-out).
+        """
+
+        def contagem(modelo):
+            return Coalesce(
+                Subquery(
+                    modelo.objects.filter(unidade=OuterRef("pk"))
+                    .order_by()  # limpa o Meta.ordering do GROUP BY
+                    .values("unidade")
+                    .annotate(n=Count("pk"))
+                    .values("n")
+                ),
+                0,
+            )
+
+        return self.annotate(
+            inovacoes_de_origem=contagem(Inovacao),
+            reaproveitamentos_feitos=contagem(Reaproveitamento),
+        ).order_by("-inovacoes_de_origem", "nome")
+
+
+class CategoriaQuerySet(models.QuerySet):
+    """Agregacoes do painel por categoria (AD-002, REAP-32)."""
+
+    def com_total_de_inovacoes(self):
+        # LEFT OUTER JOIN: categoria sem inovacao sai com total 0.
+        return self.annotate(total=Count("inovacao")).order_by("-total", "nome")
+
+
 class Unidade(ItemDeLista):
+    objects = UnidadeQuerySet.as_manager()
+
     class Meta(ItemDeLista.Meta):
         verbose_name = "unidade"
         verbose_name_plural = "unidades"
 
 
 class Categoria(ItemDeLista):
+    objects = CategoriaQuerySet.as_manager()
+
     class Meta(ItemDeLista.Meta):
         verbose_name = "categoria"
         verbose_name_plural = "categorias"
