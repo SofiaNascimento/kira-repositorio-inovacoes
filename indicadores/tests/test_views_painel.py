@@ -193,3 +193,130 @@ def test_anonimo_vai_ao_login(client):
     """REAP-40."""
     resposta = client.get(URL)
     assertRedirects(resposta, f"/entrar/?next={URL}", fetch_redirect_response=False)
+
+
+# --- T14: graficos de barras em SVG (REAP-34 a REAP-36, REAP-47) ----------------
+
+TITULOS = [
+    "Inovações por categoria",
+    "Inovações de origem por unidade",
+    "Reaproveitamentos feitos por unidade",
+]
+
+
+def _graficos(html):
+    """{titulo: grafico} com figcaption, atributos do svg e linhas (nome, valor, barra)."""
+    graficos = {}
+    for figura in re.findall(r'<figure class="cartao grafico">(.*?)</figure>', html, re.S):
+        id_legenda, titulo = re.search(
+            r'<figcaption id="([^"]+)">([^<]*)</figcaption>', figura
+        ).groups()
+        svg = re.search(r"<svg([^>]*)>(.*?)</svg>", figura, re.S)
+        linhas = []
+        for tag, atributos, texto in re.findall(
+            r"<(text|rect)\s([^>]*?)/?>(?:([^<]*)</text>)?", svg.group(2)
+        ):
+            classe = re.search(r'class="([^"]+)"', atributos).group(1)
+            if classe == "grafico__nome":
+                linhas.append({"nome": texto, "barra": None})
+            elif classe == "grafico__barra":
+                linhas[-1]["barra"] = re.search(r'width="([^"]*)"', atributos).group(1)
+            else:
+                linhas[-1]["valor"] = texto
+                linhas[-1]["x_valor"] = re.search(r'x="([^"]*)"', atributos).group(1)
+        graficos[titulo] = {"id": id_legenda, "svg": svg.group(1), "linhas": linhas}
+    return graficos
+
+
+@pytest.mark.django_db
+def test_painel_tem_os_tres_graficos_com_titulo(client, cenario, terceiro):
+    """REAP-34."""
+    graficos = _graficos(_html(client, terceiro))
+    assert list(graficos) == TITULOS
+
+
+@pytest.mark.django_db
+def test_cada_svg_e_imagem_nomeada_pelo_proprio_titulo(client, cenario, terceiro):
+    """REAP-47: role=img e aria-labelledby apontando para o figcaption do mesmo grafico."""
+    graficos = _graficos(_html(client, terceiro))
+    assert len({g["id"] for g in graficos.values()}) == 3
+    for titulo, grafico in graficos.items():
+        assert 'role="img"' in grafico["svg"], titulo
+        assert f'aria-labelledby="{grafico["id"]}"' in grafico["svg"], titulo
+
+
+@pytest.mark.django_db
+def test_barras_seguem_as_linhas_e_os_valores_da_tabela(client, cenario, terceiro):
+    """REAP-34, REAP-36: uma barra por linha da coluna, na ordem da tabela, com nome e valor."""
+    html = _html(client, terceiro)
+    graficos = _graficos(html)
+    _, categorias = _tabela(html, "Inovações por categoria")
+    _, unidades = _tabela(html, "Inovações por unidade")
+    pares = {
+        TITULOS[0]: [(nome, total) for nome, total in categorias],
+        TITULOS[1]: [(nome, origem) for nome, origem, _ in unidades],
+        TITULOS[2]: [(nome, feitos) for nome, _, feitos in unidades],
+    }
+    for titulo, esperado in pares.items():
+        linhas = graficos[titulo]["linhas"]
+        assert [(linha["nome"], linha["valor"]) for linha in linhas] == esperado, titulo
+
+
+@pytest.mark.django_db
+def test_maior_valor_ocupa_a_area_e_os_outros_saem_proporcionais_com_ponto(
+    client, disponivel, terceiro, settings
+):
+    """REAP-35: o maior vale 480 (100% da area); 1 de 3 vale 160, com ponto e nao virgula."""
+    assert settings.LANGUAGE_CODE == "pt-br"
+    ti = Categoria.objects.get(nome="TI interno")
+    for _ in range(3):
+        disponivel(categoria=ti)
+    disponivel(categoria=Categoria.objects.get(nome="Compras"))
+
+    html = _html(client, terceiro)
+    linhas = {linha["nome"]: linha for linha in _graficos(html)[TITULOS[0]]["linhas"]}
+    assert float(linhas["TI interno"]["barra"]) == 480
+    assert linhas["Compras"]["barra"] in {"160.0", "160"}
+    for atributo in re.findall(r'(?:width|x|y|viewBox)="([^"]*)"', html):
+        assert "," not in atributo
+
+
+@pytest.mark.django_db
+def test_valor_zero_tem_nome_e_zero_sem_barra(client, cenario, terceiro):
+    """REAP-35, REAP-36: o item com 0 aparece por texto, sem retangulo."""
+    linhas = {
+        linha["nome"]: linha for linha in _graficos(_html(client, terceiro))[TITULOS[0]]["linhas"]
+    }
+    assert linhas["RH"]["valor"] == "0"
+    assert linhas["RH"]["barra"] is None
+    assert linhas["TI interno"]["barra"] is not None
+
+
+@pytest.mark.django_db
+def test_grafico_todo_zero_nao_tem_barra(client, disponivel, terceiro):
+    """REAP-35: sem reaproveitamentos, o grafico deles nao desenha nenhum retangulo."""
+    disponivel()
+    html = _html(client, terceiro)
+    figuras = re.findall(r'<figure class="cartao grafico">(.*?)</figure>', html, re.S)
+    reaproveitamentos = next(f for f in figuras if TITULOS[2] in f)
+    assert "<rect" not in reaproveitamentos
+    linhas = _graficos(html)[TITULOS[2]]["linhas"]
+    assert linhas and all(linha["valor"] == "0" for linha in linhas)
+
+
+@pytest.mark.django_db
+def test_nome_longo_e_truncado_no_svg_e_inteiro_na_tabela(client, disponivel, terceiro):
+    """Risco do design: o nome longo nao passa do viewBox; a tabela traz o nome inteiro."""
+    nome = "Categoria " + "x" * 70
+    assert len(nome) == 80
+    disponivel(categoria=Categoria.objects.create(nome=nome))
+
+    html = _html(client, terceiro)
+    nomes = [linha["nome"].strip() for linha in _graficos(html)[TITULOS[0]]["linhas"]]
+    # A traducao pt-BR do Django poe um espaco antes do texto truncado; o SVG o descarta.
+    truncado = next(n for n in nomes if n.startswith("Categoria x"))
+    assert truncado.endswith("…")
+    assert len(truncado) <= 70
+    assert nome.startswith(truncado.removesuffix("…"))
+    assert nome not in nomes
+    assert [nome, "1"] in _tabela(html, "Inovações por categoria")[1]

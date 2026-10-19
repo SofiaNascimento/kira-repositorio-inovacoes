@@ -15,6 +15,7 @@
     {# REAP-32, REAP-46: uma linha por categoria, inclusive as sem inovacao. #}
     <section aria-labelledby="por-categoria">
       <h2 id="por-categoria">Por categoria</h2>
+      {% include "indicadores/grafico.html" with grafico=graficos.0 %}
       <div class="tabela">
       <table>
         <caption>Inovações por categoria</caption>
@@ -39,6 +40,8 @@
     {# REAP-33, REAP-46: uma linha por unidade, inclusive as com 0 e 0. #}
     <section aria-labelledby="por-unidade">
       <h2 id="por-unidade">Por unidade</h2>
+      {% include "indicadores/grafico.html" with grafico=graficos.1 %}
+      {% include "indicadores/grafico.html" with grafico=graficos.2 %}
       <div class="tabela">
       <table>
         <caption>Inovações por unidade</caption>

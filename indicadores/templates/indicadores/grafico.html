@@ -1,0 +1,16 @@
+{% load l10n %}
+{# REAP-34 a REAP-36: nome em cima, barra embaixo e valor no fim da barra. #}
+{# REAP-47: role=img com o titulo como nome; a tabela da mesma secao e a alternativa. #}
+<figure class="cartao grafico">
+  <figcaption id="{{ grafico.id }}">{{ grafico.titulo }}</figcaption>
+  {# Sem localizacao: com pt-BR o 160.5 sairia 160,5 e o atributo ficaria invalido. #}
+  {% localize off %}
+  <svg role="img" aria-labelledby="{{ grafico.id }}" viewBox="0 0 600 {{ grafico.altura }}" width="100%">
+    {% for b in grafico.barras %}
+      <text class="grafico__nome" x="0" y="{{ b.y|add:14 }}">{{ b.nome|truncatechars:70 }}</text>
+      {% if b.comprimento %}<rect class="grafico__barra" x="0" y="{{ b.y|add:20 }}" width="{{ b.comprimento }}" height="16"/>{% endif %}
+      <text class="grafico__valor" x="{{ b.x_valor }}" y="{{ b.y|add:33 }}">{{ b.valor }}</text>
+    {% endfor %}
+  </svg>
+  {% endlocalize %}
+</figure>

@@ -621,7 +621,7 @@ T17 → T18
 
 ---
 
-### T14: Gráficos de barras em SVG
+### T14: Gráficos de barras em SVG ✅
 
 **What**: A peça `indicadores/grafico.html` com o SVG e a inclusão dos três gráficos no painel.
 **Where**: `indicadores/templates/indicadores/grafico.html`
@@ -636,22 +636,24 @@ T17 → T18
 
 **Done when**:
 
-- [ ] Peça como no design, com `{% localize off %}` nos atributos numéricos e `truncatechars:70` no nome; incluída em `painel.html` antes de cada tabela
-- [ ] `test_views_sistema_design.py`: `PECAS` ganha `indicadores/grafico.html`
-- [ ] Testes e2e em `indicadores/tests/test_views_painel.py`:
+- [x] Peça como no design, com `{% localize off %}` nos atributos numéricos e `truncatechars:70` no nome; incluída em `painel.html` antes de cada tabela
+- [x] `test_views_sistema_design.py`: `PECAS` ganha `indicadores/grafico.html`
+- [x] Testes e2e em `indicadores/tests/test_views_painel.py`:
   - Três `<figure>` com `figcaption` "Inovações por categoria", "Inovações de origem por unidade" e "Reaproveitamentos feitos por unidade" (REAP-34).
   - Cada `<svg>` com `role="img"` e `aria-labelledby` apontando para o `figcaption` do mesmo título (REAP-47).
   - Os nomes no SVG estão na mesma ordem das linhas da tabela correspondente (REAP-34).
   - A barra do maior valor tem `width="480"`; uma proporcional sai com ponto decimal (ex.: `width="160.0"` ou `"160"`), nunca vírgula, com `LANGUAGE_CODE` `pt-BR` ativo (REAP-35).
   - Item com 0 tem nome e "0" em `<text>` e nenhum `<rect>`; gráfico todo zero (sem reaproveitamentos) não tem `<rect>` (REAP-35, REAP-36).
   - Nome com mais de 70 caracteres aparece truncado no SVG e inteiro na tabela.
-- [ ] Gate check passa: `.venv/bin/pytest -q`
-- [ ] Test count: ~852 testes passam (+9)
+- [x] Gate check passa: `.venv/bin/pytest -q`
+- [x] Test count: ~852 testes passam (+9)
 
 **Tests**: e2e
 **Gate**: full
 
 **Commit**: `feat(indicadores): desenha os graficos de barras do painel`
+
+**Status**: ✅ Complete — 848 passed (+7); teste antigo alterado como autorizado: `PECAS` ganha `indicadores/grafico.html` em `test_views_sistema_design.py`; a peça segue o design, com `{% localize off %}` em volta do `<svg>`; as barras são lidas do SVG e conferidas, nome e valor, contra as linhas da tabela correspondente; mutantes conferidos à mão: sem o `localize off` (sai `160,0`) e com barra para o valor 0, ambos mortos. Spec-precision gaps: (1) a barra do maior valor sai `width="480.0"`, porque o comprimento é `float`; o `Done when` escreve `width="480"`, e o teste afirma o número (`float == 480`, 100% da área da REAP-35), não o literal; (2) a tradução pt-BR do Django para o texto truncado é `" %(truncated_text)s…"`, com espaço na frente, então o nome longo sai com um espaço inicial (o SVG o descarta) e cabe 68 caracteres mais "…"; o teste afirma o resultado da truncagem (termina em "…", até 70 caracteres, prefixo do nome, nome inteiro ausente do SVG e presente na tabela), não um tamanho literal
 
 ---
 

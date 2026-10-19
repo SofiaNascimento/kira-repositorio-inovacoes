@@ -337,7 +337,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-31 | P1: Painel | Tasks | Implementing |
 | REAP-32 | P1: Painel | Tasks | Implementing |
 | REAP-33 | P1: Painel | Tasks | Implementing |
-| REAP-34 | P1: Painel | Tasks | In Tasks |
+| REAP-34 | P1: Painel | Tasks | Implementing |
 | REAP-35 | P1: Painel | Tasks | Implementing |
 | REAP-36 | P1: Painel | Tasks | Implementing |
 | REAP-37 | P1: Painel | Tasks | Implementing |
@@ -350,7 +350,7 @@ indicadores sem depender de cor ou de mouse.
 | REAP-44 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-45 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-46 | P1: Acessibilidade | Tasks | In Tasks |
-| REAP-47 | P1: Acessibilidade | Tasks | In Tasks |
+| REAP-47 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-48 | P1: Acessibilidade | Tasks | Implementing |
 | REAP-49 | Edge Cases | Tasks | Implementing |
 

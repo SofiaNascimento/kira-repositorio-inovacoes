@@ -383,7 +383,8 @@ RAIZES = [
     Path(settings.BASE_DIR) / "indicadores" / "templates",
 ]
 # Pecas incluidas, nao telas: o proprio base, a marca e o grupo de campo.
-PECAS = {"base.html", "marca.html", "inovacoes/campo.html"}
+# F6: e o grafico de barras do painel (REAP-34), incluido tres vezes.
+PECAS = {"base.html", "marca.html", "inovacoes/campo.html", "indicadores/grafico.html"}
 
 
 def _telas():
