@@ -177,31 +177,31 @@ novo.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| ACER-01 | P1: Inovações reais | Execute | Implementing |
-| ACER-02 | P1: Inovações reais | Execute | Implementing |
-| ACER-03 | P1: Inovações reais | Execute | Implementing |
-| ACER-04 | P1: Inovações reais | Execute | Implementing |
-| ACER-05 | P1: Inovações reais | Execute | Implementing |
-| ACER-06 | P1: Inovações reais | Execute | Implementing |
-| ACER-07 | P1: Inovações reais | Execute | Implementing |
-| ACER-08 | P1: Inovações reais | Execute | Implementing |
-| ACER-09 | P1: Autores variados | Execute | Implementing |
-| ACER-10 | P1: Autores variados | Execute | Implementing |
-| ACER-11 | P1: Autores variados | Execute | Implementing |
-| ACER-12 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-13 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-14 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-15 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-16 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-17 | P1: Reproduzível e idempotente | Execute | Implementing |
-| ACER-18 | P1: Reproduzível e idempotente | Execute | Implementing |
-| ACER-19 | P1: Reproduzível e idempotente | Execute | Implementing |
-| ACER-20 | P1: Reproduzível e idempotente | Execute | Implementing |
-| ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
-| ACER-22 | P2: Desempenho RNF08 | Execute | Implementing |
-| ACER-23 | P1: Datas, histórico e reusos | Execute | Implementing |
+| ACER-01 | P1: Inovações reais | Execute | Verified |
+| ACER-02 | P1: Inovações reais | Execute | Verified |
+| ACER-03 | P1: Inovações reais | Execute | Verified |
+| ACER-04 | P1: Inovações reais | Execute | Verified |
+| ACER-05 | P1: Inovações reais | Execute | Verified |
+| ACER-06 | P1: Inovações reais | Execute | Verified |
+| ACER-07 | P1: Inovações reais | Execute | Verified |
+| ACER-08 | P1: Inovações reais | Execute | Verified |
+| ACER-09 | P1: Autores variados | Execute | Verified |
+| ACER-10 | P1: Autores variados | Execute | Verified |
+| ACER-11 | P1: Autores variados | Execute | Verified |
+| ACER-12 | P1: Datas, histórico e reusos | Execute | Verified |
+| ACER-13 | P1: Datas, histórico e reusos | Execute | Verified |
+| ACER-14 | P1: Datas, histórico e reusos | Execute | Verified |
+| ACER-15 | P1: Datas, histórico e reusos | Execute | Verified |
+| ACER-16 | P1: Datas, histórico e reusos | Execute | Verified |
+| ACER-17 | P1: Reproduzível e idempotente | Execute | Verified |
+| ACER-18 | P1: Reproduzível e idempotente | Execute | Verified |
+| ACER-19 | P1: Reproduzível e idempotente | Execute | Verified |
+| ACER-20 | P1: Reproduzível e idempotente | Execute | Verified |
+| ACER-21 | P2: Desempenho RNF08 | Execute | Verified |
+| ACER-22 | P2: Desempenho RNF08 | Execute | Verified |
+| ACER-23 | P1: Datas, histórico e reusos | Execute | Verified |
 
-**Coverage:** 23 total (ACER-23 da emenda de 2026-10-27), 23 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
+**Coverage:** 23 total (ACER-23 da emenda de 2026-10-27), 23 Verified (Verifier PASS, iteração 2)
 
 ---
 

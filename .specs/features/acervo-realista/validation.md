@@ -1,12 +1,15 @@
 # Acervo Realista Validation
 
 **Date**: 2026-10-27
-**Iteration**: 1
+**Iteration**: 2 (a iteração 1 fica abaixo, intacta; a iteração 2 está em [Iteração 2](#iteração-2), no fim)
 **Spec**: `.specs/features/acervo-realista/spec.md` (ACER-01 … ACER-22 + 3 Edge Cases). Supersede CONS-44/CONS-45.
-**Diff range**: `b4b3f79..a6aaaa8` em `main` (spec `b4b3f79`; implementação `1c97fba`, `fb798d8`, `e06039b`, `808653b`, `a6aaaa8`). 8 arquivos, +1846/−151. Produção: `inovacoes/acervo.py`, `inovacoes/management/commands/carregar_demonstracao.py`.
+**Diff range (iteração 2)**: `a6aaaa8..63410d5` em `main` (HEAD = `63410d5`). Correção: `63410d5`, em `spec.md`, `inovacoes/acervo.py` e `inovacoes/tests/test_carregar_demonstracao.py`. O comando não mudou.
+**Diff range (iteração 1)**: `b4b3f79..a6aaaa8` em `main` (spec `b4b3f79`; implementação `1c97fba`, `fb798d8`, `e06039b`, `808653b`, `a6aaaa8`). 8 arquivos, +1846/−151. Produção: `inovacoes/acervo.py`, `inovacoes/management/commands/carregar_demonstracao.py`.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ — o código de produção cumpre todas as ACs que conferi. O FAIL vem do sensor: 3 de 18 mutantes sobrevivem. O principal (M18) é uma carga que **não retroage** as datas do histórico de status nem dos reaproveitamentos. Todo `MudancaDeStatus.data` e todo `Reaproveitamento.data` ficam no minuto da carga, e a suíte inteira passa. É exatamente o sintoma do Problem Statement ("todas as datas são o minuto da carga"). ACER-14 e ACER-16 só exigem ordem e limite superior, então a lacuna é de precisão da spec, com teste correspondente. Os outros dois são M07 (só os reusos sem retroagir) e M15 (reuso registrado pelo próprio autor, regra que está só nas Assumptions, sem AC).
+**Verdict**: PASS ✅ na iteração 2 (HEAD `63410d5`), ver [Iteração 2](#iteração-2). M07, M15 e M18 agora morrem, e as 5 mutações novas também (8/8). A spec emendada (ACER-14 e ACER-16 com "before the command started", e a ACER-23 nova) tem as 23 ACs com o valor afirmado. Gate: 933 passed.
+
+**Iteração 1 (registro original):** FAIL ❌ — o código de produção cumpre todas as ACs que conferi. O FAIL vem do sensor: 3 de 18 mutantes sobrevivem. O principal (M18) é uma carga que **não retroage** as datas do histórico de status nem dos reaproveitamentos. Todo `MudancaDeStatus.data` e todo `Reaproveitamento.data` ficam no minuto da carga, e a suíte inteira passa. É exatamente o sintoma do Problem Statement ("todas as datas são o minuto da carga"). ACER-14 e ACER-16 só exigem ordem e limite superior, então a lacuna é de precisão da spec, com teste correspondente. Os outros dois são M07 (só os reusos sem retroagir) e M15 (reuso registrado pelo próprio autor, regra que está só nas Assumptions, sem AC).
 
 ---
 
@@ -91,7 +94,7 @@ Scratch: `git worktree` em `<scratchpad>/wt` no HEAD `a6aaaa8`. Testes rodados c
 
 **Sensor depth**: expandido (18 mutantes; a carga roda à mão no banco publicado).
 **Isolamento**: worktree removido (`git worktree remove --force`, `git worktree prune`; `git worktree list` só mostra o principal). O baseline do `git status --porcelain` era vazio. Depois, apareceu ` M .gitignore` (+`.vercel`, +`.env*`, mtime 16:07). Não é do sensor: as mutações só tocaram `inovacoes/acervo.py` e o comando dentro do worktree, nenhuma toca `.gitignore`, e o conteúdo é o que `vercel link` acrescenta. Foi alteração externa e concorrente na árvore real. Não mexi nela.
-**Result**: 15/18 killed — FAIL ❌
+**Resultado (iteração 1)**: 15/18 killed — FAIL ❌
 
 ---
 
@@ -123,7 +126,7 @@ Observação menor: `_conferir_catalogo()` roda no import do módulo. É uma gua
 ## Gate Check
 
 - **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (sem `DATABASE_URL`)
-- **Result**: 932 passed, 0 failed, 0 skipped (30,09 s). Ruff ok, format ok, sem migração pendente.
+- **Resultado (iteração 1)**: 932 passed, 0 failed, 0 skipped (30,09 s). Ruff ok, format ok, sem migração pendente.
 - **Test count before feature**: 919 (o arquivo antigo tinha 9 itens; o novo tem 22; os de desempenho mantêm a contagem)
 - **Test count after feature**: 932
 - **Delta**: +13
@@ -193,3 +196,94 @@ Observação menor: `_conferir_catalogo()` roda no import do módulo. É uma gua
 **Issues found**: G1 (Major): precisar ACER-14/16 e afirmar datas antes da execução. G2 (Minor): decidir se "quem registra o reuso" vira AC. G3 (Advisory): teste dedicado para "outros autores intocados".
 
 **Next steps**: emenda de spec e fix task só de teste para G1 (e G2, se aceito); re-verificar M07, M15, M18.
+
+---
+
+## Iteração 2
+
+**Date**: 2026-10-27
+**HEAD**: `63410d5` (validação 1 commitada em `25246b9`; o `.gitignore` do `vercel link` foi commitado à parte em `fea5a7b`)
+
+### O que mudou
+
+- **Spec**: ACER-14 e ACER-16 exigem "before the command started". A ACER-23 nova exige que todo Reaproveitamento seja registrado por uma das 15 contas de autor, diferente do autor da inovação. A emenda está registrada nas Assumptions e na traceability.
+- **Testes**: `carga_espionada` devolve `antes` (`T:57`, `T:70`). ACER-14 afirma `anterior < mudanca.data < antes` (`T:229`). ACER-16 afirma `disponivel.data < reuso.data < antes` (`T:252`). Teste novo para a ACER-23 (`T:255-262`).
+- **Catálogo** (`inovacoes/acervo.py`): slots `{nivel}` (82–98) e `{economia}` (6–24); `FERRAMENTAS` (depois de "por"/"com") separadas de `PLATAFORMAS` (depois de "em"); sem Microsoft Forms nem Smartsheet; as duas concordâncias corrigidas.
+- **Comando**: sem mudança.
+
+### Spec-anchored (ACs que mudaram ou são novas)
+
+| AC | Spec-defined outcome | `file:line` + assertion | Result |
+| -- | -------------------- | ----------------------- | ------ |
+| ACER-14 | por `avancar_status`, responsável = autor, depois da criação e da anterior, **antes do início da execução** | `T:57` `antes = timezone.now()` antes de `_carregar()`; `T:224` `avancar.call_count == MudancaDeStatus.count()`; `T:228` `responsavel_id == autor_id`; `T:229` `anterior < mudanca.data < antes` | ✅ PASS |
+| ACER-16 | depois da mudança para Disponível e **antes do início da execução** | `T:49` `antes` antes da carga; `T:252` `disponivel.data < reuso.data < antes` | ✅ PASS |
+| ACER-23 | todo reuso registrado por uma das 15 contas de autor, diferente do autor da inovação | `T:257` `autores` = contas com inovação (= as 15 da ACER-09, `T:152`); `T:259` `reusos.exists()`; `T:261` `registrado_por_id in autores`; `T:262` `registrado_por_id != inovacao.autor_id` | ✅ PASS |
+
+As outras 20 ACs não mudaram; as evidências da iteração 1 continuam valendo (o gate passa com os mesmos testes). **Status**: 23/23.
+
+### Discrimination Sensor (iteração 2)
+
+Scratch: novo `git worktree` no HEAD `63410d5`. Mesmo runner, sem `DATABASE_URL`, Postgres local 5433. Escopo: `T`, `inovacoes/tests/test_desempenho.py`, `indicadores/tests/test_desempenho_painel.py` (28 testes).
+
+| # | File:line | Mutação | Killed? |
+| - | --------- | ------- | ------- |
+| M07 | `carregar_demonstracao.py:74` | sem retroagir `Reaproveitamento.data` | ✅ Killed (`T:252`) |
+| M15 | `inovacoes/acervo.py` `linha_do_tempo` | reuso registrado pelo próprio autor | ✅ Killed (`T:262`) |
+| M18 | `carregar_demonstracao.py:70,74` | histórico e reusos no minuto da carga | ✅ Killed (`T:229`, `T:252`) |
+| M19 | `inovacoes/acervo.py` `JANELA_EM_DIAS` | janela de 560 dias (cadastros até 559 dias antes) | ✅ Killed (`T:199`) |
+| M20 | `carregar_demonstracao.py:73` | reuso registrado por uma conta "externo" fora do acervo | ✅ Killed (`T:261`) |
+| M21 | `inovacoes/acervo.py` `linha_do_tempo` | reuso na mesma data da mudança para Disponível | ✅ Killed (`T:252`) |
+| M22 | `inovacoes/acervo.py` `linha_do_tempo` | reuso depois de `agora` (fração 1,01–1,1) | ✅ Killed (`T:252`) |
+| M23 | `inovacoes/acervo.py` `linha_do_tempo` | mudança na mesma data da anterior (fração 0) | ✅ Killed (`T:229`) |
+
+**Isolamento**: baseline do `git status --porcelain` vazio antes do sensor. Worktree removido (`git worktree remove --force`, `git worktree prune`; `git worktree list` só mostra o principal). Porcelain igual ao baseline depois.
+**Result**: 8/8 killed — PASS ✅
+
+### Gate Check (iteração 2)
+
+- **Gate command**: o mesmo da iteração 1, sem `DATABASE_URL`.
+- **Resultado (iteração 2)**: 933 passed, 0 failed, 0 skipped (32,96 s). Ruff ok, format ok (147 arquivos), sem migração pendente.
+- **Delta sobre a iteração 1**: +1 (teste da ACER-23). Nenhuma asserção enfraquecida: `<= agora`/`<= depois` viraram `< antes`, que é mais estrito.
+
+### Edge Cases (iteração 2)
+
+- Sem mudança. G3 (outros autores intocados, só por tabela em `indicadores/tests/test_desempenho_painel.py:121`) continua advisory e não bloqueia.
+
+### Realism spot-check (iteração 2, advisory)
+
+15 registros sorteados (semente diferente da iteração 1), mais a varredura dos 123 casos. As observações da iteração 1 estão resolvidas: nível 82–98 ("refletir 94% do parque", "98% dos desvios"), economia 6–24 ("redução média de 9%/15%"), "em" + plataforma, sem Forms/Smartsheet, concordâncias corrigidas. Restam pontos menores, não bloqueantes:
+
+1. "Histórico de preços por item" (`inovacoes/acervo.py:699`): "com alerta para alta acima de {pct}%" sai com 18–78% ("acima de 64%"). Um limiar de alerta de preço plausível fica perto de 5–15%.
+2. "Reserva dos veículos da unidade" (`inovacoes/acervo.py:1182`): "A ocupação dos veículos subiu {pct}%" chega a 78%. É alto, mas possível.
+3. "Arquivo digital de comprovantes": "{pct}% do arquivo físico foi descartado" com 18–78%. Plausível.
+4. Ferramenta como agente: "Estoque mínimo com reposição automática" — "sugestão de compra gerada por Google Workspace". Uma suíte não "gera"; Power Automate, Apps Script ou Zapier combinam melhor. Acontece só quando o sorteio cai num item de suíte na lista `FERRAMENTAS`.
+
+### Requirement Traceability Update (iteração 2)
+
+| Requirement | Previous Status | New Status |
+| ----------- | --------------- | ---------- |
+| ACER-14 | ⚠️ Needs spec precision | ✅ Verified |
+| ACER-16 | ⚠️ Needs spec precision | ✅ Verified |
+| ACER-23 | (nova) | ✅ Verified |
+| demais ACER-01 … ACER-22 | ✅ Verified | ✅ Verified |
+
+### Summary (iteração 2)
+
+**Overall**: ✅ Ready
+
+**Spec-anchored check**: 23/23 ACs com o valor da spec afirmado.
+**Sensor**: 8/8 killed (M07, M15, M18 re-injetados + 5 novos).
+**Gate**: 933 passed.
+
+**Pendências não bloqueantes**: G3 (teste dedicado para "outros autores intocados") e os 4 pontos de realismo acima.
+
+---
+
+## Depois do PASS (orquestrador, 2026-10-27)
+
+Não é uma iteração do Verifier. As observações de realismo 1 e 4 da iteração 2 foram aplicadas
+em `inovacoes/acervo.py`: "alerta para alta acima de {economia}%" (6 a 24%) e `FERRAMENTAS`
+sem as suítes (Power Automate, Google Apps Script, Zapier, n8n, um script em Python). Só conteúdo:
+nenhuma AC, teste ou regra muda. Gate depois da mudança: 933 passed; os 500 problemas e as 500
+soluções seguem distintos. As observações 2 e 3 ficam como estão (plausíveis).
+
