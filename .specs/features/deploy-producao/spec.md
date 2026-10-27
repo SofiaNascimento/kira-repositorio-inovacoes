@@ -223,10 +223,10 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-13 | P1: Runtime da Vercel | Execute | Implementing |
 | DEPL-14 | P1: Runtime da Vercel | Execute | Implementing |
 | DEPL-15 | P1: Runtime da Vercel | Execute | Implementing |
-| DEPL-16 | P2: Documentação | Execute | Pending |
-| DEPL-17 | P2: Documentação | Execute | Pending |
+| DEPL-16 | P2: Documentação | Execute | Implementing |
+| DEPL-17 | P2: Documentação | Execute | Implementing |
 
-**Coverage:** 17 total, 0 mapped to tasks (Tasks a definir no Execute), 17 unmapped ⚠️
+**Coverage:** 17 total, 17 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
 
 ---
 
