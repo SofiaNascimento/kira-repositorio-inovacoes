@@ -34,7 +34,7 @@ O diagrama de classes é a visão estrutural do sistema: descreve as entidades d
 
 ### 2.1 Lógica por trás do diagrama
 
-**Inovacao como entidade central:** a classe Inovacao concentra o núcleo do domínio, materializando o fluxo problema → solução → resultado → unidade de origem. Seus atributos correspondem um a um aos campos da estrutura de dados do documento de requisitos. As operações `alterarStatus()`, `atualizarDados()` e `podeSerReaproveitada()` encapsulam as regras de comportamento: a transição de status (RN03), a edição controlada (RN05) e a verificação que habilita o reuso (RN09).
+**Inovacao como entidade central:** a classe Inovacao concentra o núcleo do domínio, materializando o fluxo problema → solução → resultado → unidade de origem. Seus atributos correspondem um a um aos campos da estrutura de dados do documento de requisitos. As operações `alterarStatus()`, `atualizarDados()` e `podeSerReaproveitada()` encapsulam as regras de comportamento: a transição de status (RN03), a edição controlada (RN05) e a verificação que habilita o reuso (RN09). Na implementação, elas correspondem a `avancar_status()`, que avança um estágio por vez e registra a mudança, a `pode_ser_alterada_por()`, que decide quem pode editar ou excluir, e ao par `pode_ser_reaproveitada()` / `registrar_reaproveitamento()`, único caminho para criar um reaproveitamento.
 
 **Usuario e o perfil:** a classe Usuario guarda o atributo perfil, do tipo enumerado PerfilUsuario (USUARIO ou ADMINISTRADOR). É assim que a generalização vista no caso de uso se materializa em dados: em vez de duas classes distintas, um único tipo de usuário com um campo que determina seus poderes — abordagem alinhada ao modelo de usuário do Django. O atributo senhaHash reforça o RNF02 (senha nunca armazenada em texto puro).
 
@@ -42,7 +42,73 @@ O diagrama de classes é a visão estrutural do sistema: descreve as entidades d
 
 **Enumerações como valores controlados:** StatusInovacao (EM_TESTE, VALIDADA, DISPONIVEL_PARA_REPLICACAO) e PerfilUsuario são modelados como «enumeration». Isso garante, já no modelo, que esses campos só assumam valores válidos e pré-definidos — a mesma lógica das listas controladas, aplicada a estados e papéis.
 
-**Reaproveitamento como métrica:** a classe Reaproveitamento registra cada vez que uma unidade aproveita uma inovação de outra. A associação 'Inovacao 1 → 0..* Reaproveitamento' (recebe) e 'Reaproveitamento 0..* → 1 Unidade' (realizado por) permite responder à pergunta que sustenta a proposta: quantas vezes, e por quais unidades, uma solução foi reutilizada. É essa entidade que alimenta o painel de indicadores (RF10) e a métrica de reuso (RF11).
+**Reaproveitamento como métrica:** a classe Reaproveitamento registra cada vez que uma unidade aproveita uma inovação de outra. A associação 'Inovacao 1 → 0..* Reaproveitamento' (recebe) e 'Reaproveitamento 0..* → 1 Unidade' (realizado por) permite responder à pergunta que sustenta a proposta: quantas vezes, e por quais unidades, uma solução foi reutilizada. É essa entidade que alimenta o painel de indicadores (RF10) e a métrica de reuso (RF11). Na implementação, o Reaproveitamento guarda também quem o registrou (associação 'Reaproveitamento 0..* → 1 Usuario', registrado por) e a data do registro. Cada unidade reaproveita uma mesma inovação no máximo uma vez, e a unidade de origem não pode reaproveitar a própria inovação (RN09).
+
+**MudancaDeStatus como histórico:** acrescentada durante a implementação do ciclo de vida (RF09), a classe MudancaDeStatus registra cada transição de status: o status anterior, o status novo, o responsável (associação 'MudancaDeStatus 0..* → 1 Usuario') e a data. A associação 'Inovacao 1 → 0..* MudancaDeStatus' (histórico) permite contar como cada inovação chegou ao estágio atual. Toda mudança de status depois do cadastro passa por `avancar_status()`, que cria o registro na mesma transação; o banco aceita só as duas transições válidas (Em teste → Validada e Validada → Disponível para replicação), o que mantém o histórico como prova da RN03.
+
+### 2.2 Modelo implementado
+
+O diagrama abaixo descreve as classes como estão no código (apps `contas` e `inovacoes`), com os nomes de atributos e operações da implementação. Ele acrescenta ao diagrama refinado a classe MudancaDeStatus e os atributos `registradoPor` e `data` do Reaproveitamento, e serve de base para redesenhar a Figura 2.
+
+```mermaid
+classDiagram
+    class Usuario {
+        username
+        email
+        first_name
+        last_name
+        perfil : PerfilUsuario
+        password (hash)
+    }
+    class Unidade {
+        nome
+    }
+    class Categoria {
+        nome
+    }
+    class Inovacao {
+        titulo
+        problema
+        solucao
+        resultado
+        contato
+        status : StatusInovacao
+        data_criacao
+        pode_ser_alterada_por(usuario) bool
+        avancar_status(por, status_visto) MudancaDeStatus
+        pode_ser_reaproveitada() bool
+        registrar_reaproveitamento(unidade, por) Reaproveitamento
+    }
+    class MudancaDeStatus {
+        status_anterior : StatusInovacao
+        status_novo : StatusInovacao
+        data
+    }
+    class Reaproveitamento {
+        data
+    }
+    class StatusInovacao {
+        <<enumeration>>
+        EM_TESTE
+        VALIDADA
+        DISPONIVEL_PARA_REPLICACAO
+    }
+    class PerfilUsuario {
+        <<enumeration>>
+        USUARIO
+        ADMINISTRADOR
+    }
+    Inovacao "0..*" --> "1" Unidade : origem
+    Inovacao "0..*" --> "1" Categoria : classificada em
+    Inovacao "0..*" --> "1" Usuario : autor
+    Inovacao "1" --> "0..*" MudancaDeStatus : histórico
+    MudancaDeStatus "0..*" --> "1" Usuario : responsável
+    Inovacao "1" --> "0..*" Reaproveitamento : recebe
+    Reaproveitamento "0..*" --> "1" Unidade : realizado por
+    Reaproveitamento "0..*" --> "1" Usuario : registrado por
+```
+
+Regras que o banco também garante: título único por unidade, sem distinguir maiúsculas (RN10); status só com os três valores da enumeração; transições do histórico só entre estágios vizinhos; um reaproveitamento por par (inovação, unidade). Unidades e categorias em uso não podem ser apagadas, e apagar uma inovação apaga o seu histórico e os seus reaproveitamentos.
 
 ---
 
@@ -64,7 +130,7 @@ A figura completa é apresentada na página seguinte, dado seu formato vertical,
 
 **Cadastro com regras automáticas:** no cadastro (RF02), a mensagem 'Registrar autor + data; status = Em teste' que a API envia ao serviço materializa a RN08 (autor e data preenchidos automaticamente) e a RN03 (status inicial padrão). O usuário não informa esses dados — o sistema os define, e o diagrama torna isso visível.
 
-**Ciclo de vida e reuso:** a alteração de status percorre a transição Em teste → Validada → Disponível para replicação (RN03). Só então a sinalização de reaproveitamento é validada e registrada, atualizando a métrica de reuso (RN09, RF11) — a mesma condição que aparece guardada no caso de uso.
+**Ciclo de vida e reuso:** a alteração de status percorre a transição Em teste → Validada → Disponível para replicação (RN03), um estágio por vez, e cada passo grava um registro de MudancaDeStatus na mesma transação. Só então a sinalização de reaproveitamento é validada e registrada, atualizando a métrica de reuso (RN09, RF11) — a mesma condição que aparece guardada no caso de uso.
 
 **Indicadores e logout:** por fim, o acesso aos indicadores (RF10) dispara o cálculo de métricas consolidadas a partir dos dados de reaproveitamento, e o logout encerra a sessão do lado do servidor, coerente com o encerramento de sessão do Django.
 
