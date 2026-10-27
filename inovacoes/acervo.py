@@ -40,10 +40,10 @@ ERPS = ("TOTVS Protheus", "SAP Business One", "Senior", "Sankhya", "Oracle NetSu
 # Ao menos 5 em cada: um caso pode ocupar 5 unidades e a solucao tem de variar.
 FERRAMENTAS = (
     "Power Automate",
-    "Microsoft 365",
-    "Google Workspace",
     "Google Apps Script",
     "Zapier",
+    "n8n",
+    "um script em Python",
 )
 PLATAFORMAS = (
     "SharePoint",
@@ -696,7 +696,7 @@ CASOS = (
         "Os compradores não sabiam quanto se pagou da última vez. Em cerca de {qtd} "
         "compras por ano, aumentos passavam sem negociação.",
         "Histórico de preços extraído do {erp} e consultado por {ferramenta} em toda nova "
-        "cotação, com alerta para alta acima de {pct}%.",
+        "cotação, com alerta para alta acima de {economia}%.",
         "Os aumentos acima da inflação passaram a ser negociados em todos os casos.",
     ),
     (
