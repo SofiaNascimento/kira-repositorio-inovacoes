@@ -44,11 +44,16 @@ Para gerar a chave:
    DATABASE_URL='postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres' .venv/bin/python manage.py createsuperuser
    ```
 
-3. **Vercel**: importe o repositório (Add New → Project). O preset de Django é detectado sozinho.
-   Antes do primeiro deploy, cadastre as cinco variáveis da tabela, com a `DATABASE_URL` do
-   transaction pooler (6543).
-4. **Deploy**: rode o deploy. No log de build, confira o Python 3.13 e a execução do
-   `collectstatic`.
+3. **Vercel**: o deploy sai da pasta local pela Vercel CLI, sem Git conectado. Crie a conta (pode
+   ser por e-mail), rode `npx vercel login` e, na raiz do projeto, `npx vercel link` para criar o
+   projeto (o preset de Django é detectado sozinho). No painel, cadastre as cinco variáveis da
+   tabela, com a `DATABASE_URL` do transaction pooler (6543). O `.vercelignore` impede que o
+   `.env` local suba junto.
+4. **Deploy**: rode `npx vercel --prod --logs`. No log de build, confira o Python 3.13 e a
+   execução do `collectstatic`. A CLI envia a pasta como está: faça o commit antes.
+
+O roteiro detalhado, com telas, conferência e problemas comuns, está em
+[`docs/roteiro-deploy.md`](docs/roteiro-deploy.md).
 5. **Conferência**: abra `https://<projeto>.vercel.app/entrar/`, entre com o administrador
    criado no passo 2 e abra `/admin/` para ver o CSS do admin.
 
