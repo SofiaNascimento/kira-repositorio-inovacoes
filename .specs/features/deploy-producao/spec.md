@@ -213,16 +213,16 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-03 | P1: Configuração do ambiente | Execute | Implementing |
 | DEPL-04 | P1: Configuração do ambiente | Execute | Implementing |
 | DEPL-05 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-06 | P1: Banco de produção | Execute | Pending |
-| DEPL-07 | P1: Banco de produção | Execute | Pending |
-| DEPL-08 | P1: Banco de produção | Execute | Pending |
-| DEPL-09 | P1: Banco de produção | Execute | Pending |
+| DEPL-06 | P1: Banco de produção | Execute | Implementing |
+| DEPL-07 | P1: Banco de produção | Execute | Implementing |
+| DEPL-08 | P1: Banco de produção | Execute | Implementing |
+| DEPL-09 | P1: Banco de produção | Execute | Implementing |
 | DEPL-10 | P1: Estáticos do admin | Execute | Pending |
 | DEPL-11 | P1: Estáticos do admin | Execute | Pending |
 | DEPL-12 | P1: Runtime da Vercel | Execute | Pending |
 | DEPL-13 | P1: Runtime da Vercel | Execute | Pending |
 | DEPL-14 | P1: Runtime da Vercel | Execute | Pending |
-| DEPL-15 | P1: Runtime da Vercel | Execute | Pending |
+| DEPL-15 | P1: Runtime da Vercel | Execute | Implementing |
 | DEPL-16 | P2: Documentação | Execute | Pending |
 | DEPL-17 | P2: Documentação | Execute | Pending |
 
