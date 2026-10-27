@@ -282,6 +282,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 3, N05 (REAP-46), indicadores/templates/indicadores/painel.html:20 (tests)
 - last seen: 2026-10-19T18:41:08Z
 
+### L-046 - When an AC binds a documented command to a target environment, assert the command and its target on the same line, not only that both terms appear in the section
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `docs` · harmful: 0
+- features: deploy-producao
+- evidence: validation.md M13 README.md:43-44 (DEPL-17) config/tests/test_documentacao_deploy.py:83 (docs)
+- last seen: 2026-10-27T18:29:58Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

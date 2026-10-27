@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 46,
+  "next_id": 47,
   "lessons": [
     {
       "id": "L-001",
@@ -826,6 +826,24 @@
       ],
       "created": "2026-10-19T18:41:08Z",
       "last_seen": "2026-10-19T18:41:08Z"
+    },
+    {
+      "id": "L-046",
+      "key": "surviving_mutant::when an ac binds a documented command to a target environment assert the command and its target on the same line not only that both terms appear in the section",
+      "text": "When an AC binds a documented command to a target environment, assert the command and its target on the same line, not only that both terms appear in the section",
+      "signal": "surviving_mutant",
+      "scope": "docs",
+      "status": "candidate",
+      "features": [
+        "deploy-producao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M13 README.md:43-44 (DEPL-17) config/tests/test_documentacao_deploy.py:83 (docs)"
+      ],
+      "created": "2026-10-27T18:29:58Z",
+      "last_seen": "2026-10-27T18:29:58Z"
     }
   ]
 }
