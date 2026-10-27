@@ -208,25 +208,25 @@ operação remota (deploy, migrate no Supabase).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| DEPL-01 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-02 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-03 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-04 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-05 | P1: Configuração do ambiente | Execute | Implementing |
-| DEPL-06 | P1: Banco de produção | Execute | Implementing |
-| DEPL-07 | P1: Banco de produção | Execute | Implementing |
-| DEPL-08 | P1: Banco de produção | Execute | Implementing |
-| DEPL-09 | P1: Banco de produção | Execute | Implementing |
-| DEPL-10 | P1: Estáticos do admin | Execute | Implementing |
-| DEPL-11 | P1: Estáticos do admin | Execute | Implementing |
-| DEPL-12 | P1: Runtime da Vercel | Execute | Implementing |
-| DEPL-13 | P1: Runtime da Vercel | Execute | Implementing |
-| DEPL-14 | P1: Runtime da Vercel | Execute | Implementing |
-| DEPL-15 | P1: Runtime da Vercel | Execute | Implementing |
-| DEPL-16 | P2: Documentação | Execute | Implementing |
-| DEPL-17 | P2: Documentação | Execute | Implementing |
+| DEPL-01 | P1: Configuração do ambiente | Execute | Verified |
+| DEPL-02 | P1: Configuração do ambiente | Execute | Verified |
+| DEPL-03 | P1: Configuração do ambiente | Execute | Verified |
+| DEPL-04 | P1: Configuração do ambiente | Execute | Verified |
+| DEPL-05 | P1: Configuração do ambiente | Execute | Verified |
+| DEPL-06 | P1: Banco de produção | Execute | Verified |
+| DEPL-07 | P1: Banco de produção | Execute | Verified |
+| DEPL-08 | P1: Banco de produção | Execute | Verified |
+| DEPL-09 | P1: Banco de produção | Execute | Verified |
+| DEPL-10 | P1: Estáticos do admin | Execute | Verified |
+| DEPL-11 | P1: Estáticos do admin | Execute | Verified |
+| DEPL-12 | P1: Runtime da Vercel | Execute | Verified |
+| DEPL-13 | P1: Runtime da Vercel | Execute | Verified |
+| DEPL-14 | P1: Runtime da Vercel | Execute | Verified |
+| DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
+| DEPL-16 | P2: Documentação | Execute | Verified |
+| DEPL-17 | P2: Documentação | Execute | Verified |
 
-**Coverage:** 17 total, 17 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
+**Coverage:** 17 total, 17 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 17 Verified (Verifier PASS, iteração 2)
 
 ---
 

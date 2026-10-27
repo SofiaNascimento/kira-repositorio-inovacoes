@@ -1,18 +1,40 @@
 # Deploy em Produção Validation
 
 **Date**: 2026-10-27
-**Iteration**: 1
+**Iteration**: 2
 **Spec**: `.specs/features/deploy-producao/spec.md`
-**Diff range**: `894d31a..088d7d7` em `main` (implementação: `f014e94`, `f272ad2`, `8046e7b`, `c701f35`, `088d7d7`)
+**Diff range**: `894d31a..56e934c` em `main` (implementação: `f014e94`, `f272ad2`, `8046e7b`, `c701f35`, `088d7d7`; correção da iteração 2: `56e934c`). `c0e6457` só registra a validação da iteração 1.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌
+**Verdict**: PASS ✅
 
-O código de produção está correto e as 17 ACs têm evidência. O gate passa com 902/902. O sensor
-matou 16 de 17 mutantes. Um sobreviveu (M13): o README pode perder o `DATABASE_URL=...` dos
-comandos `migrate` e `createsuperuser`, e o teste da DEPL-17 continua verde. A DEPL-17 pede os
-comandos "run against the Supabase database"; o teste só confere que os nomes aparecem na seção.
-Gap menor, P2, uma linha de correção no teste.
+O único gap da iteração 1 foi fechado. O teste novo da DEPL-17
+(`config/tests/test_documentacao_deploy.py:86-95`) exige o `DATABASE_URL` do Supabase em toda
+linha que roda `python manage.py migrate` ou `createsuperuser`. M13 morre agora, e as três
+variantes novas também (M13b, M18, M19), além do corte de seção (M20). O gate passa com 904/904.
+No total, o sensor matou 21 de 21 mutantes nas duas iterações. As 17 ACs batem com o resultado
+da spec.
+
+---
+
+## Iteração 1 → 2
+
+| Gap da iteração 1 | Commit | Status agora | Evidência |
+| ----------------- | ------ | ------------ | --------- |
+| Fix 1: DEPL-17 sem asserção de "contra o Supabase" (M13 sobreviveu) | `56e934c` | ✅ Fechado. M13 morto (2 testes falham) | `config/tests/test_documentacao_deploy.py:91-95` - `assert linhas` e `all(re.search(r"DATABASE_URL='postgresql://[^']*supabase\.com[^']*'", linha) ...)` |
+
+**O teste novo depende de algo acidental?** Não, com duas ressalvas de formato.
+
+- Ele filtra linhas por `python manage.py <comando>`. A frase em prosa de `README.md:55`
+  ("repita o `manage.py migrate`") fica fora do filtro, porque não tem `python ` antes. Por isso
+  o `all(...)` não reprova a prosa, e o `assert linhas` impede que o filtro fique vazio e passe à
+  toa.
+- A regex exige a URL na mesma linha, entre aspas simples, com host `supabase.com`. Um host local
+  reprova (M18). Ressalva: um README correto escrito com `export DATABASE_URL=...` numa linha
+  separada, ou com aspas duplas, também reprovaria. Isso é falso negativo de formato, não de
+  comportamento; aceito, porque o README atual usa o formato inline.
+- Ressalva: uma linha extra `python3 manage.py migrate` sem a URL escaparia do filtro. É um
+  cenário artificial; não vira gap.
 
 ---
 
@@ -26,7 +48,7 @@ Plano inline, sem `tasks.md` (spec: "17 mapeadas aos 5 passos do Execute").
 | 2. Banco pela `DATABASE_URL` | `f272ad2` | ✅ Done | DEPL-06 a DEPL-09, DEPL-15 |
 | 3. `STATIC_ROOT` | `8046e7b` | ✅ Done | DEPL-10, DEPL-11 |
 | 4. Runtime da Vercel | `c701f35` | ✅ Done | DEPL-12 a DEPL-14 |
-| 5. Documentação | `088d7d7` | ⚠️ Partial | DEPL-16 ok; DEPL-17 com teste não discriminante (M13) |
+| 5. Documentação | `088d7d7`, `56e934c` | ✅ Done | DEPL-16, DEPL-17 (teste reforçado na iteração 2) |
 
 ---
 
@@ -62,7 +84,7 @@ define `DJANGO_SECRET_KEY`, e o teste da DEPL-01 (`test_settings_ambiente.py:14`
 | DEPL-14 | `vercel.json` válido; exclui os 3 caminhos; mantém `inovacoes/views.py` e `templates/kira.css` | `config/tests/test_vercel.py:40-41` - `json.loads`, chave `functions["config/wsgi.py"]["excludeFiles"]`; `:49` - `assert _casa(...)`; `:55` - `assert not _casa(...)` | ✅ PASS (ver nota) |
 | DEPL-15 | `dj-database-url` antes de `# Desenvolvimento e testes` | `config/tests/test_settings_banco.py:72-74` - `"dj-database-url" in runtime` | ✅ PASS |
 | DEPL-16 | Todo nome lido por `config/settings.py` está no `.env.example`, inclusive os dois novos | `config/tests/test_documentacao_deploy.py:65-66` - `{"DJANGO_CSRF_TRUSTED_ORIGINS", "DATABASE_URL"} <= lidos` e `lidos <= chaves` (nomes lidos rastreados nos dois ramos do banco, `:41`) | ✅ PASS |
-| DEPL-17 | Seção de deploy nomeia as 5 variáveis e os comandos `migrate` e `createsuperuser` **contra o Supabase** | `config/tests/test_documentacao_deploy.py:69-83` - `termo in _secao_de_deploy()` | ❌ GAP: a cláusula "run against the Supabase database" não é afirmada (M13 sobreviveu) |
+| DEPL-17 | Seção de deploy nomeia as 5 variáveis e os comandos `migrate` e `createsuperuser` **contra o Supabase** | `config/tests/test_documentacao_deploy.py:69-83` - `termo in _secao_de_deploy()`; `:86-95` - `assert linhas` e `all(re.search(r"DATABASE_URL='postgresql://[^']*supabase\.com[^']*'", linha) ...)` | ✅ PASS (iteração 1: ❌ GAP, M13 sobreviveu) |
 
 **Notas de julgamento:**
 
@@ -83,7 +105,7 @@ define `DJANGO_SECRET_KEY`, e o teste da DEPL-01 (`test_settings_ambiente.py:14`
   regex (`test_documentacao_deploy.py:63`) aceita `#`. Leitura razoável de "list": deixá-la ativa
   ligaria o modo produção no desenvolvimento local.
 
-**Status**: ❌ 16/17 ACs com o resultado da spec afirmado; DEPL-17 parcial.
+**Status**: ✅ 17/17 ACs com o resultado da spec afirmado (iteração 1: 16/17).
 
 ---
 
@@ -107,16 +129,26 @@ worktree. Cada mutante rodou `config/tests` (37 testes) e foi revertido com `git
 | M10 | `vercel.json:5` | Tira `.specs/**` da exclusão | ✅ Killed (1) |
 | M11 | `.env.example:6` | Remove `DJANGO_CSRF_TRUSTED_ORIGINS=` | ✅ Killed (1) |
 | M12 | `README.md:44` | Remove a linha do `createsuperuser` | ✅ Killed (1) |
-| M13 | `README.md:43-44` | Tira o `DATABASE_URL='...'` dos comandos `migrate` e `createsuperuser` (rodariam no banco local) | ❌ Survived → Fix 1 |
+| M13 | `README.md:43-44` | Tira o `DATABASE_URL='...'` dos comandos `migrate` e `createsuperuser` (rodariam no banco local) | Iteração 1: ❌ Survived → Fix 1. Iteração 2: ✅ Killed (2) |
 | M14 | `config/settings.py:32` | `DEBUG` aceita `true`/`1` | ✅ Killed (2) |
 | M15 | `requirements.txt:5` | Move `dj-database-url` para a seção de desenvolvimento | ✅ Killed (1) |
 | M16 | `config/settings.py:115` | `PORT` local fixo em `5432` | ✅ Killed (2) |
 | M17 | `vercel.json:4` | Chave da função `api/index.py` em vez de `config/wsgi.py` | ✅ Killed (5 erros) |
 
+**Mutações novas da iteração 2** (worktree novo em `56e934c`, mesmo processo; baseline com 39/39
+verdes antes de mutar):
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| M13b | `README.md:44` | Tira o `DATABASE_URL='...'` só do `createsuperuser` | ✅ Killed (1) |
+| M18 | `README.md:43` | `migrate` com `DATABASE_URL` apontando para `localhost:5433` | ✅ Killed (1) |
+| M19 | `config/settings.py:43` | `CSRF_TRUSTED_ORIGINS` sem o helper, sem descartar item vazio | ✅ Killed (1) |
+| M20 | `README.md:3` | Comandos movidos para outra seção `##`, fora da de deploy | ✅ Killed (9) |
+
 **Sensor depth**: expandido (≥5; configuração de produção)
-**Result**: 16/17 killed - FAIL ❌
-**Isolamento**: `git worktree remove --force` + `git worktree prune`; `git status --porcelain` do
-repositório real igual ao baseline (vazio) antes e depois.
+**Result**: iteração 1: 16/17; iteração 2: M13 + 4 novos, 5/5. Total 21/21 killed - PASS ✅
+**Isolamento**: nas duas iterações, `git worktree remove --force` + `git worktree prune`;
+`git status --porcelain` do repositório real igual ao baseline (vazio) antes e depois.
 
 ---
 
@@ -128,7 +160,7 @@ repositório real igual ao baseline (vazio) antes e depois.
 | Surgical changes | ✅ Só os arquivos da spec; `SECRET_KEY`, `DEBUG`, cookies e WSGI intocados |
 | No scope creep | ✅ Sem WhiteNoise, sem HSTS/SSL redirect, sem CI (Out of Scope respeitado) |
 | Matches patterns | ✅ Mesmo formato de lista do `ALLOWED_HOSTS`; marcador `unit` nos testes sem banco |
-| Spec-anchored outcome check | ❌ DEPL-17: cláusula "contra o Supabase" sem asserção |
+| Spec-anchored outcome check | ✅ 17/17 (DEPL-17 corrigida em `56e934c`) |
 | Per-layer Coverage Expectation | ✅ Settings 1:1 com as ACs; rota de login com caso feliz e de erro (403) |
 | Every test maps to a spec requirement | ✅ Todo teste em `config/tests` cita uma DEPL-xx |
 | Documented guidelines followed | ✅ Sem guia de testes do projeto; padrões da skill e o marcador `unit` do `pyproject.toml` |
@@ -147,10 +179,10 @@ repositório real igual ao baseline (vazio) antes e depois.
 ## Gate Check
 
 - **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- **Result**: ruff ok, format ok (141 arquivos), sem migrations pendentes; 902 passed, 0 failed, 0 skipped
+- **Result**: ruff ok, format ok (142 arquivos), sem migrations pendentes; 904 passed, 0 failed, 0 skipped (iteração 1: 902)
 - **Test count before feature**: 865
-- **Test count after feature**: 902
-- **Delta**: +37 testes novos (todos em `config/tests`)
+- **Test count after feature**: 904
+- **Delta**: +39 testes novos, todos em `config/tests` (37 na iteração 1, mais 2 do parametrize do Fix 1)
 - **Skipped tests**: nenhum
 - **Failures**: nenhuma
 
@@ -158,18 +190,16 @@ repositório real igual ao baseline (vazio) antes e depois.
 
 ## Fix Plans
 
-### Fix 1: DEPL-17 não afirma que os comandos rodam contra o Supabase
+### Fix 1: DEPL-17 não afirma que os comandos rodam contra o Supabase - ✅ Fechado em `56e934c`
 
-- **Root cause**: `config/tests/test_documentacao_deploy.py:83` só confere `termo in secao`. O
-  `DATABASE_URL` já aparece na tabela de variáveis, então tirá-lo dos comandos (M13) não quebra
-  nada, e o README passaria a mandar migrar o banco local.
-- **Fix task**: em `config/tests/test_documentacao_deploy.py`, para `migrate` e `createsuperuser`,
-  exigir pelo menos uma linha da seção de deploy que contenha `manage.py <comando>` **e**
-  `DATABASE_URL=` na mesma linha. Não mudar o README (ele já está certo).
-- **Verify**: aplicar M13 (tirar `DATABASE_URL='...' ` das linhas 43-44 do `README.md`) num
-  scratch: o teste novo falha. No README real, passa.
-- **Done when**: M13 morto; gate de build verde.
-- **Priority**: Minor
+- **Root cause (iteração 1)**: `config/tests/test_documentacao_deploy.py:83` só conferia
+  `termo in secao`. O `DATABASE_URL` já aparece na tabela de variáveis, então tirá-lo dos comandos
+  (M13) não quebrava nada.
+- **Correção**: `test_readme_roda_os_comandos_contra_o_supabase`
+  (`config/tests/test_documentacao_deploy.py:86-95`). README e produção não mudaram.
+- **Verificado**: M13, M13b e M18 morrem; gate de build verde (904).
+
+Nenhum fix novo nesta iteração.
 
 ---
 
@@ -177,24 +207,28 @@ repositório real igual ao baseline (vazio) antes e depois.
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| DEPL-01 a DEPL-16 | Implementing | ✅ Verified |
-| DEPL-17 | Implementing | ❌ Needs Fix (Fix 1) |
+| DEPL-01 a DEPL-17 | Implementing | ✅ Verified |
+
+A DEPL-17 estava como ❌ Needs Fix na iteração 1.
 
 ---
 
 ## Summary
 
-**Overall**: ⚠️ Issues (FAIL por um mutante sobrevivente em P2)
+**Overall**: ✅ Ready (falta só o UAT manual na nuvem)
 
-**Spec-anchored check**: 16/17 ACs com o resultado da spec afirmado; DEPL-17 parcial
-**Sensor**: 16/17 mutações mortas
-**Gate**: 902 passed
+**Spec-anchored check**: 17/17 ACs com o resultado da spec afirmado
+**Sensor**: 21/21 mutações mortas (iteração 1: 16/17; iteração 2: 5/5)
+**Gate**: 904 passed
 
 **What works**: settings lidas do ambiente com limpeza de listas; CSRF atrás do proxy; banco do
 pooler com SSL forçado, sem cursores do servidor e sem conexão persistente; ramo local intacto;
-`STATIC_ROOT`; `.python-version`; `vercel.json`; `.env.example` completo.
+`STATIC_ROOT`; `.python-version`; `vercel.json`; `.env.example` completo; README com os comandos
+apontados para o Supabase.
 
-**Issues found**: Fix 1 (teste da DEPL-17).
+**Issues found**: nenhum aberto. Riscos residuais registrados, sem bloquear: o glob da DEPL-14 é
+emulado (o build da Vercel confirma); o teste da DEPL-17 depende do formato inline com aspas
+simples.
 
-**Next steps**: implementar o Fix 1 e redespachar o Verifier (iteração 2 de 3). Depois, o roteiro
-de UAT manual na nuvem, com go-ahead do usuário.
+**Next steps**: atualizar a rastreabilidade da spec para Verified e rodar o roteiro de UAT manual na
+nuvem, com go-ahead do usuário para cada operação remota.
