@@ -1412,6 +1412,36 @@ def montar_registros(unidades):
     return registros
 
 
+# ACER-12: cadastros entre 20 e JANELA_EM_DIAS dias antes da execucao.
+JANELA_EM_DIAS = 540
+ESTAGIOS = ("EM_TESTE", "VALIDADA", "DISPONIVEL_PARA_REPLICACAO")
+
+
+def linha_do_tempo(registro, agora, total_de_unidades):
+    """Datas e reusos de um registro, relativos a `agora` (ACER-12 a ACER-16).
+
+    Devolve criacao, as datas das mudancas de status ate o status do registro (uma
+    por estagio avancado) e os reusos (indice da unidade, data, autor). Cada data
+    cai entre a anterior e `agora`, entao a ordem nunca se inverte. Os
+    deslocamentos saem da semente do registro: reproduziveis dado o mesmo `agora`.
+    """
+    from datetime import timedelta
+
+    rng = random.Random(f"{registro['semente']}-tempo")
+    criacao = agora - timedelta(days=rng.uniform(20, JANELA_EM_DIAS - 1))
+    mudancas, anterior = [], criacao
+    for _ in range(ESTAGIOS.index(registro["status"])):
+        anterior = anterior + (agora - anterior) * rng.uniform(0.15, 0.5)
+        mudancas.append(anterior)
+    reusos = []
+    if registro["status"] == ESTAGIOS[-1] and rng.random() < 0.5:
+        outras = [u for u in range(total_de_unidades) if u != registro["unidade"]]
+        for u in sorted(rng.sample(outras, min(len(outras), rng.randint(1, 3)))):
+            data = anterior + (agora - anterior) * rng.uniform(0.1, 0.9)
+            reusos.append((u, data, rng.choice(autores_da_unidade(u))))
+    return {"criacao": criacao, "mudancas": mudancas, "reusos": reusos}
+
+
 def _conferir_catalogo():
     """Guarda do catalogo: todo problema e toda solucao tem um campo variavel conhecido."""
     conhecidos = set(_valores(random.Random(0)))

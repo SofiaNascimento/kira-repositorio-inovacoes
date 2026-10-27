@@ -7,9 +7,17 @@ O conteudo sai de inovacoes.acervo, deterministico. Idempotente: so cria os pare
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 
 from inovacoes import acervo
-from inovacoes.models import Categoria, Inovacao, Unidade
+from inovacoes.models import (
+    Categoria,
+    Inovacao,
+    MudancaDeStatus,
+    Reaproveitamento,
+    StatusInovacao,
+    Unidade,
+)
 
 MINIMO_DE_VALORES = 5
 
@@ -33,23 +41,37 @@ class Command(BaseCommand):
 
         autores = self._autores()
         existentes = set(Inovacao.objects.values_list("titulo", "unidade_id"))
+        agora = timezone.now()
         novas = 0
         for r in registros:
             unidade = unidades[r["unidade"]]
             if (r["titulo"], unidade.pk) in existentes:
                 continue
-            # save() um a um: bulk_create pularia o texto de busca (AD-008).
-            Inovacao(
+            autor = autores[r["autor"]]
+            tempo = acervo.linha_do_tempo(r, agora, len(unidades))
+            # save() um a um: bulk_create pularia o texto de busca (AD-008). Nasce
+            # "Em teste" e chega ao status do registro pelo avancar_status (AD-011).
+            inovacao = Inovacao(
                 titulo=r["titulo"],
                 unidade=unidade,
                 categoria=categorias[r["categoria"]],
-                status=r["status"],
+                status=StatusInovacao.EM_TESTE,
                 problema=r["problema"],
                 solucao=r["solucao"],
                 resultado=r["resultado"],
                 contato=r["contato"],
-                autor=autores[r["autor"]],
-            ).save()
+                autor=autor,
+            )
+            inovacao.save()
+            # As datas sao auto_now_add: retroagidas depois, fora dos campos da busca.
+            Inovacao.objects.filter(pk=inovacao.pk).update(data_criacao=tempo["criacao"])
+            for data in tempo["mudancas"]:
+                mudanca = inovacao.avancar_status(por=autor, status_visto=inovacao.status)
+                MudancaDeStatus.objects.filter(pk=mudanca.pk).update(data=data)
+            # AD-012: o reuso nasce pelo metodo do modelo, sinalizado por alguem da unidade.
+            for u, data, quem in tempo["reusos"]:
+                reuso = inovacao.registrar_reaproveitamento(unidade=unidades[u], por=autores[quem])
+                Reaproveitamento.objects.filter(pk=reuso.pk).update(data=data)
             novas += 1
 
         self.stdout.write(f"{novas} inovações de demonstração criadas ({acervo.TOTAL} no total).")

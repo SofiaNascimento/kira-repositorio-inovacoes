@@ -186,11 +186,11 @@ novo.
 | ACER-09 | P1: Autores variados | Execute | Implementing |
 | ACER-10 | P1: Autores variados | Execute | Implementing |
 | ACER-11 | P1: Autores variados | Execute | Implementing |
-| ACER-12 | P1: Datas, histórico e reusos | - | Pending |
-| ACER-13 | P1: Datas, histórico e reusos | - | Pending |
-| ACER-14 | P1: Datas, histórico e reusos | - | Pending |
-| ACER-15 | P1: Datas, histórico e reusos | - | Pending |
-| ACER-16 | P1: Datas, histórico e reusos | - | Pending |
+| ACER-12 | P1: Datas, histórico e reusos | Execute | Implementing |
+| ACER-13 | P1: Datas, histórico e reusos | Execute | Implementing |
+| ACER-14 | P1: Datas, histórico e reusos | Execute | Implementing |
+| ACER-15 | P1: Datas, histórico e reusos | Execute | Implementing |
+| ACER-16 | P1: Datas, histórico e reusos | Execute | Implementing |
 | ACER-17 | P1: Reproduzível e idempotente | - | Pending |
 | ACER-18 | P1: Reproduzível e idempotente | - | Pending |
 | ACER-19 | P1: Reproduzível e idempotente | Execute | Implementing |

@@ -6,15 +6,25 @@ testes da CONS-44 e da CONS-45.
 
 import re
 from collections import Counter
+from datetime import timedelta
 from io import StringIO
+from unittest import mock
 
 import pytest
 from django.core.management import call_command
 from django.core.management.base import CommandError
+from django.utils import timezone
 
 from contas.models import Usuario
 from inovacoes.busca import normalizar, texto_de_busca
-from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
+from inovacoes.models import (
+    Categoria,
+    Inovacao,
+    MudancaDeStatus,
+    Reaproveitamento,
+    StatusInovacao,
+    Unidade,
+)
 from inovacoes.tests.visibilidade import exibido
 
 TOTAL = 500
@@ -31,6 +41,32 @@ def _carregar():
 @pytest.fixture
 def saida_da_carga(db):
     return _carregar()
+
+
+@pytest.fixture
+def carga_cronometrada(db):
+    """A carga entre dois instantes: as datas geradas tem de cair dentro da janela."""
+    antes = timezone.now()
+    _carregar()
+    return antes, timezone.now()
+
+
+@pytest.fixture
+def carga_espionada(db):
+    """A carga com os dois metodos do modelo espionados (AD-011, AD-012)."""
+    with (
+        mock.patch.object(
+            Inovacao, "avancar_status", autospec=True, side_effect=Inovacao.avancar_status
+        ) as avancar,
+        mock.patch.object(
+            Inovacao,
+            "registrar_reaproveitamento",
+            autospec=True,
+            side_effect=Inovacao.registrar_reaproveitamento,
+        ) as registrar,
+    ):
+        _carregar()
+    return avancar, registrar
 
 
 def _autores_da_carga():
@@ -154,3 +190,63 @@ def test_com_menos_de_5_unidades_ou_categorias_para_com_erro_sem_gravar_nada(mod
         _carregar()
     assert Inovacao.objects.count() == 0
     assert Usuario.objects.count() == contas_antes
+
+
+def test_cadastros_nos_540_dias_antes_da_carga_em_ao_menos_12_meses(carga_cronometrada):
+    """ACER-12."""
+    antes, depois = carga_cronometrada
+    datas = list(Inovacao.objects.values_list("data_criacao", flat=True))
+    assert all(antes - timedelta(days=540) <= d <= depois for d in datas)
+    meses = {(d.year, d.month) for d in (timezone.localtime(x) for x in datas)}
+    assert len(meses) >= 12
+
+
+def test_historico_tem_uma_mudanca_por_estagio_avancado(saida_da_carga):
+    """ACER-13."""
+    esperado = {
+        StatusInovacao.EM_TESTE: [],
+        StatusInovacao.VALIDADA: [(StatusInovacao.EM_TESTE, StatusInovacao.VALIDADA)],
+        StatusInovacao.DISPONIVEL_PARA_REPLICACAO: [
+            (StatusInovacao.EM_TESTE, StatusInovacao.VALIDADA),
+            (StatusInovacao.VALIDADA, StatusInovacao.DISPONIVEL_PARA_REPLICACAO),
+        ],
+    }
+    for inovacao in Inovacao.objects.prefetch_related("mudancas_de_status"):
+        transicoes = [(m.status_anterior, m.status_novo) for m in inovacao.mudancas_de_status.all()]
+        assert transicoes == esperado[inovacao.status], inovacao.titulo
+
+
+def test_mudancas_pelo_avancar_status_do_autor_em_ordem_e_ate_a_carga(carga_espionada):
+    """ACER-14."""
+    avancar, _ = carga_espionada
+    assert MudancaDeStatus.objects.exists()
+    assert avancar.call_count == MudancaDeStatus.objects.count()
+    agora = timezone.now()
+    for inovacao in Inovacao.objects.prefetch_related("mudancas_de_status"):
+        anterior = inovacao.data_criacao
+        for mudanca in inovacao.mudancas_de_status.all():
+            assert mudanca.responsavel_id == inovacao.autor_id
+            assert anterior < mudanca.data <= agora
+            anterior = mudanca.data
+
+
+def test_reaproveitamentos_pelo_metodo_em_disponiveis_e_fora_da_origem(carga_espionada):
+    """ACER-15."""
+    _, registrar = carga_espionada
+    reusos = Reaproveitamento.objects.select_related("inovacao")
+    assert reusos.count() >= 60
+    assert registrar.call_count == reusos.count()
+    for reuso in reusos:
+        assert reuso.inovacao.status == StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+        assert reuso.unidade_id != reuso.inovacao.unidade_id
+    assert reusos.values("inovacao").distinct().count() >= 30
+
+
+def test_reaproveitamento_depois_de_ficar_disponivel_e_ate_a_carga(carga_cronometrada):
+    """ACER-16."""
+    _, depois = carga_cronometrada
+    for reuso in Reaproveitamento.objects.select_related("inovacao"):
+        disponivel = reuso.inovacao.mudancas_de_status.get(
+            status_novo=StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+        )
+        assert disponivel.data < reuso.data <= depois
