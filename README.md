@@ -51,11 +51,11 @@ Para gerar a chave:
    `.env` local suba junto.
 4. **Deploy**: rode `npx vercel --prod --logs`. No log de build, confira o Python 3.13 e a
    execução do `collectstatic`. A CLI envia a pasta como está: faça o commit antes.
+5. **Conferência**: abra `https://<projeto>.vercel.app/entrar/`, entre com o administrador
+   criado no passo 2 e abra `/admin/` para ver o CSS do admin.
 
 O roteiro detalhado, com telas, conferência e problemas comuns, está em
 [`docs/roteiro-deploy.md`](docs/roteiro-deploy.md).
-5. **Conferência**: abra `https://<projeto>.vercel.app/entrar/`, entre com o administrador
-   criado no passo 2 e abra `/admin/` para ver o CSS do admin.
 
 A cada mudança de model, repita o `manage.py migrate` do passo 2 **antes** do deploy do código
 que depende dela.
