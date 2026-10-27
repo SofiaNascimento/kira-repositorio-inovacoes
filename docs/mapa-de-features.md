@@ -18,14 +18,22 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
                                           →  F5 ciclo-de-vida-status  →  F6 reaproveitamento-indicadores
 ```
 
-| ID | Feature | Escopo | MoSCoW | Depende de |
-| -- | ------- | ------ | ------ | ---------- |
-| F1 | autenticacao | Large | Essencial | — |
-| F2 | cadastro-inovacao | Large | Essencial | F1 |
-| F3 | consulta-inovacoes | Large | Essencial | F2 |
-| F4 | edicao-exclusao | Large | Essencial (RF07) / Importante (RF08) | F1, F2 |
-| F5 | ciclo-de-vida-status | Large | Importante | F2 |
-| F6 | reaproveitamento-indicadores | Large | Desejável | F3, F5 |
+| ID | Feature | Escopo | MoSCoW | Depende de | Situação (2026-10-27) |
+| -- | ------- | ------ | ------ | ---------- | --------------------- |
+| F1 | autenticacao | Large | Essencial | — | Concluída (Verifier PASS) |
+| F2 | cadastro-inovacao | Large | Essencial | F1 | Concluída (Verifier PASS) |
+| F3 | consulta-inovacoes | Large | Essencial | F2 | Concluída (Verifier PASS); CONS-44/45 substituídas pelo acervo-realista |
+| F4 | edicao-exclusao | Large | Essencial (RF07) / Importante (RF08) | F1, F2 | Concluída (Verifier PASS) |
+| F5 | ciclo-de-vida-status | Large | Importante | F2 | Concluída com risco de teste aceito; conferência do controle novo no navegador pendente |
+| F6 | reaproveitamento-indicadores | Large | Desejável | F3, F5 | Concluída com risco de teste aceito; conferência no navegador pendente |
+
+### Passes e features além do plano original
+
+| Feature | O que entregou | Situação (2026-10-27) |
+| ------- | -------------- | --------------------- |
+| sistema-de-design | Template base único e folha `kira.css` a partir da `design-spec.md` (AD-010) | Concluída (Verifier PASS) |
+| deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Supabase; roteiro em `docs/roteiro-deploy.md` | Publicada em `https://kira-nu-green.vercel.app`; risco de teste aceito numa emenda; UAT da Parte 4 pendente |
+| acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no Supabase pendente |
 
 ---
 
@@ -85,7 +93,7 @@ Fecha o eixo "Dados, Inteligência e Infra" do ENADE.
 - **RNF:** RNF08
 - **Descrição:** botão de "reaproveitei esta inovação" registrando a entidade Reaproveitamento, e um dashboard com total, distribuição por categoria/unidade e contagem de reusos.
 - **Notas:** Desejável. Se o prazo apertar, entregue RF11 + um dashboard mínimo e trate RF10 completo como incremento. (A reclassificação de RF10 Desejável→Importante continua sendo sua decisão em aberto; se subir para Importante, esta feature sai de "corta primeiro".)
-- **Andamento (2026-10-18):** Specify, Design e Tasks aprovados (`.specs/features/reaproveitamento-indicadores/`); confirmada como Large. Decisões: unidade escolhida no formulário, uma sinalização por unidade, qualquer usuário autenticado sinaliza, painel com cards + gráficos SVG + tabelas; regra da RN09 em `Inovacao.registrar_reaproveitamento` (AD-012) e painel numa app `indicadores`. Tasks ordenadas com o RF11 primeiro e o RF10 por último, para poder cortar. **Execute pausado na linha de corte:** RF11 implementado (T1–T10); painel (T11–T18) não iniciado; Verifier pendente.
+- **Andamento (2026-10-19):** RF11 e RF10 completos (painel com cards, gráficos SVG e tabelas, app `indicadores`). Decisões: unidade escolhida no formulário, uma sinalização por unidade, qualquer usuário autenticado sinaliza; regra da RN09 em `Inovacao.registrar_reaproveitamento` (AD-012). Verifier FAIL nas 3 iterações só por lacunas de teste; o risco residual foi aceito e a feature fechada (`.specs/features/reaproveitamento-indicadores/validation.md`).
 
 ---
 
@@ -97,7 +105,7 @@ Fecha o eixo "Dados, Inteligência e Infra" do ENADE.
 | RNF01 — usabilidade / Nielsen / SUS ≥ 68 | toda a UI | avaliação heurística contínua; teste SUS isolado no fim |
 | RNF03 — compatibilidade / responsivo (desktop, tablet) | toda a UI | passe dedicado de responsividade (semana 6 do cronograma) |
 | RNF04 — manutenibilidade / modular | decorre do MVT | garantido por AD-002 |
-| RNF06 — portabilidade / deploy | infraestrutura | fase final |
+| RNF06 — portabilidade / deploy | infraestrutura | fase final — **feito** (deploy-producao, 2026-10-27) |
 | RNF09 — acessibilidade (WCAG 2.1 AA, eMAG) | toda a UI | por feature + auditoria final |
 
 ---
