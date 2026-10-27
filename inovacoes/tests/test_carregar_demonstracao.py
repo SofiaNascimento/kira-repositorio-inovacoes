@@ -1,8 +1,10 @@
-"""Testes do comando carregar_demonstracao (CONS-44, CONS-45).
+"""Testes do comando carregar_demonstracao com o acervo realista (ACER-01 a ACER-20).
 
-Integracao: o comando grava 500 inovacoes, uma a uma, pelo save().
+Integracao: o comando grava 500 inovacoes, uma a uma, pelo save(). Supersede os
+testes da CONS-44 e da CONS-45.
 """
 
+import re
 from collections import Counter
 from io import StringIO
 
@@ -11,10 +13,13 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 
 from contas.models import Usuario
-from inovacoes.busca import texto_de_busca
+from inovacoes.busca import normalizar, texto_de_busca
 from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import exibido
 
-TITULOS = [f"Demonstração {i:03d}" for i in range(1, 501)]
+TOTAL = 500
+VETADAS = ("demonstracao", "lorem", "ficticio", "teste de carga", "exemplo")
+CAMPOS_VISIVEIS = ("titulo", "problema", "solucao", "resultado", "contato")
 
 
 def _carregar():
@@ -28,23 +33,58 @@ def saida_da_carga(db):
     return _carregar()
 
 
-def test_cria_as_500_inovacoes_da_conta_demo_sem_senha_utilizavel(saida_da_carga):
-    """CONS-44: titulos 001 a 500, autora a conta demo, perfil USUARIO."""
-    assert sorted(Inovacao.objects.values_list("titulo", flat=True)) == TITULOS
-    demo = Usuario.objects.get(username="demo")
-    assert demo.email == "demo@demonstracao.invalid"
-    assert demo.perfil == "USUARIO"
-    assert demo.has_usable_password() is False
-    assert Inovacao.objects.exclude(autor=demo).count() == 0
+def _autores_da_carga():
+    return Usuario.objects.filter(inovacoes__isnull=False).distinct()
 
 
-def test_mensagem_final_conta_as_criadas_e_o_total(saida_da_carga):
-    """CONS-44: "N inovações de demonstração criadas (500 no total)."."""
-    assert saida_da_carga.strip() == "500 inovações de demonstração criadas (500 no total)."
+def test_cria_500_inovacoes_com_pares_titulo_unidade_unicos(saida_da_carga):
+    """ACER-01."""
+    pares = list(Inovacao.objects.values_list("titulo", "unidade_id"))
+    assert len(pares) == TOTAL
+    assert len(set(pares)) == TOTAL
+
+
+def test_ao_menos_90_titulos_e_nenhum_em_mais_de_5_inovacoes(saida_da_carga):
+    """ACER-02."""
+    por_titulo = Counter(Inovacao.objects.values_list("titulo", flat=True))
+    assert len(por_titulo) >= 90
+    assert max(por_titulo.values()) <= 5
+
+
+def test_problemas_e_solucoes_sao_todos_diferentes(saida_da_carga):
+    """ACER-03."""
+    assert Inovacao.objects.values("problema").distinct().count() == TOTAL
+    assert Inovacao.objects.values("solucao").distinct().count() == TOTAL
+
+
+def test_nenhum_texto_visivel_tem_marca_de_dado_de_teste(saida_da_carga):
+    """ACER-04: comparacao sem acento e sem caixa."""
+    achados = [
+        (inovacao["titulo"], campo, vetada)
+        for inovacao in Inovacao.objects.values(*CAMPOS_VISIVEIS)
+        for campo in CAMPOS_VISIVEIS
+        for vetada in VETADAS
+        if vetada in normalizar(inovacao[campo])
+    ]
+    assert achados == []
+
+
+def test_validadas_e_disponiveis_tem_resultado(saida_da_carga):
+    """ACER-05."""
+    com_resultado_exigido = Inovacao.objects.exclude(status=StatusInovacao.EM_TESTE)
+    assert com_resultado_exigido.exists()
+    assert [i.titulo for i in com_resultado_exigido if not i.resultado.strip()] == []
+
+
+def test_contato_e_setor_unidade_e_ramal_da_propria_unidade(saida_da_carga):
+    """ACER-06: "<setor>, <unidade> — ramal <4 digitos>"."""
+    for inovacao in Inovacao.objects.select_related("unidade"):
+        padrao = rf"[^,]+, {re.escape(inovacao.unidade.nome)} — ramal \d{{4}}"
+        assert re.fullmatch(padrao, inovacao.contato), inovacao.contato
 
 
 def test_cada_unidade_categoria_e_status_aparece_em_pelo_menos_20(saida_da_carga):
-    """CONS-44."""
+    """ACER-07."""
     por_unidade = Counter(Inovacao.objects.values_list("unidade__nome", flat=True))
     por_categoria = Counter(Inovacao.objects.values_list("categoria__nome", flat=True))
     por_status = Counter(Inovacao.objects.values_list("status", flat=True))
@@ -56,48 +96,61 @@ def test_cada_unidade_categoria_e_status_aparece_em_pelo_menos_20(saida_da_carga
     assert min(por_status.values()) >= 20
 
 
+def test_busca_sem_acento_acha_o_mesmo_que_com_acento(saida_da_carga):
+    """ACER-08."""
+    com_acento = set(Inovacao.objects.buscar("conciliação"))
+    assert com_acento
+    assert set(Inovacao.objects.buscar("conciliacao")) == com_acento
+
+
 def test_toda_inovacao_criada_tem_o_texto_de_busca_do_save(saida_da_carga):
     """AD-008: a carga passa pelo save(), entao a coluna deriva dos tres campos."""
     for inovacao in Inovacao.objects.all():
         esperado = texto_de_busca(inovacao.titulo, inovacao.problema, inovacao.solucao)
         assert inovacao.texto_busca == esperado
-    assert Inovacao.objects.buscar("demonstracao 042").count() == 1
 
 
-def test_textos_sao_variados_e_tem_palavras_acentuadas_achadas_sem_acento(saida_da_carga):
-    """CONS-44 (textos variados): a busca sem acento acha o vocabulario com acento."""
-    assert len(set(Inovacao.objects.values_list("problema", flat=True))) >= 50
-    com_acento = Inovacao.objects.buscar("conciliação")
-    assert com_acento.count() >= 1
-    assert set(com_acento) == set(Inovacao.objects.buscar("conciliacao"))
+def test_15_autores_colaboradores_sem_senha_e_todos_com_inovacao(saida_da_carga):
+    """ACER-09."""
+    autores = list(_autores_da_carga())
+    assert len(autores) == 15
+    for conta in autores:
+        assert conta.first_name.strip() and conta.last_name.strip()
+        assert conta.perfil == "USUARIO"
+        assert conta.has_usable_password() is False
+        assert conta.email.endswith("@acervo.invalid")
+    assert Usuario.objects.filter(email__endswith="@acervo.invalid").count() == 15
 
 
-def test_segunda_execucao_nao_duplica_inovacoes_nem_a_conta_demo(saida_da_carga):
-    """CONS-45."""
-    saida = _carregar()
-    assert "0 inovações de demonstração criadas" in saida
-    assert Inovacao.objects.count() == 500
-    assert Usuario.objects.filter(username="demo").count() == 1
+def test_nao_cria_nem_usa_a_conta_demo(saida_da_carga):
+    """ACER-10."""
+    assert not Usuario.objects.filter(username="demo").exists()
+    assert not Inovacao.objects.filter(autor__username="demo").exists()
 
 
-def test_execucao_repetida_recria_so_os_ausentes_com_o_mesmo_conteudo(saida_da_carga):
-    """CONS-45: termina com 500; o titulo apagado volta igual (carga reproduzivel)."""
-    alvo = Inovacao.objects.get(titulo="Demonstração 042")
-    antes = (alvo.problema, alvo.solucao, alvo.unidade_id, alvo.categoria_id, alvo.status)
-    Inovacao.objects.filter(titulo__in=["Demonstração 042", "Demonstração 300"]).delete()
-    saida = _carregar()
-    assert saida.strip() == "2 inovações de demonstração criadas (500 no total)."
-    assert sorted(Inovacao.objects.values_list("titulo", flat=True)) == TITULOS
-    novo = Inovacao.objects.get(titulo="Demonstração 042")
-    assert (novo.problema, novo.solucao, novo.unidade_id, novo.categoria_id, novo.status) == antes
+def test_detalhe_mostra_o_nome_completo_de_quem_cadastrou(saida_da_carga, client, terceiro):
+    """ACER-11: "Cadastrada por <nome completo>", visivel (L-028, L-030)."""
+    inovacao = Inovacao.objects.select_related("autor").order_by("titulo", "pk").first()
+    client.force_login(terceiro)
+    html = exibido(client.get(inovacao.get_absolute_url()).content.decode())
+    assert f"Cadastrada por {inovacao.autor.get_full_name()} em" in html
+    assert inovacao.autor.get_full_name() == (
+        f"{inovacao.autor.first_name} {inovacao.autor.last_name}"
+    )
+
+
+def test_mensagem_final_conta_as_criadas_e_o_total(saida_da_carga):
+    """ACER-19."""
+    assert saida_da_carga.strip() == "500 inovações de demonstração criadas (500 no total)."
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize("modelo", [Unidade, Categoria])
 def test_com_menos_de_5_unidades_ou_categorias_para_com_erro_sem_gravar_nada(modelo):
-    """CONS-44: sem 5 valores nao ha como garantir 20 por valor."""
+    """ACER-20: nem inovacao nem conta."""
+    contas_antes = Usuario.objects.count()
     modelo.objects.get(nome="RH" if modelo is Categoria else "Sede").delete()
     with pytest.raises(CommandError):
         _carregar()
     assert Inovacao.objects.count() == 0
-    assert not Usuario.objects.filter(username="demo").exists()
+    assert Usuario.objects.count() == contas_antes

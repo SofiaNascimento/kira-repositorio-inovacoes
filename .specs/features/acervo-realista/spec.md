@@ -175,17 +175,17 @@ novo.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| ACER-01 | P1: Inovações reais | - | Pending |
-| ACER-02 | P1: Inovações reais | - | Pending |
-| ACER-03 | P1: Inovações reais | - | Pending |
-| ACER-04 | P1: Inovações reais | - | Pending |
-| ACER-05 | P1: Inovações reais | - | Pending |
-| ACER-06 | P1: Inovações reais | - | Pending |
-| ACER-07 | P1: Inovações reais | - | Pending |
-| ACER-08 | P1: Inovações reais | - | Pending |
-| ACER-09 | P1: Autores variados | - | Pending |
-| ACER-10 | P1: Autores variados | - | Pending |
-| ACER-11 | P1: Autores variados | - | Pending |
+| ACER-01 | P1: Inovações reais | Execute | Implementing |
+| ACER-02 | P1: Inovações reais | Execute | Implementing |
+| ACER-03 | P1: Inovações reais | Execute | Implementing |
+| ACER-04 | P1: Inovações reais | Execute | Implementing |
+| ACER-05 | P1: Inovações reais | Execute | Implementing |
+| ACER-06 | P1: Inovações reais | Execute | Implementing |
+| ACER-07 | P1: Inovações reais | Execute | Implementing |
+| ACER-08 | P1: Inovações reais | Execute | Implementing |
+| ACER-09 | P1: Autores variados | Execute | Implementing |
+| ACER-10 | P1: Autores variados | Execute | Implementing |
+| ACER-11 | P1: Autores variados | Execute | Implementing |
 | ACER-12 | P1: Datas, histórico e reusos | - | Pending |
 | ACER-13 | P1: Datas, histórico e reusos | - | Pending |
 | ACER-14 | P1: Datas, histórico e reusos | - | Pending |
@@ -193,8 +193,8 @@ novo.
 | ACER-16 | P1: Datas, histórico e reusos | - | Pending |
 | ACER-17 | P1: Reproduzível e idempotente | - | Pending |
 | ACER-18 | P1: Reproduzível e idempotente | - | Pending |
-| ACER-19 | P1: Reproduzível e idempotente | - | Pending |
-| ACER-20 | P1: Reproduzível e idempotente | - | Pending |
+| ACER-19 | P1: Reproduzível e idempotente | Execute | Implementing |
+| ACER-20 | P1: Reproduzível e idempotente | Execute | Implementing |
 | ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
 | ACER-22 | P2: Desempenho RNF08 | Execute | Implementing |
 
