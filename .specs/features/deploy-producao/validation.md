@@ -6,7 +6,7 @@
 **Diff range**: `894d31a..c1cbc63` em `main`. Iterações 1 e 2: `894d31a..56e934c`. Emenda: `bc2997f..c1cbc63` (`29195da` spec e context, `6645eef` `.vercelignore` + `.gitignore` + teste, `c1cbc63` README e `docs/roteiro-deploy.md`). `c0e6457` e `bc2997f` só registram validações.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌
+**Verdict**: FAIL ❌ na iteração 3 (HEAD `c1cbc63`), **com risco residual de teste aceito pelo usuário em 2026-10-27**: ver [Decisão do usuário](#decisão-do-usuário-2026-10-27). O veredito do Verifier não foi reescrito; a feature foi fechada por decisão, não por PASS.
 
 A emenda está correta no que entrega. O `.vercelignore` barra o `.env` e mantém o que a Vercel
 precisa, e o `.gitignore` ignora `.vercel/`. As 19 ACs têm evidência. O gate passa com 919/919. No
@@ -53,7 +53,7 @@ Minor, sem defeito de produção, correção de uma linha.
 
 ---
 
-## Iteração 1 → 2## Iteração 1 → 2
+## Iteração 1 → 2
 
 | Gap da iteração 1 | Commit | Status agora | Evidência |
 | ----------------- | ------ | ------------ | --------- |
@@ -300,3 +300,25 @@ em `README.md:55-56`.
 **Next steps**: aplicar o Fix 2 e reverificar. Se o loop de correções estiver esgotado, fechar com o
 risco registrado (o `.vercelignore` real está certo). Depois, o UAT na nuvem, com o passo 4
 conferindo a ausência do `.env` na aba Source.
+
+---
+
+## Decisão do usuário (2026-10-27)
+
+Registrada pelo orquestrador depois da escalada (limite de 3 iterações atingido). Não é uma
+iteração do Verifier.
+
+- **Fix 2 aplicado depois da iteração 3**, sem reverificação independente: `04b8a35` passa
+  `GIT_CONFIG_GLOBAL=os.devnull`, `GIT_CONFIG_NOSYSTEM=1` e `XDG_CONFIG_HOME=os.devnull` ao `git
+  init` e ao `git check-ignore` (`config/tests/test_vercelignore.py:18-27`).
+- **Conferência do autor** (não independente): com o N1 aplicado (`.env` fora do
+  `.vercelignore`), P1 (`.env` no ignore global via `GIT_CONFIG_GLOBAL`) e P2 (`.env` em
+  `$XDG_CONFIG_HOME/git/ignore`, caminho que o Fix 2 sugerido não cobria) dão 1 failed, 14 passed.
+  Restaurado, 15 passed. Gate: 919 passed.
+- **Decisão**: fechar com o risco residual aceito, em vez de uma 4ª rodada. DEPL-18 fica
+  `Implementing (risco residual aceito)`; DEPL-19 e DEPL-01 a DEPL-17 ficam `Verified`.
+  `validate_state.py` sai com 1 de propósito (veredito registrado FAIL).
+- **Também depois da iteração 3**: `1901ad0` (só documentação) corrige a lista numerada do README
+  apontada em "Observações" e ajusta o passo 1.3 do roteiro à janela "Conectar" do Supabase.
+- **Risco que sobra**: a semântica real do `.vercelignore` na CLI só aparece no deploy. O passo
+  3.8 do roteiro e o passo 4 do UAT conferem a ausência do `.env` na aba Source.
