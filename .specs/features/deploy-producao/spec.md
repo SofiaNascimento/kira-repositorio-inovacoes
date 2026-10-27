@@ -208,11 +208,11 @@ operação remota (deploy, migrate no Supabase).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| DEPL-01 | P1: Configuração do ambiente | Execute | Pending |
-| DEPL-02 | P1: Configuração do ambiente | Execute | Pending |
-| DEPL-03 | P1: Configuração do ambiente | Execute | Pending |
-| DEPL-04 | P1: Configuração do ambiente | Execute | Pending |
-| DEPL-05 | P1: Configuração do ambiente | Execute | Pending |
+| DEPL-01 | P1: Configuração do ambiente | Execute | Implementing |
+| DEPL-02 | P1: Configuração do ambiente | Execute | Implementing |
+| DEPL-03 | P1: Configuração do ambiente | Execute | Implementing |
+| DEPL-04 | P1: Configuração do ambiente | Execute | Implementing |
+| DEPL-05 | P1: Configuração do ambiente | Execute | Implementing |
 | DEPL-06 | P1: Banco de produção | Execute | Pending |
 | DEPL-07 | P1: Banco de produção | Execute | Pending |
 | DEPL-08 | P1: Banco de produção | Execute | Pending |

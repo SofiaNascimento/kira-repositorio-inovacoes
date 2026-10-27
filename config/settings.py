@@ -30,7 +30,16 @@ SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 # SECURITY WARNING: nunca rode com DEBUG ligado em producao.
 DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = [h for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",") if h]
+
+def _lista_do_ambiente(nome):
+    """Lista separada por virgula, sem espacos em volta nem itens vazios (DEPL-03, DEPL-04)."""
+    return [item.strip() for item in os.environ.get(nome, "").split(",") if item.strip()]
+
+
+ALLOWED_HOSTS = _lista_do_ambiente("DJANGO_ALLOWED_HOSTS")
+
+# Atras do proxy HTTPS da Vercel, o POST chega por HTTP com Origin em HTTPS (DEPL-05).
+CSRF_TRUSTED_ORIGINS = _lista_do_ambiente("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 
 # Application definition
