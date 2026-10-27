@@ -219,9 +219,9 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-09 | P1: Banco de produção | Execute | Implementing |
 | DEPL-10 | P1: Estáticos do admin | Execute | Implementing |
 | DEPL-11 | P1: Estáticos do admin | Execute | Implementing |
-| DEPL-12 | P1: Runtime da Vercel | Execute | Pending |
-| DEPL-13 | P1: Runtime da Vercel | Execute | Pending |
-| DEPL-14 | P1: Runtime da Vercel | Execute | Pending |
+| DEPL-12 | P1: Runtime da Vercel | Execute | Implementing |
+| DEPL-13 | P1: Runtime da Vercel | Execute | Implementing |
+| DEPL-14 | P1: Runtime da Vercel | Execute | Implementing |
 | DEPL-15 | P1: Runtime da Vercel | Execute | Implementing |
 | DEPL-16 | P2: Documentação | Execute | Pending |
 | DEPL-17 | P2: Documentação | Execute | Pending |
