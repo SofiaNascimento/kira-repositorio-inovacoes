@@ -225,3 +225,5 @@ staticfiles/
 
 # Vinculo local da Vercel CLI (DEPL-19)
 .vercel/
+.vercel
+.env*
