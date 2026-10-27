@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 47,
+  "next_id": 48,
   "lessons": [
     {
       "id": "L-001",
@@ -844,6 +844,24 @@
       ],
       "created": "2026-10-27T18:29:58Z",
       "last_seen": "2026-10-27T18:29:58Z"
+    },
+    {
+      "id": "L-047",
+      "key": "surviving_mutant::when a test shells out to git or another configurable tool isolate the user s global and system config so the result does not depend on who runs it",
+      "text": "When a test shells out to git or another configurable tool, isolate the user's global and system config so the result does not depend on who runs it",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "deploy-producao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md iteracao 3 probe P1, config/tests/test_vercelignore.py:21-29 (DEPL-18) (tests)"
+      ],
+      "created": "2026-10-27T19:01:23Z",
+      "last_seen": "2026-10-27T19:01:23Z"
     }
   ]
 }

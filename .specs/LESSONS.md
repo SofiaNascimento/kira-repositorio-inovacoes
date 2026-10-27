@@ -288,6 +288,12 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md M13 README.md:43-44 (DEPL-17) config/tests/test_documentacao_deploy.py:83 (docs)
 - last seen: 2026-10-27T18:29:58Z
 
+### L-047 - When a test shells out to git or another configurable tool, isolate the user's global and system config so the result does not depend on who runs it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: deploy-producao
+- evidence: validation.md iteracao 3 probe P1, config/tests/test_vercelignore.py:21-29 (DEPL-18) (tests)
+- last seen: 2026-10-27T19:01:23Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.

@@ -1,23 +1,59 @@
 # Deploy em Produção Validation
 
 **Date**: 2026-10-27
-**Iteration**: 2
+**Iteration**: 3 (emenda da spec: DEPL-18 e DEPL-19)
 **Spec**: `.specs/features/deploy-producao/spec.md`
-**Diff range**: `894d31a..56e934c` em `main` (implementação: `f014e94`, `f272ad2`, `8046e7b`, `c701f35`, `088d7d7`; correção da iteração 2: `56e934c`). `c0e6457` só registra a validação da iteração 1.
+**Diff range**: `894d31a..c1cbc63` em `main`. Iterações 1 e 2: `894d31a..56e934c`. Emenda: `bc2997f..c1cbc63` (`29195da` spec e context, `6645eef` `.vercelignore` + `.gitignore` + teste, `c1cbc63` README e `docs/roteiro-deploy.md`). `c0e6457` e `bc2997f` só registram validações.
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: PASS ✅
+**Verdict**: FAIL ❌
 
-O único gap da iteração 1 foi fechado. O teste novo da DEPL-17
-(`config/tests/test_documentacao_deploy.py:86-95`) exige o `DATABASE_URL` do Supabase em toda
-linha que roda `python manage.py migrate` ou `createsuperuser`. M13 morre agora, e as três
-variantes novas também (M13b, M18, M19), além do corte de seção (M20). O gate passa com 904/904.
-No total, o sensor matou 21 de 21 mutantes nas duas iterações. As 17 ACs batem com o resultado
-da spec.
+A emenda está correta no que entrega. O `.vercelignore` barra o `.env` e mantém o que a Vercel
+precisa, e o `.gitignore` ignora `.vercel/`. As 19 ACs têm evidência. O gate passa com 919/919. No
+ambiente desta máquina, o sensor matou 11 de 11 mutantes novos. O problema está no teste da
+DEPL-18: ele não é hermético em relação à configuração global do git. O `git check-ignore` do
+repositório temporário herda o `core.excludesFile` do usuário. Com um `.env` no ignore global,
+coisa comum, o mutante N1 (tirar `.env` do `.vercelignore`) sobrevive (probe P1). Gap de teste
+Minor, sem defeito de produção, correção de uma linha.
 
 ---
 
-## Iteração 1 → 2
+## Iteração 2 → 3 (emenda)
+
+| Item | Commit | Status | Evidência |
+| ---- | ------ | ------ | --------- |
+| DEPL-18 `.vercelignore` | `6645eef` | ✅ Conteúdo certo; ⚠️ teste depende do git global (Fix 2) | `.vercelignore:3-13`; `config/tests/test_vercelignore.py:19-31,35-63` |
+| DEPL-19 `.vercel/` no `.gitignore` | `6645eef` | ✅ | `.gitignore:227`; `config/tests/test_vercelignore.py:66-70` |
+| Regressão DEPL-17 (README editado) | `c1cbc63` | ✅ Comandos de `README.md:43-44` intactos; N11 morre (2) | `config/tests/test_documentacao_deploy.py:86-95` |
+| Produção (DEPL-01..16) | - | ✅ `git diff bc2997f..c1cbc63` não toca `config/settings.py`, `requirements.txt`, `vercel.json`, `.python-version` nem `.env.example` | gate 919 |
+
+**A emulação por `git check-ignore --no-index` é sólida?** Em parte.
+
+- A ideia é boa. A spec registra que a Vercel descreve o `.vercelignore` como "similar a um
+  `.gitignore`". Copiar o arquivo para o `.gitignore` de um repositório vazio isola o
+  `.gitignore` do projeto, que já ignora o `.env`. O `--no-index` dispensa arquivos reais. O
+  `returncode in (0, 1)` (`test_vercelignore.py:30`) impede que um erro do git (128) conte como
+  "não ignorado".
+- Furo: o subprocess herda `~/.gitconfig` e o `core.excludesFile`. Probe P1: com
+  `GIT_CONFIG_GLOBAL` apontando para um `excludesFile` que contém `.env`, o mutante N1 passa (15/15
+  verdes). Nesta máquina o ignore global só tem `**/.claude/settings.local.json`, então o sensor
+  normal discrimina. Mas o resultado do teste depende de quem roda. Isso é exatamente o "passar por
+  motivo acidental" que o docstring diz evitar.
+- Risco residual, fora do alcance de teste offline: a semântica real do `.vercelignore` na CLI
+  (por exemplo, se os ignores padrão da CLI continuam valendo). Coberto pelo passo 4 do UAT (aba
+  Source sem `.env`).
+
+**Observações sem gap:**
+- `.env.*` (`.vercelignore:4`) também barra o `.env.example` no upload. É inofensivo, porque o
+  runtime não lê o arquivo.
+- `README.md:55-56`: o parágrafo "O roteiro detalhado..." entra entre os itens 4 e 5 e quebra a
+  lista numerada (o item 5 vira uma lista nova). Cosmético; não toca a DEPL-17.
+- `docs/roteiro-deploy.md` (338 linhas) é só documentação, sem AC própria. Não auditei o
+  conteúdo linha a linha.
+
+---
+
+## Iteração 1 → 2## Iteração 1 → 2
 
 | Gap da iteração 1 | Commit | Status agora | Evidência |
 | ----------------- | ------ | ------------ | --------- |
@@ -48,7 +84,8 @@ Plano inline, sem `tasks.md` (spec: "17 mapeadas aos 5 passos do Execute").
 | 2. Banco pela `DATABASE_URL` | `f272ad2` | ✅ Done | DEPL-06 a DEPL-09, DEPL-15 |
 | 3. `STATIC_ROOT` | `8046e7b` | ✅ Done | DEPL-10, DEPL-11 |
 | 4. Runtime da Vercel | `c701f35` | ✅ Done | DEPL-12 a DEPL-14 |
-| 5. Documentação | `088d7d7`, `56e934c` | ✅ Done | DEPL-16, DEPL-17 (teste reforçado na iteração 2) |
+| 5. Documentação | `088d7d7`, `56e934c`, `c1cbc63` | ✅ Done | DEPL-16, DEPL-17 (teste reforçado na iteração 2; README trocado para a CLI na emenda) |
+| 6. Deploy pela CLI (emenda) | `6645eef` | ⚠️ Partial | DEPL-18 com teste não hermético (Fix 2); DEPL-19 ok |
 
 ---
 
@@ -105,7 +142,10 @@ define `DJANGO_SECRET_KEY`, e o teste da DEPL-01 (`test_settings_ambiente.py:14`
   regex (`test_documentacao_deploy.py:63`) aceita `#`. Leitura razoável de "list": deixá-la ativa
   ligaria o modo produção no desenvolvimento local.
 
-**Status**: ✅ 17/17 ACs com o resultado da spec afirmado (iteração 1: 16/17).
+| DEPL-18 | `.vercelignore`, com semântica de `.gitignore`, ignora `.env`, `.env.producao`, `.specs/STATE.md`, `.claude/skills/x.md`, `.agents/x.json`, `docs/requisitos.md`; não ignora `manage.py`, `config/settings.py`, `config/wsgi.py`, `inovacoes/views.py`, `templates/kira.css`, `requirements.txt`, `.python-version`, `vercel.json` | `config/tests/test_vercelignore.py:35-47` - parametrize com os 6 caminhos, `assert _ignorado(...)`; `:50-63` - os 8 caminhos, `assert not _ignorado(...)`; `_ignorado` em `:26-31` (`git check-ignore --no-index -q`) | ⚠️ Valores certos; ❌ GAP de hermeticidade: o teste herda o `core.excludesFile` global (probe P1) |
+| DEPL-19 | `.gitignore` ignora `.vercel/` | `config/tests/test_vercelignore.py:68-70` - `".vercel/" in [linha.strip() for linha in linhas]` | ✅ PASS |
+
+**Status**: ❌ 18/19 ACs com o resultado da spec afirmado de forma confiável; DEPL-18 depende do git global (iteração 2: 17/17; iteração 1: 16/17).
 
 ---
 
@@ -145,10 +185,28 @@ verdes antes de mutar):
 | M19 | `config/settings.py:43` | `CSRF_TRUSTED_ORIGINS` sem o helper, sem descartar item vazio | ✅ Killed (1) |
 | M20 | `README.md:3` | Comandos movidos para outra seção `##`, fora da de deploy | ✅ Killed (9) |
 
+**Mutações da iteração 3** (worktree novo em `c1cbc63`, 54/54 verdes antes de mutar):
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| N1 | `.vercelignore:3` | Remove `.env` | ✅ Killed (1) |
+| N2 | `.vercelignore:3` | `.env` → `.env.local` | ✅ Killed (1) |
+| N3 | `.vercelignore:4` | Remove `.env.*` | ✅ Killed (1) |
+| N4 | `.vercelignore` | Acrescenta `templates/` | ✅ Killed (1) |
+| N5 | `.vercelignore` | Acrescenta `config/` | ✅ Killed (2) |
+| N6 | `.vercelignore:10` | `docs/` → `doc/` | ✅ Killed (1) |
+| N7 | `.gitignore:227` | Remove `.vercel/` | ✅ Killed (1) |
+| N8 | `.vercelignore` | Acrescenta `*.py` | ✅ Killed (4) |
+| N9 | `.vercelignore` | Acrescenta `.*` (barra todo dotfile, inclusive `.python-version`) | ✅ Killed (1) |
+| N10 | `.vercelignore:8` | Remove `.claude/` | ✅ Killed (1) |
+| N11 | `README.md:43-44` | Regressão DEPL-17: tira o `DATABASE_URL='...'` dos comandos | ✅ Killed (2) |
+| P1 (probe) | `.vercelignore:3` + ambiente | N1 rodado com `GIT_CONFIG_GLOBAL` apontando para um `core.excludesFile` que contém `.env` | ❌ Survived (15/15 verdes) → Fix 2 |
+
 **Sensor depth**: expandido (≥5; configuração de produção)
-**Result**: iteração 1: 16/17; iteração 2: M13 + 4 novos, 5/5. Total 21/21 killed - PASS ✅
-**Isolamento**: nas duas iterações, `git worktree remove --force` + `git worktree prune`;
-`git status --porcelain` do repositório real igual ao baseline (vazio) antes e depois.
+**Result**: iteração 1: 16/17; iteração 2: 5/5; iteração 3: 11/11 no ambiente local, mas o probe P1 sobrevive sob uma configuração global de git comum - FAIL ❌
+**Isolamento**: nas três iterações, `git worktree remove --force` + `git worktree prune`;
+`git status --porcelain` do repositório real igual ao baseline (vazio) antes e depois. O probe P1
+usou um `GIT_CONFIG_GLOBAL` temporário no scratchpad; o `~/.gitconfig` real não foi tocado.
 
 ---
 
@@ -160,7 +218,7 @@ verdes antes de mutar):
 | Surgical changes | ✅ Só os arquivos da spec; `SECRET_KEY`, `DEBUG`, cookies e WSGI intocados |
 | No scope creep | ✅ Sem WhiteNoise, sem HSTS/SSL redirect, sem CI (Out of Scope respeitado) |
 | Matches patterns | ✅ Mesmo formato de lista do `ALLOWED_HOSTS`; marcador `unit` nos testes sem banco |
-| Spec-anchored outcome check | ✅ 17/17 (DEPL-17 corrigida em `56e934c`) |
+| Spec-anchored outcome check | ❌ 18/19: DEPL-18 com teste não hermético (Fix 2); DEPL-17 corrigida em `56e934c` |
 | Per-layer Coverage Expectation | ✅ Settings 1:1 com as ACs; rota de login com caso feliz e de erro (403) |
 | Every test maps to a spec requirement | ✅ Todo teste em `config/tests` cita uma DEPL-xx |
 | Documented guidelines followed | ✅ Sem guia de testes do projeto; padrões da skill e o marcador `unit` do `pyproject.toml` |
@@ -172,6 +230,7 @@ verdes antes de mutar):
 - [x] `DATABASE_URL=""` usa o ramo `POSTGRES_*`: `config/tests/test_settings_banco.py:55` (parametrize com `"DATABASE_URL": ""`); M6 morre.
 - [x] `sslmode=disable` na query não vence: `config/tests/test_settings_banco.py:44-45`.
 - [x] Origem fora da lista recebe 403: `config/tests/test_csrf_proxy.py:46-48`.
+- [x] (emenda) `.env.producao` barrado pelo `.env.*`: `config/tests/test_vercelignore.py:38`; N3 morre.
 - [x] Espaços e vírgula final descartados: `config/tests/test_settings_ambiente.py:38` e `:45-50`; M1 morre. O caso de vírgula final só é exercitado em `ALLOWED_HOSTS`; como as duas listas usam o mesmo helper (`config/settings.py:40,43`), aceito.
 
 ---
@@ -179,10 +238,10 @@ verdes antes de mutar):
 ## Gate Check
 
 - **Gate command**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q`
-- **Result**: ruff ok, format ok (142 arquivos), sem migrations pendentes; 904 passed, 0 failed, 0 skipped (iteração 1: 902)
+- **Result**: ruff ok, format ok (144 arquivos), sem migrations pendentes; 919 passed, 0 failed, 0 skipped (iteração 2: 904; iteração 1: 902)
 - **Test count before feature**: 865
-- **Test count after feature**: 904
-- **Delta**: +39 testes novos, todos em `config/tests` (37 na iteração 1, mais 2 do parametrize do Fix 1)
+- **Test count after feature**: 919
+- **Delta**: +54 testes novos, todos em `config/tests` (37 na iteração 1, +2 no Fix 1, +15 em `test_vercelignore.py` na emenda)
 - **Skipped tests**: nenhum
 - **Failures**: nenhuma
 
@@ -193,13 +252,23 @@ verdes antes de mutar):
 ### Fix 1: DEPL-17 não afirma que os comandos rodam contra o Supabase - ✅ Fechado em `56e934c`
 
 - **Root cause (iteração 1)**: `config/tests/test_documentacao_deploy.py:83` só conferia
-  `termo in secao`. O `DATABASE_URL` já aparece na tabela de variáveis, então tirá-lo dos comandos
-  (M13) não quebrava nada.
+  `termo in secao`; tirar o `DATABASE_URL` dos comandos (M13) não quebrava nada.
 - **Correção**: `test_readme_roda_os_comandos_contra_o_supabase`
-  (`config/tests/test_documentacao_deploy.py:86-95`). README e produção não mudaram.
-- **Verificado**: M13, M13b e M18 morrem; gate de build verde (904).
+  (`config/tests/test_documentacao_deploy.py:86-95`).
+- **Verificado**: M13, M13b, M18 (iteração 2) e N11 (iteração 3) morrem.
 
-Nenhum fix novo nesta iteração.
+### Fix 2: teste da DEPL-18 herda a configuração global do git (iteração 3)
+
+- **Root cause**: `config/tests/test_vercelignore.py:21` e `:27-29` rodam `git` sem isolar a
+  configuração do usuário. O `core.excludesFile` global entra na resposta do `check-ignore`. Com
+  `.env` no ignore global, tirar `.env` do `.vercelignore` não quebra o teste (probe P1).
+- **Fix task**: nos dois `subprocess.run` de `config/tests/test_vercelignore.py`, passar um
+  ambiente com `GIT_CONFIG_GLOBAL=os.devnull` e `GIT_CONFIG_NOSYSTEM=1`. Alternativa: passar
+  `-c core.excludesFile=` ao `check-ignore`. Não mudar o `.vercelignore`.
+- **Verify**: refazer P1 num scratch (`GIT_CONFIG_GLOBAL` com `.env` no `excludesFile` e N1
+  aplicado): o teste falha. Sem mutação, 15/15 verdes.
+- **Done when**: P1 morto; gate de build verde.
+- **Priority**: Minor (sem defeito de produção; o `.vercelignore` real está correto)
 
 ---
 
@@ -207,28 +276,27 @@ Nenhum fix novo nesta iteração.
 
 | Requirement | Previous Status | New Status |
 | ----------- | --------------- | ---------- |
-| DEPL-01 a DEPL-17 | Implementing | ✅ Verified |
-
-A DEPL-17 estava como ❌ Needs Fix na iteração 1.
+| DEPL-01 a DEPL-17 | Verified | ✅ Verified (sem regressão) |
+| DEPL-18 | Implementing | ❌ Needs Fix (Fix 2, só o teste) |
+| DEPL-19 | Implementing | ✅ Verified |
 
 ---
 
 ## Summary
 
-**Overall**: ✅ Ready (falta só o UAT manual na nuvem)
+**Overall**: ⚠️ Issues (FAIL por um teste não hermético na DEPL-18; produção correta)
 
-**Spec-anchored check**: 17/17 ACs com o resultado da spec afirmado
-**Sensor**: 21/21 mutações mortas (iteração 1: 16/17; iteração 2: 5/5)
-**Gate**: 904 passed
+**Spec-anchored check**: 18/19 ACs confiáveis; DEPL-18 com valores certos, mas o teste depende do git global
+**Sensor**: iteração 3: 11/11 mortos no ambiente local; probe P1 sobrevive (total histórico 32/33)
+**Gate**: 919 passed
 
-**What works**: settings lidas do ambiente com limpeza de listas; CSRF atrás do proxy; banco do
-pooler com SSL forçado, sem cursores do servidor e sem conexão persistente; ramo local intacto;
-`STATIC_ROOT`; `.python-version`; `vercel.json`; `.env.example` completo; README com os comandos
-apontados para o Supabase.
+**What works**: tudo das iterações 1 e 2, sem regressão; `.vercelignore` barra `.env`, `.env.*`,
+`.specs/`, `.claude/`, `.agents/` e `docs/`, e mantém código, templates e arquivos de build;
+`.vercel/` fora do git; README da CLI com os comandos ainda apontados para o Supabase.
 
-**Issues found**: nenhum aberto. Riscos residuais registrados, sem bloquear: o glob da DEPL-14 é
-emulado (o build da Vercel confirma); o teste da DEPL-17 depende do formato inline com aspas
-simples.
+**Issues found**: Fix 2 (hermeticidade do teste da DEPL-18). Cosmético: lista numerada quebrada
+em `README.md:55-56`.
 
-**Next steps**: atualizar a rastreabilidade da spec para Verified e rodar o roteiro de UAT manual na
-nuvem, com go-ahead do usuário para cada operação remota.
+**Next steps**: aplicar o Fix 2 e reverificar. Se o loop de correções estiver esgotado, fechar com o
+risco registrado (o `.vercelignore` real está certo). Depois, o UAT na nuvem, com o passo 4
+conferindo a ausência do `.env` na aba Source.
