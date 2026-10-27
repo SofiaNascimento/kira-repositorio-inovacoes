@@ -94,22 +94,46 @@ direct connection também serve para a Parte 2, e é a que o Supabase recomenda 
 
 Todos os comandos rodam na raiz do projeto, no terminal. O Postgres local não precisa estar ligado.
 
-**Cuidado no zsh:** cole um comando por vez, sem comentários `#`, e mantenha a URL entre **aspas
-simples**.
+**Cuidado no zsh:** cole um comando por vez e sem comentários `#`.
 
-### 2.1 Testar a conexão (só leitura)
+### 2.0 Guardar a URL do banco num arquivo
+
+A URL do **agrupador de sessões** (porta **5432**) fica num arquivo na sua pasta pessoal, fora do
+projeto: ela não vai para o git nem para a Vercel, e a senha não aparece na tela nem no histórico
+do terminal.
 
 ```bash
-DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py showmigrations
+read -rs 'U?URL do agrupador de sessões: ' && print -r -- "DATABASE_URL=$U" > ~/.kira-supabase.env && chmod 600 ~/.kira-supabase.env && unset U
+```
+
+Cole **só a URL** e aperte Enter (nada aparece enquanto você cola). Ela começa em `postgresql://`,
+sem aspas, sem `< >` e sem `DATABASE_URL=` na frente. Para conferir sem mostrar a senha:
+
+```bash
+sed -E 's#(://[^:]+):[^@]*@#\1:***@#' ~/.kira-supabase.env
+```
+
+O esperado é uma linha só:
+`DATABASE_URL=postgresql://postgres.<ref>:***@aws-<n>-sa-east-1.pooler.supabase.com:5432/postgres`.
+
+### 2.1 Apontar o terminal para o Supabase e testar a conexão
+
+```bash
+export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' ~/.kira-supabase.env)"
+.venv/bin/python manage.py showmigrations
 ```
 
 O esperado é a lista das apps com `[ ]` em todas as migrations: a conexão funcionou e o banco está
 vazio. Se der erro, veja a Parte 5.
 
+**A partir do `export`, todo `manage.py` e todo `pytest` desse terminal falam com a produção.** Um
+comando rodado **antes** do `export` lê o banco local, não o Supabase. Ao terminar a Parte 2, rode o
+passo 2.5.
+
 ### 2.2 Criar as tabelas
 
 ```bash
-DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py migrate
+.venv/bin/python manage.py migrate
 ```
 
 O esperado é uma linha `Applying ... OK` por migration, até `inovacoes.0008_reaproveitamento`. A
@@ -118,11 +142,18 @@ O esperado é uma linha `Applying ... OK` por migration, até `inovacoes.0008_re
 ### 2.3 Criar o administrador
 
 ```bash
-DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py createsuperuser
+.venv/bin/python manage.py createsuperuser
 ```
 
-Informe usuário, e-mail e senha. A conta nasce com perfil **ADMINISTRADOR**. Use uma senha
-diferente da do banco e da que você usa localmente.
+Informe usuário, e-mail e senha. A conta nasce com perfil **ADMINISTRADOR**. É uma conta separada
+da do banco local: use uma senha diferente da do banco e da que você usa localmente. Para listar os
+administradores do Supabase (com o `export` feito):
+
+```bash
+.venv/bin/python manage.py shell -c "from contas.models import Usuario; print(list(Usuario.objects.filter(perfil='ADMINISTRADOR').values_list('username', flat=True)))"
+```
+
+Para trocar a senha de uma conta depois: `.venv/bin/python manage.py changepassword <usuario>`.
 
 ### 2.4 (Opcional) Carregar o acervo de demonstração
 
@@ -131,14 +162,23 @@ de 15 colaboradores, com datas nos últimos 18 meses, histórico de status e rea
 que alimentam o painel de indicadores.
 
 ```bash
-DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py carregar_demonstracao
+.venv/bin/python manage.py carregar_demonstracao
 ```
 
 A saída esperada é `500 inovações de demonstração criadas (500 no total).` Leva alguns minutos
 pelo pooler. Rodar de novo não duplica nada (`0 inovações … criadas`). As 15 contas não têm
 senha utilizável, então ninguém entra com elas; os dados aparecem para quem estiver logado.
 
-### 2.5 Conferir no painel
+### 2.5 Voltar o terminal para o banco local
+
+```bash
+unset DATABASE_URL
+```
+
+Não pule: sem isso, os próximos `manage.py` e `pytest` desse terminal continuam na produção. Fechar
+a aba do terminal também resolve.
+
+### 2.6 Conferir no painel
 
 No Supabase, abra **Table Editor**. As tabelas do Django (`contas_usuario`,
 `inovacoes_inovacao`, `django_migrations` e as demais) devem aparecer no schema `public`.
@@ -193,17 +233,19 @@ Ainda na raiz do projeto:
 npx vercel link
 ```
 
-Responda às perguntas assim:
+Responda às perguntas assim (a ordem e o texto podem variar com a versão da CLI):
 
 - **Set up "…/kira-repositorio-inovacoes"?** → `y`
-- **Which scope / team?** → a sua conta Hobby
-- **Link to existing project?** → `N` (ou, se ele sugerir um projeto com o nome da pasta, `n`)
+- **Which scope / team?** → a sua conta Hobby (aparece como `Team <nome>`)
+- **Which project?** → **Create a new project**
 - **Name?** → `kira`
 - **In which directory is your code located?** (se perguntar) → `./`
-- A CLI deve mostrar **Detected Django**. Em **Customize settings?** → `N`
+- **Connect this Git repository to automatically deploy changes on every push?** → `n`. O deploy é
+  pela CLI; o GitHub pode ser conectado depois em **Settings → Git**.
+- **Customize settings? / Want to modify these settings?** (se perguntar) → `N`
 
-O comando cria a pasta `.vercel/` com o vínculo. Ela já está no `.gitignore` e não entra no
-repositório.
+O comando cria a pasta `.vercel/` com o vínculo e acrescenta `.vercel` e `.env*` ao `.gitignore`.
+As duas linhas podem ficar.
 
 ### 3.5 Cadastrar as variáveis
 
@@ -213,20 +255,25 @@ Abra o projeto no painel:
 npx vercel open
 ```
 
-Em **Settings → Environment Variables**, adicione as cinco abaixo, marcando só o ambiente
-**Production**. O endereço exato só aparece depois do primeiro deploy, então os dois valores de
-domínio começam amplos (qualquer `*.vercel.app`); o passo 3.9 os restringe.
+1. Em **Settings → Environments**, veja na linha **Production** o domínio já criado, por exemplo
+   `kira-nu-green.vercel.app`. Não clique em **Create Environment** nem em **Upgrade**: ambientes
+   personalizados são do plano pago.
+2. Clique na linha **Production** e adicione as cinco variáveis abaixo, com os valores exatos do
+   seu domínio:
 
 | Key | Value | Tipo |
 | --- | ----- | ---- |
-| `DJANGO_SECRET_KEY` | a chave do passo 3.1 | **Secret** |
-| `DJANGO_DEBUG` | `False` | Config |
-| `DJANGO_ALLOWED_HOSTS` | `.vercel.app` | Config |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://*.vercel.app` | Config |
-| `DATABASE_URL` | a string do **transaction pooler** (porta **6543**) | **Secret** |
+| `DJANGO_SECRET_KEY` | a chave do passo 3.1 | **Secret** / Sensitive |
+| `DJANGO_DEBUG` | `False` | — |
+| `DJANGO_ALLOWED_HOSTS` | `<domínio>`, por exemplo `kira-nu-green.vercel.app` (sem `https://`) | — |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<domínio>` (com `https://`, sem barra no final) | — |
+| `DATABASE_URL` | a URL do **agrupador de transações** (porta **6543**) | **Secret** / Sensitive |
 
-Atenção ao `DATABASE_URL`: aqui é a de **6543**, não a de 5432 usada na Parte 2. Cole o valor
-**sem aspas**; as aspas só existiam por causa do terminal.
+**O valor da `DATABASE_URL` começa exatamente em `postgresql://`**: sem aspas, sem `< >`, sem
+`DATABASE_URL=` na frente e sem espaço. Aqui é a porta **6543**, não a 5432 do arquivo da Parte 2.
+Com qualquer coisa antes do `postgresql`, o build falha com `UnknownSchemeError` (Parte 5).
+
+Para conferir os nomes cadastrados sem mostrar os valores: `npx vercel env ls`.
 
 > Alternativa pelo terminal: `npx vercel env add DJANGO_SECRET_KEY production` pede o valor e
 > grava a variável. Repita para cada uma.
@@ -257,8 +304,8 @@ continente.
    ```
 
 3. No log, confira:
-   - a linha da versão do Python, que deve indicar **3.13**;
-   - a instalação do `requirements.txt` (Django, psycopg, dj-database-url…);
+   - `Using Python 3.13 from .python-version`;
+   - `Installing required dependencies from pyproject.toml` (Django, psycopg, dj-database-url…);
    - a execução do `collectstatic` (algo como "N static files copied").
 4. No fim, a CLI imprime o endereço do deploy. O deploy aparece no painel como **Ready**.
 
@@ -270,11 +317,14 @@ arquivos **não** devem aparecer `.env`, `.specs`, `.claude` nem `docs`.
 Se o `.env` aparecer, pare: apague esse deploy (menu `⋯` → **Delete**) e confira se o
 `.vercelignore` está na raiz do projeto, sem alterações.
 
-### 3.9 Restringir os domínios
+### 3.9 (Só se usou valores amplos) Restringir os domínios
+
+Se no passo 3.5 você cadastrou `.vercel.app` e `https://*.vercel.app` em vez do domínio exato:
+
 
 1. No painel, veja o endereço de produção em **Settings → Domains**, por exemplo
    `kira-xyz.vercel.app`.
-2. Em **Settings → Environment Variables**, edite:
+2. Em **Settings → Environments → Production**, edite:
    - `DJANGO_ALLOWED_HOSTS` → `kira-xyz.vercel.app`
    - `DJANGO_CSRF_TRUSTED_ORIGINS` → `https://kira-xyz.vercel.app` (com `https://` e **sem**
      barra no final)
@@ -316,9 +366,12 @@ Para ver o erro real de um 500, abra o deploy no painel → **Logs**, ou rode
 
 | Sintoma | Causa provável | O que fazer |
 | ------- | -------------- | ----------- |
+| Build falha com `No module named 'django'` ao ler o `manage.py` | A Vercel instala do `pyproject.toml`, e ele estava sem dependências | Já corrigido no projeto (DEPL-20): confira que o `pyproject.toml` tem a tabela `[project]` com as dependências |
+| Build falha com `UnknownSchemeError: Scheme '://' is unknown` | O valor da `DATABASE_URL` na Vercel não começa em `postgresql://` (aspas, `< >`, espaço ou o nome junto) | Edite a variável e cole só a URL (Parte 3.5); publique de novo |
+| `CommandError: user '...' does not exist` no `changepassword` | O comando rodou num banco onde a conta não existe (local × Supabase) | Confira o `export` da Parte 2.1 e liste os administradores (Parte 2.3); se a lista vier vazia, crie com `createsuperuser` |
 | `npx vercel` pede login de novo | Sessão da CLI expirou | `npx vercel login` |
 | CLI pergunta de novo "Set up…?" | A pasta `.vercel/` foi apagada | `npx vercel link` e escolha o projeto `kira` existente (`Link to existing project? y`) |
-| Build falha com `KeyError: 'DJANGO_SECRET_KEY'` | Variável ausente em Production | Cadastre-a (Parte 3.5) e publique de novo |
+| Build falha com `KeyError: 'DJANGO_SECRET_KEY'` | Variável ausente em Production | Cadastre-a em Production (Parte 3.5) e publique de novo |
 | `400 Bad Request` em toda página | Host fora do `DJANGO_ALLOWED_HOSTS` | Use o domínio exato, sem `https://` e sem barra; publique de novo |
 | `403 Forbidden` (CSRF) ao entrar ou salvar | Origem fora do `DJANGO_CSRF_TRUSTED_ORIGINS` | Use `https://<domínio>`, sem barra final; publique de novo |
 | `500` em toda página; no log, `password authentication failed` | Senha errada ou não codificada na URL | Confira `[YOUR-PASSWORD]` trocado e os caracteres especiais (Parte 1.3) |
