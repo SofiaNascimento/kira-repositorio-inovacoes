@@ -124,16 +124,19 @@ DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py createsuper
 Informe usuário, e-mail e senha. A conta nasce com perfil **ADMINISTRADOR**. Use uma senha
 diferente da do banco e da que você usa localmente.
 
-### 2.4 (Opcional) Carregar a demonstração
+### 2.4 (Opcional) Carregar o acervo de demonstração
 
-Só se quiser as 500 inovações de exemplo da conta `demo` (RNF08) no ambiente publicado:
+Só se quiser o sistema publicado com conteúdo: 500 inovações plausíveis de back office (RNF08),
+de 15 colaboradores, com datas nos últimos 18 meses, histórico de status e reaproveitamentos
+que alimentam o painel de indicadores.
 
 ```bash
 DATABASE_URL='<string do session pooler>' .venv/bin/python manage.py carregar_demonstracao
 ```
 
-A conta `demo` não tem senha utilizável, então ninguém entra com ela. Os dados aparecem na lista
-para quem estiver logado.
+A saída esperada é `500 inovações de demonstração criadas (500 no total).` Leva alguns minutos
+pelo pooler. Rodar de novo não duplica nada (`0 inovações … criadas`). As 15 contas não têm
+senha utilizável, então ninguém entra com elas; os dados aparecem para quem estiver logado.
 
 ### 2.5 Conferir no painel
 

@@ -198,7 +198,7 @@ novo.
 | ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
 | ACER-22 | P2: Desempenho RNF08 | Execute | Implementing |
 
-**Coverage:** 22 total, 0 mapped to tasks, 22 unmapped ⚠️
+**Coverage:** 22 total, 22 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
 
 ---
 

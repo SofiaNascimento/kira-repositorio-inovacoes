@@ -265,8 +265,8 @@ realista, carregado de forma reproduzível.
 
 **Acceptance Criteria**:
 
-1. **CONS-44** — WHEN the command `carregar_demonstracao` runs on a migrated database THEN the system SHALL create 500 Inovacoes titled "Demonstração 001" to "Demonstração 500", authored by the account `demo` with profile `USUARIO` and no usable password, with every Unidade, every Categoria and every status present in at least 20 of them.
-2. **CONS-45** — IF `carregar_demonstracao` runs again THEN the system SHALL end with exactly 500 Inovacoes titled "Demonstração NNN" and exactly one account `demo`.
+1. **CONS-44** — *Supersedida em 2026-10-27 por `.specs/features/acervo-realista/spec.md` (ACER-01 a ACER-16).* WHEN the command `carregar_demonstracao` runs on a migrated database THEN the system SHALL create 500 Inovacoes titled "Demonstração 001" to "Demonstração 500", authored by the account `demo` with profile `USUARIO` and no usable password, with every Unidade, every Categoria and every status present in at least 20 of them.
+2. **CONS-45** — *Supersedida em 2026-10-27 por `.specs/features/acervo-realista/spec.md` (ACER-17 e ACER-18).* IF `carregar_demonstracao` runs again THEN the system SHALL end with exactly 500 Inovacoes titled "Demonstração NNN" and exactly one account `demo`.
 3. **CONS-46** — WHILE the demonstration set is loaded the system SHALL answer an authenticated GET of `/inovacoes/` within 2 seconds of server time.
 4. **CONS-47** — WHILE the demonstration set is loaded the system SHALL answer within 2 seconds of server time an authenticated GET of `/inovacoes/` combining a two-word search term with categoria, unidade and status filters.
 5. **CONS-48** — The system SHALL render a listing page with a number of database queries that does not grow with the number of Inovacoes on the page.
@@ -368,8 +368,8 @@ repositório vazio (CONS-34) e consulta sem resultado (CONS-35).
 | CONS-41 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
 | CONS-42 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
 | CONS-43 | P1: Consulta acessível por teclado e leitor de tela | Execute | Verified |
-| CONS-44 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
-| CONS-45 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
+| CONS-44 | P2: Desempenho com o conjunto de demonstração | Execute | Superseded (acervo-realista, ACER-01 a 16) |
+| CONS-45 | P2: Desempenho com o conjunto de demonstração | Execute | Superseded (acervo-realista, ACER-17 e 18) |
 | CONS-46 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
 | CONS-47 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
 | CONS-48 | P2: Desempenho com o conjunto de demonstração | Execute | Verified |
