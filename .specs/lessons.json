@@ -3,7 +3,7 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 48,
+  "next_id": 50,
   "lessons": [
     {
       "id": "L-001",
@@ -862,6 +862,42 @@
       ],
       "created": "2026-10-27T19:01:23Z",
       "last_seen": "2026-10-27T19:01:23Z"
+    },
+    {
+      "id": "L-048",
+      "key": "spec_precision_gap::when an ac requires backdated records bound each generated date below the start of the run not only by order and an upper limit because dates stamped at load time still satisfy the order",
+      "text": "When an AC requires backdated records, bound each generated date below the start of the run, not only by order and an upper limit, because dates stamped at load time still satisfy the order",
+      "signal": "spec_precision_gap",
+      "scope": "seed-data",
+      "status": "candidate",
+      "features": [
+        "acervo-realista"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G1: ACER-14/ACER-16, mutants M07 and M18 (seed-data)"
+      ],
+      "created": "2026-10-27T20:12:21Z",
+      "last_seen": "2026-10-27T20:12:21Z"
+    },
+    {
+      "id": "L-049",
+      "key": "surviving_mutant::when a spec assumption fixes who performs a generated action turn it into an ac with a test because an assumption without an ac is never checked",
+      "text": "When a spec assumption fixes who performs a generated action, turn it into an AC with a test, because an assumption without an AC is never checked",
+      "signal": "surviving_mutant",
+      "scope": "seed-data",
+      "status": "candidate",
+      "features": [
+        "acervo-realista"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md G2: M15 at inovacoes/acervo.py:1441 (seed-data)"
+      ],
+      "created": "2026-10-27T20:12:21Z",
+      "last_seen": "2026-10-27T20:12:21Z"
     }
   ]
 }

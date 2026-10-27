@@ -294,6 +294,18 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 3 probe P1, config/tests/test_vercelignore.py:21-29 (DEPL-18) (tests)
 - last seen: 2026-10-27T19:01:23Z
 
+### L-048 - When an AC requires backdated records, bound each generated date below the start of the run, not only by order and an upper limit, because dates stamped at load time still satisfy the order
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `seed-data` · harmful: 0
+- features: acervo-realista
+- evidence: validation.md G1: ACER-14/ACER-16, mutants M07 and M18 (seed-data)
+- last seen: 2026-10-27T20:12:21Z
+
+### L-049 - When a spec assumption fixes who performs a generated action, turn it into an AC with a test, because an assumption without an AC is never checked
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `seed-data` · harmful: 0
+- features: acervo-realista
+- evidence: validation.md G2: M15 at inovacoes/acervo.py:1441 (seed-data)
+- last seen: 2026-10-27T20:12:21Z
+
 ## Quarantined (failed when applied - ignore)
 
 A confirmed lesson that recurred alongside failure. Kept for the maintainer to review.
