@@ -67,16 +67,19 @@ desligada, nenhuma delas fica acessível por ela, e o aviso pode ser ignorado.
 3. Se aparecer o aviso laranja "O acesso ao banco de dados requer a API de dados", **ignore-o e
    não clique em "Habilitar API de dados"**. Ele vale para as bibliotecas cliente; o Django fala
    direto com o Postgres, e a Data API continua desligada (passo 1.2).
-4. Na aba Direto, escolha o tipo de conexão no seletor da tela e copie duas strings. Guarde as
-   duas no gerenciador de senhas:
-   - **Transaction pooler** (porta **6543**): é a `DATABASE_URL` da Vercel.
+4. Na aba Direto, deixe **Tipo** em **URI**. Em **Método de conexão**, marque cada opção abaixo,
+   role a janela e copie a string. Guarde as duas no gerenciador de senhas:
+   - **Agrupador de transações** (*transaction pooler*, porta **6543**): é a `DATABASE_URL` da Vercel.
      Formato: `postgresql://postgres.<ref>:[YOUR-PASSWORD]@aws-<n>-sa-east-1.pooler.supabase.com:6543/postgres`
-   - **Session pooler** (porta **5432**): é a usada nos comandos da sua máquina (Parte 2).
+   - **Agrupador de sessões** (*session pooler*, porta **5432**): é a usada nos comandos da sua
+     máquina (Parte 2).
      Mesmo formato, com `:5432`.
-   - **Direct connection** (host `db.<ref>.supabase.co`): não use (veja abaixo).
+   - **Conexão direta** (*direct connection*, host `db.<ref>.supabase.co`): não use (veja abaixo).
+     O atalho "Copiar → Cadeia de conexão direta" da página inicial do projeto também é esta.
 5. Confira cada string: o usuário é `postgres.<ref>` (não só `postgres`), o host termina em
    `pooler.supabase.com` e a porta é a esperada.
-6. Em cada uma, troque `[YOUR-PASSWORD]` (com os colchetes) pela senha do banco.
+6. Em cada uma, troque `[YOUR-PASSWORD]` (na tela em português, `[SUA SENHA]`), com os
+   colchetes, pela senha do banco.
 7. Se a senha tiver caracteres especiais, codifique-os: `@` vira `%40`, `#` vira `%23`, `&` vira
    `%26`, `?` vira `%3F`, `/` vira `%2F`, `:` vira `%3A`, espaço vira `%20`. Uma senha gerada pelo
    Supabase costuma ter só letras e números.
