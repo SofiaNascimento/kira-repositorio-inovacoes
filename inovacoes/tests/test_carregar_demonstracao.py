@@ -250,3 +250,57 @@ def test_reaproveitamento_depois_de_ficar_disponivel_e_ate_a_carga(carga_cronome
             status_novo=StatusInovacao.DISPONIVEL_PARA_REPLICACAO
         )
         assert disponivel.data < reuso.data <= depois
+
+
+def _contagens():
+    return (
+        Inovacao.objects.count(),
+        Usuario.objects.filter(email__endswith="@acervo.invalid").count(),
+        MudancaDeStatus.objects.count(),
+        Reaproveitamento.objects.count(),
+    )
+
+
+def _retrato(inovacao):
+    """O que a recriacao tem de repetir (ACER-18), mais o historico e os reusos."""
+    return (
+        inovacao.titulo,
+        inovacao.unidade_id,
+        inovacao.categoria_id,
+        inovacao.status,
+        inovacao.problema,
+        inovacao.solucao,
+        inovacao.resultado,
+        inovacao.contato,
+        inovacao.autor_id,
+        [(m.status_anterior, m.status_novo) for m in inovacao.mudancas_de_status.all()],
+        sorted(inovacao.reaproveitamentos.values_list("unidade_id", "registrado_por_id")),
+    )
+
+
+def test_segunda_execucao_nao_duplica_nada(saida_da_carga):
+    """ACER-17."""
+    antes = _contagens()
+    assert _carregar().strip() == "0 inovações de demonstração criadas (500 no total)."
+    assert _contagens() == antes
+    assert antes[:2] == (500, 15)
+
+
+def test_inovacoes_apagadas_voltam_iguais_com_historico_e_reusos(saida_da_carga):
+    """ACER-18: uma "Disponivel" com reusos e uma "Validada"."""
+    com_reuso = (
+        Inovacao.objects.filter(reaproveitamentos__isnull=False).order_by("titulo", "pk").first()
+    )
+    validada = (
+        Inovacao.objects.filter(status=StatusInovacao.VALIDADA).order_by("titulo", "pk").first()
+    )
+    alvos = {(i.titulo, i.unidade_id): _retrato(i) for i in (com_reuso, validada)}
+    totais = _contagens()
+    Inovacao.objects.filter(pk__in=[com_reuso.pk, validada.pk]).delete()
+
+    assert _carregar().strip() == "2 inovações de demonstração criadas (500 no total)."
+    assert _contagens() == totais
+    for (titulo, unidade_id), retrato in alvos.items():
+        recriada = Inovacao.objects.get(titulo=titulo, unidade_id=unidade_id)
+        assert _retrato(recriada) == retrato
+    assert alvos[(com_reuso.titulo, com_reuso.unidade_id)][-1] != []

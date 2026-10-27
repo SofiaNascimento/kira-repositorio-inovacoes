@@ -191,8 +191,8 @@ novo.
 | ACER-14 | P1: Datas, histórico e reusos | Execute | Implementing |
 | ACER-15 | P1: Datas, histórico e reusos | Execute | Implementing |
 | ACER-16 | P1: Datas, histórico e reusos | Execute | Implementing |
-| ACER-17 | P1: Reproduzível e idempotente | - | Pending |
-| ACER-18 | P1: Reproduzível e idempotente | - | Pending |
+| ACER-17 | P1: Reproduzível e idempotente | Execute | Implementing |
+| ACER-18 | P1: Reproduzível e idempotente | Execute | Implementing |
 | ACER-19 | P1: Reproduzível e idempotente | Execute | Implementing |
 | ACER-20 | P1: Reproduzível e idempotente | Execute | Implementing |
 | ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
