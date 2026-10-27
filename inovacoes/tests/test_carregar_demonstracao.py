@@ -54,6 +54,7 @@ def carga_cronometrada(db):
 @pytest.fixture
 def carga_espionada(db):
     """A carga com os dois metodos do modelo espionados (AD-011, AD-012)."""
+    antes = timezone.now()
     with (
         mock.patch.object(
             Inovacao, "avancar_status", autospec=True, side_effect=Inovacao.avancar_status
@@ -66,7 +67,7 @@ def carga_espionada(db):
         ) as registrar,
     ):
         _carregar()
-    return avancar, registrar
+    return avancar, registrar, antes
 
 
 def _autores_da_carga():
@@ -218,21 +219,20 @@ def test_historico_tem_uma_mudanca_por_estagio_avancado(saida_da_carga):
 
 def test_mudancas_pelo_avancar_status_do_autor_em_ordem_e_ate_a_carga(carga_espionada):
     """ACER-14."""
-    avancar, _ = carga_espionada
+    avancar, _, antes = carga_espionada
     assert MudancaDeStatus.objects.exists()
     assert avancar.call_count == MudancaDeStatus.objects.count()
-    agora = timezone.now()
     for inovacao in Inovacao.objects.prefetch_related("mudancas_de_status"):
         anterior = inovacao.data_criacao
         for mudanca in inovacao.mudancas_de_status.all():
             assert mudanca.responsavel_id == inovacao.autor_id
-            assert anterior < mudanca.data <= agora
+            assert anterior < mudanca.data < antes
             anterior = mudanca.data
 
 
 def test_reaproveitamentos_pelo_metodo_em_disponiveis_e_fora_da_origem(carga_espionada):
     """ACER-15."""
-    _, registrar = carga_espionada
+    _, registrar, _ = carga_espionada
     reusos = Reaproveitamento.objects.select_related("inovacao")
     assert reusos.count() >= 60
     assert registrar.call_count == reusos.count()
@@ -244,12 +244,22 @@ def test_reaproveitamentos_pelo_metodo_em_disponiveis_e_fora_da_origem(carga_esp
 
 def test_reaproveitamento_depois_de_ficar_disponivel_e_ate_a_carga(carga_cronometrada):
     """ACER-16."""
-    _, depois = carga_cronometrada
+    antes, _ = carga_cronometrada
     for reuso in Reaproveitamento.objects.select_related("inovacao"):
         disponivel = reuso.inovacao.mudancas_de_status.get(
             status_novo=StatusInovacao.DISPONIVEL_PARA_REPLICACAO
         )
-        assert disponivel.data < reuso.data <= depois
+        assert disponivel.data < reuso.data < antes
+
+
+def test_reaproveitamento_registrado_por_outro_autor_do_acervo(saida_da_carga):
+    """ACER-23."""
+    autores = set(_autores_da_carga().values_list("pk", flat=True))
+    reusos = Reaproveitamento.objects.select_related("inovacao")
+    assert reusos.exists()
+    for reuso in reusos:
+        assert reuso.registrado_por_id in autores
+        assert reuso.registrado_por_id != reuso.inovacao.autor_id
 
 
 def _contagens():

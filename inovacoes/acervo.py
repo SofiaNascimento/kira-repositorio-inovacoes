@@ -35,14 +35,22 @@ DOMINIO_DOS_AUTORES = "acervo.invalid"
 
 # Valores que variam de unidade para unidade dentro do mesmo caso.
 ERPS = ("TOTVS Protheus", "SAP Business One", "Senior", "Sankhya", "Oracle NetSuite")
-# Sem artigo: entram depois de "em", "com" e "por" sem quebrar a concordancia.
+# Sem artigo. FERRAMENTAS entram depois de "por" e "com" (o que executa);
+# PLATAFORMAS, depois de "em" (onde fica publicado ou registrado).
+# Ao menos 5 em cada: um caso pode ocupar 5 unidades e a solucao tem de variar.
 FERRAMENTAS = (
     "Power Automate",
-    "SharePoint",
-    "Google Sheets",
-    "Microsoft Forms",
-    "Smartsheet",
+    "Microsoft 365",
     "Google Workspace",
+    "Google Apps Script",
+    "Zapier",
+)
+PLATAFORMAS = (
+    "SharePoint",
+    "Microsoft 365",
+    "Google Workspace",
+    "Google Sheets",
+    "Microsoft Teams",
 )
 
 # Resultado parcial de quem ainda esta "Em teste" (vazio em parte deles).
@@ -67,7 +75,7 @@ CASOS = (
         "{dias} dias úteis.",
         "Importação diária dos extratos em OFX e regras de conciliação por valor, data e "
         "histórico, montadas com {ferramenta}. Só as divergências vão para análise manual.",
-        "O fechamento passou a sair até o {dias_menor}º dia útil e {pct}% dos movimentos são "
+        "O fechamento passou a sair até o {dias_menor}º dia útil e {nivel}% dos movimentos são "
         "conciliados sem intervenção.",
     ),
     (
@@ -88,7 +96,7 @@ CASOS = (
         "Aprovação eletrônica de pagamentos",
         "Os pagamentos dependiam de assinatura física do gestor. Cerca de {qtd} documentos por "
         "mês circulavam em pastas, e alguns venciam antes da aprovação.",
-        "Fluxo de aprovação em {ferramenta}, com alçada por valor e anexo da nota fiscal. O "
+        "Fluxo de aprovação em {plataforma}, com alçada por valor e anexo da nota fiscal. O "
         "gestor aprova pelo celular e o {erp} recebe o status.",
         "O tempo médio de aprovação caiu de {dias} dias para menos de um, e os pagamentos com "
         "multa por atraso caíram {pct}%.",
@@ -111,7 +119,7 @@ CASOS = (
         "de {qtd} transações por mês tomava {horas} horas da equipe.",
         "Cada portador anexa o comprovante num formulário em até {dias} dias; {ferramenta} "
         "cruza com a fatura e aponta as transações sem comprovante.",
-        "A conferência caiu para cerca de {horas_menor} horas mensais e {pct}% das transações "
+        "A conferência caiu para cerca de {horas_menor} horas mensais e {nivel}% das transações "
         "chegam com comprovante no prazo.",
     ),
     (
@@ -200,7 +208,7 @@ CASOS = (
         "por mês eram baixados à mão, com erros de valor e de data.",
         "Leitura do arquivo de retorno do banco e baixa automática no {erp}; {ferramenta} "
         "lista o que não encontrou título correspondente.",
-        "{pct}% dos boletos passaram a ser baixados sem digitação.",
+        "{nivel}% dos boletos passaram a ser baixados sem digitação.",
     ),
     (
         "Financeiro",
@@ -229,7 +237,7 @@ CASOS = (
         "As obrigações acessórias eram acompanhadas pela memória de {pessoas} pessoas. Em um "
         "ano houve {multas} entregas fora do prazo, com multa.",
         "Calendário com todas as obrigações, responsável e alerta {dias} dias antes do prazo, "
-        "mantido em {ferramenta}.",
+        "mantido em {plataforma}.",
         "Nenhuma obrigação foi entregue com atraso em {meses} meses.",
     ),
     (
@@ -299,7 +307,7 @@ CASOS = (
         "Agenda única de pagamentos",
         "Cada setor mandava pagamentos urgentes por e-mail, fora da programação. Cerca de "
         "{qtd} pagamentos por mês furavam a agenda.",
-        "Dois dias fixos de pagamento por semana e agenda consolidada em {ferramenta}; "
+        "Dois dias fixos de pagamento por semana e agenda consolidada em {plataforma}; "
         "urgências só com justificativa aprovada.",
         "Os pagamentos fora da agenda caíram {pct}% e as tarifas de TED avulsa também.",
     ),
@@ -309,7 +317,7 @@ CASOS = (
         "Controle de seguros e garantias",
         "Apólices de seguro e garantias contratuais de cerca de {poucos} itens venciam sem "
         "renovação, e só se percebia no sinistro.",
-        "Cadastro das apólices com vigência e cobertura, e aviso automático em {ferramenta} "
+        "Cadastro das apólices com vigência e cobertura, e aviso automático em {plataforma} "
         "{dias} semanas antes do vencimento.",
         "Nenhuma apólice venceu sem renovação desde a implantação.",
     ),
@@ -319,9 +327,9 @@ CASOS = (
         "Análise mensal de variação orçamentária",
         "Os desvios do orçamento eram explicados só na reunião anual. Cerca de {poucos} contas "
         "tinham variação acima de 10% sem justificativa.",
-        "Relatório mensal em {ferramenta} que destaca as contas fora da tolerância e pede "
+        "Relatório mensal em {plataforma} que destaca as contas fora da tolerância e pede "
         "justificativa ao gestor em até {dias} dias.",
-        "{pct}% dos desvios passaram a ter justificativa registrada no próprio mês.",
+        "{nivel}% dos desvios passaram a ter justificativa registrada no próprio mês.",
     ),
     # RH
     (
@@ -330,7 +338,7 @@ CASOS = (
         "Admissão digital",
         "A admissão exigia que o candidato trouxesse cópias de cerca de {docs} documentos. O "
         "processo levava {dias} dias e travava o registro no eSocial.",
-        "Formulário de admissão em {ferramenta} com envio das fotos dos documentos e "
+        "Formulário de admissão em {plataforma} com envio das fotos dos documentos e "
         "checklist automático do que falta.",
         "O prazo de admissão caiu para {dias_menor} dias e nenhum registro foi enviado fora "
         "do prazo legal.",
@@ -342,8 +350,8 @@ CASOS = (
         "Os novos colaboradores passavam a primeira semana sem saber a quem procurar. Cerca "
         "de {poucos} admissões por ano dependiam da boa vontade de cada gestor.",
         "Trilha de integração com agenda dos primeiros {dias} dias, padrinho definido e "
-        "vídeos curtos dos setores, organizada em {ferramenta}.",
-        "A satisfação com a integração subiu para {pct}% e os desligamentos nos primeiros "
+        "vídeos curtos dos setores, organizada em {plataforma}.",
+        "A satisfação com a integração subiu para {nivel}% e os desligamentos nos primeiros "
         "90 dias diminuíram.",
     ),
     (
@@ -352,9 +360,9 @@ CASOS = (
         "Planejamento anual de férias",
         "As férias eram marcadas em cima da hora, e {poucos} colaboradores chegaram perto do "
         "limite do período concessivo no mesmo ano.",
-        "Planejamento anual por setor em {ferramenta}, com alerta ao gestor {dias} meses "
+        "Planejamento anual por setor em {plataforma}, com alerta ao gestor {dias} meses "
         "antes do vencimento do período.",
-        "Nenhuma férias venceu sem gozo e os setores deixaram de ficar descobertos.",
+        "Nenhum período de férias venceu sem gozo e os setores deixaram de ficar descobertos.",
     ),
     (
         "RH",
@@ -372,7 +380,7 @@ CASOS = (
         "Conferência da folha antes do fechamento",
         "Erros na folha de cerca de {qtd} colaboradores só eram percebidos depois do "
         "pagamento, e cada correção exigia folha complementar.",
-        "Comparação automática com a folha anterior em {ferramenta}, destacando variações "
+        "Comparação automática com a folha anterior em {plataforma}, destacando variações "
         "acima de {pct}% por evento, antes do fechamento no {erp}.",
         "As folhas complementares por erro caíram de {multas} para uma no ano.",
     ),
@@ -382,9 +390,9 @@ CASOS = (
         "Avaliação de desempenho em formulário único",
         "Cada setor avaliava seus {qtd} colaboradores num modelo diferente, e não havia "
         "como comparar resultados nem acompanhar planos de melhoria.",
-        "Formulário único de avaliação em {ferramenta}, com etapa de autoavaliação e "
+        "Formulário único de avaliação em {plataforma}, com etapa de autoavaliação e "
         "reunião de retorno registrada.",
-        "{pct}% das avaliações foram concluídas no prazo no primeiro ciclo.",
+        "{nivel}% das avaliações foram concluídas no prazo no primeiro ciclo.",
     ),
     (
         "RH",
@@ -402,9 +410,9 @@ CASOS = (
         "Pesquisa de clima trimestral",
         "A pesquisa de clima era anual e em papel. Com {qtd} colaboradores, a tabulação "
         "levava {semanas} semanas e os resultados chegavam velhos.",
-        "Pesquisa curta trimestral em {ferramenta}, anônima, com painel por setor liberado "
+        "Pesquisa curta trimestral em {plataforma}, anônima, com painel por setor liberado "
         "aos gestores.",
-        "A participação subiu para {pct}% e cada setor passou a ter um plano de ação.",
+        "A participação subiu para {nivel}% e cada setor passou a ter um plano de ação.",
     ),
     (
         "RH",
@@ -412,7 +420,7 @@ CASOS = (
         "Gestão de atestados médicos",
         "Atestados chegavam por foto no celular do gestor e se perdiam. Cerca de {poucos} "
         "atestados por mês eram lançados com atraso na folha.",
-        "Canal único de envio em {ferramenta}, com registro automático e aviso ao "
+        "Canal único de envio em {plataforma}, com registro automático e aviso ao "
         "Departamento Pessoal em até {dias} dias.",
         "Os lançamentos fora do mês de competência caíram {pct}%.",
     ),
@@ -422,7 +430,7 @@ CASOS = (
         "Escala de plantões compartilhada",
         "A escala de plantões de {pessoas} equipes era feita em papel no quadro do setor, e "
         "trocas não eram registradas. Isso gerou {multas} pagamentos de hora extra errados.",
-        "Escala publicada em {ferramenta}, com troca solicitada e aprovada pelo próprio "
+        "Escala publicada em {plataforma}, com troca solicitada e aprovada pelo próprio "
         "sistema e exportação para a folha.",
         "Os ajustes de hora extra por escala errada deixaram de acontecer.",
     ),
@@ -433,8 +441,8 @@ CASOS = (
         "Os treinamentos obrigatórios de segurança de cerca de {qtd} colaboradores venciam "
         "sem reciclagem, e a fiscalização encontrou pendências.",
         "Matriz de treinamentos por função com vencimento e aviso {dias} semanas antes, "
-        "mantida em {ferramenta}.",
-        "{pct}% dos colaboradores ficaram com os treinamentos em dia.",
+        "mantida em {plataforma}.",
+        "{nivel}% dos colaboradores ficaram com os treinamentos em dia.",
     ),
     (
         "RH",
@@ -442,7 +450,7 @@ CASOS = (
         "Triagem de candidatos por formulário",
         "Cada vaga recebia cerca de {poucos} currículos por e-mail, lidos um a um. A triagem "
         "tomava {horas} horas por vaga.",
-        "Formulário de candidatura com perguntas eliminatórias em {ferramenta}; o "
+        "Formulário de candidatura com perguntas eliminatórias em {plataforma}; o "
         "recrutador recebe só quem atende aos requisitos.",
         "A triagem caiu para cerca de {horas_menor} horas por vaga.",
     ),
@@ -452,7 +460,7 @@ CASOS = (
         "Adesão ao vale-transporte pelo formulário",
         "A adesão e as mudanças no vale-transporte eram feitas em papel. Cerca de {poucos} "
         "pedidos por mês chegavam depois do corte da compra.",
-        "Formulário com prazo de corte visível e confirmação automática, em {ferramenta}, "
+        "Formulário com prazo de corte visível e confirmação automática, em {plataforma}, "
         "integrado à planilha de compra.",
         "Os pedidos fora do prazo caíram {pct}%.",
     ),
@@ -463,7 +471,7 @@ CASOS = (
         "O fim dos contratos de experiência era lembrado em cima da hora. Em {multas} casos "
         "no ano, o contrato virou indeterminado sem avaliação do gestor.",
         "Alerta ao gestor {dias} dias antes do fim de cada período, com formulário de "
-        "decisão em {ferramenta}.",
+        "decisão em {plataforma}.",
         "Todas as experiências passaram a ter decisão registrada antes do prazo.",
     ),
     (
@@ -482,7 +490,7 @@ CASOS = (
         "Entrevista de desligamento estruturada",
         "As entrevistas de desligamento eram informais e nada era registrado. Em {poucos} "
         "saídas por ano, os motivos se perdiam.",
-        "Roteiro padrão de entrevista com registro em {ferramenta} e relatório trimestral "
+        "Roteiro padrão de entrevista com registro em {plataforma} e relatório trimestral "
         "dos motivos por setor.",
         "Os três principais motivos de saída foram identificados e dois setores mudaram "
         "suas práticas.",
@@ -505,7 +513,7 @@ CASOS = (
         "vencia, e alguns trabalharam com ASO vencido.",
         "Lista mensal dos exames a vencer em {dias} semanas, gerada por {ferramenta} e "
         "enviada à clínica conveniada.",
-        "{pct}% dos exames passaram a ser feitos antes do vencimento.",
+        "{nivel}% dos exames passaram a ser feitos antes do vencimento.",
     ),
     (
         "RH",
@@ -524,9 +532,9 @@ CASOS = (
         "Mapa de sucessão das funções-chave",
         "Quando alguém de função-chave saía, ninguém estava preparado. Das {pessoas} funções "
         "críticas, nenhuma tinha sucessor indicado.",
-        "Mapa de sucessão revisado a cada semestre em {ferramenta}, com plano de "
+        "Mapa de sucessão revisado a cada semestre em {plataforma}, com plano de "
         "desenvolvimento para cada sucessor.",
-        "{pct}% das funções críticas passaram a ter ao menos um sucessor preparado.",
+        "{nivel}% das funções críticas passaram a ter ao menos um sucessor preparado.",
     ),
     (
         "RH",
@@ -534,7 +542,7 @@ CASOS = (
         "Central única de comunicados",
         "Comunicados do RH saíam por e-mail, mural e grupos de mensagem, e {pct}% dos "
         "colaboradores diziam não ficar sabendo das mudanças.",
-        "Central de comunicados em {ferramenta} com confirmação de leitura para avisos "
+        "Central de comunicados em {plataforma} com confirmação de leitura para avisos "
         "obrigatórios e resumo semanal.",
         "A confirmação de leitura dos avisos obrigatórios passou de {pct_menor}% para mais de 90%.",
     ),
@@ -564,7 +572,7 @@ CASOS = (
         "Programa de reconhecimento entre colegas",
         "Não havia forma de reconhecer boas práticas no dia a dia, e a pesquisa de clima "
         "apontava valorização como o item mais baixo, com {pct}% de satisfação.",
-        "Mural de reconhecimento em {ferramenta}, com destaque mensal escolhido pelos "
+        "Mural de reconhecimento em {plataforma}, com destaque mensal escolhido pelos "
         "próprios colegas entre cerca de {poucos} indicações.",
         "O item de valorização na pesquisa de clima subiu {pts} pontos.",
     ),
@@ -575,9 +583,9 @@ CASOS = (
         "Cotação padronizada com três fornecedores",
         "Cada comprador montava a cotação do seu jeito, e a auditoria não conseguia "
         "comparar propostas em cerca de {qtd} compras por ano.",
-        "Modelo único de mapa de cotação em {ferramenta}, com no mínimo três propostas e "
+        "Modelo único de mapa de cotação em {plataforma}, com no mínimo três propostas e "
         "justificativa da escolha.",
-        "As compras auditadas sem pendência passaram a {pct}%.",
+        "As compras auditadas sem pendência passaram a {nivel}%.",
     ),
     (
         "Compras",
@@ -595,7 +603,7 @@ CASOS = (
         "Requisição de compras por formulário",
         "As requisições chegavam por e-mail, telefone e corredor. Cerca de {qtd} pedidos "
         "por mês ficavam sem registro de quem pediu e quando.",
-        "Formulário único de requisição em {ferramenta}, com centro de custo, justificativa e "
+        "Formulário único de requisição em {plataforma}, com centro de custo, justificativa e "
         "acompanhamento do status pelo solicitante.",
         "As cobranças sobre andamento de pedidos caíram {pct}%.",
     ),
@@ -608,7 +616,7 @@ CASOS = (
         "Catálogo com especificação, fornecedor homologado e preço negociado, publicado em "
         "{ferramenta}.",
         "O prazo de compra dos itens do catálogo caiu para {dias} dias e o preço médio "
-        "caiu {pct}%.",
+        "caiu {economia}%.",
     ),
     (
         "Compras",
@@ -626,7 +634,7 @@ CASOS = (
         "Avaliação periódica de fornecedores",
         "Não havia histórico de desempenho dos fornecedores, e problemas de entrega se "
         "repetiam com os mesmos {pessoas} parceiros.",
-        "Avaliação trimestral de prazo, qualidade e atendimento em {ferramenta}, com nota "
+        "Avaliação trimestral de prazo, qualidade e atendimento em {plataforma}, com nota "
         "usada como critério nas próximas cotações.",
         "Dois fornecedores com nota baixa foram substituídos e as não conformidades caíram {pct}%.",
     ),
@@ -638,7 +646,7 @@ CASOS = (
         "pedidos pequenos por ano, com frete em quase todos.",
         "Pedido mensal consolidado, com janela de solicitação de {dias} dias organizada em "
         "{ferramenta}.",
-        "O gasto com frete caiu {pct}% e o número de pedidos caiu para doze por ano.",
+        "O gasto com frete caiu {economia}% e o número de pedidos caiu para doze por ano.",
     ),
     (
         "Compras",
@@ -646,9 +654,9 @@ CASOS = (
         "Gestão dos contratos de serviços terceirizados",
         "Os {pessoas} contratos de serviços terceirizados não tinham fiscal designado, e "
         "medições eram pagas sem conferência.",
-        "Fiscal nomeado por contrato e checklist mensal de medição em {ferramenta} antes da "
+        "Fiscal nomeado por contrato e checklist mensal de medição em {plataforma} antes da "
         "liberação do pagamento no {erp}.",
-        "Glosas por serviço não prestado passaram a ser aplicadas, com economia de {pct}% em "
+        "Glosas por serviço não prestado passaram a ser aplicadas, com economia de {economia}% em "
         "dois contratos.",
     ),
     (
@@ -679,7 +687,7 @@ CASOS = (
         "por mês ficavam paradas {dias} dias.",
         "Tabela de alçadas por valor e tipo de despesa, aplicada no fluxo de aprovação em "
         "{ferramenta}.",
-        "{pct}% das compras passaram a ser aprovadas pelo próprio gestor no mesmo dia.",
+        "{nivel}% das compras passaram a ser aprovadas pelo próprio gestor no mesmo dia.",
     ),
     (
         "Compras",
@@ -698,7 +706,7 @@ CASOS = (
         "Compras emergenciais eram feitas sem registro e justificadas depois. Cerca de "
         "{poucos} por ano não tinham cotação nem aprovação.",
         "Formulário rápido de compra emergencial com justificativa e aprovação posterior "
-        "em até {dias} dias, em {ferramenta}.",
+        "em até {dias} dias, em {plataforma}.",
         "As emergenciais caíram {pct}% quando os setores passaram a ver o próprio volume.",
     ),
     (
@@ -718,9 +726,9 @@ CASOS = (
         "Controle de abastecimento da frota",
         "Os abastecimentos de {pessoas} veículos eram pagos por nota avulsa, sem relação "
         "com quilometragem. O consumo médio era desconhecido.",
-        "Cartão de abastecimento por veículo e registro da quilometragem em {ferramenta}, "
+        "Cartão de abastecimento por veículo e registro da quilometragem em {plataforma}, "
         "com alerta de consumo fora do padrão.",
-        "O gasto com combustível caiu {pct}% em {meses} meses.",
+        "O gasto com combustível caiu {economia}% em {meses} meses.",
     ),
     (
         "Compras",
@@ -728,9 +736,9 @@ CASOS = (
         "Chamados de manutenção predial terceirizada",
         "Os pedidos à empresa de manutenção eram feitos por telefone. Cerca de {qtd} "
         "serviços por mês não tinham prazo nem registro de conclusão.",
-        "Abertura de chamado em {ferramenta}, com prazo por prioridade e foto do serviço "
+        "Abertura de chamado em {plataforma}, com prazo por prioridade e foto do serviço "
         "concluído antes da medição.",
-        "{pct}% dos chamados passaram a ser atendidos dentro do prazo do contrato.",
+        "{nivel}% dos chamados passaram a ser atendidos dentro do prazo do contrato.",
     ),
     (
         "Compras",
@@ -739,8 +747,8 @@ CASOS = (
         "Contratos de fornecimento renovavam automaticamente sem renegociação. Dos cerca de "
         "{poucos} contratos ativos, poucos eram revistos.",
         "Calendário com aviso {dias} meses antes de cada renovação e reunião de "
-        "renegociação registrada em {ferramenta}.",
-        "As renegociações renderam redução média de {pct}% nos contratos revistos.",
+        "renegociação registrada em {plataforma}.",
+        "As renegociações renderam redução média de {economia}% nos contratos revistos.",
     ),
     (
         "Compras",
@@ -748,7 +756,7 @@ CASOS = (
         "Devolução de mercadorias a fornecedores",
         "Mercadorias com defeito ficavam paradas no almoxarifado esperando devolução. "
         "Cerca de {poucos} itens por ano viravam perda.",
-        "Fluxo de devolução com prazo de {dias} dias, registro em {ferramenta} e nota de "
+        "Fluxo de devolução com prazo de {dias} dias, registro em {plataforma} e nota de "
         "devolução emitida pelo {erp}.",
         "As perdas por mercadoria não devolvida caíram {pct}%.",
     ),
@@ -760,7 +768,7 @@ CASOS = (
         "configurações distintas, com {qtd} equipamentos no parque.",
         "Três perfis padrão de equipamento, definidos com a TI e cotados uma vez por "
         "semestre; o pedido é feito por {ferramenta}.",
-        "O preço por equipamento caiu {pct}% e o suporte ficou mais simples.",
+        "O preço por equipamento caiu {economia}% e o suporte ficou mais simples.",
     ),
     (
         "Compras",
@@ -770,7 +778,7 @@ CASOS = (
         "itens tinham preços diferentes entre unidades.",
         "Negociação anual única dos itens comuns, com tabela de preços publicada em "
         "{ferramenta} para todas as unidades.",
-        "A economia média nos itens negociados foi de {pct}%.",
+        "A economia média nos itens negociados foi de {economia}%.",
     ),
     (
         "Compras",
@@ -778,9 +786,9 @@ CASOS = (
         "Central de reservas de viagens",
         "Passagens e hotéis eram comprados por cada colaborador, sem política. Cerca de "
         "{qtd} viagens por ano eram compradas com menos de {dias} dias de antecedência.",
-        "Política de viagens com antecedência mínima e pedido único em {ferramenta}, "
+        "Política de viagens com antecedência mínima e pedido único em {plataforma}, "
         "atendido pela central de reservas.",
-        "O custo médio por viagem caiu {pct}%.",
+        "O custo médio por viagem caiu {economia}%.",
     ),
     (
         "Compras",
@@ -790,7 +798,7 @@ CASOS = (
         "linhas de ex-colaboradores continuavam pagas.",
         "Inventário das linhas com responsável e conferência mensal da fatura em "
         "{ferramenta}, cruzando com o cadastro de ativos do {erp}.",
-        "{multas} linhas sem uso foram canceladas e a fatura caiu {pct}%.",
+        "{multas} linhas sem uso foram canceladas e a fatura caiu {economia}%.",
     ),
     (
         "Compras",
@@ -798,7 +806,7 @@ CASOS = (
         "Descarte de resíduos com controle",
         "Resíduos eletrônicos e lâmpadas eram acumulados sem destino certo. Cerca de {qtd} "
         "quilos ficavam parados por ano.",
-        "Contrato com empresa licenciada e coleta trimestral agendada em {ferramenta}, com "
+        "Contrato com empresa licenciada e coleta trimestral agendada em {plataforma}, com "
         "certificado de destinação arquivado.",
         "Todo o resíduo passou a ter destinação comprovada.",
     ),
@@ -808,7 +816,7 @@ CASOS = (
         "Indicadores no contrato de limpeza",
         "O contrato de limpeza era pago pelo valor cheio todo mês, mesmo com {poucos} "
         "reclamações registradas no período.",
-        "Indicadores de qualidade no contrato, com vistoria semanal em {ferramenta} e "
+        "Indicadores de qualidade no contrato, com vistoria semanal em {plataforma} e "
         "desconto proporcional na medição.",
         "As reclamações caíram {pct}% em {meses} meses.",
     ),
@@ -821,7 +829,7 @@ CASOS = (
         "atendimentos por mês não tinham registro nem prazo.",
         "Central de chamados com categorias, prioridade e prazo por tipo, implantada com "
         "{ferramenta}.",
-        "{pct}% dos chamados passaram a ser resolvidos dentro do prazo.",
+        "{nivel}% dos chamados passaram a ser resolvidos dentro do prazo.",
     ),
     (
         "TI interno",
@@ -829,7 +837,7 @@ CASOS = (
         "Base de conhecimento de soluções",
         "Os mesmos problemas eram resolvidos do zero por técnicos diferentes. Cerca de "
         "{qtd} chamados por mês eram repetidos.",
-        "Base de conhecimento com passo a passo das soluções mais comuns, em {ferramenta}, "
+        "Base de conhecimento com passo a passo das soluções mais comuns, em {plataforma}, "
         "consultada antes de escalar o chamado.",
         "O tempo médio de solução caiu {pct}%.",
     ),
@@ -839,9 +847,9 @@ CASOS = (
         "Inventário automático de equipamentos",
         "O inventário de cerca de {qtd} computadores era uma planilha desatualizada, e "
         "máquinas sumiam sem registro.",
-        "Agente de inventário instalado nas máquinas e relatório semanal em {ferramenta} "
+        "Agente de inventário instalado nas máquinas e relatório semanal em {plataforma} "
         "com localização e responsável.",
-        "O inventário passou a refletir {pct}% do parque real.",
+        "O inventário passou a refletir {nivel}% do parque real.",
     ),
     (
         "TI interno",
@@ -850,7 +858,7 @@ CASOS = (
         "As licenças de cerca de {poucos} softwares eram renovadas sem saber quantas estavam "
         "em uso. Parte era paga sem uso.",
         "Painel de licenças com uso real, vencimento e responsável, alimentado por {ferramenta}.",
-        "{multas} licenças ociosas foram canceladas, com economia de {pct}% no contrato.",
+        "{multas} licenças ociosas foram canceladas, com economia de {economia}% no contrato.",
     ),
     (
         "TI interno",
@@ -879,8 +887,8 @@ CASOS = (
         "Novos colaboradores esperavam {dias} dias por e-mail e acessos ao {erp}, e "
         "trabalhavam com o login de colegas.",
         "Pedido de acessos disparado pelo RH na admissão, com perfil por função e "
-        "execução acompanhada em {ferramenta}.",
-        "Os acessos ficam prontos no primeiro dia em {pct}% das admissões.",
+        "execução acompanhada em {plataforma}.",
+        "Os acessos ficam prontos no primeiro dia em {nivel}% das admissões.",
     ),
     (
         "TI interno",
@@ -920,7 +928,7 @@ CASOS = (
         "mudanças de ramal levavam {dias} dias.",
         "Telefonia IP com ramais no computador e no celular para {pessoas} setores, "
         "administrada pela própria equipe.",
-        "A conta de telefonia caiu {pct}% e as mudanças de ramal são feitas no mesmo dia.",
+        "A conta de telefonia caiu {economia}% e as mudanças de ramal são feitas no mesmo dia.",
     ),
     (
         "TI interno",
@@ -930,7 +938,7 @@ CASOS = (
         "{qtd} máquinas estavam com meses de atraso.",
         "Política de atualização automática fora do horário de trabalho, com prazo de "
         "{dias} dias e relatório semanal das máquinas pendentes.",
-        "{pct}% das máquinas passaram a estar atualizadas em até {dias} dias.",
+        "{nivel}% das máquinas passaram a estar atualizadas em até {dias} dias.",
     ),
     (
         "TI interno",
@@ -956,7 +964,7 @@ CASOS = (
         "Empréstimo controlado de equipamentos",
         "Projetores, notebooks e câmeras emprestados não voltavam no prazo. Cerca de {poucos} "
         "empréstimos por mês não tinham registro.",
-        "Reserva e retirada registradas em {ferramenta}, com lembrete de devolução no dia "
+        "Reserva e retirada registradas em {plataforma}, com lembrete de devolução no dia "
         "anterior.",
         "As devoluções em atraso caíram {pct}%.",
     ),
@@ -966,7 +974,7 @@ CASOS = (
         "Mapa da rede e dos pontos de acesso",
         "Ninguém sabia a que porta do switch cada ponto estava ligado. Um problema de rede "
         "levava {horas_curtas} horas para ser localizado.",
-        "Mapeamento e etiquetagem de cerca de {qtd} pontos, com o mapa publicado em {ferramenta}.",
+        "Mapeamento e etiquetagem de cerca de {qtd} pontos, com o mapa publicado em {plataforma}.",
         "O tempo para localizar falhas de rede caiu {pct}%.",
     ),
     (
@@ -986,7 +994,7 @@ CASOS = (
         "Em uma campanha interna, {pct}% dos colaboradores clicaram num link suspeito. "
         "Cerca de {qtd} pessoas nunca tinham recebido orientação.",
         "Treinamento curto em vídeo e simulações trimestrais, com resultado por setor "
-        "acompanhado em {ferramenta}.",
+        "acompanhado em {plataforma}.",
         "A taxa de clique nas simulações caiu para menos de {pct_menor}%.",
     ),
     (
@@ -1034,7 +1042,7 @@ CASOS = (
         "Manutenção preventiva dos computadores",
         "Os cerca de {qtd} computadores só eram vistos quando quebravam, e muitos "
         "esquentavam por poeira.",
-        "Checklist semestral de limpeza e verificação, agendado por setor em {ferramenta}.",
+        "Checklist semestral de limpeza e verificação, agendado por setor em {plataforma}.",
         "Os chamados de falha de hardware caíram {pct}%.",
     ),
     (
@@ -1084,7 +1092,7 @@ CASOS = (
         "Protocolo digital de documentos",
         "Documentos entre setores circulavam em papel com livro de protocolo. Cerca de "
         "{qtd} documentos por mês não tinham rastreio.",
-        "Protocolo digital com número, remetente, destinatário e prazo, em {ferramenta}.",
+        "Protocolo digital com número, remetente, destinatário e prazo, em {plataforma}.",
         "Qualquer documento é localizado em segundos e o prazo médio de tramitação caiu {pct}%.",
     ),
     (
@@ -1102,7 +1110,7 @@ CASOS = (
         "Malote entre unidades com rastreio",
         "Documentos enviados por malote se perdiam entre as unidades. Cerca de {qtd} "
         "envios por mês não tinham comprovante de entrega.",
-        "Lacre numerado, registro de envio e recebimento em {ferramenta} e confirmação do "
+        "Lacre numerado, registro de envio e recebimento em {plataforma} e confirmação do "
         "destinatário.",
         "Nenhum documento foi extraviado em {meses} meses.",
     ),
@@ -1114,7 +1122,7 @@ CASOS = (
         "atendimentos por mês, nenhum tinha retorno.",
         "Pesquisa de uma pergunta enviada ao fim de cada atendimento por {ferramenta}, com "
         "resultado mensal por setor.",
-        "A satisfação média chegou a {pct}% de avaliações positivas.",
+        "A satisfação média chegou a {nivel}% de avaliações positivas.",
     ),
     (
         "Atendimento interno",
@@ -1122,7 +1130,7 @@ CASOS = (
         "Guia de procedimentos internos",
         "Cada colaborador perguntava aos colegas como pedir férias, reembolso ou material. "
         "Cerca de {qtd} dúvidas por mês chegavam aos setores de apoio.",
-        "Guia de procedimentos com passo a passo e formulários, publicado em {ferramenta}.",
+        "Guia de procedimentos com passo a passo e formulários, publicado em {plataforma}.",
         "As dúvidas repetidas caíram {pct}%.",
     ),
     (
@@ -1142,8 +1150,8 @@ CASOS = (
         "Dúvidas de colaboradores chegavam no e-mail pessoal de {pessoas} analistas e "
         "ficavam sem resposta nas férias de cada um.",
         "Caixa compartilhada com etiquetas por assunto e prazo de resposta de {dias} dias, "
-        "acompanhada em {ferramenta}.",
-        "{pct}% das mensagens passaram a ser respondidas no prazo.",
+        "acompanhada em {plataforma}.",
+        "{nivel}% das mensagens passaram a ser respondidas no prazo.",
     ),
     (
         "Atendimento interno",
@@ -1160,7 +1168,7 @@ CASOS = (
         "Quadro de controle de chaves",
         "As cerca de {poucos} chaves da unidade ficavam numa gaveta, e salas eram abertas sem "
         "registro.",
-        "Quadro numerado com retirada registrada em {ferramenta} e conferência no fim do "
+        "Quadro numerado com retirada registrada em {plataforma} e conferência no fim do "
         "expediente.",
         "Nenhuma chave foi perdida em {meses} meses.",
     ),
@@ -1170,7 +1178,7 @@ CASOS = (
         "Reserva dos veículos da unidade",
         "Os {pessoas} veículos eram reservados por telefone, e havia conflitos e carros "
         "parados sem uso.",
-        "Agenda de reservas com checklist de saída e retorno em {ferramenta}.",
+        "Agenda de reservas com checklist de saída e retorno em {plataforma}.",
         "A ocupação dos veículos subiu {pct}% e os conflitos de reserva acabaram.",
     ),
     (
@@ -1179,8 +1187,8 @@ CASOS = (
         "Solicitação de manutenção pelo celular",
         "Problemas como lâmpada queimada ou vazamento eram avisados de boca. Cerca de "
         "{qtd} pedidos por mês se perdiam.",
-        "Formulário com foto e local do problema em {ferramenta}, com prazo por prioridade.",
-        "{pct}% dos pedidos passaram a ser atendidos no prazo.",
+        "Formulário com foto e local do problema em {plataforma}, com prazo por prioridade.",
+        "{nivel}% dos pedidos passaram a ser atendidos no prazo.",
     ),
     (
         "Atendimento interno",
@@ -1188,7 +1196,7 @@ CASOS = (
         "Controle das refeições do refeitório",
         "A quantidade de refeições era estimada todo dia, e sobravam cerca de {poucos} "
         "refeições por semana.",
-        "Confirmação de presença até as {hora} horas em {ferramenta}, enviada à cozinha "
+        "Confirmação de presença até as {hora} horas em {plataforma}, enviada à cozinha "
         "com o total do dia.",
         "O desperdício de refeições caiu {pct}%.",
     ),
@@ -1199,8 +1207,8 @@ CASOS = (
         "Os colaboradores das unidades externas não conseguiam falar com o administrativo "
         "por telefone. Cerca de {qtd} ligações por mês não eram atendidas.",
         "Número corporativo de mensagens com respostas rápidas e registro de cada "
-        "atendimento em {ferramenta}.",
-        "{pct}% das mensagens são respondidas no mesmo dia.",
+        "atendimento em {plataforma}.",
+        "{nivel}% das mensagens são respondidas no mesmo dia.",
     ),
     (
         "Atendimento interno",
@@ -1208,7 +1216,7 @@ CASOS = (
         "Catálogo de serviços internos",
         "Ninguém sabia o que os setores de apoio ofereciam nem em quanto tempo. Cerca de "
         "{qtd} pedidos por mês vinham sem as informações necessárias.",
-        "Catálogo com cada serviço, o que é preciso enviar e o prazo, publicado em {ferramenta}.",
+        "Catálogo com cada serviço, o que é preciso enviar e o prazo, publicado em {plataforma}.",
         "Os pedidos devolvidos por falta de informação caíram {pct}%.",
     ),
     (
@@ -1217,9 +1225,9 @@ CASOS = (
         "Prazo de resposta para pedidos internos",
         "Pedidos entre setores ficavam sem resposta por semanas. Cerca de {qtd} pedidos por "
         "mês passavam de {dias} dias.",
-        "Prazos de resposta acordados entre os setores e acompanhados em {ferramenta}, com "
+        "Prazos de resposta acordados entre os setores e acompanhados em {plataforma}, com "
         "alerta antes do vencimento.",
-        "{pct}% dos pedidos passaram a ser respondidos no prazo.",
+        "{nivel}% dos pedidos passaram a ser respondidos no prazo.",
     ),
     (
         "Atendimento interno",
@@ -1227,7 +1235,7 @@ CASOS = (
         "Organização de eventos internos",
         "Cada evento interno era organizado do zero, e itens como som e lanche faltavam. "
         "Havia cerca de {poucos} eventos por ano.",
-        "Checklist padrão de eventos com responsáveis e prazos em {ferramenta}.",
+        "Checklist padrão de eventos com responsáveis e prazos em {plataforma}.",
         "Os problemas de última hora caíram {pct}% e a montagem leva menos tempo.",
     ),
     (
@@ -1236,8 +1244,8 @@ CASOS = (
         "Registro de achados e perdidos",
         "Objetos esquecidos ficavam numa caixa na recepção sem registro. Cerca de {poucos} "
         "itens por mês não voltavam ao dono.",
-        "Registro com foto em {ferramenta} e aviso no mural digital da unidade.",
-        "{pct}% dos objetos passaram a ser devolvidos.",
+        "Registro com foto em {plataforma} e aviso no mural digital da unidade.",
+        "{nivel}% dos objetos passaram a ser devolvidos.",
     ),
     (
         "Atendimento interno",
@@ -1246,7 +1254,7 @@ CASOS = (
         "Crachás de ex-colaboradores e de visitantes continuavam liberados. Havia cerca de "
         "{poucos} crachás ativos a mais do que pessoas.",
         "Cadastro de crachás ligado à admissão e ao desligamento, com conferência mensal "
-        "em {ferramenta}.",
+        "em {plataforma}.",
         "Os crachás ativos passaram a bater com o quadro de pessoal.",
     ),
     (
@@ -1256,14 +1264,14 @@ CASOS = (
         "Reclamações e sugestões internas não tinham canal. Em pesquisa, {pct}% dos "
         "colaboradores disseram não ter onde falar.",
         "Canal de ouvidoria com opção anônima e prazo de resposta de {dias} dias, "
-        "registrado em {ferramenta}.",
+        "registrado em {plataforma}.",
         "Foram recebidas cerca de {poucos} manifestações no primeiro semestre, todas respondidas.",
     ),
     (
         "Atendimento interno",
         "Comunicação Interna",
         "Aviso de interrupções programadas",
-        "Falta de energia, água ou internet programadas pegavam os setores de surpresa. "
+        "Interrupções programadas de energia, água ou internet pegavam os setores de surpresa. "
         "Em {meses} meses, {multas} reuniões foram canceladas por isso.",
         "Aviso automático por e-mail e no mural digital {dias} dias antes de cada "
         "interrupção, enviado por {ferramenta}.",
@@ -1275,7 +1283,7 @@ CASOS = (
         "Guia de boas-vindas da unidade",
         "Colaboradores transferidos não sabiam onde ficava cada setor nem as regras locais. "
         "Cerca de {poucos} pessoas chegaram à unidade no último ano.",
-        "Guia de boas-vindas com mapa, contatos e rotinas, publicado em {ferramenta}.",
+        "Guia de boas-vindas com mapa, contatos e rotinas, publicado em {plataforma}.",
         "As dúvidas de recém-chegados na recepção caíram {pct}%.",
     ),
     (
@@ -1294,7 +1302,7 @@ CASOS = (
         "Endereçamento do arquivo físico",
         "As cerca de {qtd} caixas do arquivo físico não tinham endereço, e achar uma pasta "
         "levava {horas_curtas} horas.",
-        "Endereçamento por estante, prateleira e caixa, com índice pesquisável em {ferramenta}.",
+        "Endereçamento por estante, prateleira e caixa, com índice pesquisável em {plataforma}.",
         "Qualquer caixa é encontrada em poucos minutos.",
     ),
 )
@@ -1327,6 +1335,9 @@ def _valores(rng):
         "hora": rng.choice((9, 10)),
         "erp": rng.choice(ERPS),
         "ferramenta": rng.choice(FERRAMENTAS),
+        "plataforma": rng.choice(PLATAFORMAS),
+        "nivel": rng.randint(82, 98),
+        "economia": rng.randint(6, 24),
     }
 
 

@@ -52,7 +52,8 @@ não um repositório em uso.
 | Autores | 15 contas de colaboradores com nome e sobrenome, perfil USUARIO, sem senha utilizável, e-mail `nome.sobrenome@acervo.invalid` | Decisão do usuário (autores variados). O TLD `.invalid` é reservado e o e-mail não aparece nas telas | y |
 | Conta `demo` | A carga nova não a cria nem a usa | Ela é o que fazia o detalhe mostrar "Cadastrada por demo" | y |
 | Quem muda o status | O próprio autor da inovação | `avancar_status` não decide autorização; o autor é quem pode alterar (AD-009) | y |
-| Quem registra o reaproveitamento | Um autor do acervo diferente do autor da inovação | Plausível: alguém de outra unidade sinaliza o reuso | y |
+| Quem registra o reaproveitamento | Um autor do acervo diferente do autor da inovação (ACER-23) | Plausível: alguém de outra unidade sinaliza o reuso | y |
+| Datas geradas antes do início da carga (emenda de 2026-10-27) | ACER-14 e ACER-16 exigem datas anteriores ao início da execução, não só ordem e limite superior | Verifier, iteração 1: com só ordem e limite, histórico e reusos no minuto da carga passavam (M07, M18), contra o "datas espalhadas" do problema | y |
 | Janela de datas | Cadastros nos 540 dias (≈18 meses) antes da execução | Decisão do usuário (datas espalhadas). Relativa à execução, para continuar plausível em qualquer data | y |
 | Reprodutibilidade das datas | Os deslocamentos (dias e horas antes da execução) saem de um Random semeado pelo caso; as datas absolutas dependem do dia da execução | Rodar de novo no mesmo banco não mexe no que existe (idempotência); só os ausentes nascem com datas relativas ao novo dia | y |
 | Distribuição | Cada unidade, categoria e status em pelo menos 20 inovações | Mantém a garantia da antiga CONS-44, de que os testes de filtro do RNF08 dependem | y |
@@ -118,9 +119,10 @@ status e reusos registrados, para que detalhe e painel pareçam de um sistema em
 
 1. ACER-12: The system SHALL set every `data_criacao` within the 540 days before the command ran and not after it, spread over at least 12 distinct calendar months.
 2. ACER-13: The system SHALL give every Inovacao with status "Validada" exactly one MudancaDeStatus (Em teste → Validada) and every Inovacao with status "Disponível para replicação" exactly two (Em teste → Validada, Validada → Disponível para replicação), and SHALL give Inovacoes with status "Em teste" none.
-3. ACER-14: The system SHALL create every MudancaDeStatus through `Inovacao.avancar_status`, with the Inovacao's author as `responsavel`, and dated after the Inovacao's `data_criacao`, after the previous change of the same Inovacao, and not after the command ran.
+3. ACER-14: The system SHALL create every MudancaDeStatus through `Inovacao.avancar_status`, with the Inovacao's author as `responsavel`, and dated after the Inovacao's `data_criacao`, after the previous change of the same Inovacao, and before the command started.
 4. ACER-15: The system SHALL create at least 60 Reaproveitamentos through `Inovacao.registrar_reaproveitamento`, all on Inovacoes "Disponível para replicação", each in a Unidade other than the Inovacao's origin, and at least 30 distinct Inovacoes SHALL have one or more.
-5. ACER-16: The system SHALL date every Reaproveitamento after the date of its Inovacao's change to "Disponível para replicação" and not after the command ran.
+5. ACER-16: The system SHALL date every Reaproveitamento after the date of its Inovacao's change to "Disponível para replicação" and before the command started.
+6. ACER-23: The system SHALL register every Reaproveitamento by one of the 15 author accounts other than the Inovacao's author. *(Emenda de 2026-10-27, iteração 1 do Verifier: a premissa estava só em Assumptions.)*
 
 **Independent Test**: conferir datas, histórico e reusos no banco; abrir o painel de indicadores
 e ver números diferentes de zero.
@@ -197,8 +199,9 @@ novo.
 | ACER-20 | P1: Reproduzível e idempotente | Execute | Implementing |
 | ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
 | ACER-22 | P2: Desempenho RNF08 | Execute | Implementing |
+| ACER-23 | P1: Datas, histórico e reusos | Execute | Implementing |
 
-**Coverage:** 22 total, 22 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
+**Coverage:** 23 total (ACER-23 da emenda de 2026-10-27), 23 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 0 sem passo
 
 ---
 
