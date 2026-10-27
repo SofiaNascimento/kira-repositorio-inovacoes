@@ -4,6 +4,7 @@ O .vercelignore e lido com a semantica do .gitignore num repositorio temporario 
 .gitignore do projeto (que ja ignora o .env) nao faca o teste passar por engano.
 """
 
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -14,18 +15,28 @@ pytestmark = pytest.mark.unit
 
 RAIZ = Path(__file__).resolve().parents[2]
 
+# Sem a configuracao global e de sistema de quem roda o teste, nem o ignore padrao em
+# $XDG_CONFIG_HOME/git/ignore: um ".env" ali faria o teste passar com o .vercelignore errado.
+GIT_ISOLADO = {
+    **os.environ,
+    "GIT_CONFIG_GLOBAL": os.devnull,
+    "GIT_CONFIG_NOSYSTEM": "1",
+    "XDG_CONFIG_HOME": os.devnull,
+}
+
 
 @pytest.fixture(scope="module")
 def repositorio_vazio(tmp_path_factory):
     pasta = tmp_path_factory.mktemp("vercelignore")
-    subprocess.run(["git", "init", "-q", str(pasta)], check=True)
+    subprocess.run(["git", "init", "-q", str(pasta)], check=True, env=GIT_ISOLADO)
     shutil.copyfile(RAIZ / ".vercelignore", pasta / ".gitignore")
     return pasta
 
 
 def _ignorado(repositorio, caminho):
     resultado = subprocess.run(
-        ["git", "-C", str(repositorio), "check-ignore", "--no-index", "-q", caminho]
+        ["git", "-C", str(repositorio), "check-ignore", "--no-index", "-q", caminho],
+        env=GIT_ISOLADO,
     )
     assert resultado.returncode in (0, 1), f"git check-ignore falhou para {caminho}"
     return resultado.returncode == 0
