@@ -49,7 +49,7 @@ versão do Python (a Vercel cairia no 3.12 padrão, e o projeto mira 3.13).
 | ------- | ------ |
 | E-mail (SMTP, recuperação de senha por e-mail) | Fora do escopo pedido. |
 | Domínio próprio | Fora do escopo pedido; o sistema fica no domínio `*.vercel.app`. |
-| CI (build, testes ou deploy automáticos) | Fora do escopo pedido. O deploy acontece pelo Git conectado à Vercel ou pelo `vercel deploy`. |
+| CI (build, testes ou deploy automáticos) | Fora do escopo pedido. O deploy acontece pelo `vercel deploy --prod` da máquina local (emenda de 2026-10-27). |
 | Upload de arquivos (media, Vercel Blob) | Fora do escopo pedido; o sistema não tem campo de arquivo. |
 | Mover `kira.css` para `static/` (supersedir a AD-010) | Decidido com o usuário: manter o CSS embutido. Fica para quando houver motivo além do cache. |
 | WhiteNoise | Decidido com o usuário: a Vercel serve `/static/` pela CDN e o WhiteNoise fica inativo lá. Um deploy futuro em Render ou Railway volta a pedir um servidor de estáticos. |
@@ -76,6 +76,8 @@ versão do Python (a Vercel cairia no 3.12 padrão, e o projeto mira 3.13).
 | Testes de settings e o `.env` local | Cada teste de ambiente carrega `config/settings.py` num processo ou módulo isolado, com o ambiente controlado e sem ler o `.env` do desenvolvedor | O `load_dotenv` preencheria as variáveis que o teste removeu (por exemplo `DJANGO_SECRET_KEY`), e o teste passaria pelo motivo errado. O mecanismo é decidido no Execute | y |
 | URL de banco inválida (esquema desconhecido) | O carregamento das settings falha com a exceção do `dj-database-url` | Falhar no build é melhor que subir sem banco; não vira AC própria | y |
 | Idioma dos critérios | EARS em inglês, restante em português | Padrão das features anteriores | y |
+| Origem do deploy (emenda de 2026-10-27) | Vercel CLI (`npx vercel --prod`) enviando a pasta local, sem Git conectado | A conta do GitHub do usuário está suspensa; decisão do usuário (caminho B). A CLI não ignora o `.env` por padrão (só `.env.local` e `.env.*.local`), e o `load_dotenv` preencheria com ele o que faltar no painel, inclusive `DJANGO_DEBUG=True` | y |
+| Semântica do `.vercelignore` nos testes | A do `.gitignore`, conferida por `git check-ignore --no-index` num repositório temporário vazio | A Vercel descreve o arquivo como "similar a um `.gitignore`"; o repositório temporário isola o `.gitignore` do projeto, que já ignora o `.env` | y |
 
 **Open questions:** none (nenhuma); as três decisões pedidas foram tomadas com o usuário e o resto está registrado acima.
 
@@ -161,6 +163,24 @@ importar `config.wsgi`.
 
 ---
 
+### P1: Deploy pela CLI sem vazar o `.env` ⭐ MVP (emenda de 2026-10-27)
+
+**User Story**: Como responsável pelo deploy, sem acesso ao GitHub, quero publicar a pasta local
+pela CLI da Vercel sem que o meu `.env` de desenvolvimento suba junto.
+
+**Why P1**: Sem exclusão, o `.env` sobe com a chave local e `DJANGO_DEBUG=True`, e o `load_dotenv`
+o aplicaria a qualquer variável ausente no painel.
+
+**Acceptance Criteria**:
+
+1. DEPL-18: The repository SHALL contain a `.vercelignore` that, read with `.gitignore` semantics, ignores `.env`, `.env.producao`, `.specs/STATE.md`, `.claude/skills/x.md`, `.agents/x.json` and `docs/requisitos.md`, and does not ignore `manage.py`, `config/settings.py`, `config/wsgi.py`, `inovacoes/views.py`, `templates/kira.css`, `requirements.txt`, `.python-version` nor `vercel.json`.
+2. DEPL-19: `.gitignore` SHALL ignore `.vercel/`, the link directory the CLI creates.
+
+**Independent Test**: copiar o `.vercelignore` para o `.gitignore` de um repositório temporário
+vazio e consultar cada caminho com `git check-ignore --no-index`.
+
+---
+
 ### P2: Variáveis e passo a passo documentados
 
 **User Story**: Como quem vai publicar ou avaliar o projeto, quero saber quais variáveis definir e
@@ -193,9 +213,9 @@ Fora das ACs automatizadas. Roda depois do Execute, com o go-ahead explícito do
 operação remota (deploy, migrate no Supabase).
 
 1. Criar o projeto no Supabase e copiar a string do **transaction pooler** (porta 6543).
-2. Na Vercel, importar o repositório e definir `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` e `DATABASE_URL`, todas também no ambiente de build (o build roda o `manage.py`).
+2. Na Vercel (conta por e-mail), vincular a pasta com `npx vercel link` e definir `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` e `DATABASE_URL`, todas também no ambiente de build (o build roda o `manage.py`).
 3. Rodar `migrate` e `createsuperuser` da máquina local com `DATABASE_URL` apontando para o Supabase.
-4. Fazer o deploy e conferir no log de build: Python 3.13 e `collectstatic` executado.
+4. Fazer o deploy com `npx vercel --prod --logs` e conferir no log de build: Python 3.13, `collectstatic` executado e, na aba Source do deploy, ausência do `.env`.
 5. Abrir `https://<projeto>.vercel.app/entrar/`, entrar e ver a lista de inovações com o visual do `kira.css`.
 6. Cadastrar uma inovação (POST com CSRF atrás do proxy) e vê-la na lista e no detalhe.
 7. Abrir `/admin/` e conferir o CSS do admin, servido de `/static/admin/...` pela CDN.
@@ -225,12 +245,14 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-16 | P2: Documentação | Execute | Verified |
 | DEPL-17 | P2: Documentação | Execute | Verified |
+| DEPL-18 | P1: Deploy pela CLI | Execute | Pending |
+| DEPL-19 | P1: Deploy pela CLI | Execute | Pending |
 
-**Coverage:** 17 total, 17 mapeadas aos 5 passos do Execute (plano inline, sem `tasks.md`), 17 Verified (Verifier PASS, iteração 2)
+**Coverage:** 19 total (DEPL-18 e DEPL-19 da emenda de 2026-10-27), 17 Verified (Verifier PASS, iteração 2), 2 Pending
 
 ---
 
 ## Success Criteria
 
-- [ ] As 17 ACs passam em testes automatizados sem acesso à rede, e a suíte existente continua verde contra o Postgres local da porta 5433.
+- [ ] As 19 ACs passam em testes automatizados sem acesso à rede, e a suíte existente continua verde contra o Postgres local da porta 5433.
 - [ ] O roteiro de UAT manual chega ao passo 9 sem editar código.

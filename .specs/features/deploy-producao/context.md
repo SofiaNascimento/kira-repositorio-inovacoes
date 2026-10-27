@@ -33,6 +33,11 @@ para o admin, `.python-version` e `vercel.json`, `.env.example` e README. Sem te
 
 - `.python-version` com `3.13`. A Vercel aceita 3.12 (padrão), 3.13 e 3.14, segundo a documentação consultada em 2026-10-27.
 
+### Origem do deploy (emenda de 2026-10-27)
+
+- A conta do GitHub do usuário está suspensa. O deploy sai da pasta local pela Vercel CLI (`npx vercel --prod`), com conta na Vercel e no Supabase por e-mail (caminho B, decisão do usuário).
+- Um `.vercelignore` impede o upload do `.env` e do que é só de desenvolvimento (DEPL-18); `.vercel/` fica fora do git (DEPL-19).
+
 ### Agent's Discretion
 
 - Como os testes isolam o carregamento de `config/settings.py` do `.env` do desenvolvedor.
