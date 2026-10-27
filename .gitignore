@@ -222,3 +222,6 @@ __marimo__/
 
 # Saida do collectstatic (DEPL-10)
 staticfiles/
+
+# Vinculo local da Vercel CLI (DEPL-19)
+.vercel/

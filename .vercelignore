@@ -1,0 +1,13 @@
+# Upload da Vercel CLI (DEPL-18). A CLI nao ignora o .env por padrao, e o load_dotenv
+# preencheria com ele o que faltasse no painel. As variaveis de producao ficam na Vercel.
+.env
+.env.*
+
+# So desenvolvimento
+.specs/
+.claude/
+.agents/
+docs/
+.pytest_cache/
+.ruff_cache/
+staticfiles/

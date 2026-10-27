@@ -245,10 +245,10 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-16 | P2: Documentação | Execute | Verified |
 | DEPL-17 | P2: Documentação | Execute | Verified |
-| DEPL-18 | P1: Deploy pela CLI | Execute | Pending |
-| DEPL-19 | P1: Deploy pela CLI | Execute | Pending |
+| DEPL-18 | P1: Deploy pela CLI | Execute | Implementing |
+| DEPL-19 | P1: Deploy pela CLI | Execute | Implementing |
 
-**Coverage:** 19 total (DEPL-18 e DEPL-19 da emenda de 2026-10-27), 17 Verified (Verifier PASS, iteração 2), 2 Pending
+**Coverage:** 19 total (DEPL-18 e DEPL-19 da emenda de 2026-10-27), 17 Verified (Verifier PASS, iteração 2), 2 Implementing
 
 ---
 
