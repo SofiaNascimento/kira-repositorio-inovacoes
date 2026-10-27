@@ -15,7 +15,6 @@ from django.db import connection
 from django.test.utils import CaptureQueriesContext
 
 from inovacoes.busca import normalizar
-from inovacoes.management.commands.carregar_demonstracao import VOCABULARIO
 from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
 from inovacoes.tests.test_views_lista import LISTA, _linhas
 
@@ -51,18 +50,20 @@ def test_listagem_com_500_inovacoes_responde_em_menos_de_2_segundos(logado, demo
 def test_busca_de_duas_palavras_com_tres_filtros_responde_em_menos_de_2_segundos(
     logado, demonstracao
 ):
-    """CONS-47: duas palavras do vocabulario + categoria + unidade + status."""
-    # A distribuicao da carga (CONS-44): i % 5 escolhe a unidade, (i // 5) % 5 a
-    # categoria e i % 3 o status. Todo trio cuja conta fecha tem resultado.
-    unidades = list(Unidade.objects.all())
-    categorias = list(Categoria.objects.all())
-    unidade, categoria, status = unidades[2], categorias[1], StatusInovacao.values[1]
-    numeros = [i for i in range(1, 501) if i % 5 == 2 and (i // 5) % 5 == 1 and i % 3 == 1]
-    assert numeros, "o trio escolhido precisa ter ao menos uma inovacao na carga"
-    # Duas palavras do vocabulario que a primeira inovacao do trio contem.
-    alvo = Inovacao.objects.get(titulo=f"Demonstração {numeros[0]:03d}")
-    texto = normalizar(f"{alvo.problema} {alvo.solucao}")
-    palavras = [p for p in VOCABULARIO if " " not in p and normalizar(p) in texto][:2]
+    """CONS-47: duas palavras do conteudo carregado + categoria + unidade + status.
+
+    ACER-21: os termos saem do proprio conteudo, nao de um vocabulario fixo. O alvo
+    e a primeira inovacao "Validada" por titulo; o trio de filtros e o dela.
+    """
+    alvo = Inovacao.objects.filter(status=StatusInovacao.VALIDADA).order_by("titulo", "pk").first()
+    assert alvo is not None, "a carga precisa ter inovacoes validadas"
+    unidade, categoria, status = alvo.unidade, alvo.categoria, alvo.status
+    # Duas palavras longas e distintas do problema do alvo, com acento se tiverem.
+    palavras = []
+    for palavra in re.findall(r"\w{7,}", alvo.problema):
+        if normalizar(palavra) not in {normalizar(p) for p in palavras}:
+            palavras.append(palavra)
+    palavras = palavras[:2]
     assert len(palavras) == 2
     # Resultado esperado, sem passar pelo buscar() nem pelo filtrar().
     esperados = sorted(

@@ -195,8 +195,8 @@ novo.
 | ACER-18 | P1: Reproduzível e idempotente | - | Pending |
 | ACER-19 | P1: Reproduzível e idempotente | - | Pending |
 | ACER-20 | P1: Reproduzível e idempotente | - | Pending |
-| ACER-21 | P2: Desempenho RNF08 | - | Pending |
-| ACER-22 | P2: Desempenho RNF08 | - | Pending |
+| ACER-21 | P2: Desempenho RNF08 | Execute | Implementing |
+| ACER-22 | P2: Desempenho RNF08 | Execute | Implementing |
 
 **Coverage:** 22 total, 0 mapped to tasks, 22 unmapped ⚠️
 

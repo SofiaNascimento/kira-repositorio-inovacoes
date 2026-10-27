@@ -23,15 +23,19 @@ REAPROVEITAMENTOS_DA_CARGA = 200
 
 
 def _reaproveitar_a_demonstracao(por):
-    """200 reaproveitamentos sobre inovacoes "Disponivel" da demonstracao, em unidades != origem."""
+    """200 reaproveitamentos a mais sobre inovacoes "Disponivel", em unidades != origem.
+
+    ACER-22: a carga ja traz reaproveitamentos proprios; os pares que ja existem ficam de fora.
+    """
     unidades = list(Unidade.objects.order_by("nome"))
     disponiveis = Inovacao.objects.filter(
-        autor__username="demo", status=StatusInovacao.DISPONIVEL_PARA_REPLICACAO
-    ).order_by("titulo")
+        status=StatusInovacao.DISPONIVEL_PARA_REPLICACAO
+    ).order_by("titulo", "pk")
     criados = 0
     for inovacao in disponiveis:
+        ja_reaproveitaram = set(inovacao.reaproveitamentos.values_list("unidade_id", flat=True))
         for unidade in unidades:
-            if unidade.pk == inovacao.unidade_id:
+            if unidade.pk == inovacao.unidade_id or unidade.pk in ja_reaproveitaram:
                 continue
             inovacao.registrar_reaproveitamento(unidade=unidade, por=por)
             criados += 1
@@ -42,8 +46,13 @@ def _reaproveitar_a_demonstracao(por):
 
 @pytest.fixture
 def demonstracao_com_reaproveitamentos(demonstracao, autor):  # noqa: F811
-    """Carga fora da medicao: 500 inovacoes e 200 reaproveitamentos."""
+    """Carga fora da medicao: 500 inovacoes, os reusos da carga e mais 200.
+
+    Devolve o total de reaproveitamentos esperado no painel.
+    """
+    da_carga = Reaproveitamento.objects.count()
     _reaproveitar_a_demonstracao(autor)
+    return da_carga + REAPROVEITAMENTOS_DA_CARGA
 
 
 def _card(html, rotulo):
@@ -60,8 +69,9 @@ def test_painel_com_a_demonstracao_e_200_reaproveitamentos_responde_em_menos_de_
     client, terceiro, demonstracao_com_reaproveitamentos
 ):
     """REAP-41."""
+    total = demonstracao_com_reaproveitamentos
     assert Inovacao.objects.count() == 500
-    assert Reaproveitamento.objects.count() == REAPROVEITAMENTOS_DA_CARGA
+    assert Reaproveitamento.objects.count() == total
     client.force_login(terceiro)
 
     resposta, segundos = _medir(client)
@@ -69,11 +79,11 @@ def test_painel_com_a_demonstracao_e_200_reaproveitamentos_responde_em_menos_de_
     assert resposta.status_code == 200
     html = resposta.content.decode()
     assert _card(html, "Inovações cadastradas") == "500"
-    assert _card(html, "Reaproveitamentos registrados") == "200"
+    assert _card(html, "Reaproveitamentos registrados") == str(total)
     # L-028, L-030: os cards ficam na tela e no leitor de tela.
     visivel = exibido(html)
     assert _card(visivel, "Inovações cadastradas") == "500"
-    assert _card(visivel, "Reaproveitamentos registrados") == "200"
+    assert _card(visivel, "Reaproveitamentos registrados") == str(total)
     assert segundos < LIMITE_EM_SEGUNDOS
 
 
@@ -109,5 +119,6 @@ def test_numero_de_consultas_do_painel_nao_cresce_com_o_volume(
     assert resposta.status_code == 200
     html = resposta.content.decode()
     assert _card(html, "Inovações cadastradas") == "501"
-    assert _card(html, "Reaproveitamentos registrados") == "201"
+    assert _card(html, "Reaproveitamentos registrados") == str(Reaproveitamento.objects.count())
+    assert Reaproveitamento.objects.count() >= 201
     assert len(grande) == len(pequeno)
