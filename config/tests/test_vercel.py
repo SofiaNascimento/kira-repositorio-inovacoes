@@ -1,9 +1,10 @@
-"""Projeto reconhecido pelo runtime Python da Vercel: DEPL-12 a DEPL-14."""
+"""Projeto reconhecido pelo runtime Python da Vercel: DEPL-12 a DEPL-14 e DEPL-20."""
 
 import glob
 import importlib
 import json
 import re
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -53,3 +54,17 @@ def test_vercel_json_tira_do_bundle_o_que_nao_roda(exclusao, caminho):
 def test_vercel_json_mantem_o_que_roda(exclusao, caminho):
     """DEPL-14: codigo e templates continuam no bundle."""
     assert not _casa(exclusao, caminho)
+
+
+def _runtime_do_requirements():
+    linhas = (RAIZ / "requirements.txt").read_text().splitlines()
+    runtime = linhas[: linhas.index("# Desenvolvimento e testes")]
+    return [linha.strip() for linha in runtime if linha.strip() and not linha.startswith("#")]
+
+
+def test_pyproject_declara_as_mesmas_dependencias_de_runtime():
+    """DEPL-20: a Vercel instala do pyproject.toml se for ele o escolhido."""
+    projeto = tomllib.loads((RAIZ / "pyproject.toml").read_text())["project"]
+    assert projeto["dependencies"] == _runtime_do_requirements()
+    assert "Django>=5.2,<5.3" in projeto["dependencies"]
+    assert projeto["requires-python"] == ">=3.13,<3.14"

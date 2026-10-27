@@ -1,3 +1,16 @@
+# DEPL-20: as dependencias de runtime ficam aqui e no requirements.txt (que tambem traz
+# as de desenvolvimento). A Vercel instala de um dos dois; um teste exige as duas iguais.
+[project]
+name = "kira-repositorio-inovacoes"
+version = "0.1.0"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "Django>=5.2,<5.3",
+    "psycopg[binary]>=3.2,<4",
+    "python-dotenv>=1.0,<2",
+    "dj-database-url>=3.1,<4",
+]
+
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_files = ["test_*.py"]

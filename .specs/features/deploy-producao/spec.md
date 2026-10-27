@@ -76,6 +76,7 @@ versão do Python (a Vercel cairia no 3.12 padrão, e o projeto mira 3.13).
 | Testes de settings e o `.env` local | Cada teste de ambiente carrega `config/settings.py` num processo ou módulo isolado, com o ambiente controlado e sem ler o `.env` do desenvolvedor | O `load_dotenv` preencheria as variáveis que o teste removeu (por exemplo `DJANGO_SECRET_KEY`), e o teste passaria pelo motivo errado. O mecanismo é decidido no Execute | y |
 | URL de banco inválida (esquema desconhecido) | O carregamento das settings falha com a exceção do `dj-database-url` | Falhar no build é melhor que subir sem banco; não vira AC própria | y |
 | Idioma dos critérios | EARS em inglês, restante em português | Padrão das features anteriores | y |
+| Dependências no `pyproject.toml` (emenda de 2026-10-27) | `[project]` com as mesmas dependências de runtime do `requirements.txt` e `requires-python` 3.13; o `requirements.txt` continua para o desenvolvimento local | O primeiro `vercel --prod` não instalou nada e falhou ao ler o `manage.py` (`No module named 'django'`). Com dependências nos dois arquivos, o build não depende de qual a Vercel prefere. Substitui a premissa anterior de evitar a tabela `[project]` | y |
 | Origem do deploy (emenda de 2026-10-27) | Vercel CLI (`npx vercel --prod`) enviando a pasta local, sem Git conectado | A conta do GitHub do usuário está suspensa; decisão do usuário (caminho B). A CLI não ignora o `.env` por padrão (só `.env.local` e `.env.*.local`), e o `load_dotenv` preencheria com ele o que faltar no painel, inclusive `DJANGO_DEBUG=True` | y |
 | Semântica do `.vercelignore` nos testes | A do `.gitignore`, conferida por `git check-ignore --no-index` num repositório temporário vazio | A Vercel descreve o arquivo como "similar a um `.gitignore`"; o repositório temporário isola o `.gitignore` do projeto, que já ignora o `.env` | y |
 
@@ -157,6 +158,7 @@ uso localmente.
 2. DEPL-13: The system SHALL keep `WSGI_APPLICATION = "config.wsgi.application"`, and importing `config.wsgi` SHALL expose a callable named `application`.
 3. DEPL-14: The repository SHALL contain a `vercel.json` that parses as JSON and whose `functions["config/wsgi.py"].excludeFiles` glob matches `inovacoes/tests/test_models.py`, `docs/requisitos.md` and `.specs/STATE.md` and does not match `inovacoes/views.py` nor `templates/kira.css`.
 4. DEPL-15: `requirements.txt` SHALL list `dj-database-url` in its runtime section, before the development section.
+5. DEPL-20: `pyproject.toml` SHALL have a `[project]` table whose `dependencies` equal, line by line, the runtime section of `requirements.txt`, and whose `requires-python` is `>=3.13,<3.14`. *(Emenda de 2026-10-27: o primeiro deploy pela CLI falhou com `No module named 'django'`; o `pyproject.toml` sem dependências deixou a Vercel sem nada para instalar.)*
 
 **Independent Test**: ler os arquivos do repositório e conferir conteúdo e casamento de globs;
 importar `config.wsgi`.
@@ -247,8 +249,9 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-17 | P2: Documentação | Execute | Verified |
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
+| DEPL-20 | P1: Runtime da Vercel | Execute | Implementing |
 
-**Coverage:** 19 total (DEPL-18 e DEPL-19 da emenda de 2026-10-27), 18 Verified (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
+**Coverage:** 20 total (DEPL-18, DEPL-19 e DEPL-20 das emendas de 2026-10-27), 18 Verified (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
 
 ---
 
