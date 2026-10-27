@@ -81,3 +81,15 @@ def test_env_example_lista_toda_variavel_lida_pelo_settings():
 def test_readme_tem_o_passo_a_passo_de_deploy(termo):
     """DEPL-17: a secao de deploy nomeia as variaveis e os comandos contra o Supabase."""
     assert termo in _secao_de_deploy()
+
+
+@pytest.mark.parametrize(
+    "comando", ["python manage.py migrate", "python manage.py createsuperuser"]
+)
+def test_readme_roda_os_comandos_contra_o_supabase(comando):
+    """DEPL-17: cada linha que roda o comando aponta a DATABASE_URL para o Supabase."""
+    linhas = [linha for linha in _secao_de_deploy().splitlines() if comando in linha]
+    assert linhas
+    assert all(
+        re.search(r"DATABASE_URL='postgresql://[^']*supabase\.com[^']*'", linha) for linha in linhas
+    )
