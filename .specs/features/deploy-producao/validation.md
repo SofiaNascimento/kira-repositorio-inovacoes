@@ -322,3 +322,47 @@ iteração do Verifier.
   apontada em "Observações" e ajusta o passo 1.3 do roteiro à janela "Conectar" do Supabase.
 - **Risco que sobra**: a semântica real do `.vercelignore` na CLI só aparece no deploy. O passo
   3.8 do roteiro e o passo 4 do UAT conferem a ausência do `.env` na aba Source.
+
+---
+
+## Emenda DEPL-20 (2026-10-27)
+
+**Diff range**: `19501ea..a3575ae` (só `pyproject.toml`, `config/tests/test_vercel.py` e a spec
+da deploy-producao). **Verifier**: independent sub-agent. **Resultado da emenda**: PASS ✅. O
+veredito registrado da iteração 3 (FAIL, com risco aceito pelo usuário) não muda.
+
+O primeiro `npx vercel --prod` falhou com `No module named 'django'`: a Vercel instalou do
+`pyproject.toml`, que só tinha configuração de ferramentas. A emenda declara as dependências de
+runtime em `[project]`.
+
+| AC | Spec-defined outcome | `file:line` + assertion | Result |
+| -- | -------------------- | ----------------------- | ------ |
+| DEPL-20 | `[project].dependencies` igual, linha a linha, à seção de runtime do `requirements.txt`; `requires-python == ">=3.13,<3.14"` | `config/tests/test_vercel.py:68` - `projeto["dependencies"] == _runtime_do_requirements()` (lista exata, com ordem; runtime recortado em `:59-62` até `# Desenvolvimento e testes`); `:69` - `"Django>=5.2,<5.3" in projeto["dependencies"]`; `:70` - `projeto["requires-python"] == ">=3.13,<3.14"` | ✅ PASS |
+
+- Produção: `pyproject.toml:3-12` (`[project]`, `requires-python` em `:6`, quatro dependências
+  iguais a `requirements.txt:2-5`).
+- O teste não passa por acidente. A comparação é de lista (ordem e conteúdo). O `assert` do
+  Django em `:69` impede que os dois lados vazios, ou sem o Django, passem juntos (Q5). As
+  dependências de desenvolvimento ficam de fora pelo recorte em `# Desenvolvimento e testes` (Q4).
+- Observação, sem gap: a premissa antiga "Versão do Python" da spec ainda justifica o
+  `.python-version` com "evita criar a tabela `[project]`". A linha nova das Assumptions diz que a
+  substitui; fica coerente pela linha nova, mas o texto antigo continua lá.
+
+**Sensor** (worktree temporário em `a3575ae`; `DATABASE_URL` sem valor; baseline 8/8 verdes em
+`-k "vercel and not vercelignore"`):
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| Q1 | `pyproject.toml:11` | Remove `dj-database-url` do `[project]` | ✅ Killed (1) |
+| Q2 | `pyproject.toml:8-9` | Troca a ordem de Django e psycopg | ✅ Killed (1) |
+| Q3 | `pyproject.toml:6` | `requires-python = ">=3.12"` | ✅ Killed (1) |
+| Q4 | `pyproject.toml:11` | Acrescenta `pytest>=8.3,<9` às dependências | ✅ Killed (1) |
+| Q5 | `pyproject.toml:8` + `requirements.txt:2` | Remove o Django dos dois lados (continuam iguais) | ✅ Killed (1) |
+
+**Result**: 5/5 killed. Worktree removido (`remove --force` + `prune`); `git status --porcelain`
+do repositório real igual ao baseline.
+
+**Gate (regressão DEPL-01..19)**: ruff ok, format ok (147 arquivos), sem migrations pendentes;
+934 passed, 0 failed, 0 skipped.
+
+**Traceability**: DEPL-20 Implementing → ✅ Verified.

@@ -66,7 +66,7 @@ versão do Python (a Vercel cairia no 3.12 padrão, e o projeto mira 3.13).
 | CSS das telas | Continua embutido (`<style>{% include "kira.css" %}</style>`); a AD-010 não é supersedida | Decisão do usuário no Specify; a feature fica só em configuração e nenhum teste da F1 à F6 muda | y |
 | Configuração do banco | `DATABASE_URL`, lida por `dj-database-url`, quando definida e não vazia; senão as `POSTGRES_*` atuais | Decisão do usuário. A string do pooler do Supabase entra em uma variável só, e a presença dela é o que liga o modo produção do banco | y |
 | WhiteNoise | Não incluir; só `STATIC_ROOT` | Decisão do usuário, com base na documentação da Vercel (CDN + `collectstatic` automático) | y |
-| Versão do Python | Arquivo `.python-version` com `3.13` | A Vercel aceita 3.13 (fonte acima). O `.python-version` evita criar a tabela `[project]` no `pyproject.toml`, que poderia mudar como a Vercel instala as dependências (hoje pelo `requirements.txt`) | y |
+| Versão do Python | Arquivo `.python-version` com `3.13` | A Vercel aceita 3.13 (fonte acima). Premissa original de evitar a tabela `[project]` substituída pela DEPL-20 (emenda de 2026-10-27): a Vercel instala do `pyproject.toml` | y |
 | `sslmode` com `DATABASE_URL` | Sempre `require`, mesmo que a URL traga outro `sslmode` na query | O Supabase exige SSL; uma URL copiada com `sslmode=disable` não pode desligar isso em produção | y |
 | `CONN_MAX_AGE` com `DATABASE_URL` | `0` (uma conexão por requisição) | O pooler já reaproveita conexões; uma conexão persistente numa função serverless fica pendurada quando a instância congela | y |
 | Prepared statements no pooler | Nenhum ajuste; `server_side_binding` fica desligado (padrão) | Django 5.2 + psycopg 3 usa ligação do lado do cliente por padrão (fonte acima) | y |
@@ -249,9 +249,9 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-17 | P2: Documentação | Execute | Verified |
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
-| DEPL-20 | P1: Runtime da Vercel | Execute | Implementing |
+| DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
 
-**Coverage:** 20 total (DEPL-18, DEPL-19 e DEPL-20 das emendas de 2026-10-27), 18 Verified (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
+**Coverage:** 20 total (DEPL-18, DEPL-19 e DEPL-20 das emendas de 2026-10-27), 19 Verified (DEPL-20 na verificação da emenda) (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
 
 ---
 
