@@ -1,5 +1,202 @@
 # KIRA — Conhecimento, Inovação e Replicação Administrativa
 
+> Sistema web para registro, compartilhamento, consulta e reaproveitamento de inovações de back office entre unidades de uma organização.
+
+**Sistema publicado:** <https://kira-nu-green.vercel.app>
+
+![Status](https://img.shields.io/badge/status-MVP%20publicado-brightgreen)
+![Projeto](https://img.shields.io/badge/projeto-TCC-blue)
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![Django](https://img.shields.io/badge/Django-5.2-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue)
+![License](https://img.shields.io/badge/license-a%20definir-lightgrey)
+
+---
+
+## 📌 Sobre o projeto
+
+O **KIRA — Conhecimento, Inovação e Replicação Administrativa** é uma aplicação web desenvolvida como protótipo funcional (MVP) de um Trabalho de Conclusão de Curso.
+
+O sistema tem como objetivo apoiar o **registro, a consulta e o compartilhamento de inovações de back office** desenvolvidas por diferentes unidades de uma mesma organização.
+
+A proposta parte do problema de que soluções administrativas desenvolvidas localmente podem permanecer restritas à unidade onde surgiram. Como consequência, outras unidades podem enfrentar problemas semelhantes e desenvolver novamente soluções que já existem dentro da própria organização.
+
+O KIRA propõe um repositório centralizado no qual essas iniciativas possam ser documentadas, pesquisadas e disponibilizadas para replicação.
+
+A aplicação é voltada para inovações relacionadas aos processos internos da organização, como:
+
+- Financeiro;
+- Recursos Humanos;
+- Tecnologia da Informação interna;
+- Compras;
+- Atendimento interno;
+- Processos administrativos;
+- Outras atividades de back office.
+
+---
+
+## 🎯 Objetivo
+
+Desenvolver um sistema web capaz de centralizar o conhecimento relacionado às inovações administrativas desenvolvidas nas diferentes unidades de uma organização, permitindo seu registro, consulta e reaproveitamento.
+
+O sistema busca contribuir para:
+
+- reduzir retrabalho entre unidades;
+- facilitar a descoberta de soluções já desenvolvidas internamente;
+- estimular o compartilhamento de conhecimento;
+- apoiar a replicação de boas práticas;
+- preservar conhecimento organizacional;
+- facilitar o contato entre unidades interessadas em uma solução;
+- fornecer uma visão estruturada das iniciativas existentes.
+
+---
+
+## 🛠️ Tecnologias
+
+### Back-end
+
+- **Python**
+- **Django**
+
+O Django é utilizado como framework principal da aplicação e também fornece os mecanismos de autenticação e gerenciamento de sessão.
+
+### Banco de dados
+
+- **PostgreSQL**
+
+O banco relacional é responsável pela persistência dos dados e manutenção da integridade referencial.
+
+### Front-end
+
+A interface usa templates do Django com HTML semântico e uma folha de estilo própria (`templates/kira.css`), sem framework de CSS. O visual segue o `docs/design-spec.md`; os gráficos do painel de indicadores são SVG gerados no servidor.
+
+### Hospedagem
+
+- **Vercel** (runtime Python) para a aplicação;
+- **Supabase** para o PostgreSQL, acessado pelo pooler de conexões.
+
+---
+
+## ♿ Acessibilidade
+
+O KIRA considera acessibilidade como um requisito essencial da interface.
+
+O projeto busca conformidade com:
+
+- **WCAG 2.1 — nível AA**;
+- **eMAG — Modelo de Acessibilidade em Governo Eletrônico**.
+
+Entre os aspectos considerados estão:
+
+- contraste adequado;
+- navegação por teclado;
+- foco visível;
+- HTML semântico;
+- rótulos associados aos campos dos formulários;
+- alternativas textuais para imagens;
+- interface que não dependa exclusivamente de cores para transmitir informação.
+
+---
+
+## 🌐 Compatibilidade
+
+A aplicação será desenvolvida para navegadores modernos, incluindo:
+
+- Google Chrome;
+- Mozilla Firefox;
+- Microsoft Edge.
+
+A interface também deverá ser responsiva para utilização em:
+
+- desktop;
+- tablet.
+
+O desenvolvimento de aplicativo móvel nativo não faz parte do escopo.
+
+---
+
+## ⚙️ Instalação
+
+Requisitos: Python 3.13 e PostgreSQL 16.
+
+### 1. Clone o repositório
+
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd kira-repositorio-inovacoes
+```
+
+### 2. Crie um ambiente virtual
+
+```bash
+python -m venv .venv
+```
+
+### 3. Ative o ambiente virtual
+
+#### Windows
+
+```bash
+.venv\Scripts\activate
+```
+
+#### Linux/macOS
+
+```bash
+source .venv/bin/activate
+```
+
+### 4. Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Configure o ambiente e o banco de dados
+
+Copie o modelo de variáveis e ajuste-o (chave secreta, `DJANGO_DEBUG=True` e os dados do PostgreSQL local):
+
+```bash
+cp .env.example .env
+```
+
+Crie o banco indicado em `POSTGRES_DB` no PostgreSQL local. Sem `DATABASE_URL` definida, o sistema usa as variáveis `POSTGRES_*`.
+
+### 6. Execute as migrações
+
+```bash
+python manage.py migrate
+```
+
+### 7. Inicie o servidor
+
+```bash
+python manage.py runserver
+```
+
+A aplicação estará disponível, por padrão, em:
+
+```text
+http://127.0.0.1:8000/
+```
+
+### 8. (Opcional) Carregue o acervo de demonstração
+
+```bash
+python manage.py createsuperuser
+python manage.py carregar_demonstracao
+```
+
+O segundo comando cria 500 inovações de demonstração, com autores, histórico de status e reaproveitamentos (RNF08).
+
+### 9. Rode os testes
+
+```bash
+pytest -q
+```
+
+---
+
 ## Deploy em produção (Vercel + Supabase)
 
 A aplicação roda na Vercel como uma função Python (Django detectado pelo `manage.py`, entrada
@@ -59,3 +256,71 @@ O roteiro detalhado, com telas, conferência e problemas comuns, está em
 
 A cada mudança de model, repita o `manage.py migrate` do passo 2 **antes** do deploy do código
 que depende dela.
+
+---
+
+## 📚 Contexto acadêmico
+
+Este projeto é desenvolvido como parte de um **Trabalho de Conclusão de Curso (TCC)**.
+
+O MVP busca integrar conhecimentos relacionados a:
+
+- Engenharia de Software;
+- Engenharia de Requisitos;
+- Desenvolvimento Web;
+- Banco de Dados;
+- Interação Humano-Computador;
+- UX/UI;
+- Acessibilidade;
+- Segurança da Informação;
+- Gestão do Conhecimento;
+- Governança de TI;
+- Qualidade de Software.
+
+---
+
+## 📖 Referências e fundamentos
+
+O desenvolvimento e a avaliação do projeto consideram, entre outros referenciais:
+
+- ISO/IEC 25010 — qualidade de software;
+- Heurísticas de Usabilidade de Nielsen;
+- System Usability Scale (SUS);
+- Web Content Accessibility Guidelines (WCAG) 2.1;
+- eMAG — Modelo de Acessibilidade em Governo Eletrônico;
+- Lei Geral de Proteção de Dados Pessoais (LGPD);
+- Objetivos de Desenvolvimento Sustentável (ODS).
+
+As referências bibliográficas completas serão mantidas no trabalho acadêmico.
+
+---
+
+## 👩‍💻 Autoria
+
+**Ruan Almeida**
+**Sofia Nascimento**
+
+Projeto desenvolvido como Trabalho de Conclusão de Curso.
+
+**Curso:** `Sistemas de Informação`  
+**Instituição:** `Centro Universitário Fametro`  
+**Orientador(a):** `Luana Leal`  
+**Ano:** `2026`
+
+---
+
+## 📄 Licença
+
+A licença de distribuição do projeto ainda será definida.
+
+Enquanto não houver uma licença explicitamente associada ao repositório, o código não deve ser considerado disponibilizado sob uma licença open source.
+
+---
+
+<p align="center">
+  <strong>KIRA — Conhecimento, Inovação e Replicação Administrativa</strong>
+</p>
+
+<p align="center">
+  Transformando soluções locais em conhecimento compartilhado.
+</p>
