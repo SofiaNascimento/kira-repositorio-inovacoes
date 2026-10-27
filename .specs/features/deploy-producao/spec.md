@@ -217,8 +217,8 @@ operação remota (deploy, migrate no Supabase).
 | DEPL-07 | P1: Banco de produção | Execute | Implementing |
 | DEPL-08 | P1: Banco de produção | Execute | Implementing |
 | DEPL-09 | P1: Banco de produção | Execute | Implementing |
-| DEPL-10 | P1: Estáticos do admin | Execute | Pending |
-| DEPL-11 | P1: Estáticos do admin | Execute | Pending |
+| DEPL-10 | P1: Estáticos do admin | Execute | Implementing |
+| DEPL-11 | P1: Estáticos do admin | Execute | Implementing |
 | DEPL-12 | P1: Runtime da Vercel | Execute | Pending |
 | DEPL-13 | P1: Runtime da Vercel | Execute | Pending |
 | DEPL-14 | P1: Runtime da Vercel | Execute | Pending |
