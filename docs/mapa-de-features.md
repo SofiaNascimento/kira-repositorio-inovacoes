@@ -32,8 +32,8 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
 | Feature | O que entregou | Situação (2026-10-27) |
 | ------- | -------------- | --------------------- |
 | sistema-de-design | Template base único e folha `kira.css` a partir da `design-spec.md` (AD-010) | Concluída (Verifier PASS) |
-| deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Supabase; roteiro em `docs/roteiro-deploy.md` | Publicada em `https://kira-nu-green.vercel.app`; risco de teste aceito numa emenda; UAT da Parte 4 pendente |
-| acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no Supabase pendente |
+| deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Neon (plano gratuito, São Paulo); roteiro em `docs/roteiro-deploy.md` | Publicada em `https://kira-nu-green.vercel.app`; reaberta em 2026-11-09 para trocar o banco pelo Neon; troca na nuvem e UAT da Parte 4 pendentes |
+| acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no banco de produção (Neon) pendente |
 
 ---
 
