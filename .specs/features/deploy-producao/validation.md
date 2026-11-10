@@ -366,3 +366,157 @@ do repositório real igual ao baseline.
 934 passed, 0 failed, 0 skipped.
 
 **Traceability**: DEPL-20 Implementing → ✅ Verified.
+
+---
+
+## Emenda Neon (2026-11-09)
+
+**Diff range**: `b3326a6..f60c7ff` (`85979e9` spec, `34032a6` testes do settings, `70ec663`
+README e `.env.example`, `1c2c68b` roteiro, `f60c7ff` mapa e teste da DEPL-22).
+**Verifier**: independent sub-agent (author ≠ verifier). **Resultado da emenda**: PASS ✅. O
+veredito registrado da iteração 3 (FAIL, com risco aceito na DEPL-18) não muda.
+
+O banco de produção sai do Supabase e vai para o Neon. O settings só troca o comentário
+(`config/settings.py:97-98`); o `dj_database_url.parse(..., conn_max_age=0, ssl_require=True,
+disable_server_side_cursors=True)` de `:96-105` é o mesmo. O trabalho é de teste e documentação.
+
+### Spec-anchored check
+
+| AC | Spec-defined outcome | `file:line` + assertion | Result |
+| -- | -------------------- | ----------------------- | ------ |
+| DEPL-06 (emendada) | URL pooled do Neon → `ENGINE` `django.db.backends.postgresql`, `NAME` `neondb`, `USER` `neondb_owner`, `PASSWORD` `s@nha`, `HOST` `ep-calm-sun-a1b2c3d4-pooler.sa-east-1.aws.neon.tech`, `PORT` `""` | `config/tests/test_settings_banco.py:12-15` (URL igual, caractere por caractere, à da spec); `:32-37` - `banco["ENGINE"] == "django.db.backends.postgresql"`, `banco["NAME"] == "neondb"`, `banco["USER"] == "neondb_owner"`, `banco["PASSWORD"] == "s@nha"`, `banco["HOST"] == "ep-calm-sun-a1b2c3d4-pooler.sa-east-1.aws.neon.tech"`, `banco["PORT"] == ""` | ✅ PASS |
+| DEPL-07 (regressão) | `OPTIONS["sslmode"] == "require"`, inclusive com `sslmode=disable` na query | `:42` - `["OPTIONS"]["sslmode"] == "require"`; `:47-50` - `"sslmode=disable" in url` (guarda contra replace sem efeito) e `banco["OPTIONS"]["sslmode"] == "require"` | ✅ PASS |
+| DEPL-08 (regressão) | `DISABLE_SERVER_SIDE_CURSORS = True` e `CONN_MAX_AGE = 0` | `:61` - `banco["DISABLE_SERVER_SIDE_CURSORS"] is True`; `:62` - `banco["CONN_MAX_AGE"] == 0` | ✅ PASS |
+| DEPL-09 (regressão) | Sem `DATABASE_URL` (ou vazia): `POSTGRES_*`, `PORT` `5433`, sem `sslmode`, sem `DISABLE_SERVER_SIDE_CURSORS = True` | `:65` - parametrizado em `LOCAL` e `{**LOCAL, "DATABASE_URL": ""}`; `:69-76` - os seis campos com valor exato, `banco["PORT"] == "5433"`, `"sslmode" not in banco.get("OPTIONS", {})`, `banco.get("DISABLE_SERVER_SIDE_CURSORS", False) is not True` | ✅ PASS |
+| DEPL-21 (nova) | `channel_binding=require` na query → `OPTIONS["channel_binding"] == "require"` | `:55` - `_banco(DATABASE_URL=URL_POOLER)["OPTIONS"]["channel_binding"] == "require"` | ✅ PASS |
+| DEPL-16 (regressão) | `.env.example` lista todo nome lido pelo settings, inclusive `DJANGO_CSRF_TRUSTED_ORIGINS` e `DATABASE_URL` | `config/tests/test_documentacao_deploy.py:66` - `{"DJANGO_CSRF_TRUSTED_ORIGINS", "DATABASE_URL"} <= lidos`; `:67` - `lidos <= chaves` (nomes coletados nos dois ramos, `:40-50`) | ✅ PASS |
+| DEPL-17 (emendada), parte 1 | Seção de deploy nomeia as cinco variáveis | `:70-84` - `termo in _secao_de_deploy()` para cada uma das cinco (e os dois comandos) | ✅ PASS |
+| DEPL-17 (emendada), parte 2 | Toda linha da seção de deploy que roda `python manage.py migrate`/`createsuperuser` põe `DATABASE_URL` entre aspas simples, `postgresql://`, host terminando em `.neon.tech` e sem `-pooler` | `:92-93` - linhas filtradas por `comando in linha`, com `assert linhas` (não passa vazio); `:95-96` - `re.search(r"DATABASE_URL='(postgresql://[^']*)'", linha)`; `:98` - `host.endswith(".neon.tech")`; `:99` - `"-pooler" not in host` | ✅ PASS |
+| DEPL-22 (nova) | Os cinco arquivos não contêm `supabase` em nenhuma caixa | `:108-120` - parametrizado nos cinco arquivos da spec; `"supabase" not in (RAIZ / arquivo).read_text().lower()` | ✅ PASS |
+| DEPL-23 (nova) | Roteiro contém `neon.tech`, `aws-sa-east-1` e `-pooler` | `:102-105` - `termo in (RAIZ / "docs" / "roteiro-deploy.md").read_text()` para os três | ✅ PASS |
+
+**Status**: 10/10 linhas casam com o resultado da spec. Sem spec-precision gap.
+
+Notas sobre a DEPL-17:
+
+- **O recorte "linha da seção de deploy" está certo.** A seção de instalação do README roda
+  `python manage.py migrate` (`README.md:168`) e `createsuperuser` (`:186`) contra o Postgres
+  local, sem `DATABASE_URL`. Exigir a URL do Neon ali estaria errado. A redação anterior à emenda
+  também se limitava à seção de deploy. O recorte da seção (`_secao_de_deploy`, `:53-58`) vai do
+  título `## ... Deploy ...` (`README.md:200`) até o próximo `## ` (`:264`).
+- O teste tira `<` e `>` antes do `urlsplit` (`:97`), porque a URL do README tem
+  `<senha>` e `ep-<endpoint>`. O host fica `ep-endpoint.sa-east-1.aws.neon.tech`; o `-pooler`
+  continua visível. Não enfraquece a checagem (mutantes M1 e M17 morreram).
+- A linha `README.md:259` cita `` `manage.py migrate` `` em prosa, sem `python ` antes. O filtro
+  `comando in linha` a deixa de fora, como deve: ela não roda o comando.
+- Produção: `README.md:242-243`, as duas linhas com a URL direta
+  `ep-<endpoint>.sa-east-1.aws.neon.tech`, aspas simples.
+
+### Discrimination Sensor
+
+Worktree temporário destacado em `f60c7ff` (`/private/tmp/claude-502/kira-sensor`), com
+`DJANGO_SECRET_KEY` só no ambiente do comando (o worktree não tem `.env`). Baseline: 26/26 verdes
+em `config/tests/test_settings_banco.py` + `config/tests/test_documentacao_deploy.py`. Cada
+mutação partiu da árvore limpa (`git checkout -- .` no worktree).
+
+| Mutation | File:line | Description | Killed? |
+| -------- | --------- | ----------- | ------- |
+| M1 | `README.md:242` | Host do `migrate` vira `ep-<endpoint>-pooler.sa-east-1...` | ✅ Killed (DEPL-17 `[migrate]`) |
+| M2 | `README.md:243` | Host do `createsuperuser` vira `db.exemplo.com.br` | ✅ Killed (DEPL-17 `[createsuperuser]`) |
+| M13 | `README.md:243` | Tira o `DATABASE_URL='...'` da linha do `createsuperuser` | ✅ Killed (DEPL-17 `[createsuperuser]`) |
+| M14 | `README.md:242` | Aspas simples → aspas duplas na URL do `migrate` | ✅ Killed (DEPL-17 `[migrate]`) |
+| M17 | `README.md:242` | `neon.tech` → `neon.com` na linha do `migrate` | ✅ Killed (DEPL-17 `[migrate]`) |
+| M3 | `docs/roteiro-deploy.md` | `aws-sa-east-1` → `aws-us-east-1` em todo o arquivo | ✅ Killed (DEPL-23 `[aws-sa-east-1]`) |
+| M4 | `docs/roteiro-deploy.md` | `-pooler` → `-pool` em todo o arquivo | ✅ Killed (DEPL-23 `[-pooler]`) |
+| M5 | `docs/mapa-de-features.md` | Acrescenta "Migrado do SupaBase." | ✅ Killed (DEPL-22 `[mapa]`) |
+| M6 | `config/settings.py` | Acrescenta comentário com `SUPABASE` | ✅ Killed (DEPL-22 `[settings]`) |
+| M16 | `.env.example` | Acrescenta `# Antes: Supabase` | ✅ Killed (DEPL-22 `[.env.example]`) |
+| M7 | `config/settings.py` (fim) | `DATABASES["default"]["OPTIONS"].pop("channel_binding", None)` com `DATABASE_URL` | ✅ Killed (DEPL-21) |
+| M8a | `config/settings.py` (fim) | `PORT` vira `5432` com `DATABASE_URL` | ✅ Killed (DEPL-06) |
+| M8b | `config/settings.py` (fim) | `NAME` vira `postgres` com `DATABASE_URL` | ✅ Killed (DEPL-06) |
+| M8c | `config/settings.py` (fim) | `PASSWORD` volta codificada (`s%40nha`) | ✅ Killed (DEPL-06) |
+| M9 | `config/settings.py:103` | `ssl_require=True` → `False` | ✅ Killed (DEPL-07, borda `sslmode=disable`) |
+| M18 | `config/settings.py:103` | Remove `ssl_require=True` | ✅ Killed (DEPL-07, borda `sslmode=disable`) |
+| M10 | `config/settings.py:102` | `conn_max_age=0` → `600` | ✅ Killed (DEPL-08) |
+| M11 | `config/settings.py:104` | `disable_server_side_cursors=True` → `False` | ✅ Killed (DEPL-08) |
+| M12 | `config/settings.py:114` | `PORT` local fixo em `"5432"`, ignora `POSTGRES_PORT` | ✅ Killed (DEPL-09, os dois parâmetros) |
+| M15 | `.env.example:17` | Remove a linha `# DATABASE_URL=...` | ✅ Killed (DEPL-16) |
+
+**Sensor depth**: expandido (20 mutações; doc e settings). **Placar**: 20/20 killed - PASS ✅.
+
+- M9 e M18 só morrem no caso de borda (`:45-50`): a `URL_POOLER` já traz `sslmode=require`, então
+  o teste principal da DEPL-07 (`:42`) passa sem o `ssl_require`. A borda cobre; não é gap.
+- Duas tentativas descartadas, sem contar no placar: uma primeira versão de M1/M2 cujo regex não
+  casou (nenhuma mudança) e uma primeira M7 que quebrou o import do settings. As duas foram
+  refeitas acima.
+- Isolamento: `git worktree remove --force` + `git worktree prune`; `git worktree list` só mostra
+  o repositório real. `git status --porcelain` do repositório real vazio antes e depois.
+
+### Gate
+
+`ruff check .` ok; `ruff format --check .` ok (147 arquivos); `makemigrations --check --dry-run`
+sem mudanças; `pytest -q`: **943 passed**, 0 failed, 0 skipped (Postgres 16 local na 5433).
+
+- Contagem antes da emenda (`b3326a6`, `--collect-only`): 934. Depois: 943. Delta +9: DEPL-21
+  (+1), DEPL-23 (+3), DEPL-22 (+5). O teste de comandos da DEPL-17 foi renomeado e reescrito para o
+  Neon, sem perder parâmetro. Nenhuma asserção ficou mais fraca: a de host passou de "host do
+  Supabase" para `endswith(".neon.tech")` e `"-pooler" not in host`.
+
+### Documentação (leitura)
+
+Coerente com a spec e com o `context.md`:
+
+- URL **pooled** na Vercel: `README.md:220` (tabela), `:250-251` (passo 3);
+  `docs/roteiro-deploy.md:54-56` (1.2), `:248-254` (3.5, com aviso de não usar a direta);
+  `.env.example:15-17`.
+- URL **direta** nos comandos locais: `README.md:238-243`; roteiro `:80-97` (2.0, arquivo
+  `~/.kira-neon.env`, conferência sem `-pooler`), 2.1-2.4 pelo `export`; Parte 5 aponta o erro de
+  `migrate` pela pooled (`-pooler` → direta); Parte 6 repete o `migrate` da 2.2.
+- Postgres 16 (AD-003): roteiro `:39`; `.env.example:7`; `README.md:120`.
+- Região `aws-sa-east-1`: README `:204`, `:233-234`; roteiro `:41`.
+- Nenhuma ocorrência de `supabase` nos cinco arquivos da DEPL-22.
+
+Observações, sem AC violada:
+
+1. O README manda cadastrar as variáveis em **Production** e **Preview** (`README.md:210`); o
+   roteiro, só em **Production** (`docs/roteiro-deploy.md:240-241`). Vem de antes da emenda (o
+   texto do README é o mesmo em `b3326a6`).
+2. O passo 2 do README põe a URL direta, com a senha, na linha de comando (fica no histórico do
+   shell). O roteiro evita isso com o arquivo `~/.kira-neon.env` (2.0). Os dois usam a direta; só
+   o cuidado com a senha difere.
+3. A seção de deploy do README não cita a versão 16 do Postgres no Neon; o roteiro cita (`:39`).
+
+### Code Quality
+
+| Principle | Status |
+| --------- | ------ |
+| Minimum code (settings só troca o comentário) | ✅ |
+| Surgical changes (9 arquivos, todos no escopo da emenda) | ✅ |
+| No scope creep | ✅ |
+| Matches patterns (`_banco`, `_secao_de_deploy`, parametrize) | ✅ |
+| Spec-anchored outcome check | ✅ |
+| Every test maps to a spec requirement (docstrings citam DEPL-06..09, 15, 16, 17, 21, 22, 23) | ✅ |
+
+### Requirement Traceability Update (proposta)
+
+| Requirement | Previous Status | New Status |
+| ----------- | --------------- | ---------- |
+| DEPL-06 | Implementing (emendada em 2026-11-09) | ✅ Verified |
+| DEPL-17 | Implementing (emendada em 2026-11-09) | ✅ Verified |
+| DEPL-21 | Implementing | ✅ Verified |
+| DEPL-22 | Implementing | ✅ Verified |
+| DEPL-23 | Implementing | ✅ Verified |
+| DEPL-07, DEPL-08, DEPL-09, DEPL-16 | Verified | Verified (regressão ok) |
+
+Com isso, a linha de Coverage da spec passa a 22 Verified; a DEPL-18 segue com o risco residual
+aceito. A troca na nuvem (projeto no Neon, `DATABASE_URL` na Vercel, novo deploy) e a UAT da
+Parte 4 ficam fora do código e seguem pendentes com o usuário.
+
+### Summary
+
+**Overall**: ✅ Ready (emenda). **Spec-anchored check**: 10/10, sem spec-precision gap.
+**Sensor**: 20/20 killed. **Gate**: 943 passed. **Lessons**: nenhuma (PASS limpo).
+
+`validate_state.py deploy-producao` sai com 1 e lê FAIL. É o veredito registrado da iteração 3
+(DEPL-18, risco aceito), igual em `HEAD`; a emenda não o muda. O placar do sensor desta seção usa
+"Placar" e não "Result" para não se misturar com aquele veredito na leitura do script.

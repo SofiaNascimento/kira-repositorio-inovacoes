@@ -277,7 +277,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-03 | P1: Configuração do ambiente | Execute | Verified |
 | DEPL-04 | P1: Configuração do ambiente | Execute | Verified |
 | DEPL-05 | P1: Configuração do ambiente | Execute | Verified |
-| DEPL-06 | P1: Banco de produção | Execute | Implementing (emendada em 2026-11-09) |
+| DEPL-06 | P1: Banco de produção | Execute | Verified (emendada em 2026-11-09) |
 | DEPL-07 | P1: Banco de produção | Execute | Verified |
 | DEPL-08 | P1: Banco de produção | Execute | Verified |
 | DEPL-09 | P1: Banco de produção | Execute | Verified |
@@ -288,15 +288,15 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-14 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-16 | P2: Documentação | Execute | Verified |
-| DEPL-17 | P2: Documentação | Execute | Implementing (emendada em 2026-11-09) |
+| DEPL-17 | P2: Documentação | Execute | Verified (emendada em 2026-11-09) |
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
 | DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
-| DEPL-21 | P1: Banco de produção | Execute | Implementing |
-| DEPL-22 | P2: Documentação só do Neon | Execute | Implementing |
-| DEPL-23 | P2: Documentação só do Neon | Execute | Implementing |
+| DEPL-21 | P1: Banco de produção | Execute | Verified |
+| DEPL-22 | P2: Documentação só do Neon | Execute | Verified |
+| DEPL-23 | P2: Documentação só do Neon | Execute | Verified |
 
-**Coverage (emenda de 2026-11-09):** 23 total; 16 Verified; DEPL-06 e DEPL-17 reabertas pela emenda e DEPL-21 a DEPL-23 novas, todas Pending; DEPL-18 segue com o risco residual aceito.
+**Coverage (emenda de 2026-11-09):** 23 total; 22 Verified (DEPL-06, DEPL-17 e DEPL-21 a DEPL-23 no PASS da emenda Neon, `validation.md`); DEPL-18 segue com o risco residual aceito.
 
 **Coverage anterior:** 20 total (DEPL-18, DEPL-19 e DEPL-20 das emendas de 2026-10-27), 19 Verified (DEPL-20 na verificação da emenda) (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
 
