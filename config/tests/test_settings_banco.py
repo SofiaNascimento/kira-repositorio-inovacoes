@@ -1,4 +1,4 @@
-"""Banco de producao pelo pooler do Supabase: DEPL-06 a DEPL-09 e DEPL-15."""
+"""Banco de producao pelo pooler do Neon: DEPL-06 a DEPL-09, DEPL-15 e DEPL-21."""
 
 from pathlib import Path
 
@@ -9,7 +9,10 @@ from config.tests.settings_isolados import carregar_settings
 pytestmark = pytest.mark.unit
 
 CHAVE = {"DJANGO_SECRET_KEY": "chave-de-teste"}
-URL_POOLER = "postgresql://postgres.abcd:s%40nha@aws-0-sa-east-1.pooler.supabase.com:6543/postgres"
+URL_POOLER = (
+    "postgresql://neondb_owner:s%40nha@ep-calm-sun-a1b2c3d4-pooler.sa-east-1.aws.neon.tech/neondb"
+    "?sslmode=require&channel_binding=require"
+)
 LOCAL = {
     "POSTGRES_DB": "kira",
     "POSTGRES_USER": "ruan",
@@ -27,11 +30,11 @@ def test_conexao_vem_da_database_url():
     """DEPL-06: cada parte da URL do pooler vai para o campo certo, com a senha decodificada."""
     banco = _banco(DATABASE_URL=URL_POOLER)
     assert banco["ENGINE"] == "django.db.backends.postgresql"
-    assert banco["NAME"] == "postgres"
-    assert banco["USER"] == "postgres.abcd"
+    assert banco["NAME"] == "neondb"
+    assert banco["USER"] == "neondb_owner"
     assert banco["PASSWORD"] == "s@nha"
-    assert banco["HOST"] == "aws-0-sa-east-1.pooler.supabase.com"
-    assert str(banco["PORT"]) == "6543"
+    assert banco["HOST"] == "ep-calm-sun-a1b2c3d4-pooler.sa-east-1.aws.neon.tech"
+    assert banco["PORT"] == ""
 
 
 def test_database_url_exige_ssl():
@@ -41,8 +44,15 @@ def test_database_url_exige_ssl():
 
 def test_sslmode_da_url_nao_desliga_o_ssl():
     """DEPL-07 (caso de borda): sslmode=disable na query nao vence o require."""
-    banco = _banco(DATABASE_URL=URL_POOLER + "?sslmode=disable")
+    url = URL_POOLER.replace("sslmode=require", "sslmode=disable")
+    assert "sslmode=disable" in url
+    banco = _banco(DATABASE_URL=url)
     assert banco["OPTIONS"]["sslmode"] == "require"
+
+
+def test_channel_binding_da_url_chega_ao_options():
+    """DEPL-21: o channel_binding=require da string do Neon nao se perde."""
+    assert _banco(DATABASE_URL=URL_POOLER)["OPTIONS"]["channel_binding"] == "require"
 
 
 def test_database_url_ajusta_o_banco_ao_pooler_em_modo_transacao():

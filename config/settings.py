@@ -94,7 +94,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 if os.environ.get("DATABASE_URL"):
-    # Producao: Supabase pelo pooler em modo transacao (DEPL-06 a DEPL-08). O ssl_require
+    # Producao: Neon pelo pooler em modo transacao (DEPL-06 a DEPL-08, DEPL-21). O ssl_require
     # vence um sslmode da query; o pooler nao garante a mesma conexao entre transacoes.
     DATABASES = {
         "default": dj_database_url.parse(

@@ -277,7 +277,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-03 | P1: Configuração do ambiente | Execute | Verified |
 | DEPL-04 | P1: Configuração do ambiente | Execute | Verified |
 | DEPL-05 | P1: Configuração do ambiente | Execute | Verified |
-| DEPL-06 | P1: Banco de produção | Execute | Pending (emendada em 2026-11-09) |
+| DEPL-06 | P1: Banco de produção | Execute | Implementing (emendada em 2026-11-09) |
 | DEPL-07 | P1: Banco de produção | Execute | Verified |
 | DEPL-08 | P1: Banco de produção | Execute | Verified |
 | DEPL-09 | P1: Banco de produção | Execute | Verified |
@@ -292,7 +292,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
 | DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
-| DEPL-21 | P1: Banco de produção | Execute | Pending |
+| DEPL-21 | P1: Banco de produção | Execute | Implementing |
 | DEPL-22 | P2: Documentação só do Neon | Execute | Pending |
 | DEPL-23 | P2: Documentação só do Neon | Execute | Pending |
 
