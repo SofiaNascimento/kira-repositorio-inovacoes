@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-10-27
 **Spec:** `.specs/features/deploy-producao/spec.md`
-**Status:** Ready for execute
+**Status:** Ready for execute (emenda de 2026-11-09 aguardando aprovação)
 
 ---
 
@@ -62,3 +62,15 @@ para o admin, `.python-version` e `vercel.json`, `.env.example` e README. Sem te
 - Mover `kira.css` para `static/` com `<link>` e cache do navegador (exige supersedir a AD-010).
 - WhiteNoise, se o deploy for para Render ou Railway.
 - Separar `requirements-dev.txt`.
+
+---
+
+## Emenda de 2026-11-09 — Neon no lugar do Supabase
+
+- **Provedor:** Neon, plano gratuito, conta direta no neon.com por e-mail, sem cartão (decisão do usuário). Não usar a integração do Vercel Marketplace.
+- **Região:** AWS São Paulo (`aws-sa-east-1`), fixada na criação do projeto.
+- **URLs:** a *pooled* (host com `-pooler`) vai para a `DATABASE_URL` da Vercel; a direta (host sem `-pooler`) serve para os comandos locais de `migrate`, `createsuperuser` e carga do acervo.
+- **Dados:** o Neon começa do zero; nada é copiado do Supabase.
+- **Documentação:** o Supabase sai do README, do roteiro, do `.env.example`, do `config/settings.py`, dos testes e do mapa de features. Os artefatos de `.specs/` mantêm o histórico.
+- **Settings:** sem mudança de comportamento; só o comentário do ramo `DATABASE_URL` muda.
+- **Fora do código:** apagar o projeto no Supabase fica com o usuário.
