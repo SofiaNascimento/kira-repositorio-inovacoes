@@ -5,6 +5,7 @@ import re
 import runpy
 from pathlib import Path
 from unittest import mock
+from urllib.parse import urlsplit
 
 import dotenv
 import pytest
@@ -79,17 +80,20 @@ def test_env_example_lista_toda_variavel_lida_pelo_settings():
     ],
 )
 def test_readme_tem_o_passo_a_passo_de_deploy(termo):
-    """DEPL-17: a secao de deploy nomeia as variaveis e os comandos contra o Supabase."""
+    """DEPL-17: a secao de deploy nomeia as variaveis e os comandos de banco."""
     assert termo in _secao_de_deploy()
 
 
 @pytest.mark.parametrize(
     "comando", ["python manage.py migrate", "python manage.py createsuperuser"]
 )
-def test_readme_roda_os_comandos_contra_o_supabase(comando):
-    """DEPL-17: cada linha que roda o comando aponta a DATABASE_URL para o Supabase."""
+def test_readme_roda_os_comandos_na_conexao_direta_do_neon(comando):
+    """DEPL-17: cada linha da secao de deploy que roda o comando usa a URL direta do Neon."""
     linhas = [linha for linha in _secao_de_deploy().splitlines() if comando in linha]
     assert linhas
-    assert all(
-        re.search(r"DATABASE_URL='postgresql://[^']*supabase\.com[^']*'", linha) for linha in linhas
-    )
+    for linha in linhas:
+        url = re.search(r"DATABASE_URL='(postgresql://[^']*)'", linha)
+        assert url, linha
+        host = urlsplit(url.group(1).replace("<", "").replace(">", "")).hostname
+        assert host.endswith(".neon.tech"), host
+        assert "-pooler" not in host, host

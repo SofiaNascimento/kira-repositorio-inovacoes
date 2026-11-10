@@ -73,7 +73,7 @@ A interface usa templates do Django com HTML semântico e uma folha de estilo pr
 ### Hospedagem
 
 - **Vercel** (runtime Python) para a aplicação;
-- **Supabase** para o PostgreSQL, acessado pelo pooler de conexões.
+- **Neon** (plano gratuito, região São Paulo) para o PostgreSQL, acessado pelo pooler de conexões.
 
 ---
 
@@ -197,11 +197,12 @@ pytest -q
 
 ---
 
-## Deploy em produção (Vercel + Supabase)
+## Deploy em produção (Vercel + Neon)
 
 A aplicação roda na Vercel como uma função Python (Django detectado pelo `manage.py`, entrada
-`config/wsgi.py`, Python 3.13 pelo `.python-version`). O PostgreSQL fica no Supabase, acessado
-pelo **transaction pooler** na porta 6543. As telas não dependem de arquivos estáticos (o
+`config/wsgi.py`, Python 3.13 pelo `.python-version`). O PostgreSQL fica no Neon, no plano
+gratuito e na região AWS São Paulo (`aws-sa-east-1`). A aplicação usa a conexão **pooled** (host
+com `-pooler`, PgBouncer em modo transação). As telas não dependem de arquivos estáticos (o
 `kira.css` vai embutido na página); o CSS do admin é coletado no build e servido pela CDN da
 Vercel.
 
@@ -216,7 +217,7 @@ O build executa o `manage.py`, então as variáveis precisam estar disponíveis 
 | `DJANGO_DEBUG` | `False` (qualquer valor diferente de `True` também desliga) |
 | `DJANGO_ALLOWED_HOSTS` | `<projeto>.vercel.app`; para aceitar os previews, `.vercel.app` |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<projeto>.vercel.app`; para os previews, `https://*.vercel.app` |
-| `DATABASE_URL` | String do transaction pooler do Supabase (porta 6543) |
+| `DATABASE_URL` | String **pooled** do Neon (host com `-pooler`) |
 
 As listas são separadas por vírgula. Com `DATABASE_URL` definida, o sistema liga
 `sslmode=require`, desliga os cursores do servidor e não mantém conexão aberta entre requisições.
@@ -230,21 +231,22 @@ Para gerar a chave:
 
 ### Passo a passo
 
-1. **Supabase**: crie o projeto. Em Connect, copie a string do **Transaction pooler** (porta
-   6543) e a do **Session pooler** (porta 5432), trocando `[YOUR-PASSWORD]` pela senha do banco.
-   Caracteres especiais da senha vão codificados na URL (`@` vira `%40`).
-2. **Banco**: da sua máquina, crie as tabelas e o primeiro administrador no Supabase. Use a
-   string do session pooler, mais adequada a migrations:
+1. **Neon**: crie a conta no neon.com (plano gratuito, sem cartão) e um projeto na região
+   **AWS São Paulo (`aws-sa-east-1`)**. A região não muda depois. Em **Connect**, copie duas
+   strings: a **pooled** (com **Connection pooling** ligado; o host tem `-pooler`) e a **direta**
+   (com o pooling desligado; o host não tem `-pooler`).
+2. **Banco**: da sua máquina, crie as tabelas e o primeiro administrador no Neon. Use a string
+   **direta**, que o Neon recomenda para migrations:
 
    ```bash
-   DATABASE_URL='postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres' .venv/bin/python manage.py migrate
-   DATABASE_URL='postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres' .venv/bin/python manage.py createsuperuser
+   DATABASE_URL='postgresql://neondb_owner:<senha>@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' .venv/bin/python manage.py migrate
+   DATABASE_URL='postgresql://neondb_owner:<senha>@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' .venv/bin/python manage.py createsuperuser
    ```
 
 3. **Vercel**: o deploy sai da pasta local pela Vercel CLI, sem Git conectado. Crie a conta (pode
    ser por e-mail), rode `npx vercel login` e, na raiz do projeto, `npx vercel link` para criar o
    projeto (o preset de Django é detectado sozinho). No painel, cadastre as cinco variáveis da
-   tabela, com a `DATABASE_URL` do transaction pooler (6543). O `.vercelignore` impede que o
+   tabela, com a `DATABASE_URL` **pooled** do Neon. O `.vercelignore` impede que o
    `.env` local suba junto.
 4. **Deploy**: rode `npx vercel --prod --logs`. No log de build, confira o Python 3.13 e a
    execução do `collectstatic`. A CLI envia a pasta como está: faça o commit antes.

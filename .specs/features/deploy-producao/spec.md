@@ -216,7 +216,7 @@ em que ordem fazer o deploy, sem ler o código.
 **Acceptance Criteria**:
 
 1. DEPL-16: The system SHALL list in `.env.example` every environment variable name that `config/settings.py` reads, including `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`.
-2. DEPL-17: The README SHALL contain a deploy section that names `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`, and every README line that runs `python manage.py migrate` or `python manage.py createsuperuser` SHALL set `DATABASE_URL` to a single-quoted `postgresql://` URL whose host ends in `.neon.tech` and does not contain `-pooler` (the Neon direct connection). *(Emenda de 2026-11-09: antes, os comandos apontavam para o Supabase.)*
+2. DEPL-17: The README SHALL contain a deploy section that names `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`, and every line of that deploy section that runs `python manage.py migrate` or `python manage.py createsuperuser` SHALL set `DATABASE_URL` to a single-quoted `postgresql://` URL whose host ends in `.neon.tech` and does not contain `-pooler` (the Neon direct connection). *(Emenda de 2026-11-09: antes, os comandos apontavam para o Supabase.)*
 
 **Independent Test**: comparar os nomes lidos por `os.environ` em `config/settings.py` com as
 chaves do `.env.example`; procurar os nomes e comandos na seção de deploy do README.
@@ -288,7 +288,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-14 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-16 | P2: Documentação | Execute | Verified |
-| DEPL-17 | P2: Documentação | Execute | Pending (emendada em 2026-11-09) |
+| DEPL-17 | P2: Documentação | Execute | Implementing (emendada em 2026-11-09) |
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
 | DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
