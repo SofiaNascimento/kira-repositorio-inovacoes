@@ -294,7 +294,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-21 | P1: Banco de produção | Execute | Implementing |
 | DEPL-22 | P2: Documentação só do Neon | Execute | Pending |
-| DEPL-23 | P2: Documentação só do Neon | Execute | Pending |
+| DEPL-23 | P2: Documentação só do Neon | Execute | Implementing |
 
 **Coverage (emenda de 2026-11-09):** 23 total; 16 Verified; DEPL-06 e DEPL-17 reabertas pela emenda e DEPL-21 a DEPL-23 novas, todas Pending; DEPL-18 segue com o risco residual aceito.
 

@@ -1,4 +1,4 @@
-"""Variaveis e passo a passo de deploy documentados: DEPL-16 e DEPL-17."""
+"""Variaveis e passo a passo de deploy documentados: DEPL-16, DEPL-17 e DEPL-23."""
 
 import os
 import re
@@ -97,3 +97,9 @@ def test_readme_roda_os_comandos_na_conexao_direta_do_neon(comando):
         host = urlsplit(url.group(1).replace("<", "").replace(">", "")).hostname
         assert host.endswith(".neon.tech"), host
         assert "-pooler" not in host, host
+
+
+@pytest.mark.parametrize("termo", ["neon.tech", "aws-sa-east-1", "-pooler"])
+def test_roteiro_descreve_o_banco_no_neon(termo):
+    """DEPL-23: o roteiro cita o dominio, a regiao e o host pooled do Neon."""
+    assert termo in (RAIZ / "docs" / "roteiro-deploy.md").read_text()

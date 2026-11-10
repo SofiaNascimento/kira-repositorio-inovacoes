@@ -1,11 +1,12 @@
-# Roteiro de deploy: Supabase + Vercel
+# Roteiro de deploy: Neon + Vercel
 
-Passo a passo para publicar o KIRA pela primeira vez. O banco fica no Supabase e a aplicação na
+Passo a passo para publicar o KIRA pela primeira vez. O banco fica no Neon e a aplicação na
 Vercel, ambos no plano gratuito. O deploy sai da sua máquina pela **Vercel CLI**, sem GitHub: as
 duas contas são criadas por e-mail. Leva de 30 a 45 minutos.
 
-Os nomes de menus e botões são os da documentação oficial consultada em 27/10/2026. Se a tela
-estiver diferente, procure pelo nome do campo (por exemplo, "Transaction pooler").
+Os nomes de menus e botões são os da documentação oficial consultada em 27/10/2026 (Vercel) e
+09/11/2026 (Neon). Se a tela estiver diferente, procure pelo nome do campo (por exemplo,
+"Connection pooling").
 
 **Convenção:** tudo entre `<sinais>` é valor seu. Troque o trecho todo, incluindo os sinais.
 
@@ -26,67 +27,45 @@ estiver diferente, procure pelo nome do campo (por exemplo, "Transaction pooler"
 
 ---
 
-## Parte 1 — Supabase (banco de dados)
+## Parte 1 — Neon (banco de dados)
 
 ### 1.1 Criar a conta e o projeto
 
-1. Acesse `https://supabase.com`, clique em **Start your project** e use a opção de cadastro por
-   **e-mail e senha** (não use "Continue with GitHub"). Confirme o e-mail pelo link que chegar.
-2. Se pedir uma organização, crie uma com plano **Free**.
-3. Clique em **New project** e preencha:
+1. Acesse `https://neon.com`, clique em **Sign up** e use a opção de cadastro por **e-mail**
+   (não use GitHub nem Google). Confirme o e-mail pelo link que chegar. O plano **Free** não pede
+   cartão.
+2. Crie o projeto (o Neon abre o formulário logo após o cadastro, ou em **New project**):
    - **Project name:** `kira`.
-   - **Database Password:** clique em **Generate a password**, copie e guarde no gerenciador de
-     senhas. Ela não aparece de novo.
-   - **Region:** **South America (São Paulo)**. A Parte 3 coloca a Vercel na mesma cidade. Cada
-     tela faz várias consultas, e banco e aplicação em continentes diferentes deixam cada página
-     visivelmente lenta.
-   - Se aparecerem opções de segurança: **desmarque Enable Data API** e **marque** a opção de
-     ativar RLS automaticamente. O motivo está no passo 1.2.
-4. Clique em **Create new project** e espere o provisionamento, que leva cerca de 2 minutos.
+   - **Postgres version:** **16**, a mesma do banco local (AD-003).
+   - **Cloud provider:** **AWS**.
+   - **Region:** **AWS South America (São Paulo), `aws-sa-east-1`**. A região não muda depois de
+     criado o projeto. A Parte 3 coloca a Vercel na mesma cidade. Cada tela faz várias consultas,
+     e banco e aplicação em continentes diferentes deixam cada página visivelmente lenta.
+3. Clique em **Create project**. O banco fica pronto em segundos, com o banco `neondb` e o
+   usuário `neondb_owner`.
 
-### 1.2 Desligar a Data API (segurança)
+### 1.2 Copiar as strings de conexão
 
-O Supabase oferece uma API REST automática (Data API) sobre as tabelas do schema `public`. As
-migrations do Django criam as tabelas nesse schema, inclusive a de usuários, com os hashes de
-senha, e sem RLS. O KIRA não usa essa API: ele fala direto com o Postgres. Deixá-la ligada só
-abre uma porta desnecessária.
+1. No painel do projeto, clique em **Connect**. Abre a janela de detalhes da conexão.
+2. Confira **Branch** `production` (ou `main`), **Database** `neondb` e **Role** `neondb_owner`.
+3. Copie as duas strings abaixo, alternando a chave **Connection pooling**, e guarde as duas no
+   gerenciador de senhas. A senha já vem dentro da string (use **Show password** se ela vier
+   mascarada):
+   - **Pooled** (Connection pooling **ligado**): é a `DATABASE_URL` da Vercel. O host tem
+     `-pooler`. Formato:
+     `postgresql://neondb_owner:<senha>@ep-<endpoint>-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+   - **Direta** (Connection pooling **desligado**): é a usada nos comandos da sua máquina
+     (Parte 2). Mesmo formato, **sem** o `-pooler` no host.
+4. Confira cada string: o host termina em `.sa-east-1.aws.neon.tech` e só a pooled tem `-pooler`.
+   O final `?sslmode=require&channel_binding=require` fica como veio.
 
-1. No menu do projeto, abra **Integrations → Data API** (endereço
-   `/integrations/data_api/overview` dentro do projeto).
-2. Desligue **Enable Data API** e confirme.
+**Por que duas strings?** A pooled passa pelo PgBouncer em modo transação, que aguenta as muitas
+conexões curtas da Vercel. O Neon recomenda a direta para migrations, que precisam de uma sessão
+inteira.
 
-Depois disso, o **Security Advisor** do painel pode avisar sobre tabelas sem RLS. Com a Data API
-desligada, nenhuma delas fica acessível por ela, e o aviso pode ser ignorado.
-
-### 1.3 Copiar as strings de conexão
-
-1. No topo da página do projeto, clique em **Connect** (em português: **Conectar**). Abre a
-   janela "Conecte-se ao seu projeto", com cinco cards: Estrutura, Servidor, Direto, ORM e MCP.
-2. Clique no card **Direto — Cadeia de conexão**. A janela abre na aba **Estrutura**, que é para
-   apps JavaScript e não serve ao KIRA.
-3. Se aparecer o aviso laranja "O acesso ao banco de dados requer a API de dados", **ignore-o e
-   não clique em "Habilitar API de dados"**. Ele vale para as bibliotecas cliente; o Django fala
-   direto com o Postgres, e a Data API continua desligada (passo 1.2).
-4. Na aba Direto, deixe **Tipo** em **URI**. Em **Método de conexão**, marque cada opção abaixo,
-   role a janela e copie a string. Guarde as duas no gerenciador de senhas:
-   - **Agrupador de transações** (*transaction pooler*, porta **6543**): é a `DATABASE_URL` da Vercel.
-     Formato: `postgresql://postgres.<ref>:[YOUR-PASSWORD]@aws-<n>-sa-east-1.pooler.supabase.com:6543/postgres`
-   - **Agrupador de sessões** (*session pooler*, porta **5432**): é a usada nos comandos da sua
-     máquina (Parte 2).
-     Mesmo formato, com `:5432`.
-   - **Conexão direta** (*direct connection*, host `db.<ref>.supabase.co`): não use (veja abaixo).
-     O atalho "Copiar → Cadeia de conexão direta" da página inicial do projeto também é esta.
-5. Confira cada string: o usuário é `postgres.<ref>` (não só `postgres`), o host termina em
-   `pooler.supabase.com` e a porta é a esperada.
-6. Em cada uma, troque `[YOUR-PASSWORD]` (na tela em português, `[SUA SENHA]`), com os
-   colchetes, pela senha do banco.
-7. Se a senha tiver caracteres especiais, codifique-os: `@` vira `%40`, `#` vira `%23`, `&` vira
-   `%26`, `?` vira `%3F`, `/` vira `%2F`, `:` vira `%3A`, espaço vira `%20`. Uma senha gerada pelo
-   Supabase costuma ter só letras e números.
-
-**Por que não a "Direct connection"?** No plano gratuito ela só funciona por IPv6, e muitas redes
-domésticas e corporativas só têm IPv4. Os poolers funcionam por IPv4. Se a sua rede tiver IPv6, a
-direct connection também serve para a Parte 2, e é a que o Supabase recomenda para migrations.
+**Plano gratuito:** 1 GB de dados e 100 horas de computação por mês, folga grande para o KIRA. O
+banco é suspenso após 5 minutos sem uso e acorda sozinho na conexão seguinte; a primeira página
+depois de uma pausa demora um pouco mais.
 
 ---
 
@@ -98,28 +77,29 @@ Todos os comandos rodam na raiz do projeto, no terminal. O Postgres local não p
 
 ### 2.0 Guardar a URL do banco num arquivo
 
-A URL do **agrupador de sessões** (porta **5432**) fica num arquivo na sua pasta pessoal, fora do
-projeto: ela não vai para o git nem para a Vercel, e a senha não aparece na tela nem no histórico
-do terminal.
+A URL **direta** (host **sem** `-pooler`) fica num arquivo na sua pasta pessoal, fora do projeto:
+ela não vai para o git nem para a Vercel, e a senha não aparece na tela nem no histórico do
+terminal.
 
 ```bash
-read -rs 'U?URL do agrupador de sessões: ' && print -r -- "DATABASE_URL=$U" > ~/.kira-supabase.env && chmod 600 ~/.kira-supabase.env && unset U
+read -rs 'U?URL direta do Neon: ' && print -r -- "DATABASE_URL=$U" > ~/.kira-neon.env && chmod 600 ~/.kira-neon.env && unset U
 ```
 
 Cole **só a URL** e aperte Enter (nada aparece enquanto você cola). Ela começa em `postgresql://`,
 sem aspas, sem `< >` e sem `DATABASE_URL=` na frente. Para conferir sem mostrar a senha:
 
 ```bash
-sed -E 's#(://[^:]+):[^@]*@#\1:***@#' ~/.kira-supabase.env
+sed -E 's#(://[^:]+):[^@]*@#\1:***@#' ~/.kira-neon.env
 ```
 
 O esperado é uma linha só:
-`DATABASE_URL=postgresql://postgres.<ref>:***@aws-<n>-sa-east-1.pooler.supabase.com:5432/postgres`.
+`DATABASE_URL=postgresql://neondb_owner:***@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`,
+sem `-pooler`.
 
-### 2.1 Apontar o terminal para o Supabase e testar a conexão
+### 2.1 Apontar o terminal para o Neon e testar a conexão
 
 ```bash
-export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' ~/.kira-supabase.env)"
+export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' ~/.kira-neon.env)"
 .venv/bin/python manage.py showmigrations
 ```
 
@@ -127,7 +107,7 @@ O esperado é a lista das apps com `[ ]` em todas as migrations: a conexão func
 vazio. Se der erro, veja a Parte 5.
 
 **A partir do `export`, todo `manage.py` e todo `pytest` desse terminal falam com a produção.** Um
-comando rodado **antes** do `export` lê o banco local, não o Supabase. Ao terminar a Parte 2, rode o
+comando rodado **antes** do `export` lê o banco local, não o Neon. Ao terminar a Parte 2, rode o
 passo 2.5.
 
 ### 2.2 Criar as tabelas
@@ -147,7 +127,7 @@ O esperado é uma linha `Applying ... OK` por migration, até `inovacoes.0008_re
 
 Informe usuário, e-mail e senha. A conta nasce com perfil **ADMINISTRADOR**. É uma conta separada
 da do banco local: use uma senha diferente da do banco e da que você usa localmente. Para listar os
-administradores do Supabase (com o `export` feito):
+administradores do Neon (com o `export` feito):
 
 ```bash
 .venv/bin/python manage.py shell -c "from contas.models import Usuario; print(list(Usuario.objects.filter(perfil='ADMINISTRADOR').values_list('username', flat=True)))"
@@ -165,9 +145,9 @@ que alimentam o painel de indicadores.
 .venv/bin/python manage.py carregar_demonstracao
 ```
 
-A saída esperada é `500 inovações de demonstração criadas (500 no total).` Leva alguns minutos
-pelo pooler. Rodar de novo não duplica nada (`0 inovações … criadas`). As 15 contas não têm
-senha utilizável, então ninguém entra com elas; os dados aparecem para quem estiver logado.
+A saída esperada é `500 inovações de demonstração criadas (500 no total).` Leva alguns minutos.
+Rodar de novo não duplica nada (`0 inovações … criadas`). As 15 contas não têm senha utilizável,
+então ninguém entra com elas; os dados aparecem para quem estiver logado.
 
 ### 2.5 Voltar o terminal para o banco local
 
@@ -180,7 +160,7 @@ a aba do terminal também resolve.
 
 ### 2.6 Conferir no painel
 
-No Supabase, abra **Table Editor**. As tabelas do Django (`contas_usuario`,
+No Neon, abra **Tables** no menu do projeto. As tabelas do Django (`contas_usuario`,
 `inovacoes_inovacao`, `django_migrations` e as demais) devem aparecer no schema `public`.
 
 ---
@@ -267,13 +247,18 @@ npx vercel open
 | `DJANGO_DEBUG` | `False` | — |
 | `DJANGO_ALLOWED_HOSTS` | `<domínio>`, por exemplo `kira-nu-green.vercel.app` (sem `https://`) | — |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<domínio>` (com `https://`, sem barra no final) | — |
-| `DATABASE_URL` | a URL do **agrupador de transações** (porta **6543**) | **Secret** / Sensitive |
+| `DATABASE_URL` | a URL **pooled** do Neon (host com `-pooler`) | **Secret** / Sensitive |
 
 **O valor da `DATABASE_URL` começa exatamente em `postgresql://`**: sem aspas, sem `< >`, sem
-`DATABASE_URL=` na frente e sem espaço. Aqui é a porta **6543**, não a 5432 do arquivo da Parte 2.
+`DATABASE_URL=` na frente e sem espaço. Aqui é a URL **pooled**, com `-pooler` no host, não a
+direta do arquivo da Parte 2.
 Com qualquer coisa antes do `postgresql`, o build falha com `UnknownSchemeError` (Parte 5).
 
 Para conferir os nomes cadastrados sem mostrar os valores: `npx vercel env ls`.
+
+**Projeto que já existia com outro banco:** edite só o valor da `DATABASE_URL` (menu `⋯` da
+variável → **Edit**) e cole a URL pooled do Neon. Variáveis novas só valem para deploys novos:
+publique de novo (Parte 3.7).
 
 > Alternativa pelo terminal: `npx vercel env add DJANGO_SECRET_KEY production` pede o valor e
 > grava a variável. Repita para cada uma.
@@ -352,7 +337,7 @@ Com o endereço `https://<domínio>`:
 6. **Sem página de depuração:** abra `https://<domínio>/nao-existe/`. Deve aparecer a página de
    erro do projeto, nunca a página amarela de debug do Django.
 7. **Sair:** clique em "Sair" e confirme que voltou ao login.
-8. **Banco:** no Supabase, em Table Editor → `inovacoes_inovacao`, a inovação do passo 3 aparece.
+8. **Banco:** no Neon, em **Tables** → `inovacoes_inovacao`, a inovação do passo 3 aparece.
 9. **Sem `.env` no deploy:** a Parte 3.8 foi conferida.
 
 Se você cadastrou dados de teste que não quer manter, exclua-os pelo próprio sistema.
@@ -368,19 +353,19 @@ Para ver o erro real de um 500, abra o deploy no painel → **Logs**, ou rode
 | ------- | -------------- | ----------- |
 | Build falha com `No module named 'django'` ao ler o `manage.py` | A Vercel instala do `pyproject.toml`, e ele estava sem dependências | Já corrigido no projeto (DEPL-20): confira que o `pyproject.toml` tem a tabela `[project]` com as dependências |
 | Build falha com `UnknownSchemeError: Scheme '://' is unknown` | O valor da `DATABASE_URL` na Vercel não começa em `postgresql://` (aspas, `< >`, espaço ou o nome junto) | Edite a variável e cole só a URL (Parte 3.5); publique de novo |
-| `CommandError: user '...' does not exist` no `changepassword` | O comando rodou num banco onde a conta não existe (local × Supabase) | Confira o `export` da Parte 2.1 e liste os administradores (Parte 2.3); se a lista vier vazia, crie com `createsuperuser` |
+| `CommandError: user '...' does not exist` no `changepassword` | O comando rodou num banco onde a conta não existe (local × Neon) | Confira o `export` da Parte 2.1 e liste os administradores (Parte 2.3); se a lista vier vazia, crie com `createsuperuser` |
 | `npx vercel` pede login de novo | Sessão da CLI expirou | `npx vercel login` |
 | CLI pergunta de novo "Set up…?" | A pasta `.vercel/` foi apagada | `npx vercel link` e escolha o projeto `kira` existente (`Link to existing project? y`) |
 | Build falha com `KeyError: 'DJANGO_SECRET_KEY'` | Variável ausente em Production | Cadastre-a em Production (Parte 3.5) e publique de novo |
 | `400 Bad Request` em toda página | Host fora do `DJANGO_ALLOWED_HOSTS` | Use o domínio exato, sem `https://` e sem barra; publique de novo |
 | `403 Forbidden` (CSRF) ao entrar ou salvar | Origem fora do `DJANGO_CSRF_TRUSTED_ORIGINS` | Use `https://<domínio>`, sem barra final; publique de novo |
-| `500` em toda página; no log, `password authentication failed` | Senha errada ou não codificada na URL | Confira `[YOUR-PASSWORD]` trocado e os caracteres especiais (Parte 1.3) |
-| No log, `Tenant or user not found` | Usuário da URL sem o `.<ref>` | O usuário do pooler é `postgres.<ref>`, não só `postgres`; copie de novo do **Connect** |
-| No log, `relation "..." does not exist` | Migrations não aplicadas no Supabase | Rode a Parte 2.2 |
-| `showmigrations` ou `migrate` travam ou dão timeout | Rede sem IPv6 usando a direct connection | Use a string do **session pooler** (Parte 1.3) |
+| `500` em toda página; no log, `password authentication failed` | Senha errada ou não codificada na URL | Copie a string de novo do **Connect** do Neon, sem editar a senha (Parte 1.2) |
+| No log, `relation "..." does not exist` | Migrations não aplicadas no Neon | Rode a Parte 2.2 |
+| `migrate` falha com erro de sessão ou de `SET` | O comando usou a URL pooled | Use a URL **direta**, sem `-pooler` (Parte 2.0) |
 | Admin sem CSS | `collectstatic` não rodou no build | Procure "collectstatic" no log do build |
 | Páginas lentas (mais de 2 s) | Função e banco em regiões diferentes | Parte 3.6 (gru1) e publique de novo |
-| Supabase fora do ar depois de dias sem uso | Projetos gratuitos são pausados por inatividade | Painel do Supabase → **Restore project** |
+| Primeira página lenta depois de um tempo sem uso | O Neon gratuito suspende o banco após 5 min ocioso | Esperado; as páginas seguintes voltam ao normal |
+| No log, erro de conexão com o banco depois de semanas de uso | Cota mensal do plano gratuito esgotada (horas de computação ou transferência) | Painel do Neon → **Billing/Usage**; a cota volta no mês seguinte, sem perda de dados |
 
 ---
 
@@ -390,8 +375,8 @@ Para ver o erro real de um 500, abra o deploy no painel → **Logs**, ou rode
   commit, confira `git status` limpo e rode `npx vercel --prod`.
 - **Mudança de model:** rode o `migrate` da Parte 2.2 **antes** do `npx vercel --prod` do código
   que depende da migration. Senão, o código novo vai procurar colunas que ainda não existem.
-- **Trocar a senha do banco:** troque no Supabase, atualize a `DATABASE_URL` no painel da Vercel e
-  rode `npx vercel --prod`.
+- **Trocar a senha do banco:** no Neon, em **Roles** → `neondb_owner` → **Reset password**;
+  atualize a `DATABASE_URL` no painel da Vercel e o `~/.kira-neon.env`, e rode `npx vercel --prod`.
 - **Se o GitHub voltar:** dá para conectar o repositório em **Settings → Git** e passar a publicar
   a cada push no `main`. As variáveis e o domínio continuam os mesmos.
 
@@ -403,5 +388,6 @@ Fontes: [Vercel — Django](https://vercel.com/docs/frameworks/full-stack/django
 [Vercel — vercel deploy](https://vercel.com/docs/cli/deploy) ·
 [Vercel — Arquivos ignorados](https://vercel.com/docs/deployments/build-features) ·
 [Vercel — Environment variables](https://vercel.com/docs/environment-variables) ·
-[Supabase — Connecting to Postgres](https://supabase.com/docs/guides/database/connecting-to-postgres) ·
-[Supabase — Hardening the Data API](https://supabase.com/docs/guides/api/hardening-data-api)
+[Neon — Connection pooling](https://neon.com/docs/connect/connection-pooling) ·
+[Neon — Regions](https://neon.com/docs/introduction/regions) ·
+[Neon — Free plan](https://neon.com/faqs/free-plan-limits-and-quotas)
