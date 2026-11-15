@@ -254,6 +254,16 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 
 ---
 
+## Ajustes do Execute
+
+### Lote 1 (T1–T6, 2026-11-15)
+
+- **SPEC_DEVIATION (T4): `[aria-\69 nvalid=true]`.** A RED-09 pede `[aria-invalid=true]`, mas o CONS-30 (`inovacoes/tests/test_views_busca.py:294`, `"aria-invalid" not in html`) lê a página inteira com a folha embutida. O `\69 ` é o "i" escapado; o navegador lê o mesmo seletor. Mesmo motivo da regra da AD-010 sobre `="`.
+- **SPEC_DEVIATION (T5): `.cartao-ino\76 acao`.** "nova" (username de teste) está dentro de "inovacao", e o DS-02 proíbe nomes de usuário na folha. No HTML a classe segue `cartao-inovacao`. Os testes da folha procuram a grafia escapada.
+- **T4, além da letra da task:** o botão primário e o `.acoes--primaria` passam a usar `var(--on-brand)` e `var(--brand-blue-hover)` (no lugar de `#FFFFFF` e `color-mix`); o desabilitado perdeu a `opacity` e ganhou borda `--borda-campo`; o hover do `.botao--perigo` (cheio na confirmação) usa fundo `--error-tint` com texto `--error`, um par aprovado.
+- **T6:** `.decorativo` não tem regra no tema normal; o `display: none` vem na T14, dentro de `[data-contraste=alto]`.
+- **Spec-precision gaps:** RED-12 — `.tabela table { min-width: 40rem }` (DS-16) fica isento pela exceção de tabelas da WCAG 1.4.10 (`LARGURAS_ISENTAS` no teste); RED-10 — o hover do "×" da etiqueta (`--brand-navy` sobre `--border`) não está na tabela da §2 (o teste exige 3:1); o fundo de etapas, linha do tempo, grupo e cartões foi assumido `--surface`, e o de filtros e barra de ações `--bg`; T3 — o DS-06 tem 21 tokens, não 23.
+
 ## Tech Decisions (feature-local)
 
 | Decision | Choice | Rationale |
