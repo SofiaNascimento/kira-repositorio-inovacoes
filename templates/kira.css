@@ -32,6 +32,12 @@
   --error-tint: #FBEAE9;
   --info-tint: #E8EFFA;
 
+  /* v2 (§2): interacao e grafico; pares conferidos em test_folha_v2. */
+  --brand-blue-hover: #28529A;
+  --borda-campo: #7A879B;
+  --on-brand: #FFFFFF;
+  --trilho: #EEF2F8;
+
   --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
@@ -51,6 +57,10 @@
 
   --largura-conteudo: 1100px;
   --raio: 8px;
+  /* v2 (§4): cartoes e paineis; selos, etiquetas e variacao; numeros que se comparam. */
+  --raio-cartao: 16px;
+  --raio-pilula: 999px;
+  --numeros: tabular-nums;
   --sombra: 0 1px 2px rgb(26 35 50 / 6%), 0 2px 8px rgb(26 35 50 / 6%);
   --transicao: 150ms ease-out;
 }
@@ -293,8 +303,8 @@ textarea {
   width: 100%;
   min-height: 44px;
   padding: var(--space-2) var(--space-3);
-  /* WCAG 1.4.11: limite do campo com 3:1; --border e so decorativo. */
-  border: 1px solid var(--text-muted);
+  /* WCAG 1.4.11: limite do campo com 3:1 (RED-03); --border e so decorativo. */
+  border: 1.5px solid var(--borda-campo);
   border-radius: var(--raio);
   background: var(--surface);
   color: var(--text);
@@ -370,7 +380,7 @@ textarea:hover { border-color: var(--brand-navy); }
 .cartao {
   padding: var(--space-5);
   border: 1px solid var(--border);
-  border-radius: var(--raio);
+  border-radius: var(--raio-cartao);
   background: var(--surface);
   box-shadow: var(--sombra);
 }
@@ -586,6 +596,16 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 }
 .busca .campo:first-child { grid-column: 1 / -1; }
 .busca .acoes { grid-column: 1 / -1; margin-top: 0; }
+
+/* --- Numeros que se comparam (§4 v2, RED-04) ---------------------------- */
+
+time,
+.total,
+.numero,
+nav[aria-label=Paginação],
+.cartao-indicador__numero,
+.variacao,
+.linha-do-tempo time { font-variant-numeric: var(--numeros); }
 
 /* --- Movimento (§1.1) ---------------------------------------------------- */
 

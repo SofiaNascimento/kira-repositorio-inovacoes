@@ -160,7 +160,7 @@ T16 → T17
 
 ---
 
-### T3: Tokens v2, cartão, campo e números
+### T3: Tokens v2, cartão, campo e números ✅
 
 **What**: Os tokens novos da §2 e §4 v2 no `:root`, o raio e a sombra do `.cartao`, a borda `--borda-campo` dos campos e o `font-variant-numeric: var(--numeros)` nos seletores da RED-04.
 **Where**: `templates/kira.css`
@@ -172,10 +172,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes em `inovacoes/tests/test_folha_v2.py` (marcados `unit`): cada token da RED-01 com o valor exato (parametrizado), os 23 tokens do DS-06 inalterados; `.cartao` com `border-radius: var(--raio-cartao)` e toda cor do `box-shadow` com alfa ≤ 0.12 (a sombra resolvida pelo token); `input`, `select`, `textarea` com `1.5px solid var(--borda-campo)`; `--borda-campo` ≥ 3:1 sobre `--surface` e `--bg`; cada seletor da RED-04 com `font-variant-numeric: var(--numeros)`
-- [ ] Folha sem `="`, sem `<`, sem nome de usuário dos testes (DS-02 continua)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 20
+- [x] Testes em `inovacoes/tests/test_folha_v2.py` (marcados `unit`): cada token da RED-01 com o valor exato (parametrizado), os 23 tokens do DS-06 inalterados; `.cartao` com `border-radius: var(--raio-cartao)` e toda cor do `box-shadow` com alfa ≤ 0.12 (a sombra resolvida pelo token); `input`, `select`, `textarea` com `1.5px solid var(--borda-campo)`; `--borda-campo` ≥ 3:1 sobre `--surface` e `--bg`; cada seletor da RED-04 com `font-variant-numeric: var(--numeros)`
+- [x] Folha sem `="`, sem `<`, sem nome de usuário dos testes (DS-02 continua)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 20
 
 **Tests**: unit
 **Gate**: build

@@ -249,10 +249,10 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| RED-01 | P1: Folha | Design | Pending |
-| RED-02 | P1: Folha | Design | Pending |
-| RED-03 | P1: Folha | Design | Pending |
-| RED-04 | P1: Folha | Design | Pending |
+| RED-01 | P1: Folha | Execute | Implementing |
+| RED-02 | P1: Folha | Execute | Implementing |
+| RED-03 | P1: Folha | Execute | Implementing |
+| RED-04 | P1: Folha | Execute | Implementing |
 | RED-05 | P1: Folha | Execute | Implementing |
 | RED-06 | P1: Folha | Execute | Implementing |
 | RED-07 | P1: Folha | Execute | Implementing |

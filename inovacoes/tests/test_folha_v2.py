@@ -12,6 +12,9 @@ import pytest
 # `paginas` e a fixture do DS-02 a DS-05, reusada sem mudanca.
 from inovacoes.tests.test_views_sistema_design import (
     CSS,
+    _contraste,
+    _corpos,
+    _token,
     paginas,  # noqa: F401
 )
 
@@ -20,6 +23,25 @@ URL_DA_FONTE = "/static/fontes/inter-latin-wght-normal.woff2"
 
 def _sem_comentarios(css):
     return re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+
+
+def _seletores(lista):
+    """Separa uma lista de seletores pelas virgulas de fora dos parenteses."""
+    partes, nivel, atual = [], 0, ""
+    for caractere in lista:
+        nivel += {"(": 1, ")": -1}.get(caractere, 0)
+        if caractere == "," and nivel == 0:
+            partes.append(atual.strip())
+            atual = ""
+        else:
+            atual += caractere
+    return [*partes, atual.strip()]
+
+
+def _corpos_com_parenteses(seletor):
+    """Como `_corpos`, mas aceita seletor com virgula dentro de :not(...) ou :is(...)."""
+    regras = re.findall(r"([^{}]+)\{([^}]*)\}", _sem_comentarios(CSS))
+    return " ".join(corpo for lista, corpo in regras if seletor in _seletores(lista))
 
 
 # --- RED-05: @font-face da Inter ------------------------------------------------
@@ -101,3 +123,109 @@ def test_toda_pagina_faz_preload_da_fonte_na_mesma_url(paginas):  # noqa: F811
             "type": "font/woff2",
             "crossorigin": None,
         }, nome
+
+
+# --- RED-01: tokens v2 ----------------------------------------------------------
+
+TOKENS_V2 = {
+    "brand-blue-hover": "#28529A",
+    "borda-campo": "#7A879B",
+    "on-brand": "#FFFFFF",
+    "info-tint": "#E8EFFA",
+    "success-tint": "#EDF7F1",
+    "warning-tint": "#FBF3E0",
+    "error-tint": "#FBEAE9",
+    "trilho": "#EEF2F8",
+    "raio-cartao": "16px",
+    "raio-pilula": "999px",
+    "numeros": "tabular-nums",
+}
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("nome", TOKENS_V2)
+def test_root_declara_o_token_v2_com_o_valor_exato(nome):
+    """RED-01: §2 e §4 v2. Os tokens da v1 seguem vigiados pelo DS-06."""
+    assert _token(nome) == TOKENS_V2[nome]
+
+
+# --- RED-02: cartao -------------------------------------------------------------
+
+
+def _alfas(valor):
+    """Alfa de cada cor de um valor de CSS; cor sem alfa conta como 1."""
+    alfas = []
+    for cor in re.findall(r"rgba?\([^)]*\)|hsla?\([^)]*\)|#[0-9a-fA-F]{3,8}\b", valor):
+        if cor.startswith("#"):
+            digitos = cor[1:]
+            alfa = {4: digitos[3] * 2, 8: digitos[6:]}.get(len(digitos))
+            alfas.append(int(alfa, 16) / 255 if alfa else 1.0)
+            continue
+        partes = re.split(r"\s*/\s*|\s*,\s*", cor[cor.index("(") + 1 : -1].strip())
+        separado = "/" in cor or len(partes) == 4
+        if not separado:
+            alfas.append(1.0)
+            continue
+        alfa = partes[-1]
+        alfas.append(float(alfa[:-1]) / 100 if alfa.endswith("%") else float(alfa))
+    return alfas
+
+
+@pytest.mark.unit
+def test_cartao_tem_o_raio_de_cartao():
+    """RED-02."""
+    assert re.search(r"border-radius\s*:\s*var\(--raio-cartao\)", _corpos(".cartao"))
+
+
+@pytest.mark.unit
+def test_sombra_do_cartao_e_discreta():
+    """RED-02: toda cor do box-shadow (resolvido pelo token) tem alfa <= 0.12."""
+    sombra = re.findall(r"box-shadow\s*:\s*([^;]+);", _corpos(".cartao"))[-1].strip()
+    token = re.fullmatch(r"var\(--([\w-]+)\)", sombra)
+    if token:
+        sombra = _token(token.group(1))
+    alfas = _alfas(sombra)
+    assert alfas
+    assert all(alfa <= 0.12 for alfa in alfas), sombra
+
+
+# --- RED-03: campos -------------------------------------------------------------
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "seletor", ["input:not([type=hidden], [type=checkbox], [type=radio])", "select", "textarea"]
+)
+def test_campo_tem_borda_de_1_5px_na_cor_de_campo(seletor):
+    """RED-03."""
+    bordas = re.findall(r"border\s*:\s*([^;]+);", _corpos_com_parenteses(seletor))
+    assert bordas
+    assert re.fullmatch(r"1\.5px\s+solid\s+var\(--borda-campo\)", bordas[-1].strip())
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("fundo", ["surface", "bg"])
+def test_borda_de_campo_tem_contraste_de_componente(fundo):
+    """RED-03: WCAG 1.4.11, 3:1."""
+    assert _contraste(_token("borda-campo"), _token(fundo)) >= 3
+
+
+# --- RED-04: numeros tabulares --------------------------------------------------
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "seletor",
+    [
+        "time",
+        ".total",
+        ".numero",
+        "nav[aria-label=Paginação]",
+        ".cartao-indicador__numero",
+        ".variacao",
+        ".linha-do-tempo time",
+    ],
+)
+def test_numeros_que_se_comparam_usam_algarismos_tabulares(seletor):
+    """RED-04."""
+    assert re.search(r"font-variant-numeric\s*:\s*var\(--numeros\)", _corpos(seletor))
