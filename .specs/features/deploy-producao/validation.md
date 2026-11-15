@@ -520,3 +520,35 @@ Parte 4 ficam fora do código e seguem pendentes com o usuário.
 `validate_state.py deploy-producao` sai com 1 e lê FAIL. É o veredito registrado da iteração 3
 (DEPL-18, risco aceito), igual em `HEAD`; a emenda não o muda. O placar do sensor desta seção usa
 "Placar" e não "Result" para não se misturar com aquele veredito na leitura do script.
+
+## UAT na nuvem — Neon (2026-11-15)
+
+Conferência manual feita pelo usuário, seguindo `docs/roteiro-deploy.md`; o agente não acessou
+Neon nem Vercel.
+
+- **Partes 1 e 2**: projeto no Neon (`ep-small-frog-b6mo1gwq`, `sa-east-1`); `~/.kira-neon.env`
+  com a URL direta, uma linha, sem `-pooler` (conferido pelo agente com a senha mascarada);
+  `migrate`, `createsuperuser` e `carregar_demonstracao` (500 inovações) rodados pelo usuário.
+- **Parte 3**: `DATABASE_URL` da Vercel trocada pela URL pooled do Neon e novo deploy em
+  produção (`https://kira-nu-green.vercel.app`).
+- **Parte 4**: o usuário relatou os 9 itens aprovados.
+
+| # | Item da Parte 4 | Resultado |
+| - | --------------- | --------- |
+| 1 | Login em `/entrar/` com o visual do KIRA | ✅ |
+| 2 | Lista de inovações (500 do acervo) | ✅ |
+| 3 | Cadastro de inovação sem 403 (CSRF atrás do proxy) | ✅ |
+| 4 | `/admin/` com estilo (collectstatic) | ✅ |
+| 5 | Cookies `sessionid` e `csrftoken` com Secure | ✅ |
+| 6 | `/nao-existe/` sem página de debug | ✅ |
+| 7 | Sair volta ao login | ✅ |
+| 8 | Inovação de teste em `inovacoes_inovacao` no Neon | ✅ |
+| 9 | Aba Source sem `.env` (Parte 3.8) | ✅ |
+
+O item 9 confirma, no deploy real, o comportamento que a DEPL-18 descreve; a ressalva da DEPL-18
+era de isolamento do teste automatizado, não do `.vercelignore`, e segue registrada como risco
+aceito.
+
+**Resultado**: ✅ UAT aprovada. A deploy-producao está concluída com o banco no Neon.
+**Pendente com o usuário (fora da feature)**: apagar o projeto no Supabase
+(`wxjlgbmykmjwvohwvgdk`) e o `~/.kira-supabase.env`; push do `main`.

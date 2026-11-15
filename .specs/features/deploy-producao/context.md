@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-10-27
 **Spec:** `.specs/features/deploy-producao/spec.md`
-**Status:** Emenda de 2026-11-09 executada e verificada (PASS); troca na nuvem pendente
+**Status:** Concluída em 2026-11-15 (emenda Neon verificada; troca na nuvem e UAT aprovadas pelo usuário)
 
 ---
 

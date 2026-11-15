@@ -100,26 +100,17 @@
 
 ## Handoff
 
-### Pausa atual (2026-11-09) — deploy-producao, emenda Neon
+### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)
 
-- **Feature**: deploy-producao (RNF06), **reaberta** em 2026-11-09 para trocar o Supabase pelo Neon (plano gratuito, conta direta no neon.com sem cartão, `aws-sa-east-1`, Postgres 16). O banco começa do zero; o Supabase saiu da documentação (decisões do usuário; `spec.md` e `context.md`, seção Emenda de 2026-11-09).
-- **Phase / Task**: Specify (emenda) ✅ · Design e Tasks dispensados (plano inline de 4 passos) · Execute ✅ · Verifier ✅ **PASS** da emenda (10/10 linhas de AC, 20/20 mutantes mortos; `validation.md`, seção Emenda Neon). A parte de código está fechada; a feature está pausada na **troca na nuvem**, que depende do usuário.
-- **Completed**: `85979e9` (spec), `34032a6` (testes DEPL-06/21), `70ec663` (README, `.env.example`, DEPL-17), `1c2c68b` (roteiro, DEPL-23), `f60c7ff` (mapa, DEPL-22), `9045a08` (verificação). 22 de 23 ACs Verified; DEPL-18 segue com o risco aceito, e `validate_state.py` continua saindo com 1 pelo veredito antigo da iteração 3 (esperado).
-- **Desvio registrado**: a DEPL-17 dizia "toda linha do README"; foi restrita à seção de deploy durante o Execute, porque a seção de instalação roda `migrate` no banco local de propósito. O Verifier confirmou que o recorte está certo.
-- **In-progress** (file:line): nenhum.
-- **Next step** (usuário, seguindo `docs/roteiro-deploy.md`; cada operação remota pede go-ahead se for feita pelo agente):
-  1. Partes 1 e 2: criar a conta e o projeto no Neon; `~/.kira-neon.env` com a URL **direta**; `migrate`, `createsuperuser` e, se quiser, `carregar_demonstracao`; `unset DATABASE_URL` no fim.
-  2. Parte 3.5: trocar a `DATABASE_URL` da Vercel pela URL **pooled** (host com `-pooler`).
-  3. Parte 3.7: `npx vercel --prod --logs` (variável nova só vale em deploy novo).
-  4. Partes 3.6 e 3.8: região `gru1` e aba Source sem `.env`.
-  5. Parte 4: UAT; depois, registrar o resultado no `validation.md` e marcar a deploy-producao como concluída no mapa de features.
-  6. Apagar o projeto no Supabase (`wxjlgbmykmjwvohwvgdk`) quando o Neon estiver funcionando.
+- **Feature**: deploy-producao (RNF06) — **concluída** em 2026-11-15. KIRA em produção em `https://kira-nu-green.vercel.app` com o banco no **Neon** (`ep-small-frog-b6mo1gwq`, `aws-sa-east-1`, plano gratuito), pela URL pooled na Vercel.
+- **Phase / Task**: emenda Neon — Specify ✅ · Execute ✅ · Verifier ✅ PASS (2026-11-09) · troca na nuvem ✅ · **UAT da Parte 4 ✅** (9/9 itens, relatados pelo usuário; `validation.md`, seção UAT na nuvem — Neon).
+- **Feito pelo usuário**: projeto no Neon; `~/.kira-neon.env` com a URL direta (conferida pelo agente com a senha mascarada); `migrate`, `createsuperuser`, `carregar_demonstracao` (500 inovações); `DATABASE_URL` da Vercel trocada pela pooled; novo deploy; aba Source sem `.env`. O agente não acessou Neon nem Vercel.
+- **Completed**: `85979e9` … `9045a08` (emenda), `c36c086` (pausa), commit desta atualização (UAT, mapa, context).
+- **DEPL-18**: segue com o risco residual aceito (isolamento do teste); o item 9 da UAT confirmou o `.vercelignore` no deploy real. `validate_state.py` continua saindo com 1 pelo veredito da iteração 3 (esperado).
 - **Observações do Verifier em aberto** (nenhuma viola AC; corrigir só se o usuário pedir): o README pede as variáveis em Production e Preview, e o roteiro só em Production; o README põe a URL com senha na linha de comando (o roteiro usa `~/.kira-neon.env`); o README não cita o Postgres 16.
-- **Testes**: 943 passed; gate verde (ruff, format, makemigrations --check).
-- **Blockers**: nenhum no código. A troca na nuvem depende das contas do usuário.
-- **Ambiente**: Postgres 16 local ligado nesta sessão na porta 5433 (comando na linha "Ambiente" abaixo).
-- **Uncommitted files**: nenhum (após o commit desta pausa).
-- **Branch**: `main`, 7 commits à frente do `origin/main` (`b3326a6`) contando o desta pausa. Push pelo usuário.
+- **Pendente com o usuário (fora do código)**: apagar o projeto no Supabase (`wxjlgbmykmjwvohwvgdk`) e o `~/.kira-supabase.env`; push do `main`. Região `gru1` (3.6) não confirmada explicitamente.
+- **In-progress**: nenhum. **Blockers**: nenhum. **Testes**: 943 passed (2026-11-09).
+- **Branch**: `main`, à frente do `origin/main` (`b3326a6`). Push pelo usuário.
 
 ### Histórico de snapshots anteriores
 

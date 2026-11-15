@@ -32,7 +32,7 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
 | Feature | O que entregou | Situação (2026-10-27) |
 | ------- | -------------- | --------------------- |
 | sistema-de-design | Template base único e folha `kira.css` a partir da `design-spec.md` (AD-010) | Concluída (Verifier PASS) |
-| deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Neon (plano gratuito, São Paulo); roteiro em `docs/roteiro-deploy.md` | Publicada em `https://kira-nu-green.vercel.app`; reaberta em 2026-11-09 para trocar o banco pelo Neon; troca na nuvem e UAT da Parte 4 pendentes |
+| deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Neon (plano gratuito, São Paulo); roteiro em `docs/roteiro-deploy.md` | **Concluída** em 2026-11-15: publicada em `https://kira-nu-green.vercel.app` com o banco no Neon (reaberta em 2026-11-09 para a troca); UAT da Parte 4 aprovada, acervo de 500 inovações carregado |
 | acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no banco de produção (Neon) pendente |
 
 ---
@@ -105,7 +105,7 @@ Fecha o eixo "Dados, Inteligência e Infra" do ENADE.
 | RNF01 — usabilidade / Nielsen / SUS ≥ 68 | toda a UI | avaliação heurística contínua; teste SUS isolado no fim |
 | RNF03 — compatibilidade / responsivo (desktop, tablet) | toda a UI | passe dedicado de responsividade (semana 6 do cronograma) |
 | RNF04 — manutenibilidade / modular | decorre do MVT | garantido por AD-002 |
-| RNF06 — portabilidade / deploy | infraestrutura | fase final — **feito** (deploy-producao, 2026-10-27) |
+| RNF06 — portabilidade / deploy | infraestrutura | fase final — **feito** (deploy-producao, 2026-10-27; banco no Neon em 2026-11-15) |
 | RNF09 — acessibilidade (WCAG 2.1 AA, eMAG) | toda a UI | por feature + auditoria final |
 
 ---
