@@ -733,3 +733,36 @@ def test_faixa_da_marca_e_o_gradiente_de_4px():
     assert _tem(corpo, "background", "var(--brand-gradient)")
     assert _tem(corpo, "height", "4px")
     assert "header::before" not in _sem_comentarios(CSS)
+
+
+# --- RED-19, RED-22: menu principal ------------------------------------------------
+
+MENU_ATUAL = "nav[aria-label=Principal] a[aria-current]"
+
+
+@pytest.mark.unit
+def test_item_atual_do_menu_tem_fundo_suave_e_barra_azul_de_3px():
+    """RED-19: a pagina atual nao depende so da cor (WCAG 1.4.1)."""
+    corpo = _corpos(MENU_ATUAL)
+    assert _tem(corpo, "background", "var(--info-tint)")
+    assert _tem(corpo, "border-bottom", "3px solid var(--brand-blue)")
+
+
+@pytest.mark.unit
+def test_cores_do_item_atual_estao_em_pares_aprovados():
+    """RED-10, RED-19: texto navy sobre --info-tint; barra azul contra o cabecalho."""
+    texto = re.search(r"color\s*:\s*var\(--([\w-]+)\)", _corpos("nav[aria-label=Principal] a"))
+    assert (texto.group(1), "info-tint") in PARES_APROVADOS_DE_TEXTO
+    assert _contraste(_token(texto.group(1)), _token("info-tint")) >= 4.5
+    limites = [p for p in _pares_da_regra(_corpos(MENU_ATUAL), "surface") if not p[2]]
+    assert limites
+    for cor, fundo, _ in limites:
+        assert (cor, fundo) in PARES_APROVADOS_DE_COMPONENTE, (cor, fundo)
+        assert _contraste(_token(cor), _token(fundo)) >= 3, (cor, fundo)
+
+
+@pytest.mark.unit
+def test_menu_quebra_de_linha_e_itens_tem_alvo_de_44px():
+    """RED-22: no celular os itens quebram de linha; alvo minimo de 44px."""
+    assert _tem(_corpos("nav[aria-label=Principal]"), "flex-wrap", "wrap")
+    assert _tem(_corpos("nav[aria-label=Principal] a"), "min-height", "44px")

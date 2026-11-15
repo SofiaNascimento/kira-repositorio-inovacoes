@@ -31,15 +31,18 @@
     <div class="container cabecalho">
       {% include "marca.html" with link=True %}
       {% if user.is_authenticated %}
-        {# INOV-38: o cadastro e alcancavel de qualquer pagina interna. #}
-        <nav aria-label="Principal">
-          <a href="{% url 'inovacoes:lista' %}">Inovações</a>
-          <a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>
+        {# INOV-38: o cadastro e alcancavel de qualquer pagina interna. RED-16: icone antes do texto; #}
+        {# RED-17, RED-18: aria-current pelo context processor da casca (menu_atual, menu_estado). #}
+        <nav id="menu" aria-label="Principal">
+          <a href="{% url 'inovacoes:lista' %}"{% if menu_atual == "inovacoes" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/lampada.svg" %}Inovações</a>
+          <a href="{% url 'inovacoes:nova' %}"{% if menu_atual == "nova" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/circulo-mais.svg" %}Cadastrar inovação</a>
           {# REAP-28: o painel de indicadores (RF10). #}
-          <a href="{% url 'indicadores:painel' %}">Indicadores</a>
+          <a href="{% url 'indicadores:painel' %}"{% if menu_atual == "indicadores" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/grafico-barras.svg" %}Indicadores</a>
         </nav>
         <div class="usuario">
-          <span>{{ user.get_username }}</span>
+          {# RED-20: iniciais decorativas; o nome completo (ou o username) num span sem atributo. #}
+          <span class="usuario__iniciais" aria-hidden="true">{% if user.first_name %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.get_username|first|upper }}{% endif %}</span>
+          <span>{{ user.get_full_name|default:user.get_username }}</span>
           {# LogoutView so aceita POST: sair e um formulario, nao um link. #}
           <form method="post" action="{% url 'contas:sair' %}">
             {% csrf_token %}

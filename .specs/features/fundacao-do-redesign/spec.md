@@ -267,8 +267,8 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-16 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-17 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-18 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-19 | P1: Barra e cabeçalho | Design | Pending |
-| RED-20 | P1: Barra e cabeçalho | Design | Pending |
+| RED-19 | P1: Barra e cabeçalho | Execute | Implementing |
+| RED-20 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-21 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-22 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-23 | P1: Alto contraste | Design | Pending |

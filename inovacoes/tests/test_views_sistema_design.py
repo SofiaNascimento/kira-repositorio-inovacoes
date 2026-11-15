@@ -175,7 +175,8 @@ def test_cabecalho_autenticado_mostra_usuario_e_sair_depois_da_navegacao(client,
     html = client.get(pagina).content.decode()
     cabecalho = html[html.index("<header>") : html.index("</header>")]
     fim_da_nav = cabecalho.index("</nav>")
-    usuario = re.search(r"<span>\s*ana\s*</span>", cabecalho)
+    # T-F (fundacao-do-redesign, RED-20): o nome completo da conta "ana".
+    usuario = re.search(r"<span>\s*Ana Souza\s*</span>", cabecalho)
     sair = re.search(r"<button[^>]*>\s*Sair\s*</button>", cabecalho)
     assert usuario
     assert sair

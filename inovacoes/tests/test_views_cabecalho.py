@@ -6,7 +6,32 @@ import pytest
 
 from inovacoes.tests.visibilidade import exibido
 
-LINK = re.compile(r'<a href="/inovacoes/nova/">\s*Cadastrar inovação\s*</a>')
+
+class Link:
+    """Um link pelo DOM: o `<a>` com este `href` e este texto exibido (T-A, fundacao-do-redesign).
+
+    O texto exibido e o do link sem o conteudo `aria-hidden` (o icone SVG da RED-16), e o
+    `<a>` pode ter outros atributos (o `aria-current` da RED-17). `search` devolve o match do
+    `<a>`, com `start()`, como o regex literal de antes.
+    """
+
+    def __init__(self, href, texto):
+        self.href = href
+        self.texto = texto
+        self.padrao = re.compile(rf'<a\b[^>]*\bhref="{re.escape(href)}"[^>]*>(.*?)</a>', re.S)
+
+    def search(self, html):
+        for achado in self.padrao.finditer(html):
+            if _texto_exibido(achado.group(1)) == self.texto:
+                return achado
+        return None
+
+
+def _texto_exibido(trecho):
+    return " ".join(re.sub(r"<[^>]*>", " ", exibido(trecho)).split())
+
+
+LINK = Link("/inovacoes/nova/", "Cadastrar inovação")
 
 
 def _cabecalho(html):
@@ -15,8 +40,18 @@ def _cabecalho(html):
 
 def _navegacao_principal(html):
     cabecalho = _cabecalho(html)
-    inicio = cabecalho.index('<nav aria-label="Principal">')
+    inicio = re.search(r'<nav\b[^>]*\baria-label="Principal"[^>]*>', cabecalho).start()
     return cabecalho[inicio : cabecalho.index("</nav>", inicio)]
+
+
+def _links(navegacao):
+    """(href, texto exibido) de cada link do trecho, em ordem."""
+    return [
+        (href, _texto_exibido(conteudo))
+        for href, conteudo in re.findall(
+            r'<a\b[^>]*\bhref="([^"]*)"[^>]*>(.*?)</a>', navegacao, re.S
+        )
+    ]
 
 
 @pytest.mark.parametrize("pagina", ["/inovacoes/", "/inovacoes/nova/"])
@@ -33,7 +68,7 @@ def test_cabecalho_anonimo_nao_mostra_o_link(client):
     assert "Cadastrar inovação" not in _cabecalho(html)
 
 
-LINK_INOVACOES = re.compile(r'<a href="/inovacoes/">\s*Inovações\s*</a>')
+LINK_INOVACOES = Link("/inovacoes/", "Inovações")
 
 
 @pytest.mark.parametrize("pagina", ["/inovacoes/", "/inovacoes/nova/", "/inovacoes/{id}/"])
@@ -57,7 +92,7 @@ def test_cabecalho_anonimo_nao_mostra_o_link_de_inovacoes(client):
     assert 'href="/inovacoes/"' not in _cabecalho(html)
 
 
-LINK_INDICADORES = re.compile(r'<a href="/indicadores/">\s*Indicadores\s*</a>')
+LINK_INDICADORES = Link("/indicadores/", "Indicadores")
 
 
 @pytest.mark.parametrize(
@@ -77,7 +112,8 @@ def test_cabecalho_autenticado_leva_ao_painel_depois_do_cadastro(
     assert link
     assert link.start() > LINK.search(navegacao).start()
     # L-028, L-030: o nav e o link ficam na tela e no leitor de tela.
-    assert _navegacao_principal(exibido(resposta.content.decode())) == navegacao
+    # T-A: o icone e aria-hidden e sai do exibido; os links (href e texto) ficam todos.
+    assert _links(_navegacao_principal(exibido(resposta.content.decode()))) == _links(navegacao)
 
 
 @pytest.mark.django_db

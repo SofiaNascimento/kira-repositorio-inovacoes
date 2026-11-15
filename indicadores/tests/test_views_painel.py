@@ -175,7 +175,8 @@ def test_sem_inovacao_mostra_zeros_e_o_convite_ao_cadastro(client, terceiro):
     assert "<p>Nenhuma inovação cadastrada ainda.</p>" in vazio
     assert re.search(r'<a href="/inovacoes/nova/">Cadastrar inovação</a>', vazio)
     assert "<table" not in html
-    assert "<svg" not in html
+    # T-E (fundacao-do-redesign): os icones do menu sao SVG; o painel vazio nao tem grafico.
+    assert "<svg" not in html[html.index('<main id="conteudo">') : html.index("</main>")]
 
 
 @pytest.mark.django_db

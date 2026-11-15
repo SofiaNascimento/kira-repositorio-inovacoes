@@ -184,17 +184,31 @@ body > header {
 /* §3: a tagline e o unico uso de italico. */
 .marca__tagline { font-size: var(--fs-xs); font-style: italic; color: var(--text-muted); }
 
+/* Menu (§5.2 v2; RED-16, RED-19, RED-22): icone antes do texto; no celular os itens
+   quebram de linha, sem virar so icone. */
 nav[aria-label=Principal] { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 nav[aria-label=Principal] a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
   padding: var(--space-2) var(--space-3);
-  border-radius: var(--raio);
+  border-bottom: 3px solid transparent;
+  border-radius: var(--raio) var(--raio) 0 0;
   color: var(--brand-navy);
   font-weight: 600;
   text-decoration: none;
   transition: background-color var(--transicao);
 }
+nav[aria-label=Principal] svg { flex: none; }
 nav[aria-label=Principal] a:hover { background: var(--bg); }
+/* Pagina atual (pagina ou secao): fundo suave e barra de 3px, nao so a cor (WCAG 1.4.1). */
+nav[aria-label=Principal] a[aria-current] {
+  background: var(--info-tint);
+  border-bottom: 3px solid var(--brand-blue);
+}
 
+/* Area do usuario (RED-20): iniciais decorativas, nome e o Sair. */
 .usuario {
   display: flex;
   align-items: center;
@@ -202,6 +216,18 @@ nav[aria-label=Principal] a:hover { background: var(--bg); }
   margin-left: auto;
   color: var(--text-muted);
   font-size: var(--fs-sm);
+}
+.usuario__iniciais {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--raio-pilula);
+  background: var(--info-tint);
+  color: var(--brand-navy);
+  font-size: var(--fs-xs);
+  font-weight: 700;
 }
 .usuario form { margin: 0; }
 

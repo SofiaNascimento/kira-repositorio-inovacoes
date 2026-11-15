@@ -246,3 +246,126 @@ def test_500_sem_request_tem_o_atalho_1_e_a_faixa():
     assert _atalhos(html) == [ATALHO_1]
     assert _seguido_do_numero(html, "#conteudo", "1")
     assert FAIXA in html
+
+
+# --- T10: menu com icones, pagina atual e area do usuario (RED-16 a RED-18, RED-20) --
+
+MENU = [
+    ("/inovacoes/", "Inovações"),
+    ("/inovacoes/nova/", "Cadastrar inovação"),
+    ("/indicadores/", "Indicadores"),
+]
+ABRE_MENU = re.compile(r'<nav id="menu" aria-label="Principal">')
+
+
+def _texto(trecho):
+    return " ".join(re.sub(r"<[^>]*>", " ", trecho).split())
+
+
+def _menu_da_tela(html):
+    """(href, aria-current, texto exibido) de cada link do menu, sobre o exibido rigoroso."""
+    tela = exibido(html, rigoroso=True)
+    cabecalho = tela[tela.index("<header>") : tela.index("</header>")]
+    inicio = ABRE_MENU.search(cabecalho).start()
+    trecho = cabecalho[inicio : cabecalho.index("</nav>", inicio)]
+    itens = []
+    for abertura, conteudo in re.findall(r"(<a\b[^>]*>)(.*?)</a>", trecho, re.S):
+        (tag, atributos, _), *_ = _elementos(abertura)
+        itens.append((atributos.get("href"), atributos.get("aria-current"), _texto(conteudo)))
+    return itens
+
+
+@pytest.mark.parametrize("pagina", ["/inovacoes/", "/inovacoes/{id}/"])
+def test_menu_tem_os_tres_itens_em_ordem_cada_um_com_icone_antes_do_texto(
+    client, autor, criar_inovacao, pagina
+):
+    """RED-16: nav#menu "Principal", icone SVG decorativo antes de cada texto."""
+    client.force_login(autor)
+    html = client.get(pagina.format(id=criar_inovacao().pk)).content.decode()
+    assert [(href, texto) for href, _, texto in _menu_da_tela(html)] == MENU
+    cabecalho = html[html.index("<header>") : html.index("</header>")]
+    inicio = ABRE_MENU.search(cabecalho).start()
+    trecho = cabecalho[inicio : cabecalho.index("</nav>", inicio)]
+    conteudos = re.findall(r"<a\b[^>]*>(.*?)</a>", trecho, re.S)
+    assert len(conteudos) == 3
+    for conteudo, (_, rotulo) in zip(conteudos, MENU, strict=True):
+        svg = re.match(
+            r'\s*<svg aria-hidden="true" focusable="false"[^>]*>.*?</svg>', conteudo, re.S
+        )
+        assert svg, rotulo
+        assert _texto(conteudo[svg.end() :]) == rotulo
+
+
+@pytest.mark.parametrize(
+    ("pagina", "conta", "atual"),
+    [
+        ("/inovacoes/", "autor", {"Inovações": "page"}),
+        ("/inovacoes/nova/", "autor", {"Cadastrar inovação": "page"}),
+        ("/indicadores/", "autor", {"Indicadores": "page"}),
+        ("/inovacoes/{id}/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/{id}/editar/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/{id}/excluir/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/{id}/status/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/{disponivel}/reaproveitar/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/999999/", "autor", {"Inovações": "true"}),
+        ("/inovacoes/{id}/editar/", "terceiro", {"Inovações": "true"}),
+    ],
+)
+def test_menu_marca_a_pagina_atual_ou_a_secao(
+    client, autor, terceiro, criar_inovacao, pagina, conta, atual
+):
+    """RED-17 (page no destino exato), RED-18 (true na secao, 404 e 403), nada fora disso."""
+    inovacao = criar_inovacao()
+    disponivel = criar_inovacao(titulo="Disponivel", status="DISPONIVEL_PARA_REPLICACAO")
+    client.force_login({"autor": autor, "terceiro": terceiro}[conta])
+    resposta = client.get(pagina.format(id=inovacao.pk, disponivel=disponivel.pk))
+    esperado = 404 if pagina == "/inovacoes/999999/" else 200
+    if conta == "terceiro":
+        esperado = 403
+    assert resposta.status_code == esperado
+    itens = _menu_da_tela(resposta.content.decode())
+    assert [(href, texto) for href, _, texto in itens] == MENU
+    assert {texto: corrente for _, corrente, texto in itens if corrente} == atual
+
+
+@pytest.mark.parametrize("resolvida", [True, False])
+def test_menu_fora_da_secao_nao_marca_nenhum_item(autor, resolvida):
+    """RED-17, RED-18: rota fora do menu (o login) ou sem rota resolvida, nenhum aria-current.
+
+    Nenhuma tela autenticada fora da secao estende o base hoje (o login redireciona quem
+    entrou e a 404 de URL inexistente e a do Django); o base e renderizado com a requisicao.
+    """
+    requisicao = _requisicao("/entrar/", resolvida=resolvida)
+    requisicao.user = autor
+    html = render_to_string("base.html", request=requisicao)
+    itens = _menu_da_tela(html)
+    assert [(href, texto) for href, _, texto in itens] == MENU
+    assert [corrente for _, corrente, _ in itens] == [None, None, None]
+    assert "aria-current" not in html[html.index("<header>") : html.index("</header>")]
+
+
+def _area_do_usuario(html):
+    cabecalho = html[html.index("<header>") : html.index("</header>")]
+    inicio = cabecalho.index('<div class="usuario">')
+    return cabecalho, cabecalho[inicio:]
+
+
+@pytest.mark.parametrize(
+    ("conta", "nome", "iniciais"), [("autor", "Ana Souza", "AS"), ("terceiro", "bruno", "B")]
+)
+def test_area_do_usuario_mostra_o_nome_e_as_iniciais_decorativas(
+    client, autor, terceiro, conta, nome, iniciais
+):
+    """RED-20: nome completo (ou username) num span sem atributo; iniciais aria-hidden; Sair."""
+    client.force_login({"autor": autor, "terceiro": terceiro}[conta])
+    html = client.get("/inovacoes/").content.decode()
+    _, usuario = _area_do_usuario(html)
+    assert f'<span class="usuario__iniciais" aria-hidden="true">{iniciais}</span>' in usuario
+    # Na tela e no leitor de tela: o nome, depois do menu e antes do Sair; as iniciais, nao.
+    tela_cabecalho, tela_usuario = _area_do_usuario(exibido(html, rigoroso=True))
+    nome_exibido = re.search(rf"<span>{re.escape(nome)}</span>", tela_usuario)
+    sair = re.search(r"<button[^>]*>\s*Sair\s*</button>", tela_usuario)
+    assert nome_exibido and sair
+    assert nome_exibido.start() < sair.start()
+    assert tela_cabecalho.index("</nav>") < tela_cabecalho.index('<div class="usuario">')
+    assert _texto(tela_usuario.split("<form")[0]) == nome

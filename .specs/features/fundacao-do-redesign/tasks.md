@@ -327,7 +327,7 @@ T16 → T17
 
 ---
 
-### T10: Menu com ícones, página atual e área do usuário
+### T10: Menu com ícones, página atual e área do usuário ✅
 
 **What**: No `base.html`, o `nav id="menu" aria-label="Principal"` com ícone antes de cada texto e `aria-current` pelo processor; a área do usuário com o nome completo (ou `username`) num `<span>` sem atributo e as iniciais `aria-hidden`; o estilo do item atual (fundo `--info-tint`, barra de 3px `--brand-blue`), do hover e do menu quebrando linha. Ajusta T-A, T-E e T-F.
 **Where**: `templates/base.html` (+ `templates/kira.css`; testes antigos T-A, T-E, T-F)
@@ -339,11 +339,11 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_casca.py` (sobre `exibido(…, rigoroso=True)`): ordem Inovações → Cadastrar → Indicadores, cada um com `<svg aria-hidden="true" focusable="false">` antes do texto; `aria-current="page"` só em Inovações na lista, só em Cadastrar no cadastro, só em Indicadores no painel; `aria-current="true"` só em Inovações no detalhe, editar, excluir, status, sinalizar, 404 de inovação e 403 de inovação; nenhum `aria-current` no menu fora disso; nome completo "Ana Souza" no `<span>` e "AS" no elemento `aria-hidden`; conta sem nome mostra o `username`; o "Sair" continua depois do `nav`
-- [ ] Testes `unit` da folha: item atual com `var(--info-tint)` e `3px solid var(--brand-blue)` (seletor por `[aria-current]`); `flex-wrap: wrap` no menu; `min-height: 44px` nos itens
-- [ ] T-A, T-E e T-F feitos exatamente como na tabela de testes antigos; nenhuma asserção perdida
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 16
+- [x] Testes e2e em `test_casca.py` (sobre `exibido(…, rigoroso=True)`): ordem Inovações → Cadastrar → Indicadores, cada um com `<svg aria-hidden="true" focusable="false">` antes do texto; `aria-current="page"` só em Inovações na lista, só em Cadastrar no cadastro, só em Indicadores no painel; `aria-current="true"` só em Inovações no detalhe, editar, excluir, status, sinalizar, 404 de inovação e 403 de inovação; nenhum `aria-current` no menu fora disso; nome completo "Ana Souza" no `<span>` e "AS" no elemento `aria-hidden`; conta sem nome mostra o `username`; o "Sair" continua depois do `nav`
+- [x] Testes `unit` da folha: item atual com `var(--info-tint)` e `3px solid var(--brand-blue)` (seletor por `[aria-current]`); `flex-wrap: wrap` no menu; `min-height: 44px` nos itens
+- [x] T-A, T-E e T-F feitos exatamente como na tabela de testes antigos; nenhuma asserção perdida
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 16
 
 **Tests**: e2e
 **Gate**: build
