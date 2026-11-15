@@ -108,7 +108,7 @@
 - **Completed**: `85979e9` … `9045a08` (emenda), `c36c086` (pausa), commit desta atualização (UAT, mapa, context).
 - **DEPL-18**: segue com o risco residual aceito (isolamento do teste); o item 9 da UAT confirmou o `.vercelignore` no deploy real. `validate_state.py` continua saindo com 1 pelo veredito da iteração 3 (esperado).
 - **Observações do Verifier em aberto** (nenhuma viola AC; corrigir só se o usuário pedir): o README pede as variáveis em Production e Preview, e o roteiro só em Production; o README põe a URL com senha na linha de comando (o roteiro usa `~/.kira-neon.env`); o README não cita o Postgres 16.
-- **Pendente com o usuário (fora do código)**: apagar o projeto no Supabase (`wxjlgbmykmjwvohwvgdk`), não confirmado. O `~/.kira-supabase.env` foi apagado pelo usuário em 2026-11-15 (conferido pelo agente). Push do `main` e região `gru1` (3.6) feitos pelo usuário em 2026-11-15 (relato do usuário).
+- **Limpeza (2026-11-15, pelo usuário)**: projeto no Supabase (`wxjlgbmykmjwvohwvgdk`) apagado; `~/.kira-supabase.env` apagado (conferido pelo agente). Nada pendente na feature. Push do `main` e região `gru1` (3.6) feitos pelo usuário em 2026-11-15 (relato do usuário).
 - **In-progress**: nenhum. **Blockers**: nenhum. **Testes**: 943 passed (2026-11-09).
 - **Branch**: `main`; push feito pelo usuário em 2026-11-15.
 
