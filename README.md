@@ -200,23 +200,24 @@ pytest -q
 ## Deploy em produção (Vercel + Neon)
 
 A aplicação roda na Vercel como uma função Python (Django detectado pelo `manage.py`, entrada
-`config/wsgi.py`, Python 3.13 pelo `.python-version`). O PostgreSQL fica no Neon, no plano
-gratuito e na região AWS São Paulo (`aws-sa-east-1`). A aplicação usa a conexão **pooled** (host
+`config/wsgi.py`, Python 3.13 pelo `.python-version`). O PostgreSQL 16 fica no Neon, no
+plano gratuito e na região AWS São Paulo (`aws-sa-east-1`). A aplicação usa a conexão **pooled** (host
 com `-pooler`, PgBouncer em modo transação). As telas não dependem de arquivos estáticos (o
 `kira.css` vai embutido na página); o CSS do admin é coletado no build e servido pela CDN da
 Vercel.
 
 ### Variáveis de ambiente
 
-Defina na Vercel (Project Settings → Environment Variables), para **Production** e **Preview**.
-O build executa o `manage.py`, então as variáveis precisam estar disponíveis também no build.
+Defina na Vercel (**Settings → Environments → Production**). O deploy é sempre de produção
+(`npx vercel --prod`), então o ambiente Preview não é usado. O build executa o `manage.py`, então
+as variáveis precisam estar disponíveis também no build.
 
 | Variável | Valor em produção |
 | -------- | ----------------- |
 | `DJANGO_SECRET_KEY` | Chave longa e aleatória, só da produção (comando abaixo) |
 | `DJANGO_DEBUG` | `False` (qualquer valor diferente de `True` também desliga) |
-| `DJANGO_ALLOWED_HOSTS` | `<projeto>.vercel.app`; para aceitar os previews, `.vercel.app` |
-| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<projeto>.vercel.app`; para os previews, `https://*.vercel.app` |
+| `DJANGO_ALLOWED_HOSTS` | `<projeto>.vercel.app` (sem `https://`) |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | `https://<projeto>.vercel.app` (sem barra no final) |
 | `DATABASE_URL` | String **pooled** do Neon (host com `-pooler`) |
 
 As listas são separadas por vírgula. Com `DATABASE_URL` definida, o sistema liga
@@ -231,16 +232,29 @@ Para gerar a chave:
 
 ### Passo a passo
 
-1. **Neon**: crie a conta no neon.com (plano gratuito, sem cartão) e um projeto na região
-   **AWS São Paulo (`aws-sa-east-1`)**. A região não muda depois. Em **Connect**, copie duas
+1. **Neon**: crie a conta no neon.com (plano gratuito, sem cartão) e um projeto com
+   **Postgres 16** na região **AWS São Paulo (`aws-sa-east-1`)**. A região não muda depois. Em **Connect**, copie duas
    strings: a **pooled** (com **Connection pooling** ligado; o host tem `-pooler`) e a **direta**
    (com o pooling desligado; o host não tem `-pooler`).
 2. **Banco**: da sua máquina, crie as tabelas e o primeiro administrador no Neon. Use a string
-   **direta**, que o Neon recomenda para migrations:
+   **direta**, que o Neon recomenda para migrations. Ela fica no arquivo `~/.kira-neon.env`, fora
+   do projeto, para a senha não aparecer na tela nem no histórico do terminal. Grave o arquivo
+   colando só a URL quando o terminal pedir (nada aparece enquanto você cola):
 
    ```bash
-   DATABASE_URL='postgresql://neondb_owner:<senha>@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' .venv/bin/python manage.py migrate
-   DATABASE_URL='postgresql://neondb_owner:<senha>@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' .venv/bin/python manage.py createsuperuser
+   read -rs 'U?URL direta do Neon: ' && print -r -- "DATABASE_URL=$U" > ~/.kira-neon.env && chmod 600 ~/.kira-neon.env && unset U
+   ```
+
+   O arquivo fica com uma linha só, no formato
+   `DATABASE_URL=postgresql://neondb_owner:<senha>@ep-<endpoint>.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+   (host sem `-pooler`). Depois, carregue a URL no terminal, rode os comandos e desligue a
+   variável no fim, para os próximos comandos voltarem ao banco local:
+
+   ```bash
+   export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' ~/.kira-neon.env)"
+   .venv/bin/python manage.py migrate
+   .venv/bin/python manage.py createsuperuser
+   unset DATABASE_URL
    ```
 
 3. **Vercel**: o deploy sai da pasta local pela Vercel CLI, sem Git conectado. Crie a conta (pode
@@ -256,7 +270,7 @@ Para gerar a chave:
 O roteiro detalhado, com telas, conferência e problemas comuns, está em
 [`docs/roteiro-deploy.md`](docs/roteiro-deploy.md).
 
-A cada mudança de model, repita o `manage.py migrate` do passo 2 **antes** do deploy do código
+A cada mudança de model, repita o `manage.py migrate` do passo 2 (com o `export` e o `unset`) **antes** do deploy do código
 que depende dela.
 
 ---
