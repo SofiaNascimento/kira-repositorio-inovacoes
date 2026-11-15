@@ -131,7 +131,8 @@
 - **Design**: ✅ aprovado em 2026-11-15 (AD-013, AD-014, AD-015; T-E e T-F autorizados).
 - **Tasks**: ✅ aprovadas (T1–T17). Execute por 3 sub-agentes, um por fase.
 - **Execute**: lote 1 ✅ (T1 `083f19d` … T6 `f7786ce`, 1062 testes); desvios em `design.md` (Ajustes do Execute).
-- **Next step**: lote 2 (T7–T12, casca do sistema).
+- **Execute**: lote 2 ✅ (T7 `2fb2aea` … T12 `7bd971b`, 1147 testes; T-A, T-C, T-E, T-F feitos).
+- **Next step**: lote 3 (T13–T17), depois o Verifier.
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)
