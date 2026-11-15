@@ -134,7 +134,9 @@
 - **Execute**: lote 2 ✅ (T7 `2fb2aea` … T12 `7bd971b`, 1147 testes; T-A, T-C, T-E, T-F feitos).
 - **Execute**: lote 3 ✅ (T13 `417b9a1` … T17 `23b7565`, 1297 testes; T-B, T-C, T-D feitos).
 - **Verifier it. 1**: FAIL (`validation.md`, `3eb38bf`): 38/42 ACs, sensor 45/50. Gaps: Sair com 36px (RED-22; usuário decidiu subir para 44px), `display:none` em seletor composto e `font-size:0` no menu escapam do `exibido` (M27, M28, M41), ícone específico não afirmado (M43). L-044 promovida; candidatas L-050 a L-053.
-- **Next step**: Fase 4 (T18–T20), depois Verifier it. 2.
+- **Limite do loop (decisão do usuário, 2026-11-15)**: só 1 iteração de correção→re-verificação nesta feature (não 3). A Fase 4 é essa iteração; a it. 2 do Verifier é a última; se ainda reprovar, escalar ao usuário sem nova rodada.
+- **Fase 4** ✅: T18 `64b9495` (Sair 44px), T19 `878db23` (guarda de declarações que escondem), T20 `e1f255d` (ícone específico); 1326 testes; mutantes M27, M28, M41, M42, M43 provados mortos pelo autor.
+- **Next step**: Verifier it. 2 (última), diff `a3799f7..e1f255d`.
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)

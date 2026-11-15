@@ -290,6 +290,13 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 - **T17:** os links do rodapé ficam numa `ul.rodape__links` (sem `nav`, para não criar mais um marco de navegação), depois do texto; o `.container` do rodapé passou a flex. O teste percorre as 16 páginas da fixture `paginas` (inclusive a 500) e confere que a lista do teste é a fixture inteira.
 
 
+### Correções da iteração 1 (T18–T20, 2026-11-15)
+
+- Decisão do usuário: o "Sair" sobe para 44px (`.botao--compacto, .usuario button`); a RED-22 não muda.
+- T19: guarda na folha contra declarações que escondem conteúdo, com allowlist só da RED-28; helper `_regras_aninhadas` lê regras dentro de `@media` (o `_corpos` não as via).
+- T20: os ícones do menu e do botão de contraste são comparados ao arquivo `templates/icones/<nome>.svg`.
+- Limite do loop nesta feature: 1 iteração de correção (decisão do usuário).
+
 ## Tech Decisions (feature-local)
 
 | Decision | Choice | Rationale |
