@@ -302,7 +302,7 @@ T16 → T17
 
 ---
 
-### T9: Barra de acessibilidade e faixa da marca
+### T9: Barra de acessibilidade e faixa da marca ✅
 
 **What**: No `base.html`, a `div.barra-acessibilidade` antes do `<header>` com o `nav aria-label="Atalhos de acessibilidade"` (atalho 1 sempre; 2 e 3 só autenticado, com `busca_href`) e cada `<kbd aria-hidden="true">`; a `div.faixa-marca.decorativo aria-hidden="true"`; o estilo da barra (branco sobre `--brand-navy`, anel de foco branco, 44px) e da faixa na `kira.css`, sem o `body > header::before`.
 **Where**: `templates/base.html` (+ regras em `templates/kira.css`)
@@ -314,11 +314,11 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_casca.py` (sobre `exibido(html, rigoroso=True)`): em todas as páginas da fixture `paginas` (importada), o primeiro focável é o link de pular com `accesskey="1"`, seguido do `kbd` "1" `aria-hidden`; a barra vem antes do `<header>`; autenticado (lista, detalhe, painel): links "Ir para o menu" (`#menu`, `accesskey="2"`) e "Ir para a busca" (`accesskey="3"`; `#id_q` na lista, `/inovacoes/#id_q` no detalhe e no painel); anônimo (`/entrar/`): nenhum `accesskey="2"`/`"3"`; faixa `aria-hidden="true"` sem texto entre a barra e o `<header>`; a 500 (`render_to_string`) tem o atalho 1 e a faixa
-- [ ] Testes `unit` da folha: `.barra-acessibilidade` com fundo `var(--brand-navy)`; anel de foco branco nela (≥ 3:1 sobre o navy); `.faixa-marca` com `var(--brand-gradient)` e `height: 4px`; `min-height: 44px` nos links da barra
-- [ ] DS-03 e DS-04 passam sem mudança
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 12
+- [x] Testes e2e em `test_casca.py` (sobre `exibido(html, rigoroso=True)`): em todas as páginas da fixture `paginas` (importada), o primeiro focável é o link de pular com `accesskey="1"`, seguido do `kbd` "1" `aria-hidden`; a barra vem antes do `<header>`; autenticado (lista, detalhe, painel): links "Ir para o menu" (`#menu`, `accesskey="2"`) e "Ir para a busca" (`accesskey="3"`; `#id_q` na lista, `/inovacoes/#id_q` no detalhe e no painel); anônimo (`/entrar/`): nenhum `accesskey="2"`/`"3"`; faixa `aria-hidden="true"` sem texto entre a barra e o `<header>`; a 500 (`render_to_string`) tem o atalho 1 e a faixa
+- [x] Testes `unit` da folha: `.barra-acessibilidade` com fundo `var(--brand-navy)`; anel de foco branco nela (≥ 3:1 sobre o navy); `.faixa-marca` com `var(--brand-gradient)` e `height: 4px`; `min-height: 44px` nos links da barra
+- [x] DS-03 e DS-04 passam sem mudança
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 12
 
 **Tests**: e2e
 **Gate**: build

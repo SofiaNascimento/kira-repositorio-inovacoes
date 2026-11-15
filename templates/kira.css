@@ -111,18 +111,46 @@ a:hover { text-decoration-thickness: 2px; }
 
 /* --- Layout (§5) --------------------------------------------------------- */
 
-.pular {
-  position: absolute;
-  left: var(--space-4);
-  top: var(--space-2);
-  z-index: 10;
-  padding: var(--space-2) var(--space-4);
-  background: var(--surface);
-  border-radius: var(--raio);
-  box-shadow: var(--sombra);
-  transform: translateY(-200%);
+/* Barra de acessibilidade (§5.1, eMAG; RED-13, RED-22): atalhos visiveis sobre o navy,
+   fora do header (AD-015). O numero do atalho e um kbd decorativo ao lado do link. */
+.barra-acessibilidade {
+  background: var(--brand-navy);
+  color: var(--on-brand);
+  font-size: var(--fs-sm);
 }
-.pular:focus { transform: none; }
+.barra-acessibilidade ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.barra-acessibilidade li { display: flex; align-items: center; gap: var(--space-2); }
+.barra-acessibilidade a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--on-brand);
+  text-underline-offset: 3px;
+}
+/* WCAG 2.4.7: o anel azul some no navy; na barra ele e branco. */
+.barra-acessibilidade :focus-visible { outline: 2px solid var(--on-brand); outline-offset: 2px; }
+.barra-acessibilidade kbd {
+  padding: 0 var(--space-1);
+  border: 1px solid var(--on-brand);
+  border-radius: 4px;
+  color: var(--on-brand);
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+}
+
+/* Faixa da marca (§1; RED-21): o gradiente nunca fica atras de texto. */
+.faixa-marca {
+  height: 4px;
+  background: var(--brand-gradient);
+}
 
 .container {
   width: 100%;
@@ -134,13 +162,6 @@ a:hover { text-decoration-thickness: 2px; }
 body > header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
-}
-/* Faixa da marca: o gradiente nunca fica atras de texto (§1). */
-body > header::before {
-  content: "";
-  display: block;
-  height: 4px;
-  background: var(--brand-gradient);
 }
 
 .cabecalho {

@@ -10,8 +10,22 @@
   <style>{% include "kira.css" %}</style>
 </head>
 <body>
-  {# DS-03, WCAG 2.4.1: o primeiro elemento focavel da pagina. #}
-  <a class="pular" href="#conteudo">Ir para o conteúdo principal</a>
+  {# RED-13 a RED-15 (eMAG): barra fora do header (AD-015). O atalho 1 e o primeiro focavel (DS-03). #}
+  <div class="barra-acessibilidade">
+    <div class="container">
+      <nav aria-label="Atalhos de acessibilidade">
+        <ul>
+          <li><a href="#conteudo" accesskey="1">Ir para o conteúdo principal</a> <kbd aria-hidden="true">1</kbd></li>
+          {% if user.is_authenticated %}
+            <li><a href="#menu" accesskey="2">Ir para o menu</a> <kbd aria-hidden="true">2</kbd></li>
+            <li><a href="{{ busca_href }}" accesskey="3">Ir para a busca</a> <kbd aria-hidden="true">3</kbd></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </div>
+  {# RED-21: faixa da marca, decorativa (some no alto contraste). #}
+  <div class="faixa-marca decorativo" aria-hidden="true"></div>
 
   <header>
     <div class="container cabecalho">

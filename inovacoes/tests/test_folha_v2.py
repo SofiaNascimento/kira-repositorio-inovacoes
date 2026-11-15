@@ -680,3 +680,56 @@ def test_nenhuma_largura_minima_passa_de_320px_fora_de_max_width():
             if _em_px(numero, unidade) > 320:
                 largas.append((lista.strip(), numero + unidade))
     assert largas == []
+
+
+# --- RED-13, RED-21, RED-22: barra de acessibilidade e faixa da marca ------------
+
+
+@pytest.mark.unit
+def test_barra_de_acessibilidade_tem_fundo_navy_e_texto_sobre_a_marca():
+    """RED-13: §5.1 v2, branco sobre --brand-navy."""
+    corpo = _corpos(".barra-acessibilidade")
+    assert _tem(corpo, "background", "var(--brand-navy)")
+    assert _tem(corpo, "color", "var(--on-brand)")
+    assert _tem(_corpos(".barra-acessibilidade a"), "color", "var(--on-brand)")
+
+
+@pytest.mark.unit
+def test_anel_de_foco_da_barra_e_branco_e_visivel_sobre_o_navy():
+    """RED-13, WCAG 2.4.7 e 1.4.11: anel de 2px branco, 3:1 sobre o navy."""
+    assert _tem(
+        _corpos(".barra-acessibilidade :focus-visible"), "outline", "2px solid var(--on-brand)"
+    )
+    assert _contraste(_token("on-brand"), _token("brand-navy")) >= 3
+
+
+@pytest.mark.unit
+def test_cores_da_barra_estao_em_pares_aprovados():
+    """RED-10: toda cor de texto e de limite da barra sobre o navy."""
+    conferidos = 0
+    for seletores, corpo in _regras_de(".barra-acessibilidade"):
+        for cor, fundo, e_texto in _pares_da_regra(corpo, "brand-navy"):
+            if e_texto:
+                assert (cor, fundo) in PARES_APROVADOS_DE_TEXTO, (seletores, cor, fundo)
+                assert _contraste(_token(cor), _token(fundo)) >= 4.5, (seletores, cor, fundo)
+            else:
+                aprovados = PARES_APROVADOS_DE_COMPONENTE | PARES_APROVADOS_DE_TEXTO
+                assert (cor, fundo) in aprovados, (seletores, cor, fundo)
+                assert _contraste(_token(cor), _token(fundo)) >= 3, (seletores, cor, fundo)
+            conferidos += 1
+    assert conferidos
+
+
+@pytest.mark.unit
+def test_links_da_barra_tem_alvo_de_44px():
+    """RED-22: WCAG 2.5.8, alvo minimo de 44px nos links da barra."""
+    assert _tem(_corpos(".barra-acessibilidade a"), "min-height", "44px")
+
+
+@pytest.mark.unit
+def test_faixa_da_marca_e_o_gradiente_de_4px():
+    """RED-21: §1, a faixa no lugar do antigo header::before."""
+    corpo = _corpos(".faixa-marca")
+    assert _tem(corpo, "background", "var(--brand-gradient)")
+    assert _tem(corpo, "height", "4px")
+    assert "header::before" not in _sem_comentarios(CSS)
