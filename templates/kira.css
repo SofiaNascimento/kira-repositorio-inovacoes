@@ -214,7 +214,7 @@ button,
   border: 2px solid var(--brand-blue);
   border-radius: var(--raio);
   background: var(--brand-blue);
-  color: #FFFFFF;
+  color: var(--on-brand);
   font: inherit;
   font-weight: 600;
   text-decoration: none;
@@ -223,8 +223,8 @@ button,
 }
 button:hover,
 .botao:hover {
-  background: color-mix(in srgb, var(--brand-blue) 92%, #000000);
-  border-color: color-mix(in srgb, var(--brand-blue) 92%, #000000);
+  background: var(--brand-blue-hover);
+  border-color: var(--brand-blue-hover);
 }
 button:active,
 .botao:active { transform: translateY(1px); }
@@ -249,16 +249,18 @@ button:active,
 .acoes > a:hover { background: var(--info-tint); }
 
 /* Primario para links que os testes fixam sem classe (estado vazio, erro). */
-.acoes--primaria > a { background: var(--brand-blue); color: #FFFFFF; }
+.acoes--primaria > a { background: var(--brand-blue); color: var(--on-brand); }
 .acoes--primaria > a:hover {
-  background: color-mix(in srgb, var(--brand-blue) 92%, #000000);
-  border-color: color-mix(in srgb, var(--brand-blue) 92%, #000000);
+  background: var(--brand-blue-hover);
+  border-color: var(--brand-blue-hover);
 }
 
 .botao--perigo { background: var(--error); border-color: var(--error); }
+/* Hover (§6 v2): fundo suave de erro; o texto passa a --error (par da §2). */
 .botao--perigo:hover {
-  background: color-mix(in srgb, var(--error) 92%, #000000);
-  border-color: color-mix(in srgb, var(--error) 92%, #000000);
+  background: var(--error-tint);
+  border-color: var(--error);
+  color: var(--error);
 }
 
 .botao--compacto,
@@ -268,9 +270,15 @@ button:active,
   font-size: var(--fs-sm);
 }
 
+/* Desabilitado (§6 v2): sem opacidade, para o par text-muted/bg valer como e. */
 button:disabled,
 button[aria-disabled=true],
-.botao[aria-disabled=true] { opacity: 0.55; cursor: not-allowed; }
+.botao[aria-disabled=true] {
+  border-color: var(--borda-campo);
+  background: var(--bg);
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
 
 .acoes {
   display: flex;
@@ -315,6 +323,12 @@ textarea { min-height: 8rem; resize: vertical; }
 input:hover,
 select:hover,
 textarea:hover { border-color: var(--brand-navy); }
+
+/* Campo com erro (§6 v2). O nome do atributo vai com o "i" escapado (\69): a folha
+   fica embutida na pagina, e um teste confere que o atributo nao aparece nela sem erro. */
+input[aria-\69 nvalid=true],
+select[aria-\69 nvalid=true],
+textarea[aria-\69 nvalid=true] { border: 2px solid var(--error); }
 
 /* Campo com erro: o Django pinta o controle de invalido e poe a .errorlist no grupo. */
 .campo:has(.errorlist) :is(input, select, textarea) { border-color: var(--error); border-width: 2px; }
@@ -480,7 +494,7 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   width: fit-content;
   padding: 2px var(--space-3);
   border: 1px solid currentcolor;
-  border-radius: 999px;
+  border-radius: var(--raio-pilula);
   font-size: var(--fs-sm);
   font-weight: 600;
   white-space: nowrap;

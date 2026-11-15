@@ -184,7 +184,7 @@ T16 → T17
 
 ---
 
-### T4: Botão, campo, selo e estados de interação
+### T4: Botão, campo, selo e estados de interação ✅
 
 **What**: Os estados da §6 v2 de botão (primário, secundário, perigo, hover, ativo, desabilitado), campo inválido e selo em pílula.
 **Where**: `templates/kira.css`
@@ -196,10 +196,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes `unit` em `test_folha_v2.py`: `button:hover`/`.botao:hover` com `var(--brand-blue-hover)`; `:active` existe; `:disabled` e `[aria-disabled=true]` com `var(--bg)`, `var(--text-muted)` e `cursor: not-allowed`; `.botao--secundario:hover` com `var(--info-tint)`; `.botao--perigo:hover` com `var(--error-tint)`; `[aria-invalid=true]` com `2px solid var(--error)`; `.selo` com `var(--raio-pilula)`; pares novos no limiar (texto 4.5:1: `on-brand`/`brand-blue-hover`, `text-muted`/`bg`, `brand-navy`/`info-tint`)
-- [ ] Testes de botão, alerta e selo do DS (DS-11 a DS-14) continuam passando
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 10
+- [x] Testes `unit` em `test_folha_v2.py`: `button:hover`/`.botao:hover` com `var(--brand-blue-hover)`; `:active` existe; `:disabled` e `[aria-disabled=true]` com `var(--bg)`, `var(--text-muted)` e `cursor: not-allowed`; `.botao--secundario:hover` com `var(--info-tint)`; `.botao--perigo:hover` com `var(--error-tint)`; `[aria-invalid=true]` com `2px solid var(--error)`; `.selo` com `var(--raio-pilula)`; pares novos no limiar (texto 4.5:1: `on-brand`/`brand-blue-hover`, `text-muted`/`bg`, `brand-navy`/`info-tint`)
+- [x] Testes de botão, alerta e selo do DS (DS-11 a DS-14) continuam passando
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 10
 
 **Tests**: unit
 **Gate**: build

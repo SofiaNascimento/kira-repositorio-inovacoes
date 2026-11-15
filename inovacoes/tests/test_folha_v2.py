@@ -229,3 +229,92 @@ def test_borda_de_campo_tem_contraste_de_componente(fundo):
 def test_numeros_que_se_comparam_usam_algarismos_tabulares(seletor):
     """RED-04."""
     assert re.search(r"font-variant-numeric\s*:\s*var\(--numeros\)", _corpos(seletor))
+
+
+# --- RED-09 e RED-10: botao, campo e selo ---------------------------------------
+
+# AD-010: `"aria-invalid" not in html` (CONS-30) le a pagina inteira, com a folha
+# embutida; por isso a folha escreve o nome do atributo com o "i" escapado (\69).
+INVALIDO = r"[aria-\69 nvalid=true]"
+
+
+def _tem(corpo, propriedade, valor):
+    return re.search(
+        rf"(?:^|;|\s){propriedade}\s*:\s*{re.escape(valor)}\s*(?:!important\s*)?;", corpo
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("seletor", ["button:hover", ".botao:hover"])
+def test_hover_do_botao_primario_usa_o_azul_de_hover(seletor):
+    """RED-09: §6, primario em hover com --brand-blue-hover."""
+    assert _tem(_corpos(seletor), "background", "var(--brand-blue-hover)")
+
+
+@pytest.mark.unit
+def test_texto_do_botao_primario_e_a_cor_sobre_a_marca():
+    """RED-10: o par do hover (on-brand sobre brand-blue-hover) e o que a folha pinta."""
+    assert _tem(_corpos("button"), "color", "var(--on-brand)")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("seletor", ["button:active", ".botao:active"])
+def test_botao_tem_estado_ativo(seletor):
+    """RED-09: §6, estado ativo."""
+    assert re.search(r"[\w-]+\s*:\s*[^;]+;", _corpos(seletor))
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "seletor", ["button:disabled", "button[aria-disabled=true]", ".botao[aria-disabled=true]"]
+)
+def test_botao_desabilitado_usa_fundo_da_pagina_texto_secundario_e_cursor_bloqueado(seletor):
+    """RED-09: §6, desabilitado; RED-10: sem opacidade, o par text-muted/bg vale como e."""
+    corpo = _corpos(seletor)
+    assert _tem(corpo, "background", "var(--bg)")
+    assert _tem(corpo, "color", "var(--text-muted)")
+    assert _tem(corpo, "cursor", "not-allowed")
+    assert "opacity" not in corpo
+
+
+@pytest.mark.unit
+def test_hover_do_botao_secundario_usa_o_fundo_suave_de_informacao():
+    """RED-09: §6."""
+    assert _tem(_corpos(".botao--secundario:hover"), "background", "var(--info-tint)")
+
+
+@pytest.mark.unit
+def test_hover_do_botao_de_perigo_usa_o_fundo_suave_de_erro_com_texto_de_erro():
+    """RED-09: §6; RED-10: o texto sobre --error-tint e --error (par da §2)."""
+    corpo = _corpos(".botao--perigo:hover")
+    assert _tem(corpo, "background", "var(--error-tint)")
+    assert _tem(corpo, "color", "var(--error)")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("controle", ["input", "select", "textarea"])
+def test_campo_invalido_tem_borda_de_2px_de_erro(controle):
+    """RED-09: §6, campo com erro."""
+    assert "aria-invalid" not in CSS
+    assert _tem(_corpos(controle + INVALIDO), "border", "2px solid var(--error)")
+
+
+@pytest.mark.unit
+def test_selo_e_uma_pilula():
+    """RED-09: §6, selo em pilula."""
+    assert _tem(_corpos(".selo"), "border-radius", "var(--raio-pilula)")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("texto", "fundo"),
+    [
+        ("on-brand", "brand-blue-hover"),
+        ("text-muted", "bg"),
+        ("brand-navy", "info-tint"),
+        ("error", "error-tint"),
+    ],
+)
+def test_pares_de_texto_dos_estados_tem_contraste_aa(texto, fundo):
+    """RED-10: §2 v2, 4.5:1."""
+    assert _contraste(_token(texto), _token(fundo)) >= 4.5

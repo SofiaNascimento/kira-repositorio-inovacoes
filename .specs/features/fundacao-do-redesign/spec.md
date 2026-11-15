@@ -257,8 +257,8 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-06 | P1: Folha | Execute | Implementing |
 | RED-07 | P1: Folha | Execute | Implementing |
 | RED-08 | P1: Folha | Execute | Implementing |
-| RED-09 | P1: Folha | Design | Pending |
-| RED-10 | P1: Folha | Design | Pending |
+| RED-09 | P1: Folha | Execute | Implementing |
+| RED-10 | P1: Folha | Execute | Implementing |
 | RED-11 | P1: Folha | Design | Pending |
 | RED-12 | P1: Folha | Design | Pending |
 | RED-13 | P1: Barra e cabeçalho | Design | Pending |
