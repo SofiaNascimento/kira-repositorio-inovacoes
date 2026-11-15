@@ -580,7 +580,7 @@ T20
 
 ---
 
-### T20: Ícone certo em cada item do menu e no botão de contraste
+### T20: Ícone certo em cada item do menu e no botão de contraste ✅
 
 **What**: Os testes da RED-16 e da RED-23 passam a exigir o ícone específico: o `<svg>` antes de "Inovações" é o de `icones/lampada.svg`, o de "Cadastrar inovação" o de `circulo-mais.svg`, o de "Indicadores" o de `grafico-barras.svg`, e o do botão "Alto contraste" o de `contraste.svg` (comparando o conteúdo dos `path`/formas com o arquivo).
 **Where**: `nucleo/tests/test_casca.py`
@@ -592,9 +592,9 @@ T20
 
 **Done when**:
 
-- [ ] O teste mata o M43 (ícone de gráfico em "Inovações") e a troca do ícone do botão de contraste
-- [ ] Gate check passa: full
-- [ ] Test count: ≥ anterior + 2
+- [x] O teste mata o M43 (ícone de gráfico em "Inovações") e a troca do ícone do botão de contraste
+- [x] Gate check passa: full
+- [x] Test count: ≥ anterior + 2
 
 **Tests**: e2e
 **Gate**: full

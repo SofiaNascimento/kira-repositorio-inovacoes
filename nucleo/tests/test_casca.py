@@ -298,6 +298,72 @@ def test_menu_tem_os_tres_itens_em_ordem_cada_um_com_icone_antes_do_texto(
         assert _texto(conteudo[svg.end() :]) == rotulo
 
 
+FORMAS = {"path", "circle", "rect", "line", "polyline", "polygon", "ellipse"}
+
+
+class Formas(HTMLParser):
+    """(tag, atributos) de cada elemento de forma de um SVG, em ordem."""
+
+    def __init__(self):
+        super().__init__()
+        self.formas = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in FORMAS:
+            self.formas.append((tag, tuple(sorted(attrs))))
+
+    handle_startendtag = handle_starttag
+
+
+def _formas(svg):
+    parser = Formas()
+    parser.feed(svg)
+    return parser.formas
+
+
+def _formas_do_icone_inicial(conteudo):
+    """Formas do SVG que abre o conteudo; o texto so vem depois dele."""
+    svg = re.match(r"\s*<svg\b[^>]*>.*?</svg>", conteudo, re.S)
+    assert svg
+    return _formas(svg.group())
+
+
+ICONE_DO_ITEM = {
+    "Inovações": "lampada",
+    "Cadastrar inovação": "circulo-mais",
+    "Indicadores": "grafico-barras",
+}
+
+
+def test_cada_item_do_menu_tem_o_seu_icone(client, autor):
+    """RED-16: lampada em Inovacoes, circulo com mais em Cadastrar, grafico em Indicadores."""
+    client.force_login(autor)
+    html = client.get("/inovacoes/").content.decode()
+    cabecalho = html[html.index("<header>") : html.index("</header>")]
+    inicio = ABRE_MENU.search(cabecalho).start()
+    trecho = cabecalho[inicio : cabecalho.index("</nav>", inicio)]
+    itens = re.findall(r"<a\b[^>]*>(.*?)</a>", trecho, re.S)
+    assert len(itens) == len(ICONE_DO_ITEM)
+    for conteudo, (rotulo, nome) in zip(itens, ICONE_DO_ITEM.items(), strict=True):
+        arquivo = _formas((ICONES / f"{nome}.svg").read_text())
+        assert arquivo, nome
+        assert _formas_do_icone_inicial(conteudo) == arquivo, rotulo
+
+
+@pytest.mark.parametrize("autenticado", [False, True])
+def test_botao_de_contraste_tem_o_icone_de_meio_circulo(client, autor, autenticado):
+    """RED-23: o botao "Alto contraste" abre com o icone de meio circulo (contraste.svg)."""
+    if autenticado:
+        client.force_login(autor)
+    html = client.get("/inovacoes/" if autenticado else "/entrar/").content.decode()
+    barra = html[html.index('<div class="barra-acessibilidade">') : html.index("<header>")]
+    botoes = re.findall(r'<button\b[^>]*name="contraste"[^>]*>(.*?)</button>', barra, re.S)
+    assert len(botoes) == 1
+    arquivo = _formas((ICONES / "contraste.svg").read_text())
+    assert arquivo
+    assert _formas_do_icone_inicial(botoes[0]) == arquivo
+
+
 @pytest.mark.parametrize(
     ("pagina", "conta", "atual"),
     [
