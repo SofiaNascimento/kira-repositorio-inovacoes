@@ -556,3 +556,45 @@ def test_titulo_com_aspas_e_e_comercial_sai_escapado_na_trilha(client, autor, cr
         in html[html.index(ABRE_TRILHA) : html.index('<main id="conteudo">')]
     )
     assert _trilha(html)[1] == ('Caixa "rápido" & cia', f"/inovacoes/{inovacao.pk}/", None)
+
+
+# --- T17: rodape com links de apoio (RED-32) ----------------------------------------
+
+PAGINAS_DA_FIXTURE = [
+    "login",
+    "acessibilidade_anonimo",
+    "ajuda_anonimo",
+    "acessibilidade",
+    "ajuda",
+    "lista",
+    "nova",
+    "detalhe",
+    "editar",
+    "excluir",
+    "status",
+    "reaproveitar",
+    "painel",
+    "nao_encontrada",
+    "acesso_negado",
+    "erro_500",
+]
+
+
+def test_lista_de_paginas_do_rodape_cobre_a_fixture(paginas):  # noqa: F811
+    """RED-32: o teste do rodape passa por toda pagina da fixture, inclusive a 500."""
+    assert sorted(paginas) == sorted(PAGINAS_DA_FIXTURE)
+
+
+@pytest.mark.parametrize("nome", PAGINAS_DA_FIXTURE)
+def test_rodape_tem_a_identificacao_e_os_links_de_apoio(paginas, nome):  # noqa: F811
+    """RED-32: texto atual e os links Acessibilidade e Ajuda, exibidos no footer."""
+    tela = exibido(paginas[nome], rigoroso=True)
+    rodapes = re.findall(r"<footer>(.*?)</footer>", tela, re.S)
+    assert len(rodapes) == 1
+    assert "<p>KIRA · Repositório de Inovações · uso interno</p>" in rodapes[0]
+    links = [
+        (atributos.get("href"), texto.strip())
+        for tag, atributos, texto in _elementos(rodapes[0])
+        if tag == "a"
+    ]
+    assert links == [("/acessibilidade/", "Acessibilidade"), ("/ajuda/", "Ajuda")]

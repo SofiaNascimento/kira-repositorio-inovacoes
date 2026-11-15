@@ -498,7 +498,7 @@ T16 → T17
 
 ---
 
-### T17: Rodapé com links de apoio
+### T17: Rodapé com links de apoio ✅
 
 **What**: No `<footer>` (sem atributo), o texto atual e a lista com os links "Acessibilidade" e "Ajuda"; estilo na folha.
 **Where**: `templates/base.html` (+ `templates/kira.css`)
@@ -510,10 +510,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_casca.py`: em toda página da fixture `paginas` e na 500, o `<footer>` tem "KIRA · Repositório de Inovações · uso interno" e os links "Acessibilidade" → `/acessibilidade/` e "Ajuda" → `/ajuda/`, exibidos (`exibido(…, rigoroso=True)`)
-- [ ] DS-04 passa sem mudança
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 4
+- [x] Testes e2e em `test_casca.py`: em toda página da fixture `paginas` e na 500, o `<footer>` tem "KIRA · Repositório de Inovações · uso interno" e os links "Acessibilidade" → `/acessibilidade/` e "Ajuda" → `/ajuda/`, exibidos (`exibido(…, rigoroso=True)`)
+- [x] DS-04 passa sem mudança
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 4
 
 **Tests**: e2e
 **Gate**: build

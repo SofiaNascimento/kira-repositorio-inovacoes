@@ -303,8 +303,26 @@ body > footer {
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
-body > footer .container { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+body > footer .container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 var(--space-5);
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+}
 body > footer p { margin: 0; }
+/* RED-32: links de apoio; azul sobre a superficie (par da §2), alvo de 44px. */
+.rodape__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.rodape__links a { display: inline-flex; align-items: center; min-height: 44px; }
 
 /* --- Botao (§6) ---------------------------------------------------------- */
 

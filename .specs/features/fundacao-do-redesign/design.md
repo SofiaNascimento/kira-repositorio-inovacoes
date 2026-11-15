@@ -287,6 +287,8 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 
 - **T16:** o texto da Ajuda descreve só o que as telas fazem hoje (busca em título, problema e solução; filtros de categoria, unidade e status; avanço de um estágio por vez, só pelo autor ou por um administrador). "Cada h2 seguido de texto exibido" foi testado como ao menos cinco palavras exibidas por seção (spec-precision gap: a RED-35 não fixa o texto).
 
+- **T17:** os links do rodapé ficam numa `ul.rodape__links` (sem `nav`, para não criar mais um marco de navegação), depois do texto; o `.container` do rodapé passou a flex. O teste percorre as 16 páginas da fixture `paginas` (inclusive a 500) e confere que a lista do teste é a fixture inteira.
+
 
 ## Tech Decisions (feature-local)
 

@@ -90,9 +90,14 @@
     {% block conteudo %}{% endblock %}
   </main>
 
+  {# RED-32: identificacao do sistema e os links de apoio; footer sem atributo (DS-04). #}
   <footer>
     <div class="container">
       <p>KIRA · Repositório de Inovações · uso interno</p>
+      <ul class="rodape__links">
+        <li><a href="{% url 'nucleo:acessibilidade' %}">Acessibilidade</a></li>
+        <li><a href="{% url 'nucleo:ajuda' %}">Ajuda</a></li>
+      </ul>
     </div>
   </footer>
 
