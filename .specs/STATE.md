@@ -100,6 +100,13 @@
 
 ## Handoff
 
+### Atual (2026-11-15) — fundacao-do-redesign (R1)
+
+- **Feature**: fundacao-do-redesign — `.specs/features/fundacao-do-redesign/`. Passe cross-cutting da `design-spec.md` v2.
+- **Phase**: Specify ✅ aprovado (42 ACs, RED-01 a RED-42); Discuss fechado (`context.md`): contraste por cookie, Lucide (ISC), páginas públicas, fonte com URL literal, menu sem `<details>`, página `/ajuda/`. Testes antigos T-A a T-D autorizados.
+- **Next step**: Design (inclui decidir se a AD-010 recebe emenda pela pasta `static/` da fonte).
+- **In-progress**: nenhum. **Blockers**: nenhum.
+
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)
 
 - **Feature**: deploy-producao (RNF06) — **concluída** em 2026-11-15. KIRA em produção em `https://kira-nu-green.vercel.app` com o banco no **Neon** (`ep-small-frog-b6mo1gwq`, `aws-sa-east-1`, plano gratuito), pela URL pooled na Vercel.

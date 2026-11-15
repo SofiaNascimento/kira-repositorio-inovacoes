@@ -34,6 +34,7 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
 | sistema-de-design | Template base único e folha `kira.css` a partir da `design-spec.md` (AD-010) | Concluída (Verifier PASS) |
 | deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Neon (plano gratuito, São Paulo); roteiro em `docs/roteiro-deploy.md` | **Concluída** em 2026-11-15: publicada em `https://kira-nu-green.vercel.app` com o banco no Neon (reaberta em 2026-11-09 para a troca); UAT da Parte 4 aprovada, acervo de 500 inovações carregado |
 | acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no banco de produção (Neon) pendente |
+| fundacao-do-redesign (R1) | Casca da design-spec v2: tokens, fonte Inter local, barra de acessibilidade (eMAG), menu com ícones, cabeçalho de página, alto contraste, componentes da §6 v2 | Em andamento: Specify aprovado em 2026-11-15; próximo, Design |
 
 ---
 
