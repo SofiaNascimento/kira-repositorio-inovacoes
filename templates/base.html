@@ -1,9 +1,11 @@
-<!doctype html>
+{% load static %}<!doctype html>
 <html lang="pt-br">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}KIRA{% endblock %} · Repositório de Inovações</title>
+  {# RED-05, AD-013: a fonte vem do proprio projeto; a URL e a do @font-face. #}
+  <link rel="preload" href="{% static 'fontes/inter-latin-wght-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
   {# AD-010: a folha central vem embutida; nenhuma tela tem estilo proprio. #}
   <style>{% include "kira.css" %}</style>
 </head>

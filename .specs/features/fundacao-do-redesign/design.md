@@ -160,6 +160,10 @@ o h1 "Entrar" fica no cartão (exceção da RED-31; o login é refeito no passe 
 
 - **Location**: `static/fontes/inter-latin-wght-normal.woff2` e `static/fontes/OFL.txt`.
 - **Origem**: pacote npm `@fontsource-variable/inter` (arquivo `files/inter-latin-wght-normal.woff2`), versão publicada há mais de duas semanas, baixada uma vez no Execute; o arquivo é versionado no repositório.
+- **Versão copiada (T2, 2026-11-15)**: `@fontsource-variable/inter@5.3.0` (publicada em 2026-07-19; tarball conferido pelo `integrity` do registro npm, `sha512-OupL48va…oUA==`).
+  - `inter-latin-wght-normal.woff2`: SHA-256 `3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62` (48 256 bytes).
+  - `OFL.txt` (cópia do `LICENSE` do pacote): SHA-256 `3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345`.
+  - O pacote declara `font-weight: 100 900`; a folha declara `400 800` (RED-05), o intervalo que o projeto usa.
 
 ### kira.css (extensão)
 

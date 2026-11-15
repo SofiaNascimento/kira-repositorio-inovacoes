@@ -134,7 +134,7 @@ T16 → T17
 
 ---
 
-### T2: Fonte Inter servida pelo projeto
+### T2: Fonte Inter servida pelo projeto ✅
 
 **What**: O arquivo `inter-latin-wght-normal.woff2` (de `@fontsource-variable/inter`, versão publicada há mais de duas semanas) e o `OFL.txt` em `static/fontes/`, `STATICFILES_DIRS = [BASE_DIR / "static"]`, o `@font-face` na `kira.css` e o `preload` no `base.html`.
 **Where**: `static/fontes/` (arquivos), `config/settings.py`, `templates/kira.css`, `templates/base.html`
@@ -146,12 +146,12 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Versão do pacote e SHA-256 do `.woff2` registrados no `design.md` (seção Fonte)
-- [ ] `@font-face` com `font-family: Inter`, `font-display: swap`, `font-weight: 400 800`, `src: url(/static/fontes/inter-latin-wght-normal.woff2) format(woff2)`; `--font-sans` igual ao da §3
-- [ ] Testes: `finders.find("fontes/inter-latin-wght-normal.woff2")` acha o arquivo; `collectstatic` num `tmp_path` o copia; a URL da folha é `"/" + settings.STATIC_URL + "fontes/inter-latin-wght-normal.woff2"`; `OFL.txt` existe e cita "SIL Open Font License"; nenhuma página da fixture `paginas` nem a folha tem `http://` ou `https://` em `<link`, `<script`, `<img`, `@import` ou `url(` (RED-08); o `preload` aponta para a mesma URL com `crossorigin`
-- [ ] DS-02 continua passando (folha crua == `<style>`)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 7
+- [x] Versão do pacote e SHA-256 do `.woff2` registrados no `design.md` (seção Fonte)
+- [x] `@font-face` com `font-family: Inter`, `font-display: swap`, `font-weight: 400 800`, `src: url(/static/fontes/inter-latin-wght-normal.woff2) format(woff2)`; `--font-sans` igual ao da §3
+- [x] Testes: `finders.find("fontes/inter-latin-wght-normal.woff2")` acha o arquivo; `collectstatic` num `tmp_path` o copia; a URL da folha é `"/" + settings.STATIC_URL + "fontes/inter-latin-wght-normal.woff2"`; `OFL.txt` existe e cita "SIL Open Font License"; nenhuma página da fixture `paginas` nem a folha tem `http://` ou `https://` em `<link`, `<script`, `<img`, `@import` ou `url(` (RED-08); o `preload` aponta para a mesma URL com `crossorigin`
+- [x] DS-02 continua passando (folha crua == `<style>`)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 7
 
 **Tests**: integration
 **Gate**: build

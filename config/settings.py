@@ -155,6 +155,8 @@ STATIC_URL = "static/"
 # Com STATIC_ROOT, a Vercel roda o collectstatic no build e serve /static/ pela CDN (DEPL-10).
 # As telas nao dependem disso: o kira.css segue embutido pelo base (AD-010).
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# AD-013: recursos binarios do visual (a fonte Inter) moram em static/, com a licenca ao lado.
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Modelo de usuario do projeto (AD-004, AD-005).
 # Declarado antes da primeira migration: trocar depois exige recriar o banco.

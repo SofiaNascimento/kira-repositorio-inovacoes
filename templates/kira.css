@@ -55,6 +55,18 @@
   --transicao: 150ms ease-out;
 }
 
+/* --- Fonte (§3; AD-013) -------------------------------------------------- */
+
+/* Inter variavel, subconjunto latino, servida por /static/ (RED-05). A URL e literal:
+   o teste a amarra ao STATIC_URL. Sem o arquivo, vale a pilha de reserva da §3. */
+@font-face {
+  font-family: Inter;
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400 800;
+  src: url(/static/fontes/inter-latin-wght-normal.woff2) format(woff2);
+}
+
 /* --- Base ---------------------------------------------------------------- */
 
 *,
