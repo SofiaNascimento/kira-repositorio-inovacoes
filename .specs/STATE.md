@@ -128,8 +128,9 @@
 
 - **Feature**: fundacao-do-redesign — `.specs/features/fundacao-do-redesign/`. Passe cross-cutting da `design-spec.md` v2.
 - **Phase**: Specify ✅ aprovado (42 ACs, RED-01 a RED-42); Discuss fechado (`context.md`): contraste por cookie, Lucide (ISC), páginas públicas, fonte com URL literal, menu sem `<details>`, página `/ajuda/`. Testes antigos T-A a T-D autorizados.
-- **Design**: rascunho em `design.md` (2026-11-15), aguardando aprovação; ADs novas AD-013, AD-014, AD-015; AD-010 segue ativa sem emenda. Pede autorização para mais dois testes antigos (T-E, T-F).
-- **Next step**: aprovação do design; depois Tasks.
+- **Design**: ✅ aprovado em 2026-11-15 (AD-013, AD-014, AD-015; T-E e T-F autorizados).
+- **Tasks**: rascunho em `tasks.md` (T1–T17, 3 fases), aguardando aprovação.
+- **Next step**: aprovar as tasks; no Execute, oferecer 3 sub-agentes (um por fase).
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)

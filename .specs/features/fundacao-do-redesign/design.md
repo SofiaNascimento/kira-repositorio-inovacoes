@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md`
 **Context**: `.specs/features/fundacao-do-redesign/context.md`
-**Status**: Draft — aguardando aprovação (2026-11-15)
+**Status**: Approved (2026-11-15; T-E e T-F autorizados)
 
 Conforma com AD-001 a AD-012. Novas: **AD-013** (recursos estáticos do projeto), **AD-014**
 (preferência de apresentação por cookie), **AD-015** (casca da página). A AD-010 segue ativa e

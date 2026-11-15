@@ -1,6 +1,6 @@
 # Fundação do Redesign (R1) — Specification
 
-**Status:** Aprovada em 2026-11-15 (Discuss fechado; testes antigos T-A a T-D autorizados). Ajustada pelo Design em 2026-11-15 (RED-23, 24, 25, 29, 30, 31, 37; T-E e T-F a autorizar).
+**Status:** Aprovada em 2026-11-15 (Discuss fechado; testes antigos T-A a T-D autorizados). Ajustada pelo Design em 2026-11-15 (RED-23, 24, 25, 29, 30, 31, 37; T-E e T-F autorizados com o design).
 
 Fonte do visual: `docs/design-spec.md` **v2** (§1–§9). Passe de design cross-cutting no molde da
 `sistema-de-design`: muda a casca comum (tokens, fonte, barra de acessibilidade, cabeçalho do
@@ -31,7 +31,7 @@ ao `kira.css` cru (DS-02), o `<title>` "{página} · Repositório de Inovações
 a barra de acessibilidade fora do `<header>`, a trilha entre o `<header>` e o `<main>` e o `<form>` do
 contraste no fim do `<body>` (AD-015).
 
-**Acrescentados no Design (a autorizar):** T-E `indicadores/tests/test_views_painel.py:178`
+**Acrescentados no Design (autorizados em 2026-11-15):** T-E `indicadores/tests/test_views_painel.py:178`
 (`"<svg" not in html` passa a olhar só o `<main>`: os ícones do menu são SVG) e T-F
 `inovacoes/tests/test_views_sistema_design.py:177` (DS-05 passa a esperar `<span>Ana Souza</span>`:
 a fixture tem nome completo e a RED-20 o mostra).
