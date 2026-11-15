@@ -2,9 +2,9 @@
 
 {% block title %}Excluir inovação{% endblock %}
 
-{% block conteudo %}
-  <h1>Excluir inovação</h1>
+{% block titulo %}Excluir inovação{% endblock %}
 
+{% block conteudo %}
   {# EDEX-30: unidade e categoria distinguem titulos iguais em unidades diferentes (INOV-24). #}
   <div class="cartao">
   <p>Você vai excluir a inovação “{{ inovacao.titulo }}” ({{ inovacao.unidade.nome }} · {{ inovacao.categoria.nome }}). Esta ação não pode ser desfeita.</p>

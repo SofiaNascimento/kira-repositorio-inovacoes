@@ -2,6 +2,9 @@
 
 {% block title %}Entrar{% endblock %}
 
+{# RED-31: o h1 "Entrar" fica no cartao ate o passe do login; sem cabecalho de pagina. #}
+{% block cabecalho_pagina %}{% endblock %}
+
 {% block conteudo %}
   {# DS-15, design-spec §10 F1: card centralizado com a marca no topo. #}
   <div class="cartao cartao--estreito">

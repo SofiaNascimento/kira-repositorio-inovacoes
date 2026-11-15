@@ -2,9 +2,9 @@
 
 {% block title %}{{ titulo_pagina }}{% endblock %}
 
-{% block conteudo %}
-  <h1>{{ titulo_pagina }}</h1>
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
 
+{% block conteudo %}
   {# INOV-30 (RF12): resumo antes do primeiro campo, anunciado pelo leitor de tela. #}
   {% if form.errors %}
     <div role="alert">

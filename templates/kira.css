@@ -239,6 +239,17 @@ main {
   padding: var(--space-6) var(--space-4) var(--space-7);
 }
 
+/* Cabecalho de pagina (§5.3 v2; RED-29, RED-31): o h1, a descricao e a acao principal. */
+.cabecalho-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-2) var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.cabecalho-pagina h1 { flex: 1 1 100%; margin: 0; }
+.cabecalho-pagina p { flex: 1 1 20rem; margin: 0; color: var(--text-muted); }
+
 body > footer {
   background: var(--surface);
   border-top: 1px solid var(--border);

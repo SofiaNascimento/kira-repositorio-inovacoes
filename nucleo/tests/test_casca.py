@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pytest
 from django.conf import settings
+from django.template import Context, Template
 from django.template.loader import render_to_string
 from django.test import RequestFactory
 from django.urls import resolve
@@ -369,3 +370,77 @@ def test_area_do_usuario_mostra_o_nome_e_as_iniciais_decorativas(
     assert nome_exibido.start() < sair.start()
     assert tela_cabecalho.index("</nav>") < tela_cabecalho.index('<div class="usuario">')
     assert _texto(tela_usuario.split("<form")[0]) == nome
+
+
+# --- T11: cabecalho de pagina e h1 pelo bloco (RED-29, RED-31) --------------------
+
+# Texto de hoje do h1 de cada tela da fixture `paginas` (RED-31: o mesmo texto).
+H1_DE_HOJE = {
+    "lista": "Inovações",
+    "nova": "Cadastrar inovação",
+    "detalhe": "Controle de Caixa",
+    "editar": "Editar inovação",
+    "excluir": "Excluir inovação",
+    "status": "Avançar status",
+    "reaproveitar": "Sinalizar reaproveitamento",
+    "painel": "Painel de indicadores",
+    "nao_encontrada": "Inovação não encontrada.",
+    "acesso_negado": "Acesso negado",
+    "erro_500": "Algo deu errado do nosso lado",
+}
+CABECALHO_DE_PAGINA = re.compile(
+    r'^<main id="conteudo">\s*<div role="status">.*?</div>\s*'
+    r'<div class="cabecalho-pagina">\s*<h1>(.*?)</h1>\s*</div>',
+    re.S,
+)
+
+
+def _main(html):
+    return html[html.index('<main id="conteudo">') : html.index("</main>")]
+
+
+@pytest.mark.parametrize("nome", H1_DE_HOJE)
+def test_h1_unico_abre_o_main_no_cabecalho_de_pagina(paginas, nome):  # noqa: F811
+    """RED-29, RED-31: depois do status, antes do conteudo, com o texto de hoje."""
+    html = paginas[nome]
+    assert len(re.findall(r"<h1\b", html)) == 1
+    cabecalho = CABECALHO_DE_PAGINA.search(_main(exibido(html, rigoroso=True)))
+    assert cabecalho
+    assert cabecalho.group(1) == H1_DE_HOJE[nome]
+
+
+def test_login_mantem_o_h1_entrar_no_cartao_sem_cabecalho_de_pagina(paginas):  # noqa: F811
+    """RED-31: a excecao do login, ate o passe dele."""
+    tela = exibido(paginas["login"], rigoroso=True)
+    assert re.findall(r"<h1[^>]*>(.*?)</h1>", paginas["login"], re.S) == ["Entrar"]
+    assert 'class="cabecalho-pagina"' not in paginas["login"]
+    main = _main(tela)
+    assert main.index('<div class="cartao cartao--estreito">') < main.index("<h1>Entrar</h1>")
+    assert main.index("<h1>Entrar</h1>") < main.index("<form")
+
+
+def _estendendo_o_base(blocos):
+    return Template('{% extends "base.html" %}' + blocos).render(Context())
+
+
+@pytest.mark.unit
+def test_descricao_e_acao_principal_vem_nessa_ordem_depois_do_h1():
+    """RED-29: titulo, descricao e acao_principal, nessa ordem, no cabecalho de pagina."""
+    html = _estendendo_o_base(
+        "{% block titulo %}Título de teste{% endblock %}"
+        "{% block descricao %}<p>Descrição de teste.</p>{% endblock %}"
+        '{% block acao_principal %}<a class="botao" href="/inovacoes/nova/">Ação</a>{% endblock %}'
+    )
+    assert re.search(
+        r'<div class="cabecalho-pagina">\s*<h1>Título de teste</h1>\s*'
+        r"<p>Descrição de teste\.</p>\s*"
+        r'<a class="botao" href="/inovacoes/nova/">Ação</a>\s*</div>',
+        _main(exibido(html, rigoroso=True)),
+    )
+
+
+@pytest.mark.unit
+def test_sem_descricao_nem_acao_o_cabecalho_de_pagina_so_tem_o_h1():
+    """RED-29: blocos vazios nao renderizam nada."""
+    html = _estendendo_o_base("{% block titulo %}Título de teste{% endblock %}")
+    assert CABECALHO_DE_PAGINA.search(_main(html)).group(1) == "Título de teste"

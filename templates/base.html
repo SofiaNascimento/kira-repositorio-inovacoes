@@ -66,6 +66,15 @@
       {% endif %}
     </div>
 
+    {# RED-29, RED-31: cabecalho de pagina depois do status; o h1 unico vem do bloco titulo. #}
+    {% block cabecalho_pagina %}
+      <div class="cabecalho-pagina">
+        <h1>{% block titulo %}{% endblock %}</h1>
+        {% block descricao %}{% endblock %}
+        {% block acao_principal %}{% endblock %}
+      </div>
+    {% endblock %}
+
     {% block conteudo %}{% endblock %}
   </main>
 

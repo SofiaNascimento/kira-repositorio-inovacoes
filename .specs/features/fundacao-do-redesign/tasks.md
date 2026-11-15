@@ -352,7 +352,7 @@ T16 → T17
 
 ---
 
-### T11: Cabeçalho de página e h1 pelo bloco
+### T11: Cabeçalho de página e h1 pelo bloco ✅
 
 **What**: No `base.html`, o bloco `cabecalho_pagina` (padrão: `div.cabecalho-pagina` com `<h1>{% block titulo %}{% endblock %}</h1>`, `descricao`, `acao_principal`) logo depois do `role="status"`; cada tela (menos o login, que sobrescreve `cabecalho_pagina` com vazio) passa o h1 para o bloco `titulo`, com o mesmo texto; estilo `.cabecalho-pagina` na folha.
 **Where**: `templates/base.html` (+ as 11 telas com h1 e `templates/kira.css`)
@@ -364,10 +364,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_casca.py`: em cada página da fixture `paginas` (menos login e 500), exatamente um `h1`, dentro de `.cabecalho-pagina`, depois do `role="status"` e antes do conteúdo, com o texto de hoje (tabela no teste); o login tem um `h1` "Entrar", dentro do cartão; a 500 tem um `h1` "Algo deu errado do nosso lado"; um template de teste (`Template` em string) que estende o base e preenche `descricao` e `acao_principal` os mostra nessa ordem depois do `h1`, e sem preencher não renderiza nada deles
-- [ ] Todos os testes antigos de h1 e título passam sem mudança
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 14
+- [x] Testes e2e em `test_casca.py`: em cada página da fixture `paginas` (menos login e 500), exatamente um `h1`, dentro de `.cabecalho-pagina`, depois do `role="status"` e antes do conteúdo, com o texto de hoje (tabela no teste); o login tem um `h1` "Entrar", dentro do cartão; a 500 tem um `h1` "Algo deu errado do nosso lado"; um template de teste (`Template` em string) que estende o base e preenche `descricao` e `acao_principal` os mostra nessa ordem depois do `h1`, e sem preencher não renderiza nada deles
+- [x] Todos os testes antigos de h1 e título passam sem mudança
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 14
 
 **Tests**: e2e
 **Gate**: build
