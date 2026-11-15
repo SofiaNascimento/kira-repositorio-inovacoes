@@ -2,6 +2,15 @@
 
 {% block title %}{{ titulo_pagina }}{% endblock %}
 
+{# RED-30: o mesmo template serve ao cadastro e a edicao; so a edicao tem a inovacao. #}
+{% block trilha %}
+  {% if inovacao %}
+    {% include "paginas/trilha.html" with secao=True inovacao=inovacao atual="Editar" %}
+  {% else %}
+    {% include "paginas/trilha.html" with secao=True atual="Cadastrar inovação" %}
+  {% endif %}
+{% endblock %}
+
 {% block titulo %}{{ titulo_pagina }}{% endblock %}
 
 {% block conteudo %}

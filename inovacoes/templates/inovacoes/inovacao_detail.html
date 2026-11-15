@@ -2,6 +2,8 @@
 
 {% block title %}{{ inovacao.titulo }}{% endblock %}
 
+{% block trilha %}{% include "paginas/trilha.html" with secao=True inovacao=None atual=inovacao.titulo %}{% endblock %}
+
 {% block titulo %}{{ inovacao.titulo }}{% endblock %}
 
 {% block conteudo %}

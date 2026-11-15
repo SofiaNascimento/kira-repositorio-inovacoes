@@ -5,6 +5,7 @@ Toda AC de "exibido" usa `exibido(html, rigoroso=True)` sobre a pagina inteira (
 """
 
 import re
+from html.parser import HTMLParser
 from pathlib import Path
 
 import pytest
@@ -444,3 +445,114 @@ def test_sem_descricao_nem_acao_o_cabecalho_de_pagina_so_tem_o_h1():
     """RED-29: blocos vazios nao renderizam nada."""
     html = _estendendo_o_base("{% block titulo %}Título de teste{% endblock %}")
     assert CABECALHO_DE_PAGINA.search(_main(html)).group(1) == "Título de teste"
+
+
+# --- T12: trilha de navegacao (RED-29, RED-30) -------------------------------------
+
+ABRE_TRILHA = '<nav class="trilha" aria-label="Você está em">'
+
+
+class Trilha(HTMLParser):
+    """(texto, href do link ou None, aria-current) de cada li da ol da trilha."""
+
+    def __init__(self):
+        super().__init__()
+        self.itens = []
+        self.dentro = False
+
+    def handle_starttag(self, tag, attrs):
+        atributos = dict(attrs)
+        if tag == "li":
+            self.itens.append(["", None, atributos.get("aria-current")])
+            self.dentro = True
+        elif tag == "a" and self.dentro:
+            self.itens[-1][1] = atributos.get("href")
+
+    def handle_endtag(self, tag):
+        if tag == "li":
+            self.dentro = False
+
+    def handle_data(self, data):
+        if self.dentro:
+            self.itens[-1][0] += data
+
+
+def _trilha(html):
+    """Itens da trilha exibida; a nav fica depois do header e antes do main."""
+    tela = exibido(html, rigoroso=True)
+    assert tela.count(ABRE_TRILHA) == 1
+    inicio = tela.index(ABRE_TRILHA)
+    assert tela.index("</header>") < inicio < tela.index('<main id="conteudo">')
+    trecho = tela[inicio : tela.index("</nav>", inicio)]
+    assert re.search(r"<nav[^>]*>\s*<div[^>]*>\s*<ol>", trecho)
+    parser = Trilha()
+    parser.feed(trecho)
+    return [(" ".join(texto.split()), href, corrente) for texto, href, corrente in parser.itens]
+
+
+RAIZ = ("Inovações", "/inovacoes/", None)
+
+
+@pytest.mark.parametrize(
+    ("pagina", "itens"),
+    [
+        ("/inovacoes/", [("Inovações", None, "page")]),
+        ("/inovacoes/{id}/", [RAIZ, ("{titulo}", None, "page")]),
+        ("/inovacoes/nova/", [RAIZ, ("Cadastrar inovação", None, "page")]),
+        (
+            "/inovacoes/{id}/editar/",
+            [RAIZ, ("{titulo}", "{detalhe}", None), ("Editar", None, "page")],
+        ),
+        (
+            "/inovacoes/{id}/status/",
+            [RAIZ, ("{titulo}", "{detalhe}", None), ("Avançar status", None, "page")],
+        ),
+        (
+            "/inovacoes/{id}/reaproveitar/",
+            [RAIZ, ("{titulo}", "{detalhe}", None), ("Sinalizar reaproveitamento", None, "page")],
+        ),
+        (
+            "/inovacoes/{id}/excluir/",
+            [RAIZ, ("{titulo}", "{detalhe}", None), ("Excluir", None, "page")],
+        ),
+        ("/indicadores/", [("Indicadores", None, "page")]),
+    ],
+)
+def test_tela_mostra_a_trilha_da_tabela(client, autor, criar_inovacao, pagina, itens):
+    """RED-30: itens da §5.3 em ordem; os do meio com link, o ultimo com aria-current."""
+    # REAP-03: a sinalizacao so abre em inovacao "Disponível para replicação".
+    inovacao = criar_inovacao(titulo="Caixa Rapido", status="DISPONIVEL_PARA_REPLICACAO")
+    client.force_login(autor)
+    resposta = client.get(pagina.format(id=inovacao.pk))
+    assert resposta.status_code == 200
+    valores = {"titulo": "Caixa Rapido", "detalhe": f"/inovacoes/{inovacao.pk}/"}
+    esperado = [
+        (texto.format(**valores), href and href.format(**valores), corrente)
+        for texto, href, corrente in itens
+    ]
+    assert _trilha(resposta.content.decode()) == esperado
+
+
+@pytest.mark.parametrize("nome", ["login", "acesso_negado", "nao_encontrada", "erro_500"])
+def test_login_e_paginas_de_erro_nao_tem_trilha(paginas, nome):  # noqa: F811
+    """RED-30: login, 403, 404 e 500 ficam sem trilha."""
+    assert 'aria-label="Você está em"' not in paginas[nome]
+
+
+def test_separador_da_trilha_nao_esta_no_html(paginas):  # noqa: F811
+    """RED-30: o "›" vem da folha (escapado), nunca do HTML."""
+    for nome, html in paginas.items():
+        assert "›" not in html, nome
+        assert "&rsaquo;" not in html and "&#8250;" not in html, nome
+
+
+def test_titulo_com_aspas_e_e_comercial_sai_escapado_na_trilha(client, autor, criar_inovacao):
+    """RED-30: o titulo da inovacao entra na trilha escapado."""
+    inovacao = criar_inovacao(titulo='Caixa "rápido" & cia')
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/editar/").content.decode()
+    assert (
+        f'<a href="/inovacoes/{inovacao.pk}/">Caixa &quot;rápido&quot; &amp; cia</a>'
+        in html[html.index(ABRE_TRILHA) : html.index('<main id="conteudo">')]
+    )
+    assert _trilha(html)[1] == ('Caixa "rápido" & cia', f"/inovacoes/{inovacao.pk}/", None)

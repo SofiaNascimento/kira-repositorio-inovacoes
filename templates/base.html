@@ -54,6 +54,9 @@
     </div>
   </header>
 
+  {# RED-29, RED-30: a trilha fica entre o header e o main, como marco proprio (AD-015). #}
+  {% block trilha %}{% endblock %}
+
   <main id="conteudo">
     <div role="status">
       {% if messages %}

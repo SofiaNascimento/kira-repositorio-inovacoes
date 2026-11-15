@@ -239,6 +239,27 @@ main {
   padding: var(--space-6) var(--space-4) var(--space-7);
 }
 
+/* Trilha de navegacao (§5.3 v2; RED-30): entre o header e o main (AD-015). O separador
+   vem daqui, com texto alternativo vazio para o leitor de tela.
+   SPEC_DEVIATION: o sinal vai escapado (203A), nao literal.
+   Reason: a folha vai embutida na pagina; o literal faria o HTML conter o sinal (RED-30). */
+.trilha { font-size: var(--fs-sm); }
+.trilha ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  margin: 0;
+  padding: var(--space-4) 0 0;
+  list-style: none;
+  color: var(--text-muted);
+}
+.trilha li + li::before {
+  content: "\203A" / "";
+  margin-right: var(--space-2);
+  color: var(--text-muted);
+}
+.trilha a { color: var(--brand-blue); }
+
 /* Cabecalho de pagina (§5.3 v2; RED-29, RED-31): o h1, a descricao e a acao principal. */
 .cabecalho-pagina {
   display: flex;

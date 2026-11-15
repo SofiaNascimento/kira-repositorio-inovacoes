@@ -265,6 +265,16 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 - **T6:** `.decorativo` não tem regra no tema normal; o `display: none` vem na T14, dentro de `[data-contraste=alto]`.
 - **Spec-precision gaps:** RED-12 — `.tabela table { min-width: 40rem }` (DS-16) fica isento pela exceção de tabelas da WCAG 1.4.10 (`LARGURAS_ISENTAS` no teste); RED-10 — o hover do "×" da etiqueta (`--brand-navy` sobre `--border`) não está na tabela da §2 (o teste exige 3:1); o fundo de etapas, linha do tempo, grupo e cartões foi assumido `--surface`, e o de filtros e barra de ações `--bg`; T3 — o DS-06 tem 21 tokens, não 23.
 
+### Lote 2 (T7–T12, 2026-11-15)
+
+- **SPEC_DEVIATION (T12): separador `content: "\203A" / ""`.** A RED-30 pede o "›" por CSS e nenhum "›" no HTML; com a folha embutida, o literal estaria na página inteira. O escape dá o mesmo caractere ao navegador; o teste da folha decodifica o escape.
+- **T8:** ícones do `lucide-static@1.66.0` (seção Ícones), sem `xmlns` (SVG inline no HTML) e sem o comentário de licença no arquivo (o arquivo abre com `<svg`); a licença fica no `LICENSE` ao lado.
+- **T9:** a classe e a regra `.pular` saíram: o link de pular é o atalho 1 da barra, sempre visível. Entre os commits da T9 e da T10 o atalho 2 apontava para `#menu` sem alvo; a T10 deu o `id="menu"` ao `nav` (o T-A só foi autorizado na T10).
+- **T10:** iniciais em `span.usuario__iniciais` (círculo `--info-tint` com texto `--brand-navy`); o item do menu reserva a barra com `border-bottom: 3px solid transparent` para o item atual não mudar de altura.
+- **T10, spec-precision gap (RED-17/RED-18):** hoje nenhuma tela autenticada fora da seção estende o base (o login redireciona quem entrou; a 404 de URL inexistente é a página padrão do Django, sem o base). O caso "nenhum `aria-current` fora disso" é testado renderizando o `base.html` com uma requisição resolvida para `/entrar/` e outra sem rota, com usuário autenticado.
+- **T11:** a 500 também passa o h1 ao bloco `titulo` (tem o cabeçalho de página); só o login sobrescreve `cabecalho_pagina`.
+- **T12:** a parcial usa `nav.trilha` (a folha não pode usar `[aria-label=Você está em]` sem aspas, AD-010) com um `div.container` dentro. O `{% include … with %}` não isola o contexto, então o detalhe passa `inovacao=None` para a trilha não repetir o título como link.
+
 ## Tech Decisions (feature-local)
 
 | Decision | Choice | Rationale |

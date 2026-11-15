@@ -766,3 +766,18 @@ def test_menu_quebra_de_linha_e_itens_tem_alvo_de_44px():
     """RED-22: no celular os itens quebram de linha; alvo minimo de 44px."""
     assert _tem(_corpos("nav[aria-label=Principal]"), "flex-wrap", "wrap")
     assert _tem(_corpos("nav[aria-label=Principal] a"), "min-height", "44px")
+
+
+# --- RED-30: separador da trilha ---------------------------------------------------
+
+
+@pytest.mark.unit
+def test_separador_da_trilha_e_o_sinal_com_texto_alternativo_vazio():
+    """RED-30: "›" por CSS (escapado como 203A) e "" para o leitor de tela."""
+    conteudo = re.search(r"content\s*:\s*([^;]+);", _corpos(".trilha li + li::before"))
+    sinal, alternativo = re.fullmatch(
+        r'"([^"]*)"\s*/\s*"([^"]*)"', conteudo.group(1).strip()
+    ).groups()
+    decodificado = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(int(m.group(1), 16)), sinal)
+    assert decodificado == "›"
+    assert alternativo == ""

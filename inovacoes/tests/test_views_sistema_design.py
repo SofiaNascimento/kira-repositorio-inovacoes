@@ -385,7 +385,14 @@ RAIZES = [
 ]
 # Pecas incluidas, nao telas: o proprio base, a marca e o grupo de campo.
 # F6: e o grafico de barras do painel (REAP-34), incluido tres vezes.
-PECAS = {"base.html", "marca.html", "inovacoes/campo.html", "indicadores/grafico.html"}
+# T-C (fundacao-do-redesign, RED-30): e a parcial da trilha de navegacao.
+PECAS = {
+    "base.html",
+    "marca.html",
+    "inovacoes/campo.html",
+    "indicadores/grafico.html",
+    "paginas/trilha.html",
+}
 
 
 def _telas():

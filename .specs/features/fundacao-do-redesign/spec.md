@@ -278,7 +278,7 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-27 | P1: Alto contraste | Design | Pending |
 | RED-28 | P1: Alto contraste | Design | Pending |
 | RED-29 | P1: Cabeçalho de página | Execute | Implementing |
-| RED-30 | P1: Cabeçalho de página | Design | Pending |
+| RED-30 | P1: Cabeçalho de página | Execute | Implementing |
 | RED-31 | P1: Cabeçalho de página | Execute | Implementing |
 | RED-32 | P1: Cabeçalho de página | Design | Pending |
 | RED-33 | P1: Páginas de apoio | Design | Pending |

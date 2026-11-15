@@ -1,0 +1,14 @@
+{% comment %}
+  Trilha de navegacao (design-spec §5.3 v2; RED-30). Fica entre o header e o main (AD-015).
+  secao: poe o link "Inovacoes" na raiz. inovacao: poe o link do titulo. atual: o ultimo
+  item, sem link e com aria-current="page". O separador vem da folha, nao do HTML.
+{% endcomment %}
+<nav class="trilha" aria-label="Você está em">
+  <div class="container">
+    <ol>
+      {% if secao %}<li><a href="{% url 'inovacoes:lista' %}">Inovações</a></li>{% endif %}
+      {% if inovacao %}<li><a href="{{ inovacao.get_absolute_url }}">{{ inovacao.titulo }}</a></li>{% endif %}
+      <li aria-current="page">{{ atual }}</li>
+    </ol>
+  </div>
+</nav>

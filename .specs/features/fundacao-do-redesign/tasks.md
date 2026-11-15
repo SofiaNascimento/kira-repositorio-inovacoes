@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md`
 **Design**: `.specs/features/fundacao-do-redesign/design.md` (aprovado em 2026-11-15)
-**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) em seguida.
+**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) em seguida.
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 na porta 5433 (AD-003) · pytest + pytest-django · Ruff.
 Decisões que valem em toda task: AD-006, AD-010, AD-013, AD-014, AD-015.
@@ -376,7 +376,7 @@ T16 → T17
 
 ---
 
-### T12: Trilha de navegação
+### T12: Trilha de navegação ✅
 
 **What**: A parcial `templates/paginas/trilha.html` (`atual`, `secao`, `inovacao`) e o bloco `trilha` do base entre o `<header>` e o `<main>`; as nove telas da §5.3 existentes hoje (lista, detalhe, cadastrar, editar, avançar status, sinalizar, excluir, painel) chamam a parcial; separador "›" por CSS. Ajusta T-C (`PECAS`).
 **Where**: `templates/paginas/trilha.html` (+ `templates/base.html`, 8 telas, `templates/kira.css`, T-C)
@@ -388,12 +388,12 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_casca.py` (sobre `exibido(…, rigoroso=True)`): para cada uma das oito telas, `nav aria-label="Você está em"` com `ol` cujos itens, em ordem, são os da §5.3 (links com o `href` certo; último sem link, com `aria-current="page"`); a `nav` fica depois de `</header>` e antes de `<main id="conteudo">`; login, 403, 404 e 500 sem trilha; nenhum "›" no HTML; título com aspas e `&` sai escapado
-- [ ] Teste `unit` da folha: `li + li::before` da trilha com `content: "›"` e texto alternativo vazio
-- [ ] T-C: `PECAS` ganha `paginas/trilha.html`; contagem de telas segue 11
-- [ ] Os testes de links do `main` da F5/F6 (`test_views_acessibilidade_alteracao.py:237`, `:442`) passam sem mudança
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 12
+- [x] Testes e2e em `test_casca.py` (sobre `exibido(…, rigoroso=True)`): para cada uma das oito telas, `nav aria-label="Você está em"` com `ol` cujos itens, em ordem, são os da §5.3 (links com o `href` certo; último sem link, com `aria-current="page"`); a `nav` fica depois de `</header>` e antes de `<main id="conteudo">`; login, 403, 404 e 500 sem trilha; nenhum "›" no HTML; título com aspas e `&` sai escapado
+- [x] Teste `unit` da folha: `li + li::before` da trilha com `content: "›"` e texto alternativo vazio
+- [x] T-C: `PECAS` ganha `paginas/trilha.html`; contagem de telas segue 11
+- [x] Os testes de links do `main` da F5/F6 (`test_views_acessibilidade_alteracao.py:237`, `:442`) passam sem mudança
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 12
 
 **Tests**: e2e
 **Gate**: build
