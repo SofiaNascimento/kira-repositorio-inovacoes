@@ -110,7 +110,7 @@ T16 → T17
 
 ## Task Breakdown
 
-### T1: Modo rigoroso do `exibido()`
+### T1: Modo rigoroso do `exibido()` ✅
 
 **What**: `exibido(html, rigoroso=False)` ganha o modo `rigoroso=True`, que também esconde controles com `disabled`, elementos com `role` `presentation`/`none` (qualquer caixa) e os que têm uma classe declarada na `kira.css` com `display: none` numa regra de seletor de classe simples, fora de `@media` e de `[data-contraste=alto]`.
 **Where**: `inovacoes/tests/visibilidade.py`
@@ -122,10 +122,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes unitários novos em `inovacoes/tests/test_visibilidade.py`: cada vetor (`disabled` num `button`, `role="presentation"`, `role="NONE"`, classe com `display:none` na folha) some no modo rigoroso e continua no modo padrão; o que o modo padrão já escondia continua escondido nos dois
-- [ ] Nenhum teste existente muda; a suíte inteira passa
-- [ ] Gate check passa: `.venv/bin/pytest -q -m unit` e `.venv/bin/pytest -q`
-- [ ] Test count: ≥ 943 + 6
+- [x] Testes unitários novos em `inovacoes/tests/test_visibilidade.py`: cada vetor (`disabled` num `button`, `role="presentation"`, `role="NONE"`, classe com `display:none` na folha) some no modo rigoroso e continua no modo padrão; o que o modo padrão já escondia continua escondido nos dois
+- [x] Nenhum teste existente muda; a suíte inteira passa
+- [x] Gate check passa: `.venv/bin/pytest -q -m unit` e `.venv/bin/pytest -q`
+- [x] Test count: ≥ 943 + 6
 
 **Tests**: unit
 **Gate**: quick
