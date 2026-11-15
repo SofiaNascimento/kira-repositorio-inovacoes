@@ -133,7 +133,8 @@
 - **Execute**: lote 1 ✅ (T1 `083f19d` … T6 `f7786ce`, 1062 testes); desvios em `design.md` (Ajustes do Execute).
 - **Execute**: lote 2 ✅ (T7 `2fb2aea` … T12 `7bd971b`, 1147 testes; T-A, T-C, T-E, T-F feitos).
 - **Execute**: lote 3 ✅ (T13 `417b9a1` … T17 `23b7565`, 1297 testes; T-B, T-C, T-D feitos).
-- **Next step**: Verifier (diff `a3799f7..23b7565`).
+- **Verifier it. 1**: FAIL (`validation.md`, `3eb38bf`): 38/42 ACs, sensor 45/50. Gaps: Sair com 36px (RED-22; usuário decidiu subir para 44px), `display:none` em seletor composto e `font-size:0` no menu escapam do `exibido` (M27, M28, M41), ícone específico não afirmado (M43). L-044 promovida; candidatas L-050 a L-053.
+- **Next step**: Fase 4 (T18–T20), depois Verifier it. 2.
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)

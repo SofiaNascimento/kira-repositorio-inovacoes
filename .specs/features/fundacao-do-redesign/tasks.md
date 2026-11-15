@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md`
 **Design**: `.specs/features/fundacao-do-redesign/design.md` (aprovado em 2026-11-15)
-**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) ✅, 1297 testes. Verifier em andamento.
+**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) ✅, 1297 testes. Verifier it. 1 FAIL (38/42; M27, M28, M41, M42, M43) → Fase 4 (T18–T20).
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 na porta 5433 (AD-003) · pytest + pytest-django · Ruff.
 Decisões que valem em toda task: AD-006, AD-010, AD-013, AD-014, AD-015.
@@ -519,6 +519,87 @@ T16 → T17
 **Gate**: build
 
 **Commit**: `feat(design): adiciona os links de apoio ao rodape`
+
+---
+
+### Phase 4: Correções do Verifier (iteração 1)
+
+Gaps de `validation.md` (iteração 1, FAIL 38/42; sobreviventes M27, M28, M41, M42, M43). Decisão do
+usuário em 2026-11-15 sobre o gap 1: **o "Sair" sobe para 44px** (a RED-22 não muda).
+
+```
+T18
+T19
+T20
+```
+
+### T18: Botão "Sair" com 44px e teste dos 44px em todo botão
+
+**What**: `.botao--compacto, .usuario button` passa a `min-height: 44px` (fonte e padding seguem pequenos); teste da folha que exige `min-height` ≥ 44px nas regras de botão (`button`, `.botao`, `.botao--compacto`, `.usuario button`) e nenhuma regra de botão com `min-height`/`height` abaixo de 44px.
+**Where**: `templates/kira.css`
+**Depends on**: None
+**Reuses**: helpers da folha (`_corpos`)
+**Requirement**: RED-22 (botões)
+
+**Tools**: MCP: NONE · Skill: NONE
+
+**Done when**:
+
+- [ ] Teste `unit` em `test_folha_v2.py` mata o M42 (`button { min-height: 28px }`) e o Sair de 36px
+- [ ] Gate check passa: build
+- [ ] Test count: ≥ 1297 + 2
+
+**Tests**: unit
+**Gate**: build
+
+**Commit**: `fix(design): da ao botao sair a altura minima de 44px`
+
+---
+
+### T19: Guarda de declarações que escondem conteúdo na folha
+
+**What**: Teste da folha que lista toda declaração que tira conteúdo da tela (`display: none`, `visibility: hidden`/`collapse`, `font-size: 0`, `opacity: 0`, `clip`/`clip-path` que zera, `width`/`height` 0 com `overflow: hidden`, `transform: scale(0)`, `text-indent` negativo grande) e exige que cada uma esteja numa allowlist explícita (hoje: `.decorativo` e `.faixa-marca` dentro de `:root[data-contraste=alto]`). Cobre a regra de teste da feature para seletores compostos, que o `exibido(rigoroso=True)` não lê.
+**Where**: `inovacoes/tests/test_folha_v2.py`
+**Depends on**: None
+**Reuses**: `CSS` sem comentários, parser de regras de `_corpos`
+**Requirement**: regra de teste da feature (L-028, L-030, L-044); RED-22 (menu nunca só ícone); RED-16, RED-32 (menu e rodapé exibidos)
+
+**Tools**: MCP: NONE · Skill: NONE
+
+**Done when**:
+
+- [ ] O teste mata M27 (`.rodape__links li {display:none}`), M28 (`nav[aria-label=Principal] {display:none}`) e M41 (`font-size: 0` nos itens do menu dentro de `@media`), inclusive dentro de `@media`
+- [ ] A allowlist tem só o que a spec manda esconder (RED-28) e cita a AC
+- [ ] Gate check passa: quick
+- [ ] Test count: ≥ anterior + 2
+
+**Tests**: unit
+**Gate**: quick
+
+**Commit**: `test(design): vigia as declaracoes que escondem conteudo na folha`
+
+---
+
+### T20: Ícone certo em cada item do menu e no botão de contraste
+
+**What**: Os testes da RED-16 e da RED-23 passam a exigir o ícone específico: o `<svg>` antes de "Inovações" é o de `icones/lampada.svg`, o de "Cadastrar inovação" o de `circulo-mais.svg`, o de "Indicadores" o de `grafico-barras.svg`, e o do botão "Alto contraste" o de `contraste.svg` (comparando o conteúdo dos `path`/formas com o arquivo).
+**Where**: `nucleo/tests/test_casca.py`
+**Depends on**: None
+**Reuses**: arquivos `templates/icones/*.svg`
+**Requirement**: RED-16, RED-23 (ícone)
+
+**Tools**: MCP: NONE · Skill: NONE
+
+**Done when**:
+
+- [ ] O teste mata o M43 (ícone de gráfico em "Inovações") e a troca do ícone do botão de contraste
+- [ ] Gate check passa: full
+- [ ] Test count: ≥ anterior + 2
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(design): exige o icone certo em cada item do menu`
 
 ---
 
