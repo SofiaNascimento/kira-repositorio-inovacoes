@@ -279,6 +279,9 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 
 - **T13, além da letra da task:** regras da barra na `kira.css` para o botão "Alto contraste" (contorno e texto `--on-brand` sobre o navy, hover `--brand-blue-hover`) e o contêiner da barra em flex, com o botão à direita (§5.1) dentro de `div.barra-acessibilidade__acoes`. Sem elas o botão herdaria o primário azul cheio sobre o navy.
 - **T13:** o 400 do valor inválido é o `HttpResponseBadRequest` simples (texto curto), não uma página do base; só se alcança por POST forjado.
+- **T14:** a borda da RED-28 é `1px solid currentcolor` (a cor do texto de cada peça). As barras do gráfico são `rect` de SVG, sem `border`: no tema ganham `fill: var(--text)`, `stroke: currentcolor` e `stroke-width: 1px`. O alerta perde a borda esquerda de 4px no tema (a borda de 1px a substitui); o ícone e o texto ficam.
+- **T14:** o comentário da seção na folha diz "Tema de alto contraste", não "Alto contraste": a folha embutida poria o rótulo do botão na página inteira. O teste da 500 (T13) passou a procurar "Alto contraste" só depois do `</head>`.
+
 
 ## Tech Decisions (feature-local)
 

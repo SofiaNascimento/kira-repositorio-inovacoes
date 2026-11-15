@@ -279,5 +279,5 @@ def test_500_sem_request_nao_tem_botao_nem_form_do_contraste():
     assert "form-contraste" not in html
     assert 'name="contraste"' not in html
     assert "csrfmiddlewaretoken" not in html
-    assert "Alto contraste" not in html
+    assert "Alto contraste" not in html[html.index("</head>") :]
     assert re.findall(r"<html\b[^>]*>", html) == ['<html lang="pt-br">']

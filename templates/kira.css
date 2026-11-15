@@ -983,6 +983,49 @@ nav[aria-label=Paginação],
 .variacao,
 .linha-do-tempo time { font-variant-numeric: var(--numeros); }
 
+/* --- Tema de alto contraste (§2 v2, §5.5; RED-27, RED-28) ------------------------ */
+
+/* O base marca o html quando o cookie kira_contraste vale alto (AD-014). Os mesmos
+   tokens, outros valores: os pares do DS-08 seguem valendo. Seletor sem aspas (AD-010). */
+:root[data-contraste=alto] {
+  --text: #FFFFFF;
+  --text-muted: #FFFFFF;
+  --brand-navy: #FFFFFF;
+  --bg: #000000;
+  --surface: #000000;
+  --border: #FFFFFF;
+  --borda-campo: #FFFFFF;
+  --brand-blue: #FFFF00;
+  --brand-blue-hover: #FFFF00;
+  --on-brand: #000000;
+  --success: #FFFFFF;
+  --warning: #FFFFFF;
+  --error: #FFFF00;
+  --info: #FFFFFF;
+  --info-tint: #000000;
+  --success-tint: #000000;
+  --warning-tint: #000000;
+  --error-tint: #000000;
+  --trilho: #000000;
+  --brand-gradient: none;
+}
+/* Links sempre sublinhados: o link nao depende da cor (§5.5). */
+:root[data-contraste=alto] a { text-decoration: underline; }
+/* Decorativos e a faixa do gradiente somem. */
+:root[data-contraste=alto] .decorativo,
+:root[data-contraste=alto] .faixa-marca { display: none; }
+/* Selos, alertas e variacoes: sem fundo (as tintas viram preto) e com borda na cor do texto. */
+:root[data-contraste=alto] .selo,
+:root[data-contraste=alto] .alerta,
+:root[data-contraste=alto] [role=alert],
+:root[data-contraste=alto] .variacao { border: 1px solid currentcolor; }
+/* Barras do grafico: brancas sobre o preto, com borda na cor do texto. */
+:root[data-contraste=alto] .grafico__barra {
+  fill: var(--text);
+  stroke: currentcolor;
+  stroke-width: 1px;
+}
+
 /* --- Movimento (§1.1) ---------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {

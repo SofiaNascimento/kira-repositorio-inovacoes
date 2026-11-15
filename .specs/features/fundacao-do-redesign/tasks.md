@@ -426,7 +426,7 @@ T16 → T17
 
 ---
 
-### T14: Tema de alto contraste na folha
+### T14: Tema de alto contraste na folha ✅
 
 **What**: `:root[data-contraste=alto]` com todos os valores da §2 v2; links sublinhados; `.decorativo` e a faixa escondidos; `.selo`, `.alerta`, `[role=alert]`, `.variacao` e as barras do gráfico com borda de 1px na cor do texto.
 **Where**: `templates/kira.css`
@@ -438,10 +438,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes `unit` em `test_folha_v2.py`: cada token do bloco `:root[data-contraste=alto]` com o valor exato da §2 v2 (parametrizado); todo par de texto (DS-08 + T3–T6) ≥ 4.5:1 e todo par de componente ≥ 3:1 com os valores do tema; `a` sublinhado no tema; `.decorativo` e `.faixa-marca` com `display: none`; borda `1px solid` nos seletores da RED-28
-- [ ] Teste e2e: com o cookie `alto`, o `<style>` da página é a mesma folha (o tema vem só do atributo no `<html>`, sem CSS extra)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 30
+- [x] Testes `unit` em `test_folha_v2.py`: cada token do bloco `:root[data-contraste=alto]` com o valor exato da §2 v2 (parametrizado); todo par de texto (DS-08 + T3–T6) ≥ 4.5:1 e todo par de componente ≥ 3:1 com os valores do tema; `a` sublinhado no tema; `.decorativo` e `.faixa-marca` com `display: none`; borda `1px solid` nos seletores da RED-28
+- [x] Teste e2e: com o cookie `alto`, o `<style>` da página é a mesma folha (o tema vem só do atributo no `<html>`, sem CSS extra)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 30
 
 **Tests**: unit
 **Gate**: build

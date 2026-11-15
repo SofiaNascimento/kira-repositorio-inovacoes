@@ -781,3 +781,118 @@ def test_separador_da_trilha_e_o_sinal_com_texto_alternativo_vazio():
     decodificado = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(int(m.group(1), 16)), sinal)
     assert decodificado == "›"
     assert alternativo == ""
+
+
+# --- RED-27, RED-28: tema de alto contraste -----------------------------------------
+
+ALTO = ":root[data-contraste=alto]"
+
+# §2 v2, bloco `:root[data-contraste="alto"]` (na folha, sem aspas: AD-010).
+TOKENS_ALTO = {
+    "text": "#FFFFFF",
+    "text-muted": "#FFFFFF",
+    "brand-navy": "#FFFFFF",
+    "bg": "#000000",
+    "surface": "#000000",
+    "border": "#FFFFFF",
+    "borda-campo": "#FFFFFF",
+    "brand-blue": "#FFFF00",
+    "brand-blue-hover": "#FFFF00",
+    "on-brand": "#000000",
+    "success": "#FFFFFF",
+    "warning": "#FFFFFF",
+    "error": "#FFFF00",
+    "info": "#FFFFFF",
+    "info-tint": "#000000",
+    "success-tint": "#000000",
+    "warning-tint": "#000000",
+    "error-tint": "#000000",
+    "trilho": "#000000",
+    "brand-gradient": "none",
+}
+
+
+def _tokens_do_tema():
+    blocos = re.findall(rf"(?:^|[\s}}]){re.escape(ALTO)}\s*\{{([^}}]*)\}}", _sem_comentarios(CSS))
+    assert len(blocos) == 1
+    return {
+        nome: valor.strip() for nome, valor in re.findall(r"--([\w-]+)\s*:\s*([^;]+);", blocos[0])
+    }
+
+
+def _token_alto(nome):
+    """O valor no tema; o que o tema nao redefine segue o do :root."""
+    return _tokens_do_tema().get(nome, _token(nome))
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("nome", TOKENS_ALTO)
+def test_tema_alto_redefine_o_token_com_o_valor_exato(nome):
+    """RED-27: §2 v2, valor exato do alto contraste."""
+    assert _tokens_do_tema()[nome] == TOKENS_ALTO[nome]
+
+
+@pytest.mark.unit
+def test_tema_alto_redefine_so_os_tokens_da_spec():
+    """RED-27: nenhum token a mais nem a menos no bloco do tema."""
+    assert _tokens_do_tema() == TOKENS_ALTO
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(("texto", "fundo"), sorted(PARES_APROVADOS_DE_TEXTO))
+def test_par_de_texto_tem_contraste_aa_no_tema_alto(texto, fundo):
+    """RED-27, RED-10: todo par de texto (DS-08 e T3 a T6) segue com 4.5:1."""
+    assert _contraste(_token_alto(texto), _token_alto(fundo)) >= 4.5
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(("cor", "fundo"), sorted(PARES_APROVADOS_DE_COMPONENTE))
+def test_par_de_componente_tem_contraste_no_tema_alto(cor, fundo):
+    """RED-27, RED-10: limites, foco e barras seguem com 3:1."""
+    assert _contraste(_token_alto(cor), _token_alto(fundo)) >= 3
+
+
+@pytest.mark.unit
+def test_links_ficam_sublinhados_no_tema_alto():
+    """RED-28: o link nao depende da cor."""
+    assert _tem(_corpos(f"{ALTO} a"), "text-decoration", "underline")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("seletor", [".decorativo", ".faixa-marca"])
+def test_decorativos_e_a_faixa_somem_no_tema_alto(seletor):
+    """RED-28: o gradiente e as formas decorativas saem (display: none)."""
+    assert _tem(_corpos(f"{ALTO} {seletor}"), "display", "none")
+    # Fora do tema eles aparecem: nenhuma regra global os esconde.
+    assert not _tem(_corpos(seletor), "display", "none")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("seletor", [".selo", ".alerta", "[role=alert]", ".variacao"])
+def test_selo_alerta_e_variacao_ganham_borda_de_1px_na_cor_do_texto(seletor):
+    """RED-28: borda de 1px solida na cor do texto (currentcolor)."""
+    assert _tem(_corpos(f"{ALTO} {seletor}"), "border", "1px solid currentcolor")
+
+
+@pytest.mark.unit
+def test_barras_do_grafico_ficam_brancas_com_borda_de_1px_no_tema_alto():
+    """RED-28: §5.5, barra na cor do texto sobre o preto, com borda de 1px."""
+    corpo = _corpos(f"{ALTO} .grafico__barra")
+    assert _tem(corpo, "fill", "var(--text)")
+    assert _tem(corpo, "stroke", "currentcolor")
+    assert _tem(corpo, "stroke-width", "1px")
+    assert _contraste(_token_alto("text"), _token_alto("surface")) >= 3
+
+
+@pytest.mark.parametrize("autenticado", [False, True])
+def test_com_o_cookie_alto_a_pagina_traz_a_mesma_folha(client, autor, autenticado):
+    """RED-26, RED-27: o tema vem so do atributo no html; o style e a folha crua (DS-02)."""
+    if autenticado:
+        client.force_login(autor)
+    client.cookies["kira_contraste"] = "alto"
+    html = client.get("/inovacoes/" if autenticado else "/entrar/").content.decode()
+    assert re.findall(r"<html\b[^>]*>", html) == ['<html lang="pt-br" data-contraste="alto">']
+    estilos = re.findall(r"<style>(.*?)</style>", html, re.S)
+    assert len(estilos) == 1
+    assert estilos[0].strip() == CSS.strip()
+    assert 'style="' not in html
