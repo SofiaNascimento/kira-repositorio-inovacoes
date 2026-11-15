@@ -82,6 +82,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                # AD-014, AD-015: contraste, pagina atual do menu e alvo do atalho da busca.
+                "nucleo.context_processors.casca",
             ],
         },
     },

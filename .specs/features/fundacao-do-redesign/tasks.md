@@ -255,7 +255,7 @@ T16 → T17
 
 ---
 
-### T7: Context processor da casca
+### T7: Context processor da casca ✅
 
 **What**: `nucleo.context_processors.casca(request)` com `contraste_alto`, `menu_atual`, `menu_estado` e `busca_href`, registrado em `TEMPLATES[0]["OPTIONS"]["context_processors"]`.
 **Where**: `nucleo/context_processors.py` (+ uma linha em `config/settings.py`)
@@ -267,9 +267,9 @@ T16 → T17
 
 **Done when**:
 
-- [ ] `nucleo/tests/__init__.py` e `nucleo/tests/test_casca.py` com testes `unit` usando `RequestFactory` + `resolve()`: lista → (`inovacoes`, `page`); nova → (`nova`, `page`); painel → (`indicadores`, `page`); cada uma de detalhe, editar, excluir, status, reaproveitar → (`inovacoes`, `true`); `/entrar/` → (None, None); `resolver_match` None → (None, None); cookie `alto` → `True`; ausente, `ALTO`, `sim`, vazio → `False`; `busca_href` `#id_q` só na lista
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 14
+- [x] `nucleo/tests/__init__.py` e `nucleo/tests/test_casca.py` com testes `unit` usando `RequestFactory` + `resolve()`: lista → (`inovacoes`, `page`); nova → (`nova`, `page`); painel → (`indicadores`, `page`); cada uma de detalhe, editar, excluir, status, reaproveitar → (`inovacoes`, `true`); `/entrar/` → (None, None); `resolver_match` None → (None, None); cookie `alto` → `True`; ausente, `ALTO`, `sim`, vazio → `False`; `busca_href` `#id_q` só na lista
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 14
 
 **Tests**: unit
 **Gate**: build
