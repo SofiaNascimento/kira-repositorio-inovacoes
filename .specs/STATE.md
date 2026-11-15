@@ -132,7 +132,8 @@
 - **Tasks**: ✅ aprovadas (T1–T17). Execute por 3 sub-agentes, um por fase.
 - **Execute**: lote 1 ✅ (T1 `083f19d` … T6 `f7786ce`, 1062 testes); desvios em `design.md` (Ajustes do Execute).
 - **Execute**: lote 2 ✅ (T7 `2fb2aea` … T12 `7bd971b`, 1147 testes; T-A, T-C, T-E, T-F feitos).
-- **Next step**: lote 3 (T13–T17), depois o Verifier.
+- **Execute**: lote 3 ✅ (T13 `417b9a1` … T17 `23b7565`, 1297 testes; T-B, T-C, T-D feitos).
+- **Next step**: Verifier (diff `a3799f7..23b7565`).
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)

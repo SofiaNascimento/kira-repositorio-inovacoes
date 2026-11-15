@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md`
 **Design**: `.specs/features/fundacao-do-redesign/design.md` (aprovado em 2026-11-15)
-**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) em seguida.
+**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) ✅, 1297 testes. Verifier em andamento.
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 na porta 5433 (AD-003) · pytest + pytest-django · Ruff.
 Decisões que valem em toda task: AD-006, AD-010, AD-013, AD-014, AD-015.
