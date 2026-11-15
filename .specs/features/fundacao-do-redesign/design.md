@@ -282,6 +282,9 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 - **T14:** a borda da RED-28 é `1px solid currentcolor` (a cor do texto de cada peça). As barras do gráfico são `rect` de SVG, sem `border`: no tema ganham `fill: var(--text)`, `stroke: currentcolor` e `stroke-width: 1px`. O alerta perde a borda esquerda de 4px no tema (a borda de 1px a substitui); o ícone e o texto ficam.
 - **T14:** o comentário da seção na folha diz "Tema de alto contraste", não "Alto contraste": a folha embutida poria o rótulo do botão na página inteira. O teste da 500 (T13) passou a procurar "Alto contraste" só depois do `</head>`.
 
+- **T15:** o link "Acessibilidade" fica na `div.barra-acessibilidade__acoes`, antes do botão de contraste, em toda página (inclusive a 500, que não tem o botão). A tabela de atalhos tem as colunas Atalho, Leva a, "Chrome e Edge no Windows", "Firefox" e "macOS"; o aviso é só o genérico ("Se o leitor de tela ou o sistema operacional já usa a mesma combinação, o atalho dele prevalece"), sem afirmar nada sobre um leitor específico.
+- **T15, troca do teste do lote 2 (Deferred Ideas da T10):** o caso "rota fora do menu" de `test_menu_fora_da_secao_nao_marca_nenhum_item` (que renderizava o base com `/entrar/`) saiu e virou `test_acessibilidade_autenticada_tem_o_menu_sem_pagina_atual` em `nucleo/tests/test_paginas_apoio.py`, pelo `client`, com as mesmas três asserções. O caso sem rota resolvida segue renderizando o base (`test_menu_sem_rota_resolvida_nao_marca_nenhum_item`): a 404 de URL inexistente não usa o base, então o `client` não chega a ele.
+
 
 ## Tech Decisions (feature-local)
 

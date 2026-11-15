@@ -330,14 +330,14 @@ def test_menu_marca_a_pagina_atual_ou_a_secao(
     assert {texto: corrente for _, corrente, texto in itens if corrente} == atual
 
 
-@pytest.mark.parametrize("resolvida", [True, False])
-def test_menu_fora_da_secao_nao_marca_nenhum_item(autor, resolvida):
-    """RED-17, RED-18: rota fora do menu (o login) ou sem rota resolvida, nenhum aria-current.
+def test_menu_sem_rota_resolvida_nao_marca_nenhum_item(autor):
+    """RED-17, RED-18: sem rota resolvida, nenhum aria-current.
 
-    Nenhuma tela autenticada fora da secao estende o base hoje (o login redireciona quem
-    entrou e a 404 de URL inexistente e a do Django); o base e renderizado com a requisicao.
+    A tela autenticada fora da secao (/acessibilidade/) e testada pelo client em
+    test_paginas_apoio. A requisicao sem rota nao chega ao base pelo client (a 404 de
+    URL inexistente e a do Django), entao o base e renderizado com ela.
     """
-    requisicao = _requisicao("/entrar/", resolvida=resolvida)
+    requisicao = _requisicao("/entrar/", resolvida=False)
     requisicao.user = autor
     html = render_to_string("base.html", request=requisicao)
     itens = _menu_da_tela(html)

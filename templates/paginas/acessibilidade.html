@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% comment %}
+  Pagina "Acessibilidade" (design-spec §5.4 v2; RED-33, RED-34, RED-36). Publica (AD-006):
+  o login aponta para ela pela barra. Sem sessao, o cabecalho so tem a marca.
+{% endcomment %}
+
+{% block title %}Acessibilidade{% endblock %}
+
+{% block trilha %}{% include "paginas/trilha.html" with atual="Acessibilidade" %}{% endblock %}
+
+{% block titulo %}Acessibilidade{% endblock %}
+
+{% block conteudo %}
+  <section aria-labelledby="compromisso">
+    <h2 id="compromisso">Compromisso</h2>
+    <p>O KIRA segue o Modelo de Acessibilidade em Governo Eletrônico (eMAG) e as Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1, nível AA.</p>
+  </section>
+
+  <section aria-labelledby="atalhos">
+    <h2 id="atalhos">Atalhos de teclado</h2>
+    <p>A barra no topo de cada página traz atalhos numerados. O navegador escolhe a combinação de teclas que aciona cada um.</p>
+    {# RED-34: os tres atalhos e a combinacao por navegador. #}
+    <div class="tabela">
+      <table>
+        <caption>Atalhos e a combinação em cada navegador</caption>
+        <thead>
+          <tr>
+            <th scope="col">Atalho</th>
+            <th scope="col">Leva a</th>
+            <th scope="col">Chrome e Edge no Windows</th>
+            <th scope="col">Firefox</th>
+            <th scope="col">macOS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">1</th>
+            <td>Conteúdo principal</td>
+            <td>Alt + 1</td>
+            <td>Alt + Shift + 1</td>
+            <td>Control + Option + 1</td>
+          </tr>
+          <tr>
+            <th scope="row">2</th>
+            <td>Menu principal</td>
+            <td>Alt + 2</td>
+            <td>Alt + Shift + 2</td>
+            <td>Control + Option + 2</td>
+          </tr>
+          <tr>
+            <th scope="row">3</th>
+            <td>Busca de inovações</td>
+            <td>Alt + 3</td>
+            <td>Alt + Shift + 3</td>
+            <td>Control + Option + 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Os atalhos 2 e 3 aparecem depois de entrar no sistema.</p>
+    <p>Se o leitor de tela ou o sistema operacional já usa a mesma combinação, o atalho dele prevalece. Nesse caso, chegue aos mesmos lugares pela tecla Tab ou pelos links da barra.</p>
+  </section>
+
+  <section aria-labelledby="alto-contraste">
+    <h2 id="alto-contraste">Alto contraste</h2>
+    <p>O botão de alto contraste fica na barra no topo de cada página. Ligado, ele deixa o fundo preto, o texto branco, os links e o foco em amarelo e todos os links sublinhados.</p>
+    <p>A escolha vale em todas as páginas, neste navegador, até você apertar o mesmo botão de novo.</p>
+  </section>
+
+  <section aria-labelledby="ampliacao">
+    <h2 id="ampliacao">Ampliação</h2>
+    <p>Use o zoom do navegador até 200%. O conteúdo se reorganiza na largura da janela, sem perda de informação.</p>
+  </section>
+
+  <section aria-labelledby="barreira">
+    <h2 id="barreira">Relatar uma barreira</h2>
+    <p>Se alguma parte do sistema não funcionar para você, fale com o administrador do sistema. Diga em que página estava e o que tentou fazer.</p>
+  </section>
+{% endblock %}

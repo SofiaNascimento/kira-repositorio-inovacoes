@@ -18,8 +18,9 @@ SENHA = "senha-forte-123"
 
 # Unicas rotas que respondem a anonimos. O admin tem porteiro proprio e usa
 # re_path, que a varredura nao sabe preencher.
-# T-B (fundacao-do-redesign): o alto contraste vale antes do login (RED-24, AD-014).
-ROTAS_PUBLICAS = {"/entrar/", "/acessibilidade/contraste/"}
+# T-B (fundacao-do-redesign): o alto contraste vale antes do login (RED-24, AD-014),
+# e a pagina de acessibilidade e publica (RED-33).
+ROTAS_PUBLICAS = {"/entrar/", "/acessibilidade/contraste/", "/acessibilidade/"}
 NAMESPACES_FORA_DA_VARREDURA = {"admin"}
 
 VALOR_DE_EXEMPLO = {

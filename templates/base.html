@@ -23,12 +23,14 @@
           {% endif %}
         </ul>
       </nav>
-      {# RED-23, RED-41: so com request (a 500 renderiza sem); o form fica no fim do body (AD-015). #}
-      {% if request %}
-        <div class="barra-acessibilidade__acoes">
+      <div class="barra-acessibilidade__acoes">
+        {# RED-33, §5.1: a pagina de acessibilidade, em toda pagina (inclusive a 500). #}
+        <a href="{% url 'nucleo:acessibilidade' %}">Acessibilidade</a>
+        {# RED-23, RED-41: so com request (a 500 renderiza sem); o form fica no fim do body (AD-015). #}
+        {% if request %}
           <button type="submit" form="form-contraste" name="contraste" value="{% if contraste_alto %}normal{% else %}alto{% endif %}" aria-pressed="{% if contraste_alto %}true{% else %}false{% endif %}">{% include "icones/contraste.svg" %}Alto contraste</button>
-        </div>
-      {% endif %}
+        {% endif %}
+      </div>
     </div>
   </div>
   {# RED-21: faixa da marca, decorativa (some no alto contraste). #}

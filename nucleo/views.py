@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_not_required
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.utils.decorators import method_decorator
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from django.views.generic import TemplateView
 
 COOKIE_CONTRASTE = "kira_contraste"
 UM_ANO = 365 * 24 * 60 * 60
@@ -41,3 +43,9 @@ def definir_contraste(request):
     else:
         resposta.delete_cookie(COOKIE_CONTRASTE, samesite="Lax")
     return resposta
+
+
+# AD-006: publica; o login aponta para ela pela barra (RED-33, RED-36).
+@method_decorator(login_not_required, name="dispatch")
+class AcessibilidadeView(TemplateView):
+    template_name = "paginas/acessibilidade.html"

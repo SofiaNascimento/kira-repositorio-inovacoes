@@ -450,7 +450,7 @@ T16 → T17
 
 ---
 
-### T15: Página "Acessibilidade"
+### T15: Página "Acessibilidade" ✅
 
 **What**: `/acessibilidade/` (`nucleo:acessibilidade`, `TemplateView` com `login_not_required`), template `templates/paginas/acessibilidade.html` com trilha, h1 e as cinco seções com h2, a tabela de atalhos e o aviso de conflito; o link "Acessibilidade" na barra. Ajusta T-B, T-C (12) e T-D.
 **Where**: `templates/paginas/acessibilidade.html` (+ `nucleo/views.py`, `nucleo/urls.py`, barra no `base.html`, T-B, T-C, T-D)
@@ -462,10 +462,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `nucleo/tests/test_paginas_apoio.py` (sobre `exibido(…, rigoroso=True)`), anônimo e autenticado: 200; trilha "Acessibilidade"; h1 "Acessibilidade"; h2 "Compromisso", "Atalhos de teclado", "Alto contraste", "Ampliação", "Relatar uma barreira", nessa ordem; a tabela tem `caption`, `th scope`, as três linhas (1 conteúdo, 2 menu, 3 busca) e as combinações "Alt + n", "Alt + Shift + n", "Control + Option + n" com os navegadores; o texto do aviso de conflito com leitor de tela; anônimo sem `nav id="menu"` nem área do usuário; autenticado sem `aria-current` no menu; a barra de toda página tem o link "Acessibilidade" → `/acessibilidade/`
-- [ ] T-B (`/acessibilidade/`), T-C (12 telas), T-D (fixture com "acessibilidade" anônima e autenticada)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 14
+- [x] Testes e2e em `nucleo/tests/test_paginas_apoio.py` (sobre `exibido(…, rigoroso=True)`), anônimo e autenticado: 200; trilha "Acessibilidade"; h1 "Acessibilidade"; h2 "Compromisso", "Atalhos de teclado", "Alto contraste", "Ampliação", "Relatar uma barreira", nessa ordem; a tabela tem `caption`, `th scope`, as três linhas (1 conteúdo, 2 menu, 3 busca) e as combinações "Alt + n", "Alt + Shift + n", "Control + Option + n" com os navegadores; o texto do aviso de conflito com leitor de tela; anônimo sem `nav id="menu"` nem área do usuário; autenticado sem `aria-current` no menu; a barra de toda página tem o link "Acessibilidade" → `/acessibilidade/`
+- [x] T-B (`/acessibilidade/`), T-C (12 telas), T-D (fixture com "acessibilidade" anônima e autenticada)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 14
 
 **Tests**: e2e
 **Gate**: build
