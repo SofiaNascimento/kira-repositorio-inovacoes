@@ -131,8 +131,9 @@
 - **Commits**: `083f19d` … `23b7565` (T1–T17), `64b9495`, `878db23`, `e1f255d` (T18–T20); validação `3eb38bf`, `30b554f`. **1326 testes**, build gate verde. Testes antigos alterados só T-A a T-F (autorizados).
 - **Produção do Sair**: 44px (decisão do usuário).
 - **Lições**: L-044 promovida a confirmed; candidatas novas L-050 a L-057. `.specs/LESSONS.md` e `lessons.json` seguem com mudanças locais fora dos commits (já havia mudanças antes da R1).
-- **Pendente**: conferência no navegador (atalhos por navegador/leitor de tela, menu atual, alto contraste do login ao painel, zoom de 200%); correção do risco em Deferred Ideas do `context.md`.
-- **Next step**: próxima feature do redesign (miolo das telas do §10), que consome a R1.
+- **Conferência no navegador** ✅ (local, relatada pelo usuário em 2026-11-15: tudo certo).
+- **Pendente**: deploy da R1 (produção ainda sem a R1, conferido em 2026-11-15); depois dele, conferir que `/static/fontes/inter-latin-wght-normal.woff2` carrega com 200. Correção do risco em Deferred Ideas do `context.md`.
+- **Next step**: deploy (`npx vercel --prod`, pelo usuário ou pelo agente com ok explícito); depois, a próxima feature do redesign.
 - **Branch**: `main`, só local; push pelo usuário. **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)

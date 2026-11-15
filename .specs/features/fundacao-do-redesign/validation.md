@@ -360,3 +360,9 @@ Só T-A a T-F mudaram. **T-A / REAP-28:** antes se comparava a string do `nav` c
 ## Lições
 
 L-044 recorreu (M27, M28) e foi promovida a confirmed. Novas candidatas: L-050 (RED-16), L-051 (RED-22, botões), L-052 (RED-22, só ícone) e L-053 (RED-09, `:active`).
+
+---
+
+## Conferência no navegador (2026-11-15)
+
+Feita pelo usuário no servidor local (`runserver` com `DEBUG`), relatada como **tudo certo**: atalhos 1/2/3, item atual do menu, alto contraste do login ao painel e zoom de 200% sem rolagem horizontal. O agente não acompanhou a conferência; o registro é o relato do usuário.

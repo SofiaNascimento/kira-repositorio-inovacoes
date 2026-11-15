@@ -305,6 +305,6 @@ afirmada na camada que descreve (L-005): o que é de tela, na tela; o que é de 
 
 - [x] Só os testes T-A a T-F mudaram, e a suíte inteira passa (943 → 1326).
 - [x] `config/tests` (build gate da Vercel) passa e o `collectstatic` copia a fonte.
-- [x] Nenhuma requisição a outro domínio em nenhuma tela (RED-08, por teste; conferência no navegador pendente).
-- [ ] Conferência no navegador: atalhos, menu atual, alto contraste do login ao painel, zoom de 200% sem rolagem horizontal.
+- [x] Nenhuma requisição a outro domínio em nenhuma tela (RED-08, por teste e na conferência local).
+- [x] Conferência no navegador: atalhos, menu atual, alto contraste do login ao painel, zoom de 200% sem rolagem horizontal (feita pelo usuário no servidor local em 2026-11-15, tudo certo).
 - [ ] O Verifier dá PASS em `validation.md` — não: FAIL na iteração 2 só por lacuna de teste, risco aceito pelo usuário.
