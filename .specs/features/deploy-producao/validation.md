@@ -552,3 +552,22 @@ aceito.
 **Resultado**: ✅ UAT aprovada. A deploy-producao está concluída com o banco no Neon.
 **Pendente com o usuário (fora da feature)**: apagar o projeto no Supabase
 (`wxjlgbmykmjwvohwvgdk`) e o `~/.kira-supabase.env`; push do `main`.
+
+## Ajustes do README (2026-11-15)
+
+Correção das três observações em aberto do Verifier da emenda Neon, a pedido do usuário.
+
+- **Variáveis só em Production**: o README passa a pedir as variáveis em Settings → Environments →
+  Production, como o roteiro, e tira os valores amplos de preview (`.vercel.app`,
+  `https://*.vercel.app`) da tabela.
+- **URL fora da linha de comando**: o passo 2 do README passa a gravar a URL direta no
+  `~/.kira-neon.env` e a rodar `migrate`/`createsuperuser` entre `export` e `unset`, como o
+  roteiro. Isso contraria o texto antigo da DEPL-17 (URL entre aspas em cada linha de comando), que
+  foi **emendada** em 2026-11-15; `test_readme_roda_os_comandos_na_conexao_direta_do_neon` foi
+  reescrito e `test_readme_mostra_o_arquivo_do_neon_com_a_conexao_direta` é novo.
+- **Postgres 16**: citado na introdução da seção de deploy e no passo 1 (criação do projeto).
+
+**Verificação pelo autor** (sem Verifier independente): sensor manual com 4 mutantes no README
+(sem `unset`; `-pooler` no exemplo; URL de volta na linha do `migrate`; sem `export`), 4/4 mortos.
+`pytest -q`: 943 passed; ruff e format verdes. A DEPL-17 fica `Implementing` na spec até uma
+verificação independente, se o usuário quiser.
