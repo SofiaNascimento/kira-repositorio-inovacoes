@@ -1,12 +1,141 @@
 # Fundação do Redesign (R1) Validation
 
 **Date**: 2026-11-15
-**Iteration**: 1
+**Iteration**: 2 (final; o usuário limitou a feature a 1 iteração de correção)
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md` (RED-01 … RED-42; regras de teste da feature; T-A a T-F)
-**Diff range**: `a3799f7..23b7565` em `main` (17 commits de task, T1 `083f19d` … T17 `23b7565`; os `docs(specs)` intermediários só mexem em `.md`). 45 arquivos, +3454/−210.
+**Diff range**: `a3799f7..e1f255d` em `main` (iteração 1: `a3799f7..23b7565`; correções: T18 `64b9495`, T19 `878db23`, T20 `e1f255d`)
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌
+**Verdict**: FAIL ❌ (iteração 2)
+
+Os 5 sobreviventes da iteração 1 morrem, as 42 ACs têm evidência e o gate passa (1326). O FAIL vem de 16 sobreviventes em 31 mutantes novos, todos **lacunas de teste**: nenhum defeito de produção foi achado (a folha e o HTML atuais cumprem RED-16, RED-22 e a regra de teste). Detalhes na seção "Iteração 2" logo abaixo; o relatório da iteração 1 segue intacto depois dela.
+
+---
+
+## Iteração 2
+
+### Correções conferidas (T18–T20)
+
+| Task | O que conferi | Resultado |
+| ---- | ------------- | --------- |
+| T18 `64b9495` | `templates/kira.css:389-392`: `.botao--compacto, .usuario button { min-height: 44px }`; fonte e padding seguem pequenos. Testes `inovacoes/tests/test_folha_v2.py:788-792` (`button`, `.botao`, `.botao--compacto`, `.usuario button` com `min-height` ≥ 44) e `:796-805` (nenhuma regra de seletor com `button`/`.botao` declara `height`/`min-height` < 44px, inclusive em `@media`). | ✅ RED-22 (botões) cumprida na produção. ⚠️ A guarda só vê seletor que contém `button` ou `.botao` (`_e_botao`, `:776`) e ignora `max-height`: N02, N03, N04 sobrevivem. |
+| T19 `878db23` | Allowlist `ESCONDIDOS_PELA_SPEC` (`test_folha_v2.py:943`) tem só as 2 entradas da RED-28 (`.decorativo` e `.faixa-marca` sob `:root[data-contraste=alto]`, contexto vazio), nada além. `_regras_aninhadas` guarda o contexto de cada regra: lê seletor composto, de atributo, `:where()`/`:is()` e regras dentro de `@media`, `@supports`, `@layer`, `@container` (M27, M28, M41, N12–N16 morrem). `test_guarda_acha_cada_forma_de_esconder` (`:1039`) mostra que os 10 vetores listados são achados. | ✅ escopo correto. ⚠️ Só acha os 10 vetores da lista, na grafia literal: escape CSS, `clip-path` com outro `inset`, `overflow` em outra regra, quase-zero, cor e deslocamento sobrevivem (N07–N11, N17–N22, N30). |
+| T20 `e1f255d` | `nucleo/tests/test_casca.py:338-350` compara as formas (`path`, `circle`…) do SVG que abre cada item com `templates/icones/{lampada,circulo-mais,grafico-barras}.svg`; `:354-364` faz o mesmo com `contraste.svg` no botão. `aria-hidden`/`focusable` seguem cobertos por `test_casca.py:294-298` (N25, N26, N28 morrem). | ✅ M43 morre. ⚠️ O oráculo é o próprio arquivo de produção: trocar o conteúdo de `lampada.svg` pelo do gráfico passa (N27). |
+
+Testes antigos: T18–T20 só acrescentam testes; nenhum teste foi removido ou afrouxado (`git diff 23b7565..e1f255d`). Contagem 1297 → 1326 (+29).
+
+### Spec-anchored check (it. 2)
+
+As 38 ACs aprovadas na iteração 1 seguem como estavam (o código delas não mudou; regressão 14/14 abaixo). As cláusulas abertas:
+
+| AC | Cláusula | Evidência nova | Resultado |
+| -- | -------- | -------------- | --------- |
+| RED-16 | qual ícone em cada item (lâmpada, círculo com mais, gráfico) | `nucleo/tests/test_casca.py:350` `_formas_do_icone_inicial(conteudo) == arquivo` | ✅ (oráculo autorreferente, N27) |
+| RED-22 | 44px em botões | `inovacoes/tests/test_folha_v2.py:792` `_altura_em_px(alturas[-1]) >= 44`; `:805` `baixas == []` | ✅ (guarda presa ao nome do seletor, N02–N04) |
+| RED-22 | sem virar só ícone | `inovacoes/tests/test_folha_v2.py:1013` `_declaracoes_que_escondem(CSS) == ESCONDIDOS_PELA_SPEC` | ✅ para `font-size: 0`/`display`/`visibility` etc.; N22 (largura + `overflow`) e N30 (`font-size: 1px`) sobrevivem |
+| RED-23 | ícone de meio círculo | `nucleo/tests/test_casca.py:364` | ✅ |
+| Regra de teste (`display: none` em seletor da folha) | seletor composto/atributo | `inovacoes/tests/test_folha_v2.py:1013` | ✅ (M27, M28 morrem); `display: none` escrito com escape sobrevive (N17, N18) |
+
+**Status**: 42/42 ACs com evidência `file:line` que afirma o valor da spec. Lacunas de precisão da spec da iteração 1 (RED-09 `:active`, RED-10, RED-12, RED-35) seguem sinalizadas, sem reprovar.
+
+### Discrimination Sensor (it. 2)
+
+Worktree isolada em `e1f255d` no scratchpad (`.env` por symlink, ignorado pelo git). Baseline na worktree: 1326 passed. Cada mutante rodou a suíte inteira com `-x` e o arquivo foi restaurado (`git checkout`) em seguida; `git status --porcelain` da worktree vazio no fim. Worktree removida e `git worktree prune` rodado; a árvore real ficou com ` M .specs/LESSONS.md` e ` M .specs/lessons.json`, igual ao baseline.
+
+**Reinjeção dos 5 sobreviventes da iteração 1** (como descritos abaixo, no catálogo):
+
+| # | Mutação | Resultado |
+| - | ------- | --------- |
+| M27 | `.rodape__links li { display: none }` | ✅ morto, `test_folha_so_esconde_o_que_a_spec_manda` |
+| M28 | `nav[aria-label=Principal] { display: none }` | ✅ morto, idem |
+| M41 | `@media (max-width: 40rem) { nav[aria-label=Principal] a { font-size: 0 } }` | ✅ morto, idem |
+| M42 | `button { min-height: 28px }` | ✅ morto, `test_botao_tem_altura_minima_de_44px[button]` |
+| M43 | gráfico no lugar da lâmpada em "Inovações" (`base.html:46`) | ✅ morto, `test_cada_item_do_menu_tem_o_seu_icone` |
+
+**Mutantes novos** (todos acrescentados ao fim de `templates/kira.css`, salvo indicação):
+
+| # | Mutação | Cláusula | Resultado |
+| - | ------- | -------- | --------- |
+| N01 | `kira.css:391` volta a `min-height: 36px` (Sair) | RED-22 | ✅ morto, `test_botao_tem_altura_minima_de_44px[.botao--compacto]` |
+| N02 | `.usuario form > * { min-height: 0; height: 30px; }` (Sair a 30px sem citar `button`) | RED-22 | ❌ **sobreviveu** |
+| N03 | `[type=submit] { min-height: 32px }` (todo botão de envio a 32px) | RED-22 | ❌ **sobreviveu** |
+| N04 | `.usuario > form :last-child { max-height: 30px; min-height: 0 }` | RED-22 | ❌ **sobreviveu** |
+| N05 | `nav[aria-label=Principal] a { clip-path: inset(50%); }` | regra de teste | ✅ morto, `test_folha_so_esconde_o_que_a_spec_manda` |
+| N06 | `nav[aria-label=Principal] { max-height: 0; overflow: hidden; }` | regra de teste | ✅ morto, idem |
+| N07 | `.rodape__links { height: 0 }` + `footer ul { overflow: hidden }` (overflow em outra regra) | RED-32 / regra | ❌ **sobreviveu** |
+| N08 | `nav[aria-label=Principal] a { color: transparent }` | RED-16 / regra | ❌ **sobreviveu** |
+| N09 | `nav[aria-label=Principal] a { color: var(--surface) }` (cor igual ao fundo) | RED-16 / RED-10 | ❌ **sobreviveu** |
+| N10 | `.rodape__links { position: absolute; left: -9999px; }` | RED-32 / regra | ❌ **sobreviveu** |
+| N11 | `.rodape__links { content-visibility: hidden; }` | RED-32 / regra | ❌ **sobreviveu** |
+| N12 | `@supports (display: grid) { .rodape__links li { display: none } }` | regra | ✅ morto, `test_folha_so_esconde_o_que_a_spec_manda` |
+| N13 | `@layer extra { nav[aria-label=Principal] a { visibility: hidden } }` | regra | ✅ morto, idem |
+| N14 | `@container (min-width: 0px) { .rodape__links { display: none } }` | regra | ✅ morto, idem |
+| N15 | `:where(.rodape__links) { display: none }` | regra | ✅ morto, idem |
+| N16 | `:is(footer) ul { opacity: 0 }` | regra | ✅ morto, idem |
+| N17 | `.rodape__links { dis\70 lay: none; }` (escape no nome da propriedade) | regra (`display: none`) | ❌ **sobreviveu** |
+| N18 | `.rodape__links { display: n\6f ne; }` (escape no valor) | regra (`display: none`) | ❌ **sobreviveu** |
+| N19 | `.rodape__links { opacity: 0.01 }` | regra | ❌ **sobreviveu** |
+| N20 | `.rodape__links { transform: translateX(-200vw) }` | regra | ❌ **sobreviveu** |
+| N21 | `.rodape__links { clip-path: inset(0 0 100% 0) }` ("clip-path que zera", da própria T19) | regra | ❌ **sobreviveu** |
+| N22 | `@media (max-width: 40rem) { nav[aria-label=Principal] a { width: 2.5rem; overflow: hidden; white-space: nowrap; } }` (menu só ícone) | RED-22 | ❌ **sobreviveu** |
+| N23 | `base.html`: `style="display: none"` no `ul.rodape__links` | regra | ✅ morto, `test_com_o_cookie_alto_a_pagina_traz_a_mesma_folha[False]` |
+| N24 | `base.html`: segundo `<style>` com `.rodape__links{display:none}` | regra | ✅ morto, idem |
+| N25 | `icones/lampada.svg` sem `aria-hidden` | RED-16 | ✅ morto, `test_menu_tem_os_tres_itens_em_ordem_cada_um_com_icone_antes_do_texto` |
+| N26 | `icones/circulo-mais.svg` sem `focusable="false"` | RED-16 | ✅ morto, idem |
+| N27 | `icones/lampada.svg` com o conteúdo de `grafico-barras.svg` | RED-16 | ❌ **sobreviveu** |
+| N28 | `base.html:46`: ícone depois do texto | RED-16 | ✅ morto, `test_menu_tem_os_tres_itens_em_ordem_cada_um_com_icone_antes_do_texto` |
+| N29 | `nav[aria-label=Principal] svg { display: none }` | RED-16 | ✅ morto, `test_folha_so_esconde_o_que_a_spec_manda` |
+| N30 | `nav[aria-label=Principal] a { font-size: 1px }` | RED-22 | ❌ **sobreviveu** |
+
+**Regressão** (amostra do catálogo da iteração 1 que tinha morrido):
+
+| # | Resultado |
+| - | --------- |
+| M01 | ✅ morto, `test_html_marca_o_alto_contraste_so_com_o_cookie_alto` |
+| M02 | ✅ morto, `test_menu_marca_a_pagina_atual_ou_a_secao` |
+| M05 | ✅ morto, `test_alto_grava_o_cookie_de_um_ano_e_volta_a_pagina` |
+| M09 | ✅ morto, `test_voltar_para_fora_do_site_vazio_ou_ausente_vai_a_raiz[externo]` |
+| M10 | ✅ morto, `test_contraste_fora_de_alto_e_normal_responde_400_sem_cookie` |
+| M13 | ✅ morto, `test_normal_apaga_o_cookie_e_volta_a_pagina` |
+| M17 | ✅ morto, `test_500_sem_request_nao_tem_botao_nem_form_do_contraste` |
+| M20 | ✅ morto, `test_botao_da_barra_mostra_o_estado_e_pede_o_oposto` |
+| M26 | ✅ morto, `test_rodape_tem_a_identificacao_e_os_links_de_apoio[login]` |
+| M32 | ✅ morto, `test_separador_da_trilha_e_o_sinal_com_texto_alternativo_vazio` |
+| M36 | ✅ morto, `test_reduzir_movimento_desliga_tudo_inclusive_o_esqueleto` |
+| M40 | ✅ morto, `test_item_atual_do_menu_tem_fundo_suave_e_barra_azul_de_3px` |
+| M44 | ✅ morto, `test_com_o_cookie_alto_a_pagina_traz_a_mesma_folha` |
+| M48 | ✅ morto, `test_toda_pagina_faz_preload_da_fonte_na_mesma_url` |
+
+**Result**: reinjeção 5/5 mortos; novos 14/30 mortos (16 sobreviventes); regressão 14/14. FAIL ❌
+
+### Gate Check (it. 2, árvore real)
+
+- `.venv/bin/ruff check .` → All checks passed; `ruff format --check .` → 161 files already formatted; `makemigrations --check --dry-run` → No changes detected; `pytest -q` → **1326 passed**, 0 failed, 0 skipped.
+
+### Gaps restantes (todos lacunas de teste; nenhum defeito de produção)
+
+1. **RED-22, "sem virar só ícone"** (Major): N22 (`width` + `overflow: hidden` no item, em `@media`) e N30 (`font-size: 1px`). A guarda (`inovacoes/tests/test_folha_v2.py:968-995`) só conhece valor zero. Falta exigir que nenhuma regra do item do menu, em nenhum contexto, limite `width`/`max-width` ou mude `font-size` para baixo de um piso.
+2. **RED-22, 44px em botões** (Major): N02, N03, N04. `_e_botao` (`test_folha_v2.py:776`) decide pelo texto do seletor e `ALTURA` ignora `max-height`; uma regra que pega o Sair por `.usuario form > *` ou `[type=submit]` baixa a altura sem ser vista.
+3. **Regra de teste, `display: none` na folha** (Major): N17, N18. O parser lê nome e valor sem decodificar escapes CSS, e a folha já usa escapes (`\69 `, `\76 `, `\203A`).
+4. **Guarda de esconder, vetores fora da lista ou fora da grafia** (Minor): N21 (`clip-path: inset(0 0 100% 0)`, que a própria T19 promete pegar), N07 (`overflow` em outra regra), N19 (opacidade quase zero), N08/N09 (cor transparente ou igual ao fundo), N10/N20 (fora da tela), N11 (`content-visibility`).
+5. **RED-16, oráculo autorreferente** (Minor): N27. `test_casca.py:338-350` compara o ícone renderizado com o arquivo de produção; trocar o desenho de `lampada.svg` passa.
+
+Como este era o último ciclo, os gaps ficam como risco registrado para decisão do usuário.
+
+### validate_state.py (it. 2)
+
+`python3 .claude/skills/tlc-spec-driven/scripts/validate_state.py fundacao-do-redesign` → exit 1 (verdict FAIL), como esperado num FAIL.
+
+### Lições (it. 2)
+
+L-052 reafirmada (N22, N30; mesma feature, sem recorrência nova). Novas candidatas: L-054 (alvo de 44px por seletor), L-055 (escapes CSS), L-056 (vetores de esconder), L-057 (oráculo autorreferente).
+
+---
+
+# Iteração 1 (histórico)
+
+**Diff range (it. 1)**: `a3799f7..23b7565` (T1 `083f19d` … T17 `23b7565`; 45 arquivos, +3454/−210)
+**Verdict (it. 1)**: FAIL ❌
 
 O código de produção cumpre a casca, o contraste, as páginas de apoio e a folha em quase tudo, e o gate passa (1297 passed). O FAIL vem de 5 mutantes sobreviventes em 50 e de duas cláusulas sem evidência:
 
