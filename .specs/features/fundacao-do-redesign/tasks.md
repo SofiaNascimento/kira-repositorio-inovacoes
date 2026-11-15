@@ -402,7 +402,7 @@ T16 → T17
 
 ---
 
-### T13: Alto contraste: rota, cookie e botão
+### T13: Alto contraste: rota, cookie e botão ✅
 
 **What**: `nucleo.views.definir_contraste` em `/acessibilidade/contraste/` (`nucleo:contraste`); no `base.html`, o `data-contraste="alto"` no `<html>`, o botão "Alto contraste" na barra (`form="form-contraste"`, `name="contraste"`, valor oposto, `aria-pressed`, ícone) e o `form#form-contraste` no fim do `body`, ambos só com `request`. Ajusta T-B.
 **Where**: `nucleo/views.py` (+ `nucleo/urls.py`, `templates/base.html`, T-B)
@@ -414,10 +414,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `nucleo/tests/test_contraste.py`: POST `alto` (anônimo e autenticado) → 302 para `voltar_para`, cookie `kira_contraste=alto` com `max-age` 31536000, `httponly`, `samesite=Lax` e `secure` igual a `not DEBUG` (os dois valores com `override_settings`); POST `normal` → 302 e cookie apagado (`max-age=0`); `voltar_para` externo (`https://outro.example/`), `//outro.example/`, vazio e ausente → `/`; `contraste` ausente, `ALTO`, `escuro` → 400 sem `Set-Cookie`; GET → 405; sem CSRF (`Client(enforce_csrf_checks=True)`) → 403; o mesmo POST duas vezes → respostas iguais; com cookie `alto` a página responde `<html lang="pt-br" data-contraste="alto">`, com outro valor `<html lang="pt-br">`; o botão tem `aria-pressed="true"` e `value="normal"` com o cookie, `"false"`/`"alto"` sem; o `form#form-contraste` é o último `<form>` do `body`, tem o CSRF e `voltar_para` igual a `request.get_full_path()` (com query); no login, o primeiro `<form>` continua o do login; a 500 sem request não tem botão nem form
-- [ ] T-B: `ROTAS_PUBLICAS` ganha `/acessibilidade/contraste/`
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 22
+- [x] Testes e2e em `nucleo/tests/test_contraste.py`: POST `alto` (anônimo e autenticado) → 302 para `voltar_para`, cookie `kira_contraste=alto` com `max-age` 31536000, `httponly`, `samesite=Lax` e `secure` igual a `not DEBUG` (os dois valores com `override_settings`); POST `normal` → 302 e cookie apagado (`max-age=0`); `voltar_para` externo (`https://outro.example/`), `//outro.example/`, vazio e ausente → `/`; `contraste` ausente, `ALTO`, `escuro` → 400 sem `Set-Cookie`; GET → 405; sem CSRF (`Client(enforce_csrf_checks=True)`) → 403; o mesmo POST duas vezes → respostas iguais; com cookie `alto` a página responde `<html lang="pt-br" data-contraste="alto">`, com outro valor `<html lang="pt-br">`; o botão tem `aria-pressed="true"` e `value="normal"` com o cookie, `"false"`/`"alto"` sem; o `form#form-contraste` é o último `<form>` do `body`, tem o CSRF e `voltar_para` igual a `request.get_full_path()` (com query); no login, o primeiro `<form>` continua o do login; a 500 sem request não tem botão nem form
+- [x] T-B: `ROTAS_PUBLICAS` ganha `/acessibilidade/contraste/`
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 22
 
 **Tests**: e2e
 **Gate**: build

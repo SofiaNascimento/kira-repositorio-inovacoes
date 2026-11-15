@@ -271,9 +271,9 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-20 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-21 | P1: Barra e cabeçalho | Execute | Implementing |
 | RED-22 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-23 | P1: Alto contraste | Design | Pending |
-| RED-24 | P1: Alto contraste | Design | Pending |
-| RED-25 | P1: Alto contraste | Design | Pending |
+| RED-23 | P1: Alto contraste | Execute | Implementing |
+| RED-24 | P1: Alto contraste | Execute | Implementing |
+| RED-25 | P1: Alto contraste | Execute | Implementing |
 | RED-26 | P1: Alto contraste | Execute | Implementing |
 | RED-27 | P1: Alto contraste | Design | Pending |
 | RED-28 | P1: Alto contraste | Design | Pending |
@@ -285,12 +285,12 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-34 | P1: Páginas de apoio | Design | Pending |
 | RED-35 | P1: Páginas de apoio | Design | Pending |
 | RED-36 | P1: Páginas de apoio | Design | Pending |
-| RED-37 | Edge | Design | Pending |
-| RED-38 | Edge | Design | Pending |
-| RED-39 | Edge | Design | Pending |
+| RED-37 | Edge | Execute | Implementing |
+| RED-38 | Edge | Execute | Implementing |
+| RED-39 | Edge | Execute | Implementing |
 | RED-40 | Edge | Execute | Implementing |
 | RED-41 | Edge | Execute | Implementing |
-| RED-42 | Edge | Design | Pending |
+| RED-42 | Edge | Execute | Implementing |
 
 **Coverage:** 42 total, 0 mapped to tasks, 42 unmapped (Tasks ainda não feito).
 

@@ -275,6 +275,11 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 - **T11:** a 500 também passa o h1 ao bloco `titulo` (tem o cabeçalho de página); só o login sobrescreve `cabecalho_pagina`.
 - **T12:** a parcial usa `nav.trilha` (a folha não pode usar `[aria-label=Você está em]` sem aspas, AD-010) com um `div.container` dentro. O `{% include … with %}` não isola o contexto, então o detalhe passa `inovacao=None` para a trilha não repetir o título como link.
 
+### Lote 3 (T13–T17, 2026-11-15)
+
+- **T13, além da letra da task:** regras da barra na `kira.css` para o botão "Alto contraste" (contorno e texto `--on-brand` sobre o navy, hover `--brand-blue-hover`) e o contêiner da barra em flex, com o botão à direita (§5.1) dentro de `div.barra-acessibilidade__acoes`. Sem elas o botão herdaria o primário azul cheio sobre o navy.
+- **T13:** o 400 do valor inválido é o `HttpResponseBadRequest` simples (texto curto), não uma página do base; só se alcança por POST forjado.
+
 ## Tech Decisions (feature-local)
 
 | Decision | Choice | Rationale |

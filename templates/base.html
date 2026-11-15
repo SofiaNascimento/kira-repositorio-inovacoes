@@ -1,6 +1,7 @@
 {% load static %}<!doctype html>
-<html lang="pt-br">
+<html lang="pt-br"{% if contraste_alto %} data-contraste="alto"{% endif %}>
 <head>
+  {# RED-26, AD-014: data-contraste vem do cookie, lido no servidor (sem script, sem piscar). #}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}KIRA{% endblock %} · Repositório de Inovações</title>
@@ -22,6 +23,12 @@
           {% endif %}
         </ul>
       </nav>
+      {# RED-23, RED-41: so com request (a 500 renderiza sem); o form fica no fim do body (AD-015). #}
+      {% if request %}
+        <div class="barra-acessibilidade__acoes">
+          <button type="submit" form="form-contraste" name="contraste" value="{% if contraste_alto %}normal{% else %}alto{% endif %}" aria-pressed="{% if contraste_alto %}true{% else %}false{% endif %}">{% include "icones/contraste.svg" %}Alto contraste</button>
+        </div>
+      {% endif %}
     </div>
   </div>
   {# RED-21: faixa da marca, decorativa (some no alto contraste). #}
@@ -86,5 +93,14 @@
       <p>KIRA · Repositório de Inovações · uso interno</p>
     </div>
   </footer>
+
+  {# RED-23, AD-015: o form do contraste, sem controle visivel; o botao da barra o aciona por form=. #}
+  {# Fica no fim para o form do login continuar o primeiro da pagina. #}
+  {% if request %}
+    <form id="form-contraste" method="post" action="{% url 'nucleo:contraste' %}">
+      {% csrf_token %}
+      <input type="hidden" name="voltar_para" value="{{ request.get_full_path }}">
+    </form>
+  {% endif %}
 </body>
 </html>
