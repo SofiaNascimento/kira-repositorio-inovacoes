@@ -533,7 +533,7 @@ T19
 T20
 ```
 
-### T18: Botão "Sair" com 44px e teste dos 44px em todo botão
+### T18: Botão "Sair" com 44px e teste dos 44px em todo botão ✅
 
 **What**: `.botao--compacto, .usuario button` passa a `min-height: 44px` (fonte e padding seguem pequenos); teste da folha que exige `min-height` ≥ 44px nas regras de botão (`button`, `.botao`, `.botao--compacto`, `.usuario button`) e nenhuma regra de botão com `min-height`/`height` abaixo de 44px.
 **Where**: `templates/kira.css`
@@ -545,9 +545,9 @@ T20
 
 **Done when**:
 
-- [ ] Teste `unit` em `test_folha_v2.py` mata o M42 (`button { min-height: 28px }`) e o Sair de 36px
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ 1297 + 2
+- [x] Teste `unit` em `test_folha_v2.py` mata o M42 (`button { min-height: 28px }`) e o Sair de 36px
+- [x] Gate check passa: build
+- [x] Test count: ≥ 1297 + 2
 
 **Tests**: unit
 **Gate**: build

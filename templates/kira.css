@@ -388,7 +388,7 @@ button:active,
 
 .botao--compacto,
 .usuario button {
-  min-height: 36px;
+  min-height: 44px;
   padding: var(--space-1) var(--space-3);
   font-size: var(--fs-sm);
 }

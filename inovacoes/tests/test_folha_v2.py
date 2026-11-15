@@ -768,6 +768,43 @@ def test_menu_quebra_de_linha_e_itens_tem_alvo_de_44px():
     assert _tem(_corpos("nav[aria-label=Principal] a"), "min-height", "44px")
 
 
+# --- RED-22: botoes ----------------------------------------------------------------
+
+ALTURA = r"(?<![\w-])((?:min-)?height)\s*:\s*([^;]+)"
+
+
+def _e_botao(seletor):
+    return re.search(r"(?<![\w-])button\b|\.botao\b", seletor) is not None
+
+
+def _altura_em_px(valor):
+    achado = re.fullmatch(r"(\d*\.?\d+)(px|rem|em)", valor.strip())
+    assert achado, f"altura de botao fora de px/rem: {valor}"
+    return _em_px(*achado.groups())
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("seletor", ["button", ".botao", ".botao--compacto", ".usuario button"])
+def test_botao_tem_altura_minima_de_44px(seletor):
+    """RED-22: WCAG 2.5.8, alvo minimo de 44px em todo botao (o "Sair" inclusive)."""
+    alturas = re.findall(r"(?<![\w-])min-height\s*:\s*([^;]+)", _corpos(seletor))
+    assert alturas, f"{seletor} sem min-height"
+    assert _altura_em_px(alturas[-1]) >= 44
+
+
+@pytest.mark.unit
+def test_nenhuma_regra_de_botao_baixa_a_altura_de_44px():
+    """RED-22: nenhuma regra de botao, em qualquer contexto, fica abaixo de 44px."""
+    baixas = [
+        (lista.strip(), propriedade, valor)
+        for lista, corpo in re.findall(r"([^{}]+)\{([^}]*)\}", _sem_comentarios(CSS))
+        if any(_e_botao(s) for s in _seletores(lista))
+        for propriedade, valor in re.findall(ALTURA, corpo)
+        if _altura_em_px(valor) < 44
+    ]
+    assert baixas == []
+
+
 # --- RED-30: separador da trilha ---------------------------------------------------
 
 
