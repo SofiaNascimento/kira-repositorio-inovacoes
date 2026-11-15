@@ -278,7 +278,7 @@ T16 → T17
 
 ---
 
-### T8: Ícones do Lucide
+### T8: Ícones do Lucide ✅
 
 **What**: `lampada.svg`, `circulo-mais.svg`, `grafico-barras.svg` e `contraste.svg` em `templates/icones/`, copiados do Lucide (`lightbulb`, `circle-plus`, `chart-column`, `contrast`), e o `LICENSE` com o ISC do Lucide e o MIT do Feather.
 **Where**: `templates/icones/`
@@ -290,10 +290,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Versão do Lucide registrada no `design.md` (seção Ícones)
-- [ ] Testes `unit` em `test_casca.py`: cada `.svg` abre com `<svg` e tem `aria-hidden="true"`, `focusable="false"`, `stroke="currentColor"`, `fill="none"`, sem `<title>` nem `id`; `LICENSE` existe e contém "ISC" e "MIT"
-- [ ] Gate check passa: quick
-- [ ] Test count: ≥ anterior + 6
+- [x] Versão do Lucide registrada no `design.md` (seção Ícones)
+- [x] Testes `unit` em `test_casca.py`: cada `.svg` abre com `<svg` e tem `aria-hidden="true"`, `focusable="false"`, `stroke="currentColor"`, `fill="none"`, sem `<title>` nem `id`; `LICENSE` existe e contém "ISC" e "MIT"
+- [x] Gate check passa: quick
+- [x] Test count: ≥ anterior + 6
 
 **Tests**: unit
 **Gate**: quick

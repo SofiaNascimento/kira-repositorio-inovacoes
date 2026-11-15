@@ -155,6 +155,7 @@ o h1 "Entrar" fica no cartão (exceção da RED-31; o login é refeito no passe 
 
 - **Location**: `templates/icones/{lampada,circulo-mais,grafico-barras,contraste}.svg` + `templates/icones/LICENSE` (ISC do Lucide e o MIT do Feather).
 - Cada arquivo: `<svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">…</svg>`, caminhos copiados do Lucide (`lightbulb`, `circle-plus`, `chart-column`, `contrast`).
+- **Versão copiada (T8, 2026-11-15)**: `lucide-static@1.66.0` (publicada em 2026-10-31; tarball conferido pelo `integrity` do registro npm, `sha512-j8Bjf/f2…zEjnJg==`). Só os elementos `<path>`/`<circle>` de `icons/{lightbulb,circle-plus,chart-column,contrast}.svg` foram copiados; a abertura do `<svg>` é a desta seção (sem `class`, sem `xmlns`, sem o comentário de licença). `templates/icones/LICENSE` é o `LICENSE` do pacote, sem mudança (ISC do Lucide + MIT do Feather).
 
 ### Fonte
 

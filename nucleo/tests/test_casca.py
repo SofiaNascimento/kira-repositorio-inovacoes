@@ -4,7 +4,11 @@ Fonte: docs/design-spec.md v2 §5 e .specs/features/fundacao-do-redesign/spec.md
 Toda AC de "exibido" usa `exibido(html, rigoroso=True)` sobre a pagina inteira (L-028, L-030).
 """
 
+import re
+from pathlib import Path
+
 import pytest
+from django.conf import settings
 from django.test import RequestFactory
 from django.urls import resolve
 
@@ -96,3 +100,45 @@ def test_outro_valor_ou_cookie_ausente_deixa_o_tema_normal(cookies):
 def test_atalho_da_busca_aponta_para_o_campo_da_lista(caminho, esperado):
     """RED-14: #id_q na lista, /inovacoes/#id_q nas outras telas."""
     assert casca(_requisicao(caminho))["busca_href"] == esperado
+
+
+# --- T8: icones do Lucide (RED-07, RED-16) ---------------------------------------
+
+ICONES = Path(settings.BASE_DIR) / "templates" / "icones"
+
+NOMES_DOS_ICONES = ["lampada", "circulo-mais", "grafico-barras", "contraste"]
+
+
+@pytest.mark.unit
+def test_pasta_traz_os_quatro_icones_da_casca():
+    """RED-16, RED-23: lampada, circulo com mais, grafico e meio circulo."""
+    assert sorted(a.stem for a in ICONES.glob("*.svg")) == sorted(NOMES_DOS_ICONES)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("nome", NOMES_DOS_ICONES)
+def test_icone_e_um_svg_decorativo_no_traco_do_texto(nome):
+    """RED-16: SVG aria-hidden, fora do Tab, na cor do texto, sem nome acessivel."""
+    fonte = (ICONES / f"{nome}.svg").read_text()
+    assert fonte.startswith("<svg ")
+    abertura = fonte[: fonte.index(">") + 1]
+    for atributo in [
+        'aria-hidden="true"',
+        'focusable="false"',
+        'stroke="currentColor"',
+        'fill="none"',
+    ]:
+        assert atributo in abertura, atributo
+    assert "<title" not in fonte
+    assert not re.search(r"\sid=", fonte)
+    assert fonte.rstrip().endswith("</svg>")
+
+
+@pytest.mark.unit
+def test_licenca_dos_icones_acompanha_os_arquivos():
+    """RED-07: o ISC do Lucide e o MIT do Feather."""
+    licenca = (ICONES / "LICENSE").read_text()
+    assert "ISC License" in licenca
+    assert "Lucide" in licenca
+    assert "The MIT License (MIT)" in licenca
+    assert "Cole Bemis" in licenca
