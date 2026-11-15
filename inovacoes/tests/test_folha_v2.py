@@ -933,3 +933,111 @@ def test_com_o_cookie_alto_a_pagina_traz_a_mesma_folha(client, autor, autenticad
     assert len(estilos) == 1
     assert estilos[0].strip() == CSS.strip()
     assert 'style="' not in html
+
+
+# --- Regra de teste da feature: nada some da tela pela folha -------------------------
+# O `exibido(rigoroso=True)` so le classe simples fora de @media. Esta guarda le toda regra,
+# de qualquer seletor e em qualquer contexto, e so aceita o que a spec manda esconder.
+
+# Unicas declaracoes que tiram conteudo da tela com base na spec: (contexto, seletor, declaracao).
+ESCONDIDOS_PELA_SPEC = {
+    ((), f"{ALTO} .decorativo", "display: none"),  # RED-28: decorativos somem no tema alto
+    ((), f"{ALTO} .faixa-marca", "display: none"),  # RED-28: a faixa do gradiente some
+}
+
+
+def _regras_aninhadas(css):
+    """(contexto, lista de seletores, corpo) de cada regra, inclusive dentro de @media."""
+    regras, pilha, inicio = [], [], 0
+    for i, caractere in enumerate(css):
+        if caractere == "{":
+            pilha.append(css[inicio:i].strip())
+            inicio = i + 1
+        elif caractere == "}":
+            regras.append((tuple(pilha[:-1]), pilha[-1], css[inicio:i]))
+            pilha.pop()
+            inicio = i + 1
+    assert pilha == []
+    return regras
+
+
+def _zero(valor):
+    return re.fullmatch(r"0*\.?0+[a-z%]*", valor) is not None
+
+
+def _esconde(propriedade, valor, corpo):
+    """A declaracao tira o conteudo da tela (lista da regra de teste da feature)."""
+    if propriedade == "display":
+        return valor == "none"
+    if propriedade == "visibility":
+        return valor in ("hidden", "collapse")
+    if propriedade in ("font-size", "opacity"):
+        return _zero(valor)
+    if propriedade == "clip":
+        return valor.startswith("rect(")
+    if propriedade == "clip-path":
+        return bool(
+            re.search(r"inset\(\s*(?:[5-9]\d|100)%", valor)
+            or re.search(r"(?:circle|ellipse)\(\s*0", valor)
+        )
+    if propriedade in ("width", "height", "max-width", "max-height"):
+        return _zero(valor) and bool(
+            re.search(r"(?<![\w-])overflow(?:-[xy])?\s*:\s*(?:hidden|clip)", corpo)
+        )
+    if propriedade == "transform":
+        return bool(re.search(r"scale[xy]?\(\s*0*\.?0+\s*[,)]", valor))
+    if propriedade == "text-indent":
+        negativo = re.fullmatch(r"-(\d*\.?\d+)(px|rem|em|%)", valor)
+        return bool(negativo) and (
+            float(negativo.group(1)) >= 100
+            if negativo.group(2) == "%"
+            else _em_px(*negativo.groups()) >= 100
+        )
+    return False
+
+
+def _declaracoes_que_escondem(css):
+    achados = set()
+    for contexto, lista, corpo in _regras_aninhadas(_sem_comentarios(css)):
+        for propriedade, valor in re.findall(r"([\w-]+)\s*:\s*([^;]+)", corpo):
+            valor = re.sub(r"\s*!important\s*$", "", valor.strip().lower())
+            if _esconde(propriedade.lower(), valor, corpo):
+                for seletor in _seletores(lista):
+                    achados.add((contexto, seletor, f"{propriedade.lower()}: {valor}"))
+    return achados
+
+
+@pytest.mark.unit
+def test_folha_so_esconde_o_que_a_spec_manda():
+    """Regra de teste da feature (L-028, L-030, L-044); RED-16, RED-22, RED-32."""
+    assert _declaracoes_que_escondem(CSS) == ESCONDIDOS_PELA_SPEC
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "declaracao",
+    [
+        "display: none",
+        "visibility: hidden",
+        "visibility: collapse",
+        "font-size: 0",
+        "opacity: 0",
+        "clip: rect(0 0 0 0)",
+        "clip-path: inset(50%)",
+        "width: 0; overflow: hidden",
+        "transform: scale(0)",
+        "text-indent: -9999px",
+    ],
+)
+@pytest.mark.parametrize(
+    "envelope",
+    [
+        "{seletor} {{ {declaracao}; }}",
+        "@media (max-width: 40rem) {{ {seletor} {{ {declaracao} !important; }} }}",
+    ],
+)
+def test_guarda_acha_cada_forma_de_esconder(declaracao, envelope):
+    """A guarda acima nao e vazia: cada vetor e achado, em seletor composto e em @media."""
+    seletor = "nav[aria-label=Principal] a"
+    achados = _declaracoes_que_escondem(envelope.format(seletor=seletor, declaracao=declaracao))
+    assert {s for _, s, _ in achados} == {seletor}

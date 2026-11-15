@@ -556,7 +556,7 @@ T20
 
 ---
 
-### T19: Guarda de declarações que escondem conteúdo na folha
+### T19: Guarda de declarações que escondem conteúdo na folha ✅
 
 **What**: Teste da folha que lista toda declaração que tira conteúdo da tela (`display: none`, `visibility: hidden`/`collapse`, `font-size: 0`, `opacity: 0`, `clip`/`clip-path` que zera, `width`/`height` 0 com `overflow: hidden`, `transform: scale(0)`, `text-indent` negativo grande) e exige que cada uma esteja numa allowlist explícita (hoje: `.decorativo` e `.faixa-marca` dentro de `:root[data-contraste=alto]`). Cobre a regra de teste da feature para seletores compostos, que o `exibido(rigoroso=True)` não lê.
 **Where**: `inovacoes/tests/test_folha_v2.py`
@@ -568,10 +568,10 @@ T20
 
 **Done when**:
 
-- [ ] O teste mata M27 (`.rodape__links li {display:none}`), M28 (`nav[aria-label=Principal] {display:none}`) e M41 (`font-size: 0` nos itens do menu dentro de `@media`), inclusive dentro de `@media`
-- [ ] A allowlist tem só o que a spec manda esconder (RED-28) e cita a AC
-- [ ] Gate check passa: quick
-- [ ] Test count: ≥ anterior + 2
+- [x] O teste mata M27 (`.rodape__links li {display:none}`), M28 (`nav[aria-label=Principal] {display:none}`) e M41 (`font-size: 0` nos itens do menu dentro de `@media`), inclusive dentro de `@media`
+- [x] A allowlist tem só o que a spec manda esconder (RED-28) e cita a AC
+- [x] Gate check passa: quick
+- [x] Test count: ≥ anterior + 2
 
 **Tests**: unit
 **Gate**: quick
