@@ -98,13 +98,38 @@
 - **Date**: 2026-10-18
 - **Status**: active
 
+### AD-013
+- **Decision**: Recursos binários do visual (a fonte Inter hoje; imagens e ícones em arquivo, se vierem) moram no repositório em `static/` (`STATICFILES_DIRS`), com a licença ao lado, e chegam ao navegador por `/static/` (CDN da Vercel depois do `collectstatic`; `runserver` em desenvolvimento). Nenhuma página carrega fonte, folha, script ou imagem de outra origem. Ícones são SVG do Lucide copiados para `templates/icones/*.svg` e incluídos no HTML.
+- **Reason**: O pedido do redesign exige a Inter sem CDN externo, e a AD-010 já embute a folha. Um recurso binário não cabe embutido sem inflar cada página, e a deploy-producao já serve `/static/` pela CDN com `STATIC_ROOT`, sem WhiteNoise. Arquivos próprios não dependem de terceiro no ar nem vazam a visita a outro domínio.
+- **Trade-off**: A URL da fonte vai literal (`/static/fontes/…`) dentro da `kira.css`, porque o DS-02 compara a folha crua; trocar o `STATIC_URL` exige mudar a folha (um teste amarra os dois). Atualizar a fonte ou um ícone é cópia manual, sem gerenciador de pacotes. Sem WhiteNoise, com `DEBUG=False` fora da Vercel a fonte não é servida e o texto cai na pilha de reserva.
+- **Scope**: Todas as telas e o deploy. Complementa a AD-010, que segue ativa: a `kira.css` continua embutida.
+- **Date**: 2026-11-15
+- **Status**: active
+
+### AD-014
+- **Decision**: Preferências de apresentação (hoje só o alto contraste) ficam num cookie próprio (`kira_contraste`), gravado por uma rota pública POST sem JavaScript (`/acessibilidade/contraste/`) e lido no servidor pelo context processor `nucleo.context_processors.casca`, que marca o `<html>` já na primeira resposta. Nada vai para o perfil nem para a sessão.
+- **Reason**: O recurso do eMAG precisa valer antes do login (a barra está na tela de entrar) e sobreviver ao logout, que limpa a sessão. Gravar no perfil exigiria migration e não cobriria o anônimo. Ler no servidor evita o "pisca" do tema e dispensa script.
+- **Trade-off**: A preferência é por navegador, não por pessoa: outro computador começa no tema normal. Cada preferência nova é mais um cookie e mais um valor validado na rota.
+- **Scope**: R1 (fundacao-do-redesign) e qualquer preferência de apresentação futura.
+- **Date**: 2026-11-15
+- **Status**: active
+
+### AD-015
+- **Decision**: A casca da v2 tem posições fixas no DOM: barra de acessibilidade antes do `<header>`; `<header>`, `<footer>` e `<main id="conteudo">` sem atributo novo; a trilha (`nav aria-label="Você está em"`) entre o `<header>` e o `<main>`; o `<form>` do contraste no fim do `<body>`, acionado pelo botão da barra por `form=`. A página atual do menu sai de uma tabela única no context processor da casca, pela rota (`resolver_match`), e cada tela declara a trilha pela parcial `paginas/trilha.html` e o h1 pelo bloco `titulo`.
+- **Reason**: Testes da F1 à F6 fixam esse HTML por regex literal (o primeiro `<form>` do login, os links e a ordem de Tab do `main`, o `<main id="conteudo">` exato). As posições escolhidas cumprem a design-spec v2 sem reescrever esses testes. A trilha antes do `main` segue o padrão do GOV.UK Design System. Uma tabela única de página atual evita que uma rota nova fique sem marca em silêncio.
+- **Trade-off**: Diverge da letra da §5 (trilha dentro do `main`, `tabindex="-1"` nos alvos dos atalhos, formulário dentro da barra). O alerta de feedback fica entre a trilha e o h1. Rota nova fora do namespace `inovacoes` precisa entrar na tabela para marcar o menu.
+- **Scope**: Todas as telas e as features seguintes do redesign.
+- **Date**: 2026-11-15
+- **Status**: active
+
 ## Handoff
 
 ### Atual (2026-11-15) — fundacao-do-redesign (R1)
 
 - **Feature**: fundacao-do-redesign — `.specs/features/fundacao-do-redesign/`. Passe cross-cutting da `design-spec.md` v2.
 - **Phase**: Specify ✅ aprovado (42 ACs, RED-01 a RED-42); Discuss fechado (`context.md`): contraste por cookie, Lucide (ISC), páginas públicas, fonte com URL literal, menu sem `<details>`, página `/ajuda/`. Testes antigos T-A a T-D autorizados.
-- **Next step**: Design (inclui decidir se a AD-010 recebe emenda pela pasta `static/` da fonte).
+- **Design**: rascunho em `design.md` (2026-11-15), aguardando aprovação; ADs novas AD-013, AD-014, AD-015; AD-010 segue ativa sem emenda. Pede autorização para mais dois testes antigos (T-E, T-F).
+- **Next step**: aprovação do design; depois Tasks.
 - **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)
