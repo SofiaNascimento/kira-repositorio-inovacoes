@@ -12,6 +12,7 @@ import pytest
 # `paginas` e a fixture do DS-02 a DS-05, reusada sem mudanca.
 from inovacoes.tests.test_views_sistema_design import (
     CSS,
+    PARES_DE_TEXTO,
     _contraste,
     _corpos,
     _token,
@@ -318,3 +319,177 @@ def test_selo_e_uma_pilula():
 def test_pares_de_texto_dos_estados_tem_contraste_aa(texto, fundo):
     """RED-10: §2 v2, 4.5:1."""
     assert _contraste(_token(texto), _token(fundo)) >= 4.5
+
+
+# --- RED-09 e RED-10: componentes do detalhe e do formulario ---------------------
+
+# DS-02: a folha nao pode conter nome de usuario dos testes ("nova" esta em
+# "inovacao"); por isso a classe vai com o "v" escapado (\76) na folha.
+CARTAO_INOVACAO = r".cartao-ino\76 acao"
+
+
+def _regras_de(prefixo):
+    """(seletores, corpo) de toda regra global com algum seletor que comeca pelo prefixo."""
+    regras = re.findall(r"([^{}@]+)\{([^}]*)\}", _sem_comentarios(CSS))
+    return [
+        (lista.strip(), corpo)
+        for lista, corpo in regras
+        if any(s.startswith(prefixo) for s in _seletores(lista))
+    ]
+
+
+def _corpos_de(prefixo):
+    return " ".join(corpo for _, corpo in _regras_de(prefixo))
+
+
+@pytest.mark.unit
+def test_cartao_de_inovacao_em_hover_ganha_borda_azul():
+    """RED-09: §6 v2, cartao de inovacao em hover."""
+    assert "nova" not in CSS.lower()
+    assert _tem(_corpos(CARTAO_INOVACAO + ":hover"), "border-color", "var(--brand-blue)")
+
+
+@pytest.mark.unit
+def test_titulo_do_cartao_de_inovacao_fica_sublinhado_no_hover():
+    """RED-09: §6 v2, so o titulo e link; o hover do cartao o sublinha."""
+    seletor = f"{CARTAO_INOVACAO}:hover {CARTAO_INOVACAO}__titulo a"
+    assert _tem(_corpos(seletor), "text-decoration", "underline")
+    assert _tem(_corpos(CARTAO_INOVACAO + "__titulo a"), "text-decoration", "none")
+
+
+@pytest.mark.unit
+def test_etapa_concluida_usa_a_cor_de_sucesso():
+    """RED-09: §6 v2, marcador --success."""
+    assert "var(--success)" in _corpos_de(".etapa--concluida")
+
+
+@pytest.mark.unit
+def test_etapa_atual_tem_marcador_cheio_e_texto_em_negrito():
+    """RED-09: §6 v2, marcador cheio e negrito."""
+    assert _tem(_corpos(".etapa--atual"), "font-weight", "700")
+    assert _tem(_corpos(".etapa--atual .etapa__marcador"), "background", "var(--brand-blue)")
+
+
+@pytest.mark.unit
+def test_etapa_futura_tem_marcador_vazado_na_cor_de_campo():
+    """RED-09: §6 v2, marcador vazado --borda-campo."""
+    corpo = _corpos(".etapa--futura .etapa__marcador")
+    assert _tem(corpo, "border-color", "var(--borda-campo)")
+    assert _tem(corpo, "background", "var(--surface)")
+
+
+@pytest.mark.unit
+def test_data_da_linha_do_tempo_vai_em_negrito_com_numeros_tabulares():
+    """RED-09: §6 v2, time em negrito com --numeros."""
+    corpo = _corpos(".linha-do-tempo time")
+    assert _tem(corpo, "font-variant-numeric", "var(--numeros)")
+    assert _tem(corpo, "font-weight", "700")
+
+
+@pytest.mark.unit
+def test_ponto_do_cadastro_e_vazado_e_os_demais_sao_azuis():
+    """RED-09: §6 v2, ponto do cadastro --borda-campo; mudancas --brand-blue."""
+    assert _tem(_corpos(".linha-do-tempo__ponto"), "background", "var(--brand-blue)")
+    corpo = _corpos(".linha-do-tempo__ponto--cadastro")
+    assert _tem(corpo, "border-color", "var(--borda-campo)")
+    assert _tem(corpo, "background", "var(--surface)")
+
+
+@pytest.mark.unit
+def test_cartao_de_contato_tem_borda_superior_azul_de_4px():
+    """RED-09: §6 v2."""
+    assert _tem(_corpos(".cartao-contato"), "border-top", "4px solid var(--brand-blue)")
+
+
+@pytest.mark.unit
+def test_texto_do_contato_preserva_as_quebras_de_linha():
+    """RED-09: §6 v2, o texto livre como foi digitado."""
+    assert _tem(_corpos_de(".cartao-contato"), "white-space", "pre-line")
+
+
+@pytest.mark.unit
+def test_legenda_do_grupo_e_subtitulo_em_navy():
+    """RED-09: §6 v2, legend em --fs-lg, 700, --brand-navy."""
+    corpo = _corpos(".grupo legend")
+    assert _tem(corpo, "font-size", "var(--fs-lg)")
+    assert _tem(corpo, "font-weight", "700")
+    assert _tem(corpo, "color", "var(--brand-navy)")
+
+
+@pytest.mark.unit
+def test_numero_do_grupo_fica_num_circulo_de_fundo_suave():
+    """RED-09: §6 v2."""
+    corpo = _corpos(".grupo__numero")
+    assert _tem(corpo, "background", "var(--info-tint)")
+    assert _tem(corpo, "border-radius", "50%")
+
+
+# RED-10: pares da §2 v2 (texto, 4.5:1) e os ja conferidos pelo DS-08.
+PARES_APROVADOS_DE_TEXTO = {
+    *PARES_DE_TEXTO,
+    ("text-muted", "info-tint"),
+    ("brand-navy", "info-tint"),
+    ("on-brand", "brand-blue"),
+    ("on-brand", "brand-navy"),
+    ("on-brand", "brand-blue-hover"),
+    ("error", "error-tint"),
+    ("success", "surface"),
+    ("warning", "surface"),
+}
+# RED-10: limites de componente e barras (3:1) da §2 v2 e do DS-08.
+PARES_APROVADOS_DE_COMPONENTE = {
+    ("borda-campo", "surface"),
+    ("borda-campo", "bg"),
+    ("brand-blue", "surface"),
+    ("brand-blue", "info-tint"),
+    ("text-muted", "surface"),
+    ("brand-navy", "trilho"),
+    ("brand-blue", "trilho"),
+    ("warning", "trilho"),
+    ("success", "trilho"),
+}
+BORDAS = r"border(?:-top|-right|-bottom|-left)?(?:-color)?|outline(?:-color)?"
+
+
+def _pares_da_regra(corpo, contexto):
+    """(cor, fundo, e_texto) de cada cor que a regra pinta.
+
+    O texto fica sobre o fundo da propria regra (ou, sem fundo, o do contexto); a borda
+    e o limite do elemento contra o que esta em volta, o fundo do contexto. A borda
+    `--border` e decorativa (§2) e nao conta.
+    """
+    declaracoes = re.findall(r"([\w-]+)\s*:\s*([^;]+);", corpo)
+    proprio = [re.search(r"var\(--([\w-]+)\)", v) for n, v in declaracoes if n == "background"]
+    fundo = proprio[-1].group(1) if proprio and proprio[-1] else contexto
+    pares = []
+    for nome, valor in declaracoes:
+        for token in re.findall(r"var\(--([\w-]+)\)", valor):
+            if nome == "color":
+                pares.append((token, fundo, True))
+            elif re.fullmatch(BORDAS, nome) and token != "border":
+                pares.append((token, contexto, False))
+    return pares
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "componente", [CARTAO_INOVACAO, ".etapa", ".linha-do-tempo", ".cartao-contato", ".grupo"]
+)
+def test_cores_do_componente_estao_em_pares_aprovados(componente):
+    """RED-10: cada cor de texto e de limite sobre o fundo em que e desenhada.
+
+    Os cinco componentes ficam sobre --surface (cartao proprio, ou o cartao do
+    detalhe e do formulario).
+    """
+    conferidos = 0
+    for seletores, corpo in _regras_de(componente):
+        for cor, fundo, e_texto in _pares_da_regra(corpo, "surface"):
+            if e_texto:
+                assert (cor, fundo) in PARES_APROVADOS_DE_TEXTO, (seletores, cor, fundo)
+                assert _contraste(_token(cor), _token(fundo)) >= 4.5, (seletores, cor, fundo)
+            else:
+                aprovados = PARES_APROVADOS_DE_COMPONENTE | PARES_APROVADOS_DE_TEXTO
+                assert (cor, fundo) in aprovados, (seletores, cor, fundo)
+                assert _contraste(_token(cor), _token(fundo)) >= 3, (seletores, cor, fundo)
+            conferidos += 1
+    assert conferidos

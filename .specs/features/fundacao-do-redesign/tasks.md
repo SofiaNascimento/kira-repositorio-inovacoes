@@ -208,7 +208,7 @@ T16 → T17
 
 ---
 
-### T5: Componentes do detalhe e do formulário
+### T5: Componentes do detalhe e do formulário ✅
 
 **What**: `.cartao-inovacao`, `.etapas` (três estados), `.linha-do-tempo`, `.cartao-contato` e `.grupo`, conforme a tabela de componentes do design.
 **Where**: `templates/kira.css`
@@ -220,9 +220,9 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes `unit`: `.cartao-inovacao:hover` com borda `var(--brand-blue)` e título sublinhado; `.etapa--concluida` com `var(--success)`, `.etapa--atual`, `.etapa--futura` com `var(--borda-campo)`; `.linha-do-tempo time` com `var(--numeros)`; `.cartao-contato` com `border-top: 4px solid var(--brand-blue)` e `white-space: pre-line`; `.grupo legend` com `var(--fs-lg)`, `700`, `var(--brand-navy)`; `.grupo__numero` com fundo `var(--info-tint)`; toda cor de texto dessas regras está num par aprovado (RED-10)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 9
+- [x] Testes `unit`: `.cartao-inovacao:hover` com borda `var(--brand-blue)` e título sublinhado; `.etapa--concluida` com `var(--success)`, `.etapa--atual`, `.etapa--futura` com `var(--borda-campo)`; `.linha-do-tempo time` com `var(--numeros)`; `.cartao-contato` com `border-top: 4px solid var(--brand-blue)` e `white-space: pre-line`; `.grupo legend` com `var(--fs-lg)`, `700`, `var(--brand-navy)`; `.grupo__numero` com fundo `var(--info-tint)`; toda cor de texto dessas regras está num par aprovado (RED-10)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 9
 
 **Tests**: unit
 **Gate**: build
