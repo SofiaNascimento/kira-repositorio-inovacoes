@@ -760,6 +760,114 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   font-size: var(--fs-base);
 }
 
+/* --- Componentes v2: lista e painel (§6 v2) ----------------------------- */
+
+/* Filtros ativos: uma etiqueta por filtro; remover e um link (sem JavaScript). */
+.filtros-ativos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-5);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.etiqueta-filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-radius: var(--raio-pilula);
+  background: var(--info-tint);
+  color: var(--brand-navy);
+  font-weight: 600;
+}
+/* O "×" ocupa a altura da etiqueta: o alvo de 44px fica dentro dela (§4 v2). */
+.etiqueta-filtro a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: var(--raio-pilula);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--transicao);
+}
+.etiqueta-filtro a:hover { background: var(--border); }
+.etiqueta-filtro a:focus-visible { outline: 2px solid var(--brand-blue); outline-offset: 2px; }
+
+/* Resumo de erros: topo do formulario, com a lista de campos (§6 v2). */
+.resumo-erros {
+  margin: 0 0 var(--space-5);
+  border: 1px solid var(--error);
+  border-left-width: 4px;
+  border-radius: var(--raio-cartao);
+  background: var(--error-tint);
+  color: var(--text);
+}
+.resumo-erros a { color: var(--text); }
+.resumo-erros ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
+
+/* Barra de acoes: fecha o formulario; nunca presa na tela (zoom de 200%). */
+.barra-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 0;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--raio-cartao) var(--raio-cartao);
+  background: var(--bg);
+  color: var(--text);
+}
+.barra-acoes__nota { margin: 0 0 0 auto; color: var(--text-muted); font-size: var(--fs-sm); }
+
+/* Cartao de indicador: rotulo, numero em destaque e a variacao. */
+.cartao-indicador {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--raio-cartao);
+  background: var(--surface);
+  box-shadow: var(--sombra);
+  color: var(--text);
+}
+.cartao-indicador h2 { margin: 0; color: var(--text); font-size: var(--fs-base); font-weight: 600; }
+.cartao-indicador__numero {
+  margin: var(--space-2) 0;
+  color: var(--brand-navy);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+/* A direcao vai no sinal e no texto; a cor so reforca (WCAG 1.4.1). */
+.variacao {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px var(--space-3);
+  border-radius: var(--raio-pilula);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.variacao--alta { color: var(--success); background: var(--success-tint); }
+.variacao--queda { color: var(--error); background: var(--error-tint); }
+.variacao--igual { color: var(--text-muted); background: var(--bg); }
+
+/* Carregando (§7): mesma geometria do conteudo, aria-hidden no HTML. */
+.esqueleto {
+  min-height: var(--space-6);
+  border-radius: var(--raio-cartao);
+  background: var(--trilho);
+  animation: esqueleto-pulso 1.2s ease-in-out infinite alternate;
+}
+@keyframes esqueleto-pulso {
+  from { opacity: 1; }
+  to { opacity: 0.55; }
+}
+
 /* --- Numeros que se comparam (§4 v2, RED-04) ---------------------------- */
 
 time,

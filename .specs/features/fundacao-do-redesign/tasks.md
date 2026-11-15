@@ -231,7 +231,7 @@ T16 → T17
 
 ---
 
-### T6: Componentes da lista e do painel, movimento e zoom
+### T6: Componentes da lista e do painel, movimento e zoom ✅
 
 **What**: `.filtros-ativos`/`.etiqueta-filtro`, `.resumo-erros`, `.barra-acoes`, `.cartao-indicador` com `.variacao--alta|--queda|--igual`, `.esqueleto` e `.decorativo`; o bloco de `prefers-reduced-motion` cobrindo tudo; as restrições de zoom da RED-12.
 **Where**: `templates/kira.css`
@@ -243,10 +243,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes `unit`: `.etiqueta-filtro` com `var(--info-tint)`, `var(--brand-navy)`, `var(--raio-pilula)`, e regras `:hover` (fundo `var(--border)`) e `:focus-visible` no link de remover; `.resumo-erros` com `var(--error-tint)` e borda `var(--error)`; `.barra-acoes` com fundo `var(--bg)` e sem `position: sticky|fixed`; `.cartao-indicador__numero` com `var(--brand-navy)` e `var(--numeros)`; `.variacao--alta` (`--success`/`--success-tint`), `--queda` (`--error`/`--error-tint`), `--igual` (`--text-muted`/`--bg`); `.esqueleto` com `animation`; o bloco de reduzir movimento contém `transition: none` e `animation: none` aplicados a `*` (ou lista que inclui `.esqueleto`); nenhum `position: fixed` na folha; nenhum `width`/`min-width` acima de `320px` fora de `max-width`
-- [ ] Pares da RED-10 desta task conferidos (variações, barras sobre `--trilho`)
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 12
+- [x] Testes `unit`: `.etiqueta-filtro` com `var(--info-tint)`, `var(--brand-navy)`, `var(--raio-pilula)`, e regras `:hover` (fundo `var(--border)`) e `:focus-visible` no link de remover; `.resumo-erros` com `var(--error-tint)` e borda `var(--error)`; `.barra-acoes` com fundo `var(--bg)` e sem `position: sticky|fixed`; `.cartao-indicador__numero` com `var(--brand-navy)` e `var(--numeros)`; `.variacao--alta` (`--success`/`--success-tint`), `--queda` (`--error`/`--error-tint`), `--igual` (`--text-muted`/`--bg`); `.esqueleto` com `animation`; o bloco de reduzir movimento contém `transition: none` e `animation: none` aplicados a `*` (ou lista que inclui `.esqueleto`); nenhum `position: fixed` na folha; nenhum `width`/`min-width` acima de `320px` fora de `max-width`
+- [x] Pares da RED-10 desta task conferidos (variações, barras sobre `--trilho`)
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 12
 
 **Tests**: unit
 **Gate**: build

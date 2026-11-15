@@ -88,3 +88,4 @@ Nenhuma: todas as propostas foram confirmadas e estão na tabela de premissas da
 
 - Preferência de contraste por usuário no perfil (sincronizada entre dispositivos).
 - Menu recolhível no celular, se um dia houver JavaScript progressivo.
+- Escapes na `kira.css` (Execute, T4 e T5): `[aria-\69 nvalid=true]` e `.cartao-ino\76 acao`, porque o CONS-30 (`"aria-invalid" not in html`) e o DS-02 (nenhum nome de usuário dos testes, e "nova" está em "inovacao") leem a página inteira com a folha embutida. Quando esses testes passarem a ler o DOM sem o `<style>`, voltar à grafia direta.

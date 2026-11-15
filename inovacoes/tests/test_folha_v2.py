@@ -493,3 +493,190 @@ def test_cores_do_componente_estao_em_pares_aprovados(componente):
                 assert _contraste(_token(cor), _token(fundo)) >= 3, (seletores, cor, fundo)
             conferidos += 1
     assert conferidos
+
+
+# --- RED-09 e RED-10: componentes da lista e do painel ---------------------------
+
+
+@pytest.mark.unit
+def test_etiqueta_de_filtro_e_uma_pilula_de_fundo_suave_e_texto_navy():
+    """RED-09: §6 v2, etiqueta de filtro ativo."""
+    corpo = _corpos(".etiqueta-filtro")
+    assert _tem(corpo, "background", "var(--info-tint)")
+    assert _tem(corpo, "color", "var(--brand-navy)")
+    assert _tem(corpo, "border-radius", "var(--raio-pilula)")
+
+
+@pytest.mark.unit
+def test_link_de_remover_a_etiqueta_tem_hover_e_foco():
+    """RED-09: §6 v2, hover do "×" com fundo --border; foco com anel no "×"."""
+    assert _tem(_corpos(".etiqueta-filtro a:hover"), "background", "var(--border)")
+    assert _tem(
+        _corpos(".etiqueta-filtro a:focus-visible"), "outline", "2px solid var(--brand-blue)"
+    )
+
+
+@pytest.mark.unit
+def test_icone_de_remover_em_hover_tem_contraste_de_componente():
+    """RED-10: o "×" (navy, herdado da etiqueta) sobre o fundo --border do hover, 3:1.
+
+    O par nao esta na tabela da §2 v2, mas a §6 v2 pede esse hover (spec-precision gap).
+    """
+    assert "color" not in re.findall(r"([\w-]+)\s*:", _corpos(".etiqueta-filtro a:hover"))
+    assert _contraste(_token("brand-navy"), _token("border")) >= 3
+
+
+@pytest.mark.unit
+def test_resumo_de_erros_tem_fundo_suave_e_borda_de_erro():
+    """RED-09: §6 v2."""
+    corpo = _corpos(".resumo-erros")
+    assert _tem(corpo, "background", "var(--error-tint)")
+    assert re.search(r"border(?:-color)?\s*:\s*[^;]*var\(--error\)", corpo)
+
+
+@pytest.mark.unit
+def test_barra_de_acoes_tem_o_fundo_da_pagina_e_nao_fica_presa_na_tela():
+    """RED-09: §6 v2, nao fica fixa (com zoom de 200% cobriria os campos)."""
+    assert _tem(_corpos(".barra-acoes"), "background", "var(--bg)")
+    assert not re.search(r"position\s*:\s*(?:sticky|fixed)", _corpos_de(".barra-acoes"))
+
+
+@pytest.mark.unit
+def test_numero_do_cartao_de_indicador_e_navy_com_algarismos_tabulares():
+    """RED-09: §6 v2; RED-04."""
+    corpo = _corpos(".cartao-indicador__numero")
+    assert _tem(corpo, "color", "var(--brand-navy)")
+    assert _tem(corpo, "font-variant-numeric", "var(--numeros)")
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("variacao", "texto", "fundo"),
+    [
+        ("alta", "success", "success-tint"),
+        ("queda", "error", "error-tint"),
+        ("igual", "text-muted", "bg"),
+    ],
+)
+def test_cada_variacao_tem_a_cor_e_o_fundo_da_spec(variacao, texto, fundo):
+    """RED-09: §6 v2, estados da variacao; RED-10: o par tem 4.5:1."""
+    corpo = _corpos(f".variacao--{variacao}")
+    assert _tem(corpo, "color", f"var(--{texto})")
+    assert _tem(corpo, "background", f"var(--{fundo})")
+    assert (texto, fundo) in PARES_APROVADOS_DE_TEXTO
+    assert _contraste(_token(texto), _token(fundo)) >= 4.5
+
+
+@pytest.mark.unit
+def test_variacao_e_uma_pilula():
+    """RED-09: §4 v2, --raio-pilula na variacao."""
+    assert _tem(_corpos(".variacao"), "border-radius", "var(--raio-pilula)")
+
+
+@pytest.mark.unit
+def test_esqueleto_de_carregamento_e_animado():
+    """RED-09: §6 v2 e §7, carregando."""
+    animacao = re.findall(r"animation(?:-name)?\s*:\s*([^;]+);", _corpos(".esqueleto"))
+    assert animacao
+    nome = animacao[-1].split()[0]
+    assert re.search(rf"@keyframes\s+{re.escape(nome)}\s*\{{", CSS)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("componente", "contexto"),
+    [
+        (".filtros-ativos", "bg"),
+        (".etiqueta-filtro", "bg"),
+        (".resumo-erros", "surface"),
+        (".barra-acoes", "bg"),
+        (".cartao-indicador", "surface"),
+        (".variacao", "surface"),
+    ],
+)
+def test_cores_da_lista_e_do_painel_estao_em_pares_aprovados(componente, contexto):
+    """RED-10: como nos componentes do detalhe; o contexto e o fundo em volta."""
+    conferidos = 0
+    for seletores, corpo in _regras_de(componente):
+        for cor, fundo, e_texto in _pares_da_regra(corpo, contexto):
+            aprovados = PARES_APROVADOS_DE_TEXTO
+            if not e_texto:
+                aprovados = PARES_APROVADOS_DE_COMPONENTE | PARES_APROVADOS_DE_TEXTO
+            assert (cor, fundo) in aprovados, (seletores, cor, fundo)
+            assert _contraste(_token(cor), _token(fundo)) >= (4.5 if e_texto else 3)
+            conferidos += 1
+    assert conferidos
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("barra", ["brand-navy", "brand-blue", "warning", "success"])
+def test_barra_sobre_o_trilho_tem_contraste_de_componente(barra):
+    """RED-10: §2 v2, barras de grafico e de status sobre --trilho, 3:1."""
+    assert (barra, "trilho") in PARES_APROVADOS_DE_COMPONENTE
+    assert _contraste(_token(barra), _token("trilho")) >= 3
+
+
+# --- RED-11: movimento ----------------------------------------------------------
+
+
+@pytest.mark.unit
+def test_reduzir_movimento_desliga_tudo_inclusive_o_esqueleto():
+    """RED-11: o bloco vale para todo elemento (`*`) e vence a regra do componente."""
+    bloco = re.search(r"@media \(prefers-reduced-motion: reduce\)\s*\{(.*?)\n\}", CSS, re.S)
+    assert bloco
+    regras = re.findall(r"([^{}]+)\{([^}]*)\}", bloco.group(1))
+    desliga = [
+        corpo
+        for lista, corpo in regras
+        if {"*", ".esqueleto"} & set(_seletores(lista))
+        and re.search(r"transition\s*:\s*none\s*!important", corpo)
+        and re.search(r"animation\s*:\s*none\s*!important", corpo)
+    ]
+    assert desliga
+
+
+# --- RED-12: zoom de 200% -------------------------------------------------------
+
+# WCAG 1.4.10 isenta o que precisa de duas dimensoes: a tabela rola dentro do proprio
+# quadro (DS-16), nao a pagina (spec-precision gap da RED-12, registrado no Execute).
+LARGURAS_ISENTAS = {".tabela table"}
+
+
+def _sem_media_de_max_width(css):
+    saida, i = [], 0
+    for achado in re.finditer(r"@media[^{]*max-width[^{]*\{", css):
+        if achado.start() < i:
+            continue
+        saida.append(css[i : achado.start()])
+        nivel, i = 1, achado.end()
+        while nivel:
+            nivel += {"{": 1, "}": -1}.get(css[i], 0)
+            i += 1
+    saida.append(css[i:])
+    return "".join(saida)
+
+
+def _em_px(numero, unidade):
+    return float(numero) * (16 if unidade in ("rem", "em") else 1)
+
+
+@pytest.mark.unit
+def test_folha_nao_fixa_nada_na_tela():
+    """RED-12."""
+    assert not re.search(r"position\s*:\s*fixed", _sem_comentarios(CSS))
+
+
+@pytest.mark.unit
+def test_nenhuma_largura_minima_passa_de_320px_fora_de_max_width():
+    """RED-12: WCAG 1.4.4 e 1.4.10, o layout reflui com zoom de 200%."""
+    css = _sem_media_de_max_width(_sem_comentarios(CSS))
+    largas = []
+    for lista, corpo in re.findall(r"([^{}@]+)\{([^}]*)\}", css):
+        if set(_seletores(lista)) <= LARGURAS_ISENTAS:
+            continue
+        for numero, unidade in re.findall(
+            r"(?<![\w-])(?:min-)?width\s*:\s*(\d*\.?\d+)(px|rem|em)\b", corpo
+        ):
+            if _em_px(numero, unidade) > 320:
+                largas.append((lista.strip(), numero + unidade))
+    assert largas == []
