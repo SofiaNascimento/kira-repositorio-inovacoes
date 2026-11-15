@@ -283,7 +283,7 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 | RED-32 | P1: Cabeçalho de página | Design | Pending |
 | RED-33 | P1: Páginas de apoio | Execute | Implementing |
 | RED-34 | P1: Páginas de apoio | Execute | Implementing |
-| RED-35 | P1: Páginas de apoio | Design | Pending |
+| RED-35 | P1: Páginas de apoio | Execute | Implementing |
 | RED-36 | P1: Páginas de apoio | Execute | Implementing |
 | RED-37 | Edge | Execute | Implementing |
 | RED-38 | Edge | Execute | Implementing |

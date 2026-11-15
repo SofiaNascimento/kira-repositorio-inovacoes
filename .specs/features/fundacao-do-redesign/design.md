@@ -285,6 +285,8 @@ T-A a T-D já autorizados na spec. O design acrescenta dois, **a autorizar**:
 - **T15:** o link "Acessibilidade" fica na `div.barra-acessibilidade__acoes`, antes do botão de contraste, em toda página (inclusive a 500, que não tem o botão). A tabela de atalhos tem as colunas Atalho, Leva a, "Chrome e Edge no Windows", "Firefox" e "macOS"; o aviso é só o genérico ("Se o leitor de tela ou o sistema operacional já usa a mesma combinação, o atalho dele prevalece"), sem afirmar nada sobre um leitor específico.
 - **T15, troca do teste do lote 2 (Deferred Ideas da T10):** o caso "rota fora do menu" de `test_menu_fora_da_secao_nao_marca_nenhum_item` (que renderizava o base com `/entrar/`) saiu e virou `test_acessibilidade_autenticada_tem_o_menu_sem_pagina_atual` em `nucleo/tests/test_paginas_apoio.py`, pelo `client`, com as mesmas três asserções. O caso sem rota resolvida segue renderizando o base (`test_menu_sem_rota_resolvida_nao_marca_nenhum_item`): a 404 de URL inexistente não usa o base, então o `client` não chega a ele.
 
+- **T16:** o texto da Ajuda descreve só o que as telas fazem hoje (busca em título, problema e solução; filtros de categoria, unidade e status; avanço de um estágio por vez, só pelo autor ou por um administrador). "Cada h2 seguido de texto exibido" foi testado como ao menos cinco palavras exibidas por seção (spec-precision gap: a RED-35 não fixa o texto).
+
 
 ## Tech Decisions (feature-local)
 

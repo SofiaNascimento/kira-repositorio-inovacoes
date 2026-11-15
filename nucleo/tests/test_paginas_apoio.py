@@ -194,3 +194,51 @@ def test_barra_de_toda_pagina_leva_a_acessibilidade(paginas):  # noqa: F811
         assert re.findall(r'<a href="/acessibilidade/">([^<]*)</a>', depois_dos_atalhos) == [
             "Acessibilidade"
         ], nome
+
+
+# --- RED-30, RED-35, RED-36: Ajuda ---------------------------------------------------
+
+SECOES_AJUDA = [
+    "Buscar uma inovação",
+    "Cadastrar uma inovação",
+    "Avançar o status",
+    "Precisa de ajuda?",
+]
+
+
+@AUTENTICADO
+def test_ajuda_responde_com_a_trilha_e_o_h1(client, autor, autenticado):
+    """RED-35, RED-30: publica, 200, trilha "Ajuda" e h1 "Ajuda"."""
+    html = _pagina(client, autor, autenticado, "/ajuda/")
+    assert _trilha(html) == [("Ajuda", None, "page")]
+    assert len(re.findall(r"<h1\b", html)) == 1
+    assert CABECALHO_DE_PAGINA.search(_main(exibido(html, rigoroso=True))).group(1) == "Ajuda"
+    assert "<title>Ajuda · Repositório de Inovações</title>" in html
+
+
+@AUTENTICADO
+def test_ajuda_tem_as_quatro_secoes_em_ordem(client, autor, autenticado):
+    """RED-35: os h2 da Ajuda, nessa ordem, e nenhum outro."""
+    secoes = _secoes(_pagina(client, autor, autenticado, "/ajuda/"))
+    assert [titulo for titulo, _ in secoes] == SECOES_AJUDA
+
+
+@AUTENTICADO
+@pytest.mark.parametrize("secao", SECOES_AJUDA)
+def test_cada_secao_da_ajuda_e_seguida_de_texto_exibido(client, autor, autenticado, secao):
+    """RED-35: cada h2 com uma explicacao que aparece na tela."""
+    secoes = dict(_secoes(_pagina(client, autor, autenticado, "/ajuda/")))
+    assert len(secoes[secao].split()) >= 5, secao
+
+
+def test_ajuda_anonima_tem_so_a_marca_no_cabecalho(client, autor):
+    """RED-36: sem sessao, nem menu nem area do usuario."""
+    _cabecalho_so_com_a_marca(_pagina(client, autor, False, "/ajuda/"))
+
+
+def test_ajuda_autenticada_tem_o_menu_sem_pagina_atual(client, autor):
+    """RED-17, RED-18: fora da secao do menu, nenhum aria-current."""
+    html = _pagina(client, autor, True, "/ajuda/")
+    itens = _menu_da_tela(html)
+    assert [(href, texto) for href, _, texto in itens] == MENU
+    assert [corrente for _, corrente, _ in itens] == [None, None, None]

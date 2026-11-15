@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% comment %}
+  Pagina "Ajuda" (RED-30, RED-35, RED-36). Publica (AD-006): o rodape aponta para ela,
+  e quem nao consegue entrar tambem precisa saber a quem recorrer.
+{% endcomment %}
+
+{% block title %}Ajuda{% endblock %}
+
+{% block trilha %}{% include "paginas/trilha.html" with atual="Ajuda" %}{% endblock %}
+
+{% block titulo %}Ajuda{% endblock %}
+
+{% block conteudo %}
+  <section aria-labelledby="buscar">
+    <h2 id="buscar">Buscar uma inovação</h2>
+    <p>Abra "Inovações" no menu. Digite no campo de busca uma palavra do título, do problema ou da solução e aperte "Buscar".</p>
+    <p>Para ver só parte da lista, escolha uma categoria, uma unidade ou um status nos filtros.</p>
+  </section>
+
+  <section aria-labelledby="cadastrar">
+    <h2 id="cadastrar">Cadastrar uma inovação</h2>
+    <p>Abra "Cadastrar inovação" no menu, preencha os campos e salve. Cada campo traz um exemplo do que escrever.</p>
+  </section>
+
+  <section aria-labelledby="avancar">
+    <h2 id="avancar">Avançar o status</h2>
+    <p>Na página da inovação, use "Avançar para" e confirme. O status avança um estágio por vez e não volta ao anterior.</p>
+    <p>Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>
+  </section>
+
+  <section aria-labelledby="contato">
+    <h2 id="contato">Precisa de ajuda?</h2>
+    <p>Fale com o administrador do sistema. Diga em que página estava e o que tentou fazer.</p>
+  </section>
+{% endblock %}

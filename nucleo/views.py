@@ -49,3 +49,9 @@ def definir_contraste(request):
 @method_decorator(login_not_required, name="dispatch")
 class AcessibilidadeView(TemplateView):
     template_name = "paginas/acessibilidade.html"
+
+
+# AD-006: publica; o rodape aponta para ela (RED-35, RED-36).
+@method_decorator(login_not_required, name="dispatch")
+class AjudaView(TemplateView):
+    template_name = "paginas/ajuda.html"

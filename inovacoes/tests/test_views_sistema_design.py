@@ -73,9 +73,12 @@ def paginas(client, autor, terceiro, criar_inovacao):
     disponivel = criar_inovacao(titulo="Inovacao Disponivel", status="DISPONIVEL_PARA_REPLICACAO")
     html = {"login": client.get("/entrar/").content.decode()}
     # T-D (fundacao-do-redesign, RED-33, RED-36): a pagina publica, anonima e autenticada.
+    # T-D (RED-35): e a pagina "Ajuda", tambem publica.
     html["acessibilidade_anonimo"] = client.get("/acessibilidade/").content.decode()
+    html["ajuda_anonimo"] = client.get("/ajuda/").content.decode()
     client.force_login(autor)
     html["acessibilidade"] = client.get("/acessibilidade/").content.decode()
+    html["ajuda"] = client.get("/ajuda/").content.decode()
     for nome, url in {
         "lista": "/inovacoes/",
         "nova": "/inovacoes/nova/",
@@ -413,8 +416,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     # STAT-06, STAT-34: a F5 acrescenta a tela "Avançar status".
     # REAP-03: a F6 acrescenta a tela "Sinalizar reaproveitamento".
     # REAP-29: e a tela "Painel de indicadores".
-    # T-C (fundacao-do-redesign, RED-33): e a pagina "Acessibilidade".
-    assert len(telas) == 12
+    # T-C (fundacao-do-redesign, RED-33, RED-35): e as paginas "Acessibilidade" e "Ajuda".
+    assert len(telas) == 13
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

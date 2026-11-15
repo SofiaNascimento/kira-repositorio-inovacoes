@@ -474,7 +474,7 @@ T16 → T17
 
 ---
 
-### T16: Página "Ajuda"
+### T16: Página "Ajuda" ✅
 
 **What**: `/ajuda/` (`nucleo:ajuda`, `TemplateView` com `login_not_required`), template `templates/paginas/ajuda.html` com trilha "Ajuda", h1 e as quatro seções. Ajusta T-B, T-C (13) e T-D.
 **Where**: `templates/paginas/ajuda.html` (+ `nucleo/views.py`, `nucleo/urls.py`, T-B, T-C, T-D)
@@ -486,10 +486,10 @@ T16 → T17
 
 **Done when**:
 
-- [ ] Testes e2e em `test_paginas_apoio.py`, anônimo e autenticado: 200; trilha "Ajuda"; h1 "Ajuda"; h2 "Buscar uma inovação", "Cadastrar uma inovação", "Avançar o status", "Precisa de ajuda?", em ordem, cada um seguido de texto exibido; anônimo sem menu nem usuário
-- [ ] T-B (`/ajuda/`), T-C (13 telas), T-D (fixture com "ajuda")
-- [ ] Gate check passa: build
-- [ ] Test count: ≥ anterior + 8
+- [x] Testes e2e em `test_paginas_apoio.py`, anônimo e autenticado: 200; trilha "Ajuda"; h1 "Ajuda"; h2 "Buscar uma inovação", "Cadastrar uma inovação", "Avançar o status", "Precisa de ajuda?", em ordem, cada um seguido de texto exibido; anônimo sem menu nem usuário
+- [x] T-B (`/ajuda/`), T-C (13 telas), T-D (fixture com "ajuda")
+- [x] Gate check passa: build
+- [x] Test count: ≥ anterior + 8
 
 **Tests**: e2e
 **Gate**: build

@@ -14,6 +14,8 @@ urlpatterns = [
     ),
     # RED-33: pagina publica de acessibilidade (eMAG).
     path("acessibilidade/", views.AcessibilidadeView.as_view(), name="acessibilidade"),
+    # RED-35: pagina publica de ajuda.
+    path("ajuda/", views.AjudaView.as_view(), name="ajuda"),
     # RED-24, RED-25: alto contraste por POST, sem JavaScript (AD-014).
     path("acessibilidade/contraste/", views.definir_contraste, name="contraste"),
 ]
