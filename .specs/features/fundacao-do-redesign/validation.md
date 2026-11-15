@@ -6,9 +6,15 @@
 **Diff range**: `a3799f7..e1f255d` em `main` (iteração 1: `a3799f7..23b7565`; correções: T18 `64b9495`, T19 `878db23`, T20 `e1f255d`)
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ (iteração 2)
+**Verdict**: FAIL ❌ (iteração 2), **com risco residual de teste aceito pelo usuário em 2026-11-15** — ver [Decisão do usuário](#decisão-do-usuário-2026-11-15). O veredito do Verifier não foi reescrito; a feature foi fechada por decisão, não por PASS.
 
 Os 5 sobreviventes da iteração 1 morrem, as 42 ACs têm evidência e o gate passa (1326). O FAIL vem de 16 sobreviventes em 31 mutantes novos, todos **lacunas de teste**: nenhum defeito de produção foi achado (a folha e o HTML atuais cumprem RED-16, RED-22 e a regra de teste). Detalhes na seção "Iteração 2" logo abaixo; o relatório da iteração 1 segue intacto depois dela.
+
+---
+
+## Decisão do usuário (2026-11-15)
+
+Com o limite de 1 iteração de correção esgotado e nenhum defeito de produção, o usuário escolheu **aceitar o risco residual e fechar**. Riscos aceitos (todos lacuna de teste): gaps 1 e 2 da iteração 2 (RED-22: menu encolhido por largura/`font-size` quase zero, N22/N30; altura de botão por seletor genérico ou `max-height`, N02–N04); gap 3 (escapes CSS na guarda de esconder, N17/N18); gap 4 (outras formas de esconder: N07–N11, N19–N21); gap 5 (RED-16: oráculo do ícone é o próprio arquivo, N27). RED-16 e RED-22 ficam `Implementing (risco residual aceito)` na spec. Ideia de correção em Deferred Ideas do `context.md`.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-11-15
 **Spec:** `.specs/features/fundacao-do-redesign/spec.md`
-**Status:** Ready for design
+**Status:** Concluída (2026-11-15), com risco residual de teste aceito
 
 ---
 
@@ -91,3 +91,4 @@ Nenhuma: todas as propostas foram confirmadas e estão na tabela de premissas da
 - Escapes na `kira.css` (Execute, T4 e T5): `[aria-\69 nvalid=true]` e `.cartao-ino\76 acao`, porque o CONS-30 (`"aria-invalid" not in html`) e o DS-02 (nenhum nome de usuário dos testes, e "nova" está em "inovacao") leem a página inteira com a folha embutida. Quando esses testes passarem a ler o DOM sem o `<style>`, voltar à grafia direta.
 - Separador da trilha escapado na `kira.css` (Execute, T12): `content: "\203A" / ""`, porque a folha embutida poria o "›" na página inteira. Se a folha sair do `<style>` (supersedendo a AD-010), voltar ao literal.
 - Tela autenticada fora da seção do menu (Execute, T10): quando existir (ex.: Acessibilidade e Ajuda na T15/T16), trocar o teste de "nenhum `aria-current`" que renderiza o `base.html` direto por um pelo `client`. **Feito na T15** (ver Ajustes do Execute, Lote 3).
+- Fechar o risco residual da R1 (`validation.md`, iteração 2): guarda de esconder sobre a folha com os escapes CSS decodificados e por efeito (quase-zero, cor igual ao fundo, fora da tela, `clip-path` parcial, `content-visibility`), altura de botão conferida pelos elementos reais da página (não pelo texto do seletor) e `max-height`, e oráculo dos ícones pelo nome do ícone do Lucide (não pelo arquivo copiado). Melhor ainda: um teste de navegador real (Playwright) que mede o menu e os botões renderizados.

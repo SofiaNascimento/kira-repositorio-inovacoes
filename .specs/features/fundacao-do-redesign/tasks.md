@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/fundacao-do-redesign/spec.md`
 **Design**: `.specs/features/fundacao-do-redesign/design.md` (aprovado em 2026-11-15)
-**Status**: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) ✅, 1297 testes. Verifier it. 1 FAIL (38/42; M27, M28, M41, M42, M43) → Fase 4 (T18–T20) ✅, 1326 testes. Verifier it. 2 (última; limite de 1 iteração por decisão do usuário).
+**Status**: Done (2026-11-15, risco residual de teste aceito) — antes: In Progress — aprovadas em 2026-11-15; Execute por 3 sub-agentes (um por fase). Lote 1 (T1–T6) ✅, 1062 testes; lote 2 (T7–T12) ✅, 1147 testes; lote 3 (T13–T17) ✅, 1297 testes. Verifier it. 1 FAIL (38/42; M27, M28, M41, M42, M43) → Fase 4 (T18–T20) ✅, 1326 testes. Verifier it. 2 (última; limite de 1 iteração por decisão do usuário): FAIL só por lacuna de teste (16/31 mutantes novos); o usuário aceitou o risco e fechou.
 
 **Stack fixado**: Django 5.2.17 · PostgreSQL 16 na porta 5433 (AD-003) · pytest + pytest-django · Ruff.
 Decisões que valem em toda task: AD-006, AD-010, AD-013, AD-014, AD-015.

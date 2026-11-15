@@ -1,6 +1,6 @@
 # Fundação do Redesign (R1) — Specification
 
-**Status:** Aprovada em 2026-11-15 (Discuss fechado; testes antigos T-A a T-D autorizados). Ajustada pelo Design em 2026-11-15 (RED-23, 24, 25, 29, 30, 31, 37; T-E e T-F autorizados com o design).
+**Status:** Concluída em 2026-11-15 com risco residual de teste aceito (RED-16, RED-22). Aprovada em 2026-11-15 (Discuss fechado; testes antigos T-A a T-D autorizados). Ajustada pelo Design em 2026-11-15 (RED-23, 24, 25, 29, 30, 31, 37; T-E e T-F autorizados com o design).
 
 Fonte do visual: `docs/design-spec.md` **v2** (§1–§9). Passe de design cross-cutting no molde da
 `sistema-de-design`: muda a casca comum (tokens, fonte, barra de acessibilidade, cabeçalho do
@@ -46,10 +46,10 @@ erros, cartão de indicador). Se cada tela do redesign fizer a sua parte da casc
 
 ## Goals
 
-- [ ] Toda tela com a casca da §5 v2: barra de acessibilidade, faixa da marca, cabeçalho com menu de ícones e página atual, cabeçalho de página com trilha, rodapé com links de apoio.
-- [ ] Recursos do eMAG funcionando sem JavaScript: atalhos 1/2/3, página "Acessibilidade", alto contraste por formulário POST, persistente entre páginas.
-- [ ] `kira.css` com os tokens, a fonte Inter servida pelo projeto e os componentes da §6 v2 com todos os estados, nos pares de cor do DS-08 (inclusive no alto contraste).
-- [ ] Só os quatro testes antigos listados acima mudam; a suíte e o build gate da Vercel (`config/tests`) passam.
+- [x] Toda tela com a casca da §5 v2: barra de acessibilidade, faixa da marca, cabeçalho com menu de ícones e página atual, cabeçalho de página com trilha, rodapé com links de apoio.
+- [x] Recursos do eMAG funcionando sem JavaScript: atalhos 1/2/3, página "Acessibilidade", alto contraste por formulário POST, persistente entre páginas.
+- [x] `kira.css` com os tokens, a fonte Inter servida pelo projeto e os componentes da §6 v2 com todos os estados, nos pares de cor do DS-08 (inclusive no alto contraste).
+- [x] Só os testes antigos listados acima (T-A a T-F, com os dois acrescentados no Design) mudam; a suíte e o build gate da Vercel (`config/tests`) passam.
 
 ## Code Reuse Analysis
 
@@ -249,50 +249,50 @@ acessibilidade, os atalhos e a quem recorrer (eMAG, H10).
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| RED-01 | P1: Folha | Execute | Implementing |
-| RED-02 | P1: Folha | Execute | Implementing |
-| RED-03 | P1: Folha | Execute | Implementing |
-| RED-04 | P1: Folha | Execute | Implementing |
-| RED-05 | P1: Folha | Execute | Implementing |
-| RED-06 | P1: Folha | Execute | Implementing |
-| RED-07 | P1: Folha | Execute | Implementing |
-| RED-08 | P1: Folha | Execute | Implementing |
-| RED-09 | P1: Folha | Execute | Implementing |
-| RED-10 | P1: Folha | Execute | Implementing |
-| RED-11 | P1: Folha | Execute | Implementing |
-| RED-12 | P1: Folha | Execute | Implementing |
-| RED-13 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-14 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-15 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-16 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-17 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-18 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-19 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-20 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-21 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-22 | P1: Barra e cabeçalho | Execute | Implementing |
-| RED-23 | P1: Alto contraste | Execute | Implementing |
-| RED-24 | P1: Alto contraste | Execute | Implementing |
-| RED-25 | P1: Alto contraste | Execute | Implementing |
-| RED-26 | P1: Alto contraste | Execute | Implementing |
-| RED-27 | P1: Alto contraste | Execute | Implementing |
-| RED-28 | P1: Alto contraste | Execute | Implementing |
-| RED-29 | P1: Cabeçalho de página | Execute | Implementing |
-| RED-30 | P1: Cabeçalho de página | Execute | Implementing |
-| RED-31 | P1: Cabeçalho de página | Execute | Implementing |
-| RED-32 | P1: Cabeçalho de página | Execute | Implementing |
-| RED-33 | P1: Páginas de apoio | Execute | Implementing |
-| RED-34 | P1: Páginas de apoio | Execute | Implementing |
-| RED-35 | P1: Páginas de apoio | Execute | Implementing |
-| RED-36 | P1: Páginas de apoio | Execute | Implementing |
-| RED-37 | Edge | Execute | Implementing |
-| RED-38 | Edge | Execute | Implementing |
-| RED-39 | Edge | Execute | Implementing |
-| RED-40 | Edge | Execute | Implementing |
-| RED-41 | Edge | Execute | Implementing |
-| RED-42 | Edge | Execute | Implementing |
+| RED-01 | P1: Folha | Execute | Verified |
+| RED-02 | P1: Folha | Execute | Verified |
+| RED-03 | P1: Folha | Execute | Verified |
+| RED-04 | P1: Folha | Execute | Verified |
+| RED-05 | P1: Folha | Execute | Verified |
+| RED-06 | P1: Folha | Execute | Verified |
+| RED-07 | P1: Folha | Execute | Verified |
+| RED-08 | P1: Folha | Execute | Verified |
+| RED-09 | P1: Folha | Execute | Verified |
+| RED-10 | P1: Folha | Execute | Verified |
+| RED-11 | P1: Folha | Execute | Verified |
+| RED-12 | P1: Folha | Execute | Verified |
+| RED-13 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-14 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-15 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-16 | P1: Barra e cabeçalho | Execute | Implementing (risco residual aceito) |
+| RED-17 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-18 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-19 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-20 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-21 | P1: Barra e cabeçalho | Execute | Verified |
+| RED-22 | P1: Barra e cabeçalho | Execute | Implementing (risco residual aceito) |
+| RED-23 | P1: Alto contraste | Execute | Verified |
+| RED-24 | P1: Alto contraste | Execute | Verified |
+| RED-25 | P1: Alto contraste | Execute | Verified |
+| RED-26 | P1: Alto contraste | Execute | Verified |
+| RED-27 | P1: Alto contraste | Execute | Verified |
+| RED-28 | P1: Alto contraste | Execute | Verified |
+| RED-29 | P1: Cabeçalho de página | Execute | Verified |
+| RED-30 | P1: Cabeçalho de página | Execute | Verified |
+| RED-31 | P1: Cabeçalho de página | Execute | Verified |
+| RED-32 | P1: Cabeçalho de página | Execute | Verified |
+| RED-33 | P1: Páginas de apoio | Execute | Verified |
+| RED-34 | P1: Páginas de apoio | Execute | Verified |
+| RED-35 | P1: Páginas de apoio | Execute | Verified |
+| RED-36 | P1: Páginas de apoio | Execute | Verified |
+| RED-37 | Edge | Execute | Verified |
+| RED-38 | Edge | Execute | Verified |
+| RED-39 | Edge | Execute | Verified |
+| RED-40 | Edge | Execute | Verified |
+| RED-41 | Edge | Execute | Verified |
+| RED-42 | Edge | Execute | Verified |
 
-**Coverage:** 42 total, 0 mapped to tasks, 42 unmapped (Tasks ainda não feito).
+**Coverage:** 42 total, 42 mapped to tasks (T1–T20), 0 unmapped. 40 `Verified`; RED-16 e RED-22 com risco residual de teste aceito pelo usuário em 2026-11-15 (`validation.md`, Decisão do usuário). A regra de teste da feature (exibição) tem o mesmo risco.
 
 **Regras de teste para a feature toda:** toda AC de "está exibido" usa `exibido()` de
 `inovacoes/tests/visibilidade.py` sobre a página inteira (L-028, L-030) e já cobre `disabled`,
@@ -303,8 +303,8 @@ afirmada na camada que descreve (L-005): o que é de tela, na tela; o que é de 
 
 ## Success Criteria
 
-- [ ] Só os testes T-A a T-D mudaram, e a suíte inteira passa (hoje 943).
-- [ ] `config/tests` (build gate da Vercel) passa e o `collectstatic` copia a fonte.
-- [ ] Nenhuma requisição a outro domínio em nenhuma tela.
+- [x] Só os testes T-A a T-F mudaram, e a suíte inteira passa (943 → 1326).
+- [x] `config/tests` (build gate da Vercel) passa e o `collectstatic` copia a fonte.
+- [x] Nenhuma requisição a outro domínio em nenhuma tela (RED-08, por teste; conferência no navegador pendente).
 - [ ] Conferência no navegador: atalhos, menu atual, alto contraste do login ao painel, zoom de 200% sem rolagem horizontal.
-- [ ] O Verifier dá PASS em `validation.md`.
+- [ ] O Verifier dá PASS em `validation.md` — não: FAIL na iteração 2 só por lacuna de teste, risco aceito pelo usuário.

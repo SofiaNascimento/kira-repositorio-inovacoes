@@ -124,20 +124,16 @@
 
 ## Handoff
 
-### Atual (2026-11-15) — fundacao-do-redesign (R1)
+### Atual (2026-11-15) — fundacao-do-redesign (R1) concluída com risco aceito
 
-- **Feature**: fundacao-do-redesign — `.specs/features/fundacao-do-redesign/`. Passe cross-cutting da `design-spec.md` v2.
-- **Phase**: Specify ✅ aprovado (42 ACs, RED-01 a RED-42); Discuss fechado (`context.md`): contraste por cookie, Lucide (ISC), páginas públicas, fonte com URL literal, menu sem `<details>`, página `/ajuda/`. Testes antigos T-A a T-D autorizados.
-- **Design**: ✅ aprovado em 2026-11-15 (AD-013, AD-014, AD-015; T-E e T-F autorizados).
-- **Tasks**: ✅ aprovadas (T1–T17). Execute por 3 sub-agentes, um por fase.
-- **Execute**: lote 1 ✅ (T1 `083f19d` … T6 `f7786ce`, 1062 testes); desvios em `design.md` (Ajustes do Execute).
-- **Execute**: lote 2 ✅ (T7 `2fb2aea` … T12 `7bd971b`, 1147 testes; T-A, T-C, T-E, T-F feitos).
-- **Execute**: lote 3 ✅ (T13 `417b9a1` … T17 `23b7565`, 1297 testes; T-B, T-C, T-D feitos).
-- **Verifier it. 1**: FAIL (`validation.md`, `3eb38bf`): 38/42 ACs, sensor 45/50. Gaps: Sair com 36px (RED-22; usuário decidiu subir para 44px), `display:none` em seletor composto e `font-size:0` no menu escapam do `exibido` (M27, M28, M41), ícone específico não afirmado (M43). L-044 promovida; candidatas L-050 a L-053.
-- **Limite do loop (decisão do usuário, 2026-11-15)**: só 1 iteração de correção→re-verificação nesta feature (não 3). A Fase 4 é essa iteração; a it. 2 do Verifier é a última; se ainda reprovar, escalar ao usuário sem nova rodada.
-- **Fase 4** ✅: T18 `64b9495` (Sair 44px), T19 `878db23` (guarda de declarações que escondem), T20 `e1f255d` (ícone específico); 1326 testes; mutantes M27, M28, M41, M42, M43 provados mortos pelo autor.
-- **Next step**: Verifier it. 2 (última), diff `a3799f7..e1f255d`.
-- **In-progress**: nenhum. **Blockers**: nenhum.
+- **Feature**: fundacao-do-redesign (R1) — `.specs/features/fundacao-do-redesign/`. **Concluída** em 2026-11-15: casca da `design-spec.md` v2 (fonte Inter local, barra do eMAG com atalhos 1/2/3, menu com ícones e página atual, cabeçalho de página e trilha, rodapé com Acessibilidade e Ajuda, alto contraste por cookie sem JS) e os componentes da §6 v2 na `kira.css`.
+- **Phases**: Specify ✅ · Design ✅ (AD-013, AD-014, AD-015) · Tasks ✅ (T1–T20) · Execute ✅ por 3 sub-agentes + Fase 4 de correção · Verifier it. 1 FAIL (38/42) → T18–T20 → it. 2 FAIL só por lacuna de teste (42/42 ACs com evidência; 16/31 mutantes novos sobrevivem). **Limite de 1 iteração** (decisão do usuário); **o usuário aceitou o risco residual** e fechou. RED-16 e RED-22 `Implementing (risco residual aceito)`; as outras 40 `Verified`. `validate_state.py` sai com 1 de propósito.
+- **Commits**: `083f19d` … `23b7565` (T1–T17), `64b9495`, `878db23`, `e1f255d` (T18–T20); validação `3eb38bf`, `30b554f`. **1326 testes**, build gate verde. Testes antigos alterados só T-A a T-F (autorizados).
+- **Produção do Sair**: 44px (decisão do usuário).
+- **Lições**: L-044 promovida a confirmed; candidatas novas L-050 a L-057. `.specs/LESSONS.md` e `lessons.json` seguem com mudanças locais fora dos commits (já havia mudanças antes da R1).
+- **Pendente**: conferência no navegador (atalhos por navegador/leitor de tela, menu atual, alto contraste do login ao painel, zoom de 200%); correção do risco em Deferred Ideas do `context.md`.
+- **Next step**: próxima feature do redesign (miolo das telas do §10), que consome a R1.
+- **Branch**: `main`, só local; push pelo usuário. **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-15) — deploy-producao concluída (Neon)
 
