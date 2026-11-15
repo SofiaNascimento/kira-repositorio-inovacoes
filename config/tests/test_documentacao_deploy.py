@@ -84,19 +84,35 @@ def test_readme_tem_o_passo_a_passo_de_deploy(termo):
     assert termo in _secao_de_deploy()
 
 
-@pytest.mark.parametrize(
-    "comando", ["python manage.py migrate", "python manage.py createsuperuser"]
-)
-def test_readme_roda_os_comandos_na_conexao_direta_do_neon(comando):
-    """DEPL-17: cada linha da secao de deploy que roda o comando usa a URL direta do Neon."""
-    linhas = [linha for linha in _secao_de_deploy().splitlines() if comando in linha]
-    assert linhas
-    for linha in linhas:
-        url = re.search(r"DATABASE_URL='(postgresql://[^']*)'", linha)
-        assert url, linha
-        host = urlsplit(url.group(1).replace("<", "").replace(">", "")).hostname
+CARREGA_NEON = """export DATABASE_URL="$(sed -n 's/^DATABASE_URL=//p' ~/.kira-neon.env)\""""
+
+
+def test_readme_roda_os_comandos_na_conexao_direta_do_neon():
+    """DEPL-17: os comandos de banco leem a URL direta do ~/.kira-neon.env, entre export e unset."""
+    linhas = [linha.strip() for linha in _secao_de_deploy().splitlines()]
+    comandos = [
+        i
+        for i, linha in enumerate(linhas)
+        if "python manage.py migrate" in linha or "python manage.py createsuperuser" in linha
+    ]
+    assert comandos
+    cargas = [i for i, linha in enumerate(linhas) if linha == CARREGA_NEON]
+    assert cargas and cargas[0] < comandos[0]
+    assert "unset DATABASE_URL" in linhas[comandos[-1] + 1 :]
+    for i in comandos:
+        assert "postgresql://" not in linhas[i], linhas[i]
+
+
+def test_readme_mostra_o_arquivo_do_neon_com_a_conexao_direta():
+    """DEPL-17: o exemplo do ~/.kira-neon.env e uma URL direta do Neon, sem -pooler."""
+    secao = _secao_de_deploy()
+    exemplos = re.findall(r"`DATABASE_URL=(postgresql://[^`]*)`", secao)
+    assert exemplos
+    for url in exemplos:
+        host = urlsplit(url.replace("<", "").replace(">", "")).hostname
         assert host.endswith(".neon.tech"), host
         assert "-pooler" not in host, host
+    assert "~/.kira-neon.env" in secao
 
 
 @pytest.mark.parametrize("termo", ["neon.tech", "aws-sa-east-1", "-pooler"])

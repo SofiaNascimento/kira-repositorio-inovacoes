@@ -216,7 +216,7 @@ em que ordem fazer o deploy, sem ler o código.
 **Acceptance Criteria**:
 
 1. DEPL-16: The system SHALL list in `.env.example` every environment variable name that `config/settings.py` reads, including `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`.
-2. DEPL-17: The README SHALL contain a deploy section that names `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`, and every line of that deploy section that runs `python manage.py migrate` or `python manage.py createsuperuser` SHALL set `DATABASE_URL` to a single-quoted `postgresql://` URL whose host ends in `.neon.tech` and does not contain `-pooler` (the Neon direct connection). *(Emenda de 2026-11-09: antes, os comandos apontavam para o Supabase.)*
+2. DEPL-17: The README SHALL contain a deploy section that names `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, `DJANGO_ALLOWED_HOSTS`, `DJANGO_CSRF_TRUSTED_ORIGINS` and `DATABASE_URL`, and, in that deploy section, the lines that run `python manage.py migrate` or `python manage.py createsuperuser` SHALL be preceded by a line that exports `DATABASE_URL` read from `~/.kira-neon.env` and followed by `unset DATABASE_URL`, SHALL NOT contain a `postgresql://` URL, and every example of the file's `DATABASE_URL=` line SHALL be a `postgresql://` URL whose host ends in `.neon.tech` and does not contain `-pooler` (the Neon direct connection). *(Emenda de 2026-11-09: antes, os comandos apontavam para o Supabase. Emenda de 2026-11-15: a URL sai da linha de comando e passa a vir do `~/.kira-neon.env`, como no roteiro, a pedido do usuário.)*
 
 **Independent Test**: comparar os nomes lidos por `os.environ` em `config/settings.py` com as
 chaves do `.env.example`; procurar os nomes e comandos na seção de deploy do README.
@@ -288,7 +288,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-14 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-15 | P1: Runtime da Vercel | Execute | Verified |
 | DEPL-16 | P2: Documentação | Execute | Verified |
-| DEPL-17 | P2: Documentação | Execute | Verified (emendada em 2026-11-09) |
+| DEPL-17 | P2: Documentação | Execute | Implementing (emendada em 2026-11-15) |
 | DEPL-18 | P1: Deploy pela CLI | Execute | Implementing (risco residual aceito) |
 | DEPL-19 | P1: Deploy pela CLI | Execute | Verified |
 | DEPL-20 | P1: Runtime da Vercel | Execute | Verified |
@@ -296,7 +296,7 @@ Neon; o projeto na Vercel já existe e só tem a `DATABASE_URL` substituída.)*
 | DEPL-22 | P2: Documentação só do Neon | Execute | Verified |
 | DEPL-23 | P2: Documentação só do Neon | Execute | Verified |
 
-**Coverage (emenda de 2026-11-09):** 23 total; 22 Verified (DEPL-06, DEPL-17 e DEPL-21 a DEPL-23 no PASS da emenda Neon, `validation.md`); DEPL-18 segue com o risco residual aceito.
+**Coverage (emenda de 2026-11-15):** 23 total; 21 Verified e DEPL-17 Implementing (emendada em 2026-11-15, verificação pelo autor; abaixo). Até 2026-11-09: 22 Verified (DEPL-06, DEPL-17 e DEPL-21 a DEPL-23 no PASS da emenda Neon, `validation.md`); DEPL-18 segue com o risco residual aceito.
 
 **Coverage anterior:** 20 total (DEPL-18, DEPL-19 e DEPL-20 das emendas de 2026-10-27), 19 Verified (DEPL-20 na verificação da emenda) (DEPL-01 a 17 no PASS da iteração 2; DEPL-19 na iteração 3), DEPL-18 com risco residual de teste aceito (validation.md, Decisão do usuário de 2026-10-27)
 
