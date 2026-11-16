@@ -36,8 +36,6 @@ O sistema propõe um repositório centralizado no qual essas iniciativas possam 
 
 ## Capturas de Tela
 
-> *(Substitua os espaços abaixo pelas capturas de tela reais do seu sistema em execução)*
-
 ### Tela de Autenticação (`/entrar/`)
 <img width="1861" height="939" alt="image" src="https://github.com/user-attachments/assets/6c28d5f6-5f1f-4afc-bb0f-bb44936eb815" />
 
@@ -71,19 +69,24 @@ O sistema propõe um repositório centralizado no qual essas iniciativas possam 
 
 ```text
 kira-repositorio-inovacoes/
-├── config/
-│   └── wsgi.py                  # Ponto de entrada WSGI da aplicação
+├── config/                    # Configurações globais do Django e entradas WSGI/ASGI
+├── contas/                    # Autenticação, perfis de usuário e permissões
+├── indicadores/               # Painel de métricas e geração de gráficos SVG
+├── inovacoes/                 # Cadastro, busca, histórico e reaproveitamento de inovações
+├── nucleo/                    # Recursos base compartilhados do sistema
 ├── templates/
-│   └── kira.css                 # Folha de estilo própria (sem framework CSS)
+│   └── kira.css               # Folha de estilo própria (sem framework CSS)
 ├── docs/
-│   ├── design-spec.md           # Especificação visual da interface
-│   └── roteiro-deploy.md        # Roteiro detalhado de deploy (Vercel + Neon)
-├── .env.example                 # Modelo de variáveis de ambiente
-├── .python-version              # Versão do Python (3.13)
-├── .vercelignore                # Arquivos ignorados no deploy da Vercel
-├── manage.py                    # Utilitário de linha de comando do Django
-├── requirements.txt             # Dependências do projeto Python
-└── README.md                    # Este arquivo
+│   ├── decisao-mvt.md         # Justificativa da arquitetura MVT
+│   ├── design-spec.md         # Especificação visual da interface
+│   ├── mapa-de-features.md    # Mapeamento de funcionalidades do MVP
+│   ├── modelagem-uml.md       # Diagramas e modelagem UML
+│   ├── requisitos.md          # Requisitos funcionais e não funcionais
+│   └── roteiro-deploy.md      # Roteiro detalhado de deploy (Vercel + Neon)
+├── .env.example               # Modelo de variáveis de ambiente
+├── manage.py                  # Utilitário de linha de comando do Django
+├── requirements.txt           # Dependências do projeto Python
+└── README.md                  # Este arquivo
 ```
 
 ---
