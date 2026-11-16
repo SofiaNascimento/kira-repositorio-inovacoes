@@ -30,7 +30,7 @@ O sistema propõe um repositório centralizado no qual essas iniciativas possam 
 
 ## Vídeo de Apresentação do Projeto
 
-> Assista à apresentação do KIRA: `https://drive.google.com/file/d/1lzaDeKNcFgfPukyogZX5cC8l889GbfQQ/view?usp=sharing`
+> Assista à apresentação do KIRA: [Vídeo de Demonstração (Google Drive)](https://drive.google.com/file/d/1lzaDeKNcFgfPukyogZX5cC8l889GbfQQ/view?usp=sharing)
 
 ---
 
@@ -44,7 +44,7 @@ O sistema propõe um repositório centralizado no qual essas iniciativas possam 
 
 <img width="1854" height="946" alt="image" src="https://github.com/user-attachments/assets/0cb8fe25-98c9-4118-8bc6-2cc54164f31c" />
 
-### Cadastro de Inovações(`/user/`)
+### Cadastro de Inovações (`/user/`)
 <img width="1848" height="944" alt="image" src="https://github.com/user-attachments/assets/90b9bbf7-3a54-4bc2-9dc6-0a759844f7bb" />
 
 ### Painel de Indicadores (Gráficos SVG)
@@ -122,7 +122,7 @@ Antes de começar, você precisará ter:
 ### 1. Clone o repositório e acesse a pasta
 
 ```bash
-git clone <URL_DO_REPOSITORIO>
+git clone [https://github.com/SofiaNascimento/kira-repositorio-inovacoes.git]
 cd kira-repositorio-inovacoes
 ```
 
@@ -166,18 +166,6 @@ python manage.py runserver
 
 Acesse `http://127.0.0.1:8000/` no navegador.
 
-### 6. (Opcional) Carregue o acervo de demonstração e rode os testes
-
-```bash
-# Criar superusuário e carregar 500 inovações de demonstração (RNF08)
-python manage.py createsuperuser
-python manage.py carregar_demonstracao
-
-# Executar testes
-pytest -q
-```
-
----
 
 ## Deploy em Produção (Vercel + Neon)
 
@@ -215,7 +203,7 @@ Configure em **Settings → Environments → Production** na Vercel:
    ```bash
    npx vercel --prod --logs
    ```
-4. **Conferência:** Acesse `https://<projeto>.vercel.app/entrar/`, faça login com o administrador criado e valide `/admin/`.
+4. **Conferência:** Acesse `https://kira-nu-green.vercel.app/inovacoes/`, faça login com o administrador criado e valide `/admin/`.
 
 > O roteiro completo com resolução de problemas está disponível em [`docs/roteiro-deploy.md`](docs/roteiro-deploy.md). Sempre que houver alteração nos *models*, execute `manage.py migrate` antes do deploy do código dependente.
 
