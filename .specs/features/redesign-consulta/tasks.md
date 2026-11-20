@@ -298,7 +298,7 @@ T22
 
 ---
 
-### T10: Barra de resultados e alternador
+### T10: Barra de resultados e alternador ✅
 
 **What**: contador `p.total role="status"` e o grupo "Exibição" com "Cartões"/"Tabela"; CSS `.resultados`, `.alternador` (+ par navy/on-brand no DS-08).
 **Where**: `inovacao_list.html`, `templates/kira.css`
@@ -310,9 +310,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: contador singular/plural com total de todas as páginas; links com `href` exato mantendo `q`, filtros e `page`; `aria-current="true"` só no atual; valor desconhecido → Cartões atual, sem erro; CONS-41 intacto
-- [ ] T-B: CONS-38 e DS-16 abrem `?exibicao=tabela` (feito na T9, que é quem os quebra; ver design.md, Ajustes do Execute)
-- [ ] Gate build passa; test count ≥ anterior + 6
+- [x] Testes novos: contador singular/plural com total de todas as páginas; links com `href` exato mantendo `q`, filtros e `page`; `aria-current="true"` só no atual; valor desconhecido → Cartões atual, sem erro; CONS-41 intacto
+- [x] T-B: CONS-38 e DS-16 abrem `?exibicao=tabela` (feito na T9, que é quem os quebra; ver design.md, Ajustes do Execute)
+- [x] Gate build passa; test count ≥ anterior + 6
 
 **Tests**: e2e
 **Gate**: build

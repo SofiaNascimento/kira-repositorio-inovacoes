@@ -769,6 +769,46 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 .cartao-ino\76 acao__meta li { display: inline-flex; align-items: center; gap: var(--space-1); }
 .cartao-ino\76 acao__meta svg { flex: none; width: 1.125em; height: 1.125em; }
 
+/* Barra de resultados (RCON-09, RCON-17): contador e a escolha da exibicao. */
+.resultados {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0 0 var(--space-4);
+}
+.resultados .total { margin: 0; }
+/* Alternador: dois links; o atual em navy com texto sobre a marca. */
+.alternador {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+.alternador a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--borda-campo);
+  border-radius: var(--raio-cartao);
+  color: var(--brand-navy);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--transicao);
+}
+.alternador a:hover { background: var(--info-tint); }
+.alternador a[aria-current=true] {
+  border-color: var(--brand-navy);
+  background: var(--brand-navy);
+  color: var(--on-brand);
+}
+.alternador svg { flex: none; width: 1.125em; height: 1.125em; }
+
 /* Lista de resultados em cartoes (RCON-10): uma coluna abaixo de 720px (RCON-50);
    acima, quantas colunas de 320px couberem, na ordem do codigo. */
 .cartoes {

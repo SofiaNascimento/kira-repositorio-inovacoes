@@ -287,6 +287,8 @@ PARES_DE_TEXTO = [
     ("warning", "warning-tint"),
     ("info", "info-tint"),
     ("success", "success-tint"),
+    # R2 (redesign-consulta, T10, RCON-48): o item atual do alternador da lista.
+    ("on-brand", "brand-navy"),
 ]
 
 

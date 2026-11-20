@@ -330,7 +330,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-06 | P1: Busca e filtros | Design | Implementing |
 | RCON-07 | P1: Busca e filtros | Design | Implementing |
 | RCON-08 | P1: Busca e filtros | Design | Implementing |
-| RCON-09 | P1: Cartões | Design | Pending |
+| RCON-09 | P1: Cartões | Design | Implementing |
 | RCON-10 | P1: Cartões | Design | Implementing |
 | RCON-11 | P1: Cartões | Design | Implementing |
 | RCON-12 | P1: Cartões | Design | Implementing |
@@ -338,7 +338,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-14 | P1: Cartões | Design | Implementing |
 | RCON-15 | P1: Cartões | Design | Implementing |
 | RCON-16 | P1: Cartões | Design | Implementing |
-| RCON-17 | P1: Tabela | Design | Pending |
+| RCON-17 | P1: Tabela | Design | Implementing |
 | RCON-18 | P1: Tabela | Design | Implementing |
 | RCON-19 | P1: Tabela | Design | Implementing |
 | RCON-20 | P1: Tabela | Design | Implementing |

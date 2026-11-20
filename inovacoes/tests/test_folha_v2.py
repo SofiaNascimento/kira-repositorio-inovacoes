@@ -1041,3 +1041,38 @@ def test_guarda_acha_cada_forma_de_esconder(declaracao, envelope):
     seletor = "nav[aria-label=Principal] a"
     achados = _declaracoes_que_escondem(envelope.format(seletor=seletor, declaracao=declaracao))
     assert {s for _, s, _ in achados} == {seletor}
+
+
+# --- redesign-consulta (R2): componentes novos da lista ------------------------------
+
+# DS-08 (test_views_sistema_design.py): os pares que a R2 pode usar ja estao la.
+PARES_DS08 = set(PARES_DE_TEXTO)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("componente", [".alternador"])
+def test_cores_dos_componentes_da_lista_r2_estao_no_ds08_nos_dois_temas(componente):
+    """RCON-48: todo par de cor novo esta no DS-08 e tem contraste no tema normal e no alto.
+
+    A barra de resultados fica sobre o fundo da pagina (--bg); so o alternador tem cor.
+    """
+    conferidos = 0
+    for seletores, corpo in _regras_de(componente):
+        for cor, fundo, e_texto in _pares_da_regra(corpo, "bg"):
+            minimo = 4.5 if e_texto else 3
+            if e_texto:
+                assert (cor, fundo) in PARES_DS08, (seletores, cor, fundo)
+            else:
+                assert (cor, fundo) in PARES_DS08 | PARES_APROVADOS_DE_COMPONENTE, (seletores, cor)
+            assert _contraste(_token(cor), _token(fundo)) >= minimo, (seletores, cor, fundo)
+            assert _contraste(_token_alto(cor), _token_alto(fundo)) >= minimo, (seletores, cor)
+            conferidos += 1
+    assert conferidos
+
+
+@pytest.mark.unit
+def test_exibicao_atual_do_alternador_e_navy_com_texto_sobre_a_marca():
+    """RCON-17: o link atual (aria-current) em --brand-navy com texto --on-brand."""
+    corpo = _corpos(".alternador a[aria-current=true]")
+    assert _tem(corpo, "background", "var(--brand-navy)")
+    assert _tem(corpo, "color", "var(--on-brand)")

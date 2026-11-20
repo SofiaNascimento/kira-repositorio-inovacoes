@@ -31,11 +31,20 @@
   {% if form.errors %}
     {# CONS-24, CONS-30: form invalido nao e "nenhuma encontrada"; so o alerta e os erros. #}
   {% elif inovacoes %}
-    {# CONS-33: o total vale para todas as paginas. #}
-    <p class="total">
-      {% if paginator %}{% with total=paginator.count %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}
-      {% else %}{% with total=inovacoes|length %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}{% endif %}
-    </p>
+    {# RCON-09, RCON-17: barra de resultados com o contador e a escolha da exibicao. #}
+    <div class="resultados">
+      {# CONS-33, RCON-09: o total vale para todas as paginas; anunciado ao mudar. #}
+      <p class="total" role="status">
+        {% if paginator %}{% with total=paginator.count %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}
+        {% else %}{% with total=inovacoes|length %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}{% endif %}
+      </p>
+      {# RCON-17, RCON-18, RCON-20: dois links (CONS-41); o atual com aria-current. #}
+      <div class="alternador" role="group" aria-labelledby="rotulo-exibicao">
+        <span id="rotulo-exibicao">Exibição</span>
+        <a href="{{ url_cartoes }}"{% if exibicao != "tabela" %} aria-current="true"{% endif %}>{% include "icones/grade.svg" %}Cartões</a>
+        <a href="{{ url_tabela }}"{% if exibicao == "tabela" %} aria-current="true"{% endif %}>{% include "icones/tabela.svg" %}Tabela</a>
+      </div>
+    </div>
 
     {# RCON-10, RCON-19: cartoes por padrao; a tabela so com exibicao=tabela, mesmos itens e ordem. #}
     {% if exibicao == "tabela" %}

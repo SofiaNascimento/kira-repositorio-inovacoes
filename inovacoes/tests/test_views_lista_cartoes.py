@@ -1,7 +1,9 @@
 """Testes e2e dos cartoes da lista e da tabela alternativa (R2, RCON-10 a RCON-20)."""
 
 import datetime
+import html as html_lib
 import re
+from html.parser import HTMLParser
 
 import pytest
 from django.db import connection
@@ -9,7 +11,7 @@ from django.test.utils import CaptureQueriesContext
 
 from inovacoes.models import Categoria, Inovacao, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.tests.test_views_lista import _linhas
-from inovacoes.tests.visibilidade import CLASSES_OCULTAS, exibido
+from inovacoes.tests.visibilidade import CLASSES_OCULTAS, VAZIOS, exibido
 
 LISTA = "/inovacoes/"
 
@@ -254,3 +256,188 @@ def test_cartoes_custam_o_mesmo_numero_de_consultas_com_1_e_com_20(
     contagens = sorted(_textos(a)[-1] for a in artigos)
     assert len(set(contagens)) == 20
     assert len(com_vinte) == len(com_um)
+
+
+# --- RCON-09: contador ---
+
+
+def _contador(html):
+    """O texto do p role="status" da barra de resultados."""
+    barra = re.search(r'<div class="resultados">(.*?)</p>', html, re.S)
+    assert barra, "sem a barra de resultados"
+    achado = re.search(r'<p class="total" role="status">(.*)', barra.group(1), re.S)
+    assert achado, 'o contador e um p role="status" na barra'
+    return " ".join(achado.group(1).split())
+
+
+def test_contador_no_singular(logado, criar_inovacao):
+    """RCON-09: "{n} inovação encontrada" num role="status"."""
+    criar_inovacao()
+    assert _contador(_exibida(logado.get(LISTA))) == "1 inovação encontrada"
+
+
+def test_contador_no_plural_conta_todas_as_paginas(logado, criar_inovacao):
+    """RCON-09 (CONS-33): o total vale para todas as paginas, tambem na segunda."""
+    for numero in range(25):
+        criar_inovacao(titulo=f"I{numero:02d}")
+    assert _contador(_exibida(logado.get(f"{LISTA}?page=2"))) == "25 inovações encontradas"
+
+
+def test_primeiro_role_status_continua_o_do_base(logado, criar_inovacao):
+    """RCON-09 e EDEX: o contador vem depois do h1; o primeiro role="status" e o do base."""
+    criar_inovacao()
+    html = logado.get(LISTA).content.decode()
+    assert html.count('role="status"') == 2
+    assert html.index('role="status"') < html.index("<h1") < html.index('class="total"')
+
+
+# --- RCON-17, RCON-18, RCON-20: alternador ---
+
+
+class _Alternador(HTMLParser):
+    """O grupo do alternador: o rotulo (pelo aria-labelledby) e cada link com seus atributos."""
+
+    def __init__(self):
+        super().__init__()
+        self.ids = {}
+        self.grupo = None
+        self.links = []
+        self._pilha = []
+        self._id = None
+
+    def handle_starttag(self, tag, attrs):
+        atributos = dict(attrs)
+        if atributos.get("id"):
+            self._id = atributos["id"]
+            self.ids[self._id] = ""
+        if tag == "div" and "alternador" in (atributos.get("class") or "").split():
+            self.grupo = atributos
+            self._pilha = ["div"]
+            return
+        if self._pilha:
+            if tag not in VAZIOS:
+                self._pilha.append(tag)
+            if tag == "a":
+                self.links.append([atributos, ""])
+
+    def handle_endtag(self, tag):
+        if tag == "span":
+            self._id = None
+        if self._pilha and tag in self._pilha:
+            while self._pilha.pop() != tag:
+                pass
+
+    def handle_data(self, data):
+        if self._id:
+            self.ids[self._id] += data
+        if self._pilha and "a" in self._pilha:
+            self.links[-1][1] += data
+
+
+def _alternador(html):
+    leitor = _Alternador()
+    leitor.feed(html)
+    leitor.close()
+    assert leitor.grupo is not None, "sem o grupo do alternador"
+    return leitor
+
+
+def test_alternador_e_um_grupo_exibicao_com_cartoes_e_tabela(logado, criar_inovacao):
+    """RCON-17: grupo rotulado "Exibição", os links "Cartões" e "Tabela", cada um com icone."""
+    criar_inovacao()
+    bruto = logado.get(LISTA).content.decode()
+    alternador = _alternador(exibido(bruto, rigoroso=True))
+
+    assert alternador.grupo["role"] == "group"
+    rotulo = alternador.ids[alternador.grupo["aria-labelledby"]]
+    assert rotulo.strip() == "Exibição"
+    assert [texto.strip() for _, texto in alternador.links] == ["Cartões", "Tabela"]
+    # Cada link com um icone decorativo antes do texto (no HTML enviado).
+    for texto in ("Cartões", "Tabela"):
+        assert re.search(
+            rf'<a href="[^"]*"[^>]*>\s*<svg aria-hidden="true"[^>]*>.*?</svg>\s*{texto}</a>',
+            bruto,
+            re.S,
+        )
+
+
+def _hrefs(alternador):
+    return {
+        texto.strip(): html_lib.unescape(atributos["href"]) for atributos, texto in alternador.links
+    }
+
+
+def _atuais(alternador):
+    return [texto.strip() for atributos, texto in alternador.links if "aria-current" in atributos]
+
+
+def test_links_do_alternador_mantem_busca_filtros_e_pagina(logado, criar_inovacao):
+    """RCON-18: Tabela = query string atual + exibicao=tabela; Cartoes = sem exibicao."""
+    financeiro = Categoria.objects.get(nome="Financeiro")
+    sede = Unidade.objects.get(nome="Sede")
+    for numero in range(21):
+        criar_inovacao(
+            titulo=f"Planilha {numero:02d}",
+            categoria=financeiro,
+            unidade=sede,
+            status=StatusInovacao.VALIDADA,
+        )
+    consulta = f"q=planilha&categoria={financeiro.pk}&unidade={sede.pk}&status=VALIDADA&page=2"
+
+    cartoes = _alternador(_exibida(logado.get(f"{LISTA}?{consulta}")))
+    assert _hrefs(cartoes) == {
+        "Cartões": f"/inovacoes/?{consulta}",
+        "Tabela": f"/inovacoes/?{consulta}&exibicao=tabela",
+    }
+    tabela = _alternador(_exibida(logado.get(f"{LISTA}?{consulta}&exibicao=tabela")))
+    assert _hrefs(tabela) == {
+        "Cartões": f"/inovacoes/?{consulta}",
+        "Tabela": f"/inovacoes/?{consulta}&exibicao=tabela",
+    }
+
+
+@pytest.mark.parametrize(
+    ("parametro", "atual"),
+    [("", "Cartões"), ("?exibicao=tabela", "Tabela")],
+)
+def test_so_a_exibicao_atual_tem_aria_current(logado, criar_inovacao, parametro, atual):
+    """RCON-17: o atual marcado com aria-current="true"; o outro sem."""
+    criar_inovacao()
+    alternador = _alternador(_exibida(logado.get(f"{LISTA}{parametro}")))
+    assert _atuais(alternador) == [atual]
+    marcado = [a for a, texto in alternador.links if texto.strip() == atual][0]
+    assert marcado["aria-current"] == "true"
+
+
+@pytest.mark.parametrize("valor", ["x", "TABELA", "cartoes", ""])
+def test_exibicao_desconhecida_mostra_cartoes_como_atual_sem_erro(logado, criar_inovacao, valor):
+    """RCON-20: qualquer outro valor mostra os cartoes, marca Cartoes e nao mostra erro."""
+    criar_inovacao()
+    resposta = logado.get(f"{LISTA}?exibicao={valor}")
+    html = _exibida(resposta)
+    assert _atuais(_alternador(html)) == ["Cartões"]
+    assert len(_artigos(html)) == 1
+    assert 'role="alert"' not in html
+    assert "<table" not in html
+
+
+def test_links_do_alternador_tem_href_e_nenhum_role(logado, criar_inovacao):
+    """RCON-17 (CONS-41): o alternador e feito de links com href, sem role de controle."""
+    criar_inovacao()
+    alternador = _alternador(logado.get(LISTA).content.decode())
+    for atributos, _ in alternador.links:
+        assert atributos.get("href")
+        assert "role" not in atributos
+
+
+def test_sem_resultado_nao_ha_barra_de_resultados(logado):
+    """RCON-09, RCON-17: a barra so existe quando a lista tem resultados."""
+    html = logado.get(LISTA).content.decode()
+    assert 'class="resultados"' not in html
+    assert 'class="alternador"' not in html
+
+
+def test_folha_nao_esconde_a_barra_de_resultados():
+    """RCON-09, RCON-17 (L-044): a barra e o alternador nao somem por regra da folha."""
+    for classe in ("resultados", "alternador", "total"):
+        assert classe not in CLASSES_OCULTAS
