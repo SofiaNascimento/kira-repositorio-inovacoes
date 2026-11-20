@@ -33,6 +33,8 @@ pede.
 | T-M | `test_views_sistema_design.py:395` `PECAS` e `:412` (DS-01) | DS-01 | `PECAS` ganha as parciais da R2 (cartão, selo, paginação, etiquetas, ilustração e ícones novos); a contagem de telas segue 13 | Peças novas, sem estilo próprio |
 | T-N | `test_folha_v2.py:943` `ESCONDIDOS_PELA_SPEC` e `:1011` | RED-16, RED-22, RED-32 | Acrescenta a ilustração do vazio no alto contraste (RCON-27) e o `caption` visualmente oculto da tabela de reaproveitamentos (RCON-35) | Ocultações novas que a spec manda |
 | T-O | `nucleo/tests/test_casca.py:458` `CABECALHO_DE_PAGINA` (`:470`) e `:123` | RED-29, RED-31, RED-16, RED-23 | O cabeçalho do detalhe aceita o selo antes do `h1` e as ações depois, mantendo o `h1` único como primeiro título do `main`; a pasta de ícones deixa de ter exatamente 4 arquivos e passa a exigir os 4 da R1 mais os da R2 | RCON-28, RCON-39, RCON-15 |
+| T-Q | `inovacoes/tests/test_views_lista.py:235` e `:246` | CONS-03 | Em vez de `"Anterior"/"Próxima" not in nav`, exigem que a ponta não seja link (texto com `aria-disabled="true"`, RCON-23); o resto do teste fica igual | Achado no Execute (T13), autorizado pelo usuário em 2026-11-19 |
+| T-R | `inovacoes/tests/test_views_exclusao.py:172` | EDEX-37 | Espera o texto novo do vazio sem resultado ("Nenhuma inovação encontrada para esta busca.", RCON-26) | Achado no Execute (T14), autorizado pelo usuário em 2026-11-19 |
 
 **Não mudam** (conferido): "Cadastrada por {autor} em {data}" como substring (CONS-13, EDEX-18,
 ACER-11: a linha do cabeçalho começa assim, RCON-28); os h2 "Ciclo de vida" e "Histórico de status"
@@ -99,7 +101,7 @@ Decisões do Discuss de 2026-11-19 (ver `context.md`) e defaults do agente.
 | Tabela alternativa | A tabela atual, sem coluna nova (legenda "Inovações cadastradas"; Título, Categoria, Unidade, Status); o selo ganha o ícone como em toda a tela | Pedido do usuário ("mantendo a tabela atual") diverge das seis colunas da §10 | y |
 | Parâmetro `exibicao` | Só o valor `tabela` muda a exibição; ausente ou qualquer outro valor mostra cartões, sem erro; fica fora do `BuscaForm` e não conta como filtro ativo | Um valor inválido de apresentação não deve esconder resultados (CONS-30 vale para filtros) | y |
 | Janela de páginas | Primeira, última e a atual ± 2; cada salto vira um "…" em texto | Com 500 inovações são 25 páginas; todas numa linha não cabem a 320px | y |
-| Resumo do cartão | O problema passa por `truncatechars:160` (até 160 caracteres contando o "…") | §6 ("~160 caracteres com …"); filtro nativo, sem código novo | y |
+| Resumo do cartão | Até 160 caracteres contando o "…" (159 + "…" quando passa de 160) | §6 ("~160 caracteres com …"). Emendado no Execute: o `truncatechars` em pt-BR põe um espaço antes do "…" e entrega 158 | y |
 | Rótulos das etiquetas | "Busca: “{termo}”", "Categoria: {nome}", "Unidade: {nome}", "Status: {rótulo}"; só para valores válidos; o link de remoção tira aquele parâmetro e o `page` e mantém os outros, inclusive `exibicao` | §6 dá o formato "Categoria: Financeiro"; o termo vai entre aspas para não se confundir com o rótulo | y |
 | Ilustração do vazio | SVG embutido com `aria-hidden="true"` e `focusable="false"`, não um `<img alt="">` | Efeito igual para o leitor de tela; segue o padrão dos ícones da R1 e some no alto contraste pela folha (§7) | y |
 | Ordem da lateral | No código e na tela: Contato responsável → Ciclo de vida → Ficha, nas duas larguras; sem a propriedade CSS `order` | A §10 pede o ciclo primeiro na tela larga e o contato primeiro na estreita; as duas não convivem com uma ordem única de leitura (restrição eMAG do pedido). O contato primeiro segue a RN06 | y |
@@ -151,7 +153,7 @@ e se outras unidades já a reaproveitaram, para decidir o que abrir.
 2. RCON-10: WHILE `exibicao` is not `tabela` the system SHALL render the results of the current page as a `ul aria-label="Resultados"` with one `li` > `article` per inovação, in the current order (most recent first, CONS-02), and SHALL NOT render the results table.
 3. RCON-11: Each card SHALL render, in source order: the status badge and the text "Cadastrada em {dd/mm/aaaa}"; an `h2` whose only content is a link to the detail with the title; the summary; and a metadata list with the unit name, the category name and the reuse count.
 4. RCON-12: The card's title link SHALL be the only link inside the `article`.
-5. RCON-13: The card summary SHALL be the `problema` text truncated by `truncatechars:160` (the full text when it has at most 160 characters; otherwise 159 characters followed by "…").
+5. RCON-13: The card summary SHALL be the full `problema` text when it has at most 160 characters; otherwise its first 159 characters followed by "…".
 6. RCON-14: The card reuse count SHALL read "Nenhum reaproveitamento" for 0, "1 reaproveitamento" for 1 and "{n} reaproveitamentos" for n ≥ 2.
 7. RCON-15: The status badge (cards, table and detail) SHALL contain a decorative SVG icon (`aria-hidden="true"`) — flask for "Em teste", check for "Validada", box-with-arrow for "Disponível para replicação" — and the status label as text.
 8. RCON-16: The list SHALL use the same number of database queries for a page of 1 card as for a page of 20 cards from different units and categories, each with a different reuse count (CONS-48 extended to the summary and the reuse count).

@@ -63,6 +63,8 @@ AC original (docstring com a AC). Se outro teste antigo quebrar, a task para e p
 | T-N | T14 (ilustração), T21 (`caption`) |
 | T-O | T6 (ícones), T16 (cabeçalho) |
 | T-P | T7 |
+| T-Q | T13 (achado no Execute, autorizado em 2026-11-19) |
+| T-R | T14 (achado no Execute, autorizado em 2026-11-19) |
 
 ---
 
