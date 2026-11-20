@@ -118,7 +118,7 @@ T22
 
 ---
 
-### T2: URL da lista e exibição
+### T2: URL da lista e exibição ✅
 
 **What**: `url_da_lista(consulta, **mudancas)` e `exibicao(consulta)` em `inovacoes/apresentacao.py`.
 **Where**: `inovacoes/apresentacao.py` (novo)
@@ -130,8 +130,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes unitários: `None` remove; o último parâmetro saindo dá `/inovacoes/` sem `?`; valores repetidos e acentuados preservados; `exibicao` só aceita `tabela` (ausente, vazio, `TABELA`, `cartoes`, `x` → `cartoes`)
-- [ ] Gate quick passa; test count ≥ anterior + 8
+- [x] Testes unitários: `None` remove; o último parâmetro saindo dá `/inovacoes/` sem `?`; valores repetidos e acentuados preservados; `exibicao` só aceita `tabela` (ausente, vazio, `TABELA`, `cartoes`, `x` → `cartoes`)
+- [x] Gate quick passa; test count ≥ anterior + 8
 
 **Tests**: unit
 **Gate**: quick

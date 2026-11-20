@@ -326,8 +326,8 @@ ordem em que aparecem e sem perder nada.
 | RCON-02 | P1: Busca e filtros | Design | Pending |
 | RCON-03 | P1: Busca e filtros | Design | Pending |
 | RCON-04 | P1: Busca e filtros | Design | Pending |
-| RCON-05 | P1: Busca e filtros | Design | Pending |
-| RCON-06 | P1: Busca e filtros | Design | Pending |
+| RCON-05 | P1: Busca e filtros | Design | Implementing |
+| RCON-06 | P1: Busca e filtros | Design | Implementing |
 | RCON-07 | P1: Busca e filtros | Design | Pending |
 | RCON-08 | P1: Busca e filtros | Design | Pending |
 | RCON-09 | P1: Cartões | Design | Pending |
@@ -339,9 +339,9 @@ ordem em que aparecem e sem perder nada.
 | RCON-15 | P1: Cartões | Design | Pending |
 | RCON-16 | P1: Cartões | Design | Implementing |
 | RCON-17 | P1: Tabela | Design | Pending |
-| RCON-18 | P1: Tabela | Design | Pending |
+| RCON-18 | P1: Tabela | Design | Implementing |
 | RCON-19 | P1: Tabela | Design | Pending |
-| RCON-20 | P1: Tabela | Design | Pending |
+| RCON-20 | P1: Tabela | Design | Implementing |
 | RCON-21 | P1: Paginação | Design | Pending |
 | RCON-22 | P1: Paginação | Design | Pending |
 | RCON-23 | P1: Paginação | Design | Pending |
