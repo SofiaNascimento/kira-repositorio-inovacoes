@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 
-from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
+from inovacoes.models import Categoria, Inovacao, Reaproveitamento, StatusInovacao, Unidade
 
 
 def _forcar_data(inovacao, data):
@@ -54,6 +54,91 @@ def test_listagem_le_unidade_e_categoria_em_uma_consulta(criar_inovacao, django_
         nomes = [(i.unidade.nome, i.categoria.nome) for i in Inovacao.objects.para_listagem()]
 
     assert nomes == [("Teste Unidade", "Teste Categoria")] * 3
+
+
+# R2: resumo e contagem de reaproveitamentos no cartao (RCON-13, RCON-14, RCON-16).
+
+
+def _reaproveitar(inovacao, vezes):
+    """Grava direto, so para preparar a contagem; o caminho da aplicacao e o metodo (AD-012)."""
+    for numero in range(vezes):
+        unidade = Unidade.objects.create(nome=f"Teste Reuso {inovacao.pk}-{numero}")
+        Reaproveitamento.objects.create(
+            inovacao=inovacao, unidade=unidade, registrado_por=inovacao.autor
+        )
+
+
+@pytest.fixture
+def tres_com_reusos(criar_inovacao):
+    """Tres inovacoes da mesma pagina com 0, 1 e 3 reaproveitamentos, da mais antiga a recente.
+
+    A sem reuso fica noutra categoria, para o filtro ter o que tirar.
+    """
+    outra = Categoria.objects.create(nome="Teste Outra Categoria")
+    nenhum = criar_inovacao(titulo="Nenhum", problema="Problema sem reuso.", categoria=outra)
+    um = criar_inovacao(titulo="Um", problema="Problema com um reuso.")
+    tres = criar_inovacao(titulo="Tres", problema="Problema com tres reusos.")
+    _forcar_data(nenhum, _utc(1))
+    _forcar_data(um, _utc(2))
+    _forcar_data(tres, _utc(3))
+    _reaproveitar(um, 1)
+    _reaproveitar(tres, 3)
+    return nenhum, um, tres
+
+
+def test_listagem_conta_os_reaproveitamentos_de_cada_inovacao(tres_com_reusos):
+    """RCON-14: a contagem de cada item da pagina e 0, 1 e 3, sem misturar inovacoes."""
+    nenhum, um, tres = tres_com_reusos
+
+    contagens = {i.pk: i.total_reaproveitamentos for i in Inovacao.objects.para_listagem()}
+
+    assert contagens == {nenhum.pk: 0, um.pk: 1, tres.pk: 3}
+
+
+def test_listagem_le_resumo_e_contagem_sem_consulta_nova(
+    tres_com_reusos, django_assert_num_queries
+):
+    """RCON-13, RCON-16: problema e contagem vem na mesma consulta da pagina."""
+    with django_assert_num_queries(1):
+        itens = list(Inovacao.objects.para_listagem())
+
+    with django_assert_num_queries(0):
+        lidos = [(i.problema, i.total_reaproveitamentos) for i in itens]
+
+    assert lidos == [
+        ("Problema com tres reusos.", 3),
+        ("Problema com um reuso.", 1),
+        ("Problema sem reuso.", 0),
+    ]
+
+
+def test_busca_e_filtro_sobre_a_listagem_anotada_seguem_em_uma_consulta(
+    tres_com_reusos, categoria, django_assert_num_queries
+):
+    """RCON-16, CONS-48: buscar().filtrar() encadeia sobre a anotacao, numa consulta so."""
+    _, um, tres = tres_com_reusos
+
+    with django_assert_num_queries(1):
+        achadas = [
+            (i.pk, i.problema, i.total_reaproveitamentos)
+            for i in Inovacao.objects.para_listagem().buscar("reuso").filtrar(categoria=categoria)
+        ]
+
+    # "reuso" casa as tres; o filtro de categoria tira a sem reuso.
+    assert achadas == [
+        (tres.pk, "Problema com tres reusos.", 3),
+        (um.pk, "Problema com um reuso.", 1),
+    ]
+
+
+def test_contagem_nao_duplica_nem_reordena_a_listagem(tres_com_reusos):
+    """CONS-02 com a anotacao: cada inovacao uma vez, mais recentes primeiro."""
+    nenhum, um, tres = tres_com_reusos
+
+    ids = [i.pk for i in Inovacao.objects.para_listagem()]
+
+    assert ids == [tres.pk, um.pk, nenhum.pk]
+    assert Inovacao.objects.para_listagem().count() == 3
 
 
 # Busca por palavras (CONS-19 a CONS-23). Os textos padrao do conftest falam de

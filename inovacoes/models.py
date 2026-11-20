@@ -111,10 +111,21 @@ class InovacaoQuerySet(models.QuerySet):
     """Unico ponto que sabe como consultar e ordenar inovacoes (AD-002)."""
 
     def para_listagem(self):
-        # CONS-02: mais recentes primeiro, id desempata. Uma consulta so, sem N+1.
+        # CONS-02: mais recentes primeiro, id desempata. Uma consulta so, sem N+1:
+        # o resumo (problema) e a contagem de reaproveitamentos do cartao vem juntos
+        # (RCON-13, RCON-14, RCON-16).
         return (
             self.select_related("unidade", "categoria")
-            .only("id", "titulo", "status", "data_criacao", "unidade__nome", "categoria__nome")
+            .only(
+                "id",
+                "titulo",
+                "problema",
+                "status",
+                "data_criacao",
+                "unidade__nome",
+                "categoria__nome",
+            )
+            .annotate(total_reaproveitamentos=Count("reaproveitamentos"))
             .order_by("-data_criacao", "-id")
         )
 

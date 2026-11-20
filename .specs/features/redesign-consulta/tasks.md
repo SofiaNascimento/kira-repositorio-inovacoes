@@ -96,7 +96,7 @@ T22
 
 ## Task Breakdown
 
-### T1: `para_listagem` com resumo e contagem
+### T1: `para_listagem` com resumo e contagem ✅
 
 **What**: `para_listagem()` passa a carregar `problema` e `total_reaproveitamentos = Count("reaproveitamentos")` na mesma consulta.
 **Where**: `inovacoes/models.py`
@@ -108,8 +108,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes em `test_consultas.py`: `total_reaproveitamentos` 0, 1 e 3 em inovações da mesma página; `problema` acessível sem consulta nova (`assertNumQueries(0)` ao ler); `buscar().filtrar()` sobre o queryset anotado continua com uma consulta; ordem CONS-02 intacta
-- [ ] Gate full passa; test count ≥ 1326 + 4
+- [x] Testes em `test_consultas.py`: `total_reaproveitamentos` 0, 1 e 3 em inovações da mesma página; `problema` acessível sem consulta nova (`assertNumQueries(0)` ao ler); `buscar().filtrar()` sobre o queryset anotado continua com uma consulta; ordem CONS-02 intacta
+- [x] Gate full passa; test count ≥ 1326 + 4
 
 **Tests**: integration
 **Gate**: full
