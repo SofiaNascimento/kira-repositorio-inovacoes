@@ -303,3 +303,16 @@ lista.
   aceita, depois do h1, a descrição (`p`) e a ação principal (`a`), nessa ordem. Continua
   exigindo o h1 único logo depois do status, como primeiro título do `main` (RED-29, RED-31).
   Autorizado pelo usuário em 2026-11-19.
+
+### Lote 3
+
+- **T16, T-O de uma vez:** a regex `CABECALHO_DE_PAGINA` (`nucleo/tests/test_casca.py`) passa a
+  aceitar, no detalhe, o selo antes do h1 e, depois da linha de autoria, o `div.acoes-pagina`
+  da T19 (links e, por último, o `div.acoes-pagina__perigo` com o Excluir). A T-O está
+  autorizada só na T16 e a spec descreve as duas partes ("aceita o selo antes do `h1` e as
+  ações depois"), então a mudança entra inteira aqui. O h1 continua único e primeiro título do
+  `main`.
+- **T16, linha de autoria:** vai no bloco `descricao` como `<p>` sem classe (a regra
+  `.cabecalho-pagina p` já a pinta em `--text-muted`). A classe `.meta` deixou de ter uso no
+  HTML e a regra saiu da folha na mesma task (código morto que a T16 criou).
+

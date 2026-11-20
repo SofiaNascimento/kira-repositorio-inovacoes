@@ -18,7 +18,6 @@ ROTULOS = [
     "Problema ou dor",
     "Solução aplicada",
     "Resultado ou impacto",
-    "Status",
     "Contato responsável",
 ]
 
@@ -36,8 +35,23 @@ def _pares(html):
     return [(r.strip(), v.strip()) for r, v in zip(rotulos, valores, strict=True)]
 
 
+def _selo_do_cabecalho(html):
+    """(classe de status, rotulo) do selo exibido logo antes do h1 (RCON-28)."""
+    achado = re.search(
+        r'<div class="cabecalho-pagina">\s*<span class="selo selo--(\w+)">\s*([^<]*?)\s*</span>'
+        r"\s*<h1>",
+        exibido(html, rigoroso=True),
+    )
+    assert achado, "sem o selo exibido antes do h1"
+    return achado.groups()
+
+
 def test_detalhe_mostra_h1_e_os_oito_campos_em_lista_de_descricao(logado, criar_inovacao):
-    """CONS-12, CONS-42."""
+    """CONS-12, CONS-42.
+
+    T-F (redesign-consulta, T16, RCON-28): o status sai da ficha e vai para o selo acima do
+    h1. A garantia da CONS-12 continua: os oito campos aparecem, o status pelo rotulo.
+    """
     inovacao = criar_inovacao(resultado="Fechamento em duas horas.")
     resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
     assert resposta.status_code == 200
@@ -50,18 +64,22 @@ def test_detalhe_mostra_h1_e_os_oito_campos_em_lista_de_descricao(logado, criar_
         ("Problema ou dor", "Fechamento de caixa manual e demorado."),
         ("Solução aplicada", "Planilha compartilhada com conferencia diaria."),
         ("Resultado ou impacto", "Fechamento em duas horas."),
-        ("Status", "Em teste"),
         ("Contato responsável", "Ana Souza (ana@x.com)"),
     ]
     assert [r for r, _ in _pares(html)] == ROTULOS
+    assert _selo_do_cabecalho(html) == ("em_teste", "Em teste")
     assert "<dl" in html
 
 
 def test_detalhe_mostra_o_rotulo_do_status_e_nao_o_valor_interno(logado, criar_inovacao):
-    """CONS-12: o status aparece pelo rotulo."""
+    """CONS-12: o status aparece pelo rotulo.
+
+    T-F (redesign-consulta, T16, RCON-28): lido no selo acima do h1, e nao mais na ficha.
+    """
     inovacao = criar_inovacao(status=StatusInovacao.DISPONIVEL_PARA_REPLICACAO)
     html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert ("Status", "Disponível para replicação") in _pares(html)
+    assert _selo_do_cabecalho(html) == ("disponivel_para_replicacao", "Disponível para replicação")
+    assert "DISPONIVEL_PARA_REPLICACAO" not in exibido(html, rigoroso=True)
 
 
 def test_detalhe_mostra_cadastrada_por_com_nome_completo_e_data(logado, criar_inovacao):

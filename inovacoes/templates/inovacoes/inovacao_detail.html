@@ -4,11 +4,15 @@
 
 {% block trilha %}{% include "paginas/trilha.html" with secao=True inovacao=None atual=inovacao.titulo %}{% endblock %}
 
+{# RCON-28, RCON-15: o selo de status acima do h1, fora da ficha. #}
+{% block sobretitulo %}{% include "inovacoes/parciais/selo.html" with status=inovacao.status rotulo=inovacao.get_status_display %}{% endblock %}
+
 {% block titulo %}{{ inovacao.titulo }}{% endblock %}
 
+{# RCON-28, CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
+{% block descricao %}<p>Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }} · {{ inovacao.unidade.nome }} · {{ inovacao.categoria.nome }}</p>{% endblock %}
+
 {% block conteudo %}
-  {# CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
-  <p class="meta">Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }}</p>
 
   {# EDEX-03, EDEX-24, EDEX-31: so para o autor e o administrador (AD-009). #}
   {% if pode_alterar %}
@@ -33,9 +37,6 @@
     <dd>{{ inovacao.solucao|linebreaksbr }}</dd>
     <dt>Resultado ou impacto</dt>
     <dd>{{ inovacao.resultado|linebreaksbr|default:"Não informado" }}</dd>
-    <dt>Status</dt>
-    {# DS-12: o texto puro fica no dd (CONS-12); o selo vai na classe. #}
-    <dd class="selo selo--{{ inovacao.status|lower }}">{{ inovacao.get_status_display }}</dd>
     <dt>Contato responsável</dt>
     {# design-spec §10 F3: o contato do responsavel em destaque. #}
     <dd class="destaque">{{ inovacao.contato }}</dd>

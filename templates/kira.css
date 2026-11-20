@@ -606,8 +606,6 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   .ficha dd { padding-top: var(--space-1); border-top: 0; }
 }
 
-.meta { color: var(--text-muted); font-size: var(--fs-sm); }
-
 /* --- Selo de status (§6): texto + cor + forma (o icone do status, RCON-15) - */
 
 .selo {

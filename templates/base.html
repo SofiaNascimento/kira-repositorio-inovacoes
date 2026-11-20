@@ -81,6 +81,8 @@
     {# RED-29, RED-31: cabecalho de pagina depois do status; o h1 unico vem do bloco titulo. #}
     {% block cabecalho_pagina %}
       <div class="cabecalho-pagina">
+        {# RCON-28: o que vem acima do h1 (o selo do detalhe); vazio nas outras telas. #}
+        {% block sobretitulo %}{% endblock %}
         <h1>{% block titulo %}{% endblock %}</h1>
         {% block descricao %}{% endblock %}
         {% block acao_principal %}{% endblock %}

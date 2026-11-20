@@ -484,10 +484,20 @@ H1_DE_HOJE = {
 # cabecalho de pagina, podem vir a descricao (um p) e a acao principal (um link), nessa
 # ordem e nada mais. A garantia do RED-29/RED-31 continua: o h1 unico e o primeiro titulo
 # do main, logo depois do status.
+# T-O (redesign-consulta, T16, RCON-28, RCON-39): no detalhe, antes do h1 pode vir o selo
+# de status (um span sem titulo dentro); depois do h1, a linha de autoria (um p) e, no lugar
+# da acao unica, o grupo de acoes em hierarquia (`div.acoes-pagina`: links e, por ultimo, o
+# grupo separado do Excluir). Nenhum outro titulo entra antes do h1.
 CABECALHO_DE_PAGINA = re.compile(
     r'^<main id="conteudo">\s*<div role="status">.*?</div>\s*'
-    r'<div class="cabecalho-pagina">\s*<h1>(.*?)</h1>\s*'
-    r"(?:<p>[^<]*</p>\s*)?(?:<a\b[^>]*>[^<]*</a>\s*)?</div>",
+    r'<div class="cabecalho-pagina">\s*'
+    r'(?:<span class="selo selo--\w+">[^<]*</span>\s*)?'
+    r"<h1>(.*?)</h1>\s*"
+    r"(?:<p>[^<]*</p>\s*)?"
+    r"(?:<a\b[^>]*>[^<]*</a>\s*"
+    r'|<div class="acoes-pagina">(?:\s*<a\b[^>]*>[^<]*</a>)*\s*'
+    r'(?:<div class="acoes-pagina__perigo">\s*<a\b[^>]*>[^<]*</a>\s*</div>\s*)?</div>\s*)?'
+    r"</div>",
     re.S,
 )
 

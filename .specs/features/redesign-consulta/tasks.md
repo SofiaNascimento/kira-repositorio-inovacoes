@@ -437,7 +437,7 @@ T22
 
 ---
 
-### T16: Cabeçalho do detalhe
+### T16: Cabeçalho do detalhe ✅
 
 **What**: bloco `sobretitulo` no base; no detalhe, selo acima do h1 e a linha "Cadastrada por … · {unidade} · {categoria}"; o status sai da ficha.
 **Where**: `templates/base.html`, `inovacao_detail.html`
@@ -449,9 +449,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos em `test_views_detalhe_v2.py`: ordem trilha → selo → h1 → linha; texto exato da linha; outras telas sem mudança no cabeçalho
-- [ ] T-C (detalhe): DS-12 lê o selo do cabeçalho; T-F (CONS-12 status); T-O (`CABECALHO_DE_PAGINA` aceita o selo antes do h1)
-- [ ] Gate build passa; test count ≥ anterior + 3
+- [x] Testes novos em `test_views_detalhe_v2.py`: ordem trilha → selo → h1 → linha; texto exato da linha; outras telas sem mudança no cabeçalho
+- [x] T-C (detalhe): DS-12 lê o selo do cabeçalho; T-F (CONS-12 status); T-O (`CABECALHO_DE_PAGINA` aceita o selo antes do h1)
+- [x] Gate build passa; test count ≥ anterior + 3
 
 **Tests**: e2e
 **Gate**: build

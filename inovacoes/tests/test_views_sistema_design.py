@@ -498,15 +498,28 @@ def test_lista_mostra_o_status_num_selo_com_o_rotulo(
 def test_detalhe_mostra_o_status_num_selo_com_o_rotulo(
     client, autor, criar_inovacao, status, classe, rotulo
 ):
-    """DS-12, no detalhe: o selo vai no proprio dd, com o texto puro (CONS-12)."""
+    """DS-12, no detalhe.
+
+    T-C (redesign-consulta, T16, RCON-28, RCON-15): o selo sai da ficha (nao e mais um dd)
+    e vai acima do h1, no cabecalho de pagina, com o SVG decorativo antes do rotulo. A
+    garantia da DS-12 continua: o status aparece num `span.selo.selo--x` com o rotulo em
+    texto, exibido na pagina (L-028, L-030).
+    """
     inovacao = criar_inovacao(status=status)
     client.force_login(autor)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
     assert re.search(
-        rf"<dt>\s*Status\s*</dt>\s*"
-        rf'<dd class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</dd>',
+        rf'<div class="cabecalho-pagina">\s*<span class="selo selo--{classe}">\s*'
+        rf'<svg aria-hidden="true"[^>]*>.*?</svg>\s*{re.escape(rotulo)}\s*</span>\s*<h1>',
         html,
+        re.S,
     )
+    assert re.search(
+        rf'<div class="cabecalho-pagina">\s*<span class="selo selo--{classe}">\s*'
+        rf"{re.escape(rotulo)}\s*</span>\s*<h1>",
+        exibido(html, rigoroso=True),
+    )
+    assert not re.search(r"<dd\b[^>]*\bselo\b", html)
 
 
 # RCON-15: frasco para "Em teste", visto para "Validada", caixa com seta para "Disponível".

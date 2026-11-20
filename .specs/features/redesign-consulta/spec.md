@@ -351,7 +351,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-25 | P1: Vazios | Design | Implementing |
 | RCON-26 | P1: Vazios | Design | Implementing |
 | RCON-27 | P1: Vazios | Design | Implementing |
-| RCON-28 | P1: Detalhe | Design | Pending |
+| RCON-28 | P1: Detalhe | Design | Implementing |
 | RCON-29 | P1: Detalhe | Design | Pending |
 | RCON-30 | P1: Detalhe | Design | Pending |
 | RCON-31 | P1: Detalhe | Design | Pending |
