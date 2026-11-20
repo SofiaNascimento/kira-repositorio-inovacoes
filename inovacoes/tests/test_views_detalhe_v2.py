@@ -8,7 +8,9 @@ import pytest
 from django.conf import settings
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, StatusInovacao
+from inovacoes.models import Inovacao, StatusInovacao, Unidade
+from inovacoes.tests.test_folha_v2 import _regras_aninhadas, _seletores, _sem_comentarios
+from inovacoes.tests.test_views_sistema_design import CSS, _corpos
 from inovacoes.tests.visibilidade import CLASSES_OCULTAS, exibido
 
 EM_TESTE = StatusInovacao.EM_TESTE
@@ -141,3 +143,154 @@ def test_outras_telas_nao_ganham_nada_antes_do_h1(logado, criar_inovacao, url):
     html = logado.get(url).content.decode()
     assert re.search(r'<div class="cabecalho-pagina">\s*<h1>', html), url
     assert 'class="selo ' not in html[: html.index("<h1>")]
+
+
+# --- RCON-29 a RCON-33, RCON-50: narrativa, resumo lateral e grade ---
+
+
+def _secao_narrativa(tela):
+    inicio = tela.index('<section class="narrativa" aria-labelledby="narrativa-titulo">')
+    return tela[inicio : tela.index("</section>", inicio) + len("</section>")]
+
+
+def _aside(tela):
+    inicio = tela.index('<aside aria-label="Resumo da inovação">')
+    return tela[inicio : tela.index("</aside>", inicio) + len("</aside>")]
+
+
+def test_narrativa_tem_os_tres_passos_em_ordem_com_o_texto_completo(logado, criar_inovacao):
+    """RCON-29: h2 "Como a inovação funciona"; ol com tres h3 na ordem e o texto inteiro."""
+    longo = "Conferencia manual " * 30
+    inovacao = criar_inovacao(problema=f"{longo}\nfim", solucao="c\nd", resultado="e\nf")
+    secao = _secao_narrativa(exibido(_pagina(logado, inovacao), rigoroso=True))
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Como a inovação funciona"]
+    passos = re.findall(
+        r"<li>\s*<h3>(.*?)</h3>\s*<p[^>]*>(.*?)</p>\s*</li>",
+        re.search(r"</h2>\s*<ol>(.*?)</ol>", secao, re.S).group(1),
+        re.S,
+    )
+    assert passos == [
+        ("Problema ou dor", f"{longo}<br>fim"),
+        ("Solução aplicada", "c<br>d"),
+        ("Resultado ou impacto", "e<br>f"),
+    ]
+
+
+def test_resultado_vazio_le_resultado_ainda_nao_informado(logado, criar_inovacao):
+    """RCON-30: o terceiro passo le "Resultado ainda não informado." em --text-muted."""
+    secao = _secao_narrativa(exibido(_pagina(logado, criar_inovacao(resultado="")), rigoroso=True))
+    assert re.search(
+        r"<h3>Resultado ou impacto</h3>\s*"
+        r'<p class="narrativa__vazio">Resultado ainda não informado\.</p>',
+        secao,
+    )
+    assert re.search(r"color\s*:\s*var\(--text-muted\)", _corpos(".narrativa__vazio"))
+
+
+def test_aside_vem_depois_da_narrativa_e_antes_dos_reaproveitamentos(logado, criar_inovacao):
+    """RCON-31: o aside fica entre a narrativa e os reaproveitamentos; contato antes da ficha."""
+    tela = exibido(_pagina(logado, criar_inovacao()), rigoroso=True)
+    narrativa = tela.index('<section class="narrativa"')
+    aside = tela.index('<aside aria-label="Resumo da inovação">')
+    reaproveitamentos = tela.index('<section aria-labelledby="reaproveitamentos-titulo">')
+    assert narrativa < aside < reaproveitamentos
+    lateral = _aside(tela)
+    assert lateral.index('<div class="cartao-contato">') < lateral.index(
+        '<dl class="ficha-resumo">'
+    )
+    assert tela.count("<aside") == 1
+
+
+def test_cartao_de_contato_tem_titulo_texto_com_quebras_e_a_nota(logado, criar_inovacao):
+    """RCON-32: titulo, o contato como digitado (quebras preservadas) e a nota."""
+    contato = "Ana Souza\nRamal 1234\nana@x.com"
+    lateral = _aside(exibido(_pagina(logado, criar_inovacao(contato=contato)), rigoroso=True))
+    cartao = re.search(r'<div class="cartao-contato">(.*?)</div>', lateral, re.S).group(1)
+    assert re.findall(r"<h2>(.*?)</h2>", cartao) == ["Contato responsável"]
+    assert f'<p class="cartao-contato__texto">{contato}</p>' in cartao
+    nota = "Procure esta pessoa para tirar dúvidas antes de replicar."
+    assert f'<p class="cartao-contato__nota">{nota}</p>' in cartao
+    # As quebras digitadas so aparecem na tela porque a folha as preserva.
+    assert re.search(r"white-space\s*:\s*pre-line", _corpos(".cartao-contato__texto"))
+
+
+def test_ficha_tem_os_cinco_pares_na_ordem(logado, autor, terceiro, criar_inovacao):
+    """RCON-33: Unidade de origem, Categoria, Cadastrada por, Cadastrada em e Reaproveitamentos."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    Inovacao.objects.filter(pk=inovacao.pk).update(
+        data_criacao=datetime.datetime(2026, 9, 15, 2, 30, tzinfo=datetime.UTC)
+    )
+    for nome in ["Sede", "Filial Norte"]:
+        inovacao.registrar_reaproveitamento(unidade=Unidade.objects.get(nome=nome), por=terceiro)
+    lateral = _aside(exibido(_pagina(logado, inovacao), rigoroso=True))
+    ficha = re.search(r'<dl class="ficha-resumo">(.*?)</dl>', lateral, re.S).group(1)
+    pares = re.findall(r"<dt>(.*?)</dt>\s*<dd>(.*?)</dd>", ficha, re.S)
+    assert pares == [
+        ("Unidade de origem", "Teste Unidade"),
+        ("Categoria", "Teste Categoria"),
+        ("Cadastrada por", "Ana Souza"),
+        ("Cadastrada em", "14/09/2026"),
+        ("Reaproveitamentos", "2"),
+    ]
+    assert len(re.findall(r"<dt>", ficha)) == 5
+
+
+def test_narrativa_e_contato_saem_escapados(logado, criar_inovacao):
+    """CONS-17 (edge case da R2): HTML digitado no problema e no contato sai como texto."""
+    inovacao = criar_inovacao(problema="<b>p</b>", contato="<u>c</u>")
+    html = _pagina(logado, inovacao)
+    assert "&lt;b&gt;p&lt;/b&gt;" in _secao_narrativa(html)
+    assert '<p class="cartao-contato__texto">&lt;u&gt;c&lt;/u&gt;</p>' in _aside(html)
+    assert "<b>p</b>" not in html
+    assert "<u>c</u>" not in html
+
+
+def _regras_no_contexto(contexto):
+    return {
+        seletor: corpo
+        for ctx, lista, corpo in _regras_aninhadas(_sem_comentarios(CSS))
+        if ctx == contexto
+        for seletor in _seletores(lista)
+    }
+
+
+def test_grade_de_duas_colunas_so_a_partir_de_45rem():
+    """RCON-50, RCON-31: abaixo de 720px uma coluna; a partir de 45rem o aside vai a direita.
+
+    O aside fica na coluna 2, linhas 1 a 3, ao lado da narrativa que o precede (RCON-47).
+    """
+    globais = _regras_no_contexto(())
+    assert re.search(r"display\s*:\s*grid", globais[".detalhe"])
+    assert "grid-template-columns" not in globais[".detalhe"]
+    assert not any(
+        "grid-template-columns" in corpo or "grid-column" in corpo
+        for seletor, corpo in globais.items()
+        if seletor.startswith(".detalhe")
+    )
+    larga = _regras_no_contexto(("@media (min-width: 45rem)",))
+    assert re.search(
+        r"grid-template-columns\s*:\s*minmax\(0,\s*2fr\)\s+minmax\(0,\s*1fr\)",
+        larga[".detalhe"],
+    )
+    assert re.search(r"grid-column\s*:\s*1\s*;", larga[".detalhe > *"])
+    assert re.search(r"grid-column\s*:\s*2\s*;", larga[".detalhe > aside"])
+    assert re.search(r"grid-row\s*:\s*1\s*/\s*span\s+3\s*;", larga[".detalhe > aside"])
+
+
+def test_passos_da_narrativa_sao_numerados_pela_folha_como_decoracao():
+    """RCON-29: o numero do passo vem do counter no ::before, com texto alternativo vazio."""
+    assert re.search(r"counter-reset\s*:\s*passo", _corpos(".narrativa ol"))
+    assert re.search(r"counter-increment\s*:\s*passo", _corpos(".narrativa li"))
+    antes = _corpos(".narrativa li::before")
+    assert re.search(r'content\s*:\s*counter\(passo\)\s*/\s*""', antes)
+
+
+def test_regras_da_ficha_antiga_sairam_da_folha():
+    """RCON-33: a ficha antiga, o selo no dd e o destaque do contato nao tem mais uso."""
+    sem_comentarios = _sem_comentarios(CSS)
+    seletores = [
+        s
+        for lista, _ in re.findall(r"([^{}]+)\{([^}]*)\}", sem_comentarios)
+        for s in _seletores(lista)
+    ]
+    assert [s for s in seletores if re.search(r"\.ficha(?![\w-])|\.destaque\b", s)] == []

@@ -352,11 +352,11 @@ ordem em que aparecem e sem perder nada.
 | RCON-26 | P1: Vazios | Design | Implementing |
 | RCON-27 | P1: Vazios | Design | Implementing |
 | RCON-28 | P1: Detalhe | Design | Implementing |
-| RCON-29 | P1: Detalhe | Design | Pending |
-| RCON-30 | P1: Detalhe | Design | Pending |
-| RCON-31 | P1: Detalhe | Design | Pending |
-| RCON-32 | P1: Detalhe | Design | Pending |
-| RCON-33 | P1: Detalhe | Design | Pending |
+| RCON-29 | P1: Detalhe | Design | Implementing |
+| RCON-30 | P1: Detalhe | Design | Implementing |
+| RCON-31 | P1: Detalhe | Design | Implementing |
+| RCON-32 | P1: Detalhe | Design | Implementing |
+| RCON-33 | P1: Detalhe | Design | Implementing |
 | RCON-34 | P1: Detalhe | Design | Pending |
 | RCON-35 | P1: Detalhe | Design | Pending |
 | RCON-36 | P1: Detalhe | Design | Pending |
@@ -373,7 +373,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-47 | P1: Ordem e folha | Design | Pending |
 | RCON-48 | P1: Ordem e folha | Design | Pending |
 | RCON-49 | P1: Ordem e folha | Design | Pending |
-| RCON-50 | P1: Ordem e folha | Design | Pending |
+| RCON-50 | P1: Ordem e folha | Design | Implementing |
 
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
 

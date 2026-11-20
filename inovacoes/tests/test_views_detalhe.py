@@ -11,15 +11,17 @@ from contas.models import Usuario
 from inovacoes.models import Inovacao, MudancaDeStatus, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.tests.visibilidade import exibido
 
+# T-F (redesign-consulta, T17, RCON-33): a ficha da lateral tem cinco pares. Titulo, os tres
+# textos longos, o status e o contato saem dela para o h1, a narrativa, o selo e o cartao de
+# contato (RCON-28 a RCON-32).
 ROTULOS = [
-    "Título",
     "Unidade de origem",
     "Categoria",
-    "Problema ou dor",
-    "Solução aplicada",
-    "Resultado ou impacto",
-    "Contato responsável",
+    "Cadastrada por",
+    "Cadastrada em",
+    "Reaproveitamentos",
 ]
+PASSOS = ["Problema ou dor", "Solução aplicada", "Resultado ou impacto"]
 
 
 @pytest.fixture
@@ -33,6 +35,31 @@ def _pares(html):
     rotulos = re.findall(r"<dt[^>]*>(.*?)</dt>", html, re.S)
     valores = re.findall(r"<dd[^>]*>(.*?)</dd>", html, re.S)
     return [(r.strip(), v.strip()) for r, v in zip(rotulos, valores, strict=True)]
+
+
+def _passos(html):
+    """(h3, texto) de cada passo da narrativa "Como a inovação funciona", exibida (T-F)."""
+    tela = exibido(html, rigoroso=True)
+    inicio = tela.index('<section class="narrativa" aria-labelledby="narrativa-titulo">')
+    secao = tela[inicio : tela.index("</section>", inicio)]
+    return [
+        (titulo.strip(), texto.strip())
+        for titulo, texto in re.findall(
+            r"<li>\s*<h3>(.*?)</h3>\s*<p[^>]*>(.*?)</p>\s*</li>", secao, re.S
+        )
+    ]
+
+
+def _contato(html):
+    """Texto do cartao "Contato responsável", exibido."""
+    achado = re.search(
+        r'<div class="cartao-contato">\s*<h2>Contato responsável</h2>\s*'
+        r'<p class="cartao-contato__texto">(.*?)</p>',
+        exibido(html, rigoroso=True),
+        re.S,
+    )
+    assert achado, "sem o cartao de contato exibido"
+    return achado.group(1)
 
 
 def _selo_do_cabecalho(html):
@@ -50,24 +77,26 @@ def test_detalhe_mostra_h1_e_os_oito_campos_em_lista_de_descricao(logado, criar_
     """CONS-12, CONS-42.
 
     T-F (redesign-consulta, T16, RCON-28): o status sai da ficha e vai para o selo acima do
-    h1. A garantia da CONS-12 continua: os oito campos aparecem, o status pelo rotulo.
+    h1. T-F (T17, RCON-29 a RCON-33): problema, solucao e resultado vao para os h3 da
+    narrativa, o contato para o seu cartao e a ficha (ainda um dl, CONS-42) fica com unidade e
+    categoria. A garantia da CONS-12 continua: os oito campos aparecem, o status pelo rotulo.
     """
     inovacao = criar_inovacao(resultado="Fechamento em duas horas.")
     resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
     assert resposta.status_code == 200
     html = resposta.content.decode()
     assert re.search(r"<h1[^>]*>\s*Controle de Caixa\s*</h1>", html)
-    assert _pares(html) == [
-        ("Título", "Controle de Caixa"),
-        ("Unidade de origem", "Teste Unidade"),
-        ("Categoria", "Teste Categoria"),
+    pares = dict(_pares(html))
+    assert (pares["Unidade de origem"], pares["Categoria"]) == ("Teste Unidade", "Teste Categoria")
+    assert [r for r, _ in _pares(html)] == ROTULOS
+    assert _passos(html) == [
         ("Problema ou dor", "Fechamento de caixa manual e demorado."),
         ("Solução aplicada", "Planilha compartilhada com conferencia diaria."),
         ("Resultado ou impacto", "Fechamento em duas horas."),
-        ("Contato responsável", "Ana Souza (ana@x.com)"),
     ]
-    assert [r for r, _ in _pares(html)] == ROTULOS
+    assert _contato(html) == "Ana Souza (ana@x.com)"
     assert _selo_do_cabecalho(html) == ("em_teste", "Em teste")
+    assert "<dl" in html
     assert "<dl" in html
 
 
@@ -110,16 +139,24 @@ def test_detalhe_mostra_a_data_no_fuso_de_sao_paulo(logado, criar_inovacao):
 
 
 def test_resultado_vazio_mostra_nao_informado(logado, criar_inovacao):
-    """CONS-14."""
+    """CONS-14.
+
+    T-F (redesign-consulta, T17, RCON-30): o terceiro passo da narrativa le "Resultado ainda
+    não informado." (texto da §10 no lugar de "Não informado").
+    """
     inovacao = criar_inovacao(resultado="")
     html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert ("Resultado ou impacto", "Não informado") in _pares(html)
+    assert _passos(html)[2] == ("Resultado ou impacto", "Resultado ainda não informado.")
 
 
 def test_quebras_de_linha_dos_textos_longos_viram_br(logado, criar_inovacao):
-    """CONS-16: problema, solucao e resultado."""
+    """CONS-16: problema, solucao e resultado.
+
+    T-F (redesign-consulta, T17, RCON-29): lidos nos passos da narrativa.
+    """
     inovacao = criar_inovacao(problema="a\nb", solucao="c\nd", resultado="e\nf")
-    pares = dict(_pares(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()))
+    pares = dict(_passos(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()))
+    assert list(pares) == PASSOS
     assert pares["Problema ou dor"] == "a<br>b"
     assert pares["Solução aplicada"] == "c<br>d"
     assert pares["Resultado ou impacto"] == "e<br>f"

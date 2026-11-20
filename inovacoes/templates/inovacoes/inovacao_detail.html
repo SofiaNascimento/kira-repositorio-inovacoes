@@ -22,26 +22,58 @@
     </p>
   {% endif %}
 
-  {# CONS-42: campos numa lista de descricao; o escape automatico cobre a CONS-17. #}
-  <div class="cartao">
-  <dl class="ficha">
-    <dt>Título</dt>
-    <dd>{{ inovacao.titulo }}</dd>
-    <dt>Unidade de origem</dt>
-    <dd>{{ inovacao.unidade.nome }}</dd>
-    <dt>Categoria</dt>
-    <dd>{{ inovacao.categoria.nome }}</dd>
-    <dt>Problema ou dor</dt>
-    <dd>{{ inovacao.problema|linebreaksbr }}</dd>
-    <dt>Solução aplicada</dt>
-    <dd>{{ inovacao.solucao|linebreaksbr }}</dd>
-    <dt>Resultado ou impacto</dt>
-    <dd>{{ inovacao.resultado|linebreaksbr|default:"Não informado" }}</dd>
-    <dt>Contato responsável</dt>
-    {# design-spec §10 F3: o contato do responsavel em destaque. #}
-    <dd class="destaque">{{ inovacao.contato }}</dd>
-  </dl>
-  </div>
+  {# RCON-31, RCON-47: narrativa, resumo lateral e as secoes seguintes, na ordem de leitura. #}
+  {# Na tela larga a grade poe o aside na coluna da direita, ao lado da narrativa (RCON-50). #}
+  <div class="detalhe">
+  {# RCON-29: os tres passos em ordem; quebras de linha viram <br> e o escape cobre a CONS-17. #}
+  <section class="narrativa" aria-labelledby="narrativa-titulo">
+    <h2 id="narrativa-titulo">Como a inovação funciona</h2>
+    <ol>
+      <li>
+        <h3>Problema ou dor</h3>
+        <p>{{ inovacao.problema|linebreaksbr }}</p>
+      </li>
+      <li>
+        <h3>Solução aplicada</h3>
+        <p>{{ inovacao.solucao|linebreaksbr }}</p>
+      </li>
+      <li>
+        <h3>Resultado ou impacto</h3>
+        {# RCON-30: sem resultado, o texto em --text-muted. #}
+        {% if inovacao.resultado %}
+          <p>{{ inovacao.resultado|linebreaksbr }}</p>
+        {% else %}
+          <p class="narrativa__vazio">Resultado ainda não informado.</p>
+        {% endif %}
+      </li>
+    </ol>
+  </section>
+
+  {# RCON-31: contato, ciclo de vida e ficha, nessa ordem; o contato primeiro segue a RN06. #}
+  <aside aria-label="Resumo da inovação">
+    {# RCON-32: o contato como foi digitado; a folha preserva as quebras (white-space: pre-line). #}
+    <div class="cartao-contato">
+      <h2>Contato responsável</h2>
+      <p class="cartao-contato__texto">{{ inovacao.contato }}</p>
+      <p class="cartao-contato__nota">Procure esta pessoa para tirar dúvidas antes de replicar.</p>
+    </div>
+
+    {# RCON-33: os cinco pares da ficha; a contagem sai da lista ja carregada (REAP-43). #}
+    <div class="cartao">
+      <dl class="ficha-resumo">
+        <dt>Unidade de origem</dt>
+        <dd>{{ inovacao.unidade.nome }}</dd>
+        <dt>Categoria</dt>
+        <dd>{{ inovacao.categoria.nome }}</dd>
+        <dt>Cadastrada por</dt>
+        <dd>{{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }}</dd>
+        <dt>Cadastrada em</dt>
+        <dd>{{ inovacao.data_criacao|date:"d/m/Y" }}</dd>
+        <dt>Reaproveitamentos</dt>
+        <dd>{{ reaproveitamentos|length }}</dd>
+      </dl>
+    </div>
+  </aside>
 
   <section aria-labelledby="ciclo-titulo">
     <h2 id="ciclo-titulo">Ciclo de vida</h2>
@@ -106,6 +138,8 @@
       {% endif %}
     {% endwith %}
   </section>
+
+  </div>
 
   <p><a href="{% url 'inovacoes:lista' %}">Voltar para a lista de inovações</a></p>
 {% endblock %}

@@ -583,28 +583,60 @@ nav[aria-label=Paginação] a {
 }
 nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs-sm); }
 
-/* --- Lista de descricao (detalhe) ---------------------------------------- */
+/* --- Detalhe (§10 v2; RCON-29 a RCON-33, RCON-50) ---------------------- */
 
-.ficha { display: grid; grid-template-columns: minmax(10rem, 14rem) 1fr; margin: 0; }
-.ficha dt,
-.ficha dd { margin: 0; padding: var(--space-3) 0; border-top: 1px solid var(--border); }
-.ficha dt { padding-right: var(--space-4); color: var(--text-muted); font-weight: 600; }
-.ficha dt:first-of-type,
-.ficha dd:first-of-type { border-top: 0; }
-/* O status vai no proprio dd (CONS-12 le o texto puro); o selo nao ganha a linha. */
-.ficha dd.selo {
-  align-self: center;
-  margin: var(--space-2) 0;
-  padding: 2px var(--space-3);
-  border: 1px solid currentcolor;
+/* Uma coluna na ordem do codigo; a partir de 45rem, o aside vai na coluna da direita, ao
+   lado da narrativa que o precede (RCON-47: nenhum elemento antes de um irmao anterior). */
+.detalhe { display: grid; gap: var(--space-6); align-items: start; }
+.detalhe > * { min-width: 0; }
+@media (min-width: 45rem) {
+  .detalhe { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+  .detalhe > * { grid-column: 1; }
+  .detalhe > aside { grid-column: 2; grid-row: 1 / span 3; }
 }
-.ficha .destaque { color: var(--brand-navy); font-weight: 700; }
+.detalhe > aside > * + * { margin-top: var(--space-5); }
 
-@media (max-width: 40rem) {
-  .ficha { grid-template-columns: 1fr; }
-  .ficha dt { padding-bottom: 0; }
-  .ficha dd { padding-top: var(--space-1); border-top: 0; }
+/* Narrativa: passos numerados pela folha (o numero e decorativo; a ordem e a do ol). */
+.narrativa ol { margin: 0; padding: 0; list-style: none; counter-reset: passo; }
+.narrativa li {
+  position: relative;
+  padding: 0 0 var(--space-5) calc(32px + var(--space-4));
+  counter-increment: passo;
 }
+.narrativa li:last-child { padding-bottom: 0; }
+.narrativa li::before {
+  content: counter(passo);
+  content: counter(passo) / "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--brand-navy);
+  color: var(--on-brand);
+  font-weight: 700;
+}
+.narrativa li:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 36px;
+  bottom: var(--space-2);
+  border-left: 2px solid var(--border);
+}
+.narrativa h3 { margin: 0 0 var(--space-2); padding-top: var(--space-1); }
+.narrativa p { margin: 0; }
+.narrativa__vazio { color: var(--text-muted); }
+
+/* Ficha da lateral: rotulo sobre o valor; numeros que se comparam sao tabulares. */
+.ficha-resumo { margin: 0; color: var(--text); }
+.ficha-resumo dt { color: var(--text-muted); font-size: var(--fs-sm); font-weight: 600; }
+.ficha-resumo dd { margin: 0 0 var(--space-3); font-variant-numeric: var(--numeros); }
+.ficha-resumo dd:last-child { margin-bottom: 0; }
 
 /* --- Selo de status (§6): texto + cor + forma (o icone do status, RCON-15) - */
 

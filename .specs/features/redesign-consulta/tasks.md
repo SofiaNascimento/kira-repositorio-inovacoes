@@ -460,7 +460,7 @@ T22
 
 ---
 
-### T17: Narrativa, contato e ficha na grade
+### T17: Narrativa, contato e ficha na grade ✅
 
 **What**: `div.detalhe` com a seção "Como a inovação funciona", o `aside` (contato, ficha) e a grade de duas colunas; CSS `.detalhe`, `.narrativa`, `.ficha-resumo`; saem `.ficha dd.selo` e `.ficha .destaque`.
 **Where**: `inovacao_detail.html`, `templates/kira.css`
@@ -472,9 +472,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: três `h3` na ordem com o texto completo e `<br>`; "Resultado ainda não informado."; `aside` depois da narrativa e antes dos reaproveitamentos; contato com quebras e a nota; ficha com 5 pares exatos; HTML escapado (CONS-17); grade só a partir de 45rem
-- [ ] T-F: `ROTULOS`/`_pares` lêem a ficha nova e a narrativa (CONS-12, 14, 16, 42)
-- [ ] Gate build passa; test count ≥ anterior + 7
+- [x] Testes novos: três `h3` na ordem com o texto completo e `<br>`; "Resultado ainda não informado."; `aside` depois da narrativa e antes dos reaproveitamentos; contato com quebras e a nota; ficha com 5 pares exatos; HTML escapado (CONS-17); grade só a partir de 45rem
+- [x] T-F: `ROTULOS`/`_pares` lêem a ficha nova e a narrativa (CONS-12, 14, 16, 42)
+- [x] Gate build passa; test count ≥ anterior + 7
 
 **Tests**: e2e
 **Gate**: build

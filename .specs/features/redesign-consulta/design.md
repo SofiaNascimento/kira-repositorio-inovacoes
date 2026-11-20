@@ -316,3 +316,7 @@ lista.
   `.cabecalho-pagina p` já a pinta em `--text-muted`). A classe `.meta` deixou de ter uso no
   HTML e a regra saiu da folha na mesma task (código morto que a T16 criou).
 
+- **T17, ficha antiga inteira fora:** além de `.ficha dd.selo` e `.ficha .destaque`, saem todas
+  as regras `.ficha` (e o `@media (max-width: 40rem)` dela): a `dl` da lateral usa só
+  `.ficha-resumo` e nenhum outro template usa `.ficha`. O número dos passos da narrativa usa o
+  par `on-brand`/`brand-navy`, que já está no DS-08 (T10); nenhum par novo.
