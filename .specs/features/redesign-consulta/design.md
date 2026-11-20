@@ -2,7 +2,7 @@
 
 **Spec**: `.specs/features/redesign-consulta/spec.md`
 **Context**: `.specs/features/redesign-consulta/context.md`
-**Status**: Approved (2026-11-19; T-P autorizado)
+**Status**: Approved (2026-11-19; T-P autorizado) · Implementado; feature concluída em 2026-11-19 com risco residual N10 aceito
 
 Conforma com AD-002 (sem camada de serviço), AD-006, AD-008 (a busca não muda), AD-009 (a
 decisão de alterar continua em `pode_ser_alterada_por`), AD-010 (folha única embutida, sem
@@ -347,3 +347,10 @@ lista.
   `kira.css` (com o `\76` desfeito). O RCON-47 fixa o único posicionamento explícito da folha
   (o do `.detalhe`) e só aceita `position: absolute` da R2 em pseudo-elemento decorativo ou na
   `.visualmente-oculto`.
+
+### Correções da validação (T23–T24, 2026-11-19)
+
+- Iteração 1 do Verifier: FAIL só pelo mutante M27 (o vazio podia aparecer junto dos resultados sem nenhum teste falhar). A T23 (`7c0c4a7`) exige que a lista e o vazio se excluam. A RCON-33 (pares `dt`/`dd` da ficha) e a RCON-35 (texto da caption) foram emendadas na spec (`cb1880c`).
+- A T24 (`9c91a77`) cobriu os edge cases: `page` inválida marca a página 1, e o título de 150 caracteres sem espaço quebra com `overflow-wrap: anywhere` no `.cartao-ino\76 acao__titulo`. É a única mudança de produção da correção.
+- Iteração 2: FAIL só pelo mutante N10 (`white-space: nowrap` no título). Risco aceito pelo usuário; a correção fica em Deferred Ideas do `context.md`.
+

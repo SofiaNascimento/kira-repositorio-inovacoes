@@ -124,7 +124,7 @@
 
 ## Handoff
 
-### Atual (2026-11-19) — redesign-consulta (R2) concluída com risco aceito
+### Pausa atual (2026-11-19) — redesign-consulta (R2) concluída com risco aceito, aguardando UAT
 
 - **Feature**: redesign-consulta (R2) — `.specs/features/redesign-consulta/`. **Concluída** em 2026-11-19. Lista e detalhe refeitos pela `design-spec.md` v2 §10: busca em destaque, filtros em linha e etiquetas removíveis; cartões como exibição padrão e a tabela atual em `?exibicao=tabela`; paginação numerada; estados vazios com ilustração; detalhe com selo e autoria no cabeçalho, ações em hierarquia (uma primária, Editar e Excluir separado), narrativa Problema → Solução → Resultado, `aside` (contato → ciclo → ficha), reaproveitamentos em tabela e histórico como linha do tempo que começa no cadastro. Sem model nem migration; nenhuma AD nova (conforma AD-002, 008–015).
 - **Phases**: Specify ✅ (Discuss: Avançar no cabeçalho, textos da §10, vazios da §10, paginação dentro) · Design ✅ (`inovacoes/apresentacao.py` com funções puras; bloco `sobretitulo` no base; T-P) · Tasks ✅ (T1–T22) · Execute ✅ por 3 sub-agentes · Verifier it. 1 FAIL (50/50 ACs; 33/34 mutantes, M27) → T23, T24 e emendas da RCON-33 e da RCON-35 → it. 2 FAIL (10/11, N10: `white-space: nowrap` no título do cartão). **O usuário aceitou o risco residual N10 e fechou** sem iteração 3. RCON-49 `Implementing (risco residual aceito)`; as outras 49 `Verified`. `validate_state.py` sai com 1 de propósito.
@@ -134,7 +134,8 @@
 - **Lições**: candidatas novas L-058 a L-064. `.specs/LESSONS.md` e `lessons.json` seguem com mudanças locais fora dos commits.
 - **Preferência nova do usuário**: depois de um FAIL do Verifier, perguntar antes de abrir outra rodada.
 - **Pendente**: conferência no navegador (UAT). Conferir os 10 ícones Lucide desenhados de memória, o alto contraste, o zoom de 200%, o valor dos reaproveitamentos na ficha e a legenda oculta da tabela de reaproveitamentos. Deploy da R1 e da R2 (produção ainda sem a R1).
-- **Next step**: UAT da R2; depois, deploy com o ok explícito do usuário.
+- **Pausa (2026-11-19, pedido do usuário)**: nada em andamento; a árvore só tem as mudanças alheias (`.specs/LESSONS.md` e `lessons.json` com as lições candidatas novas, `gestao-por-unidade/` e `link-administracao/` não rastreadas).
+- **Next step**: na retomada, conferir `git log`/`git status` contra este snapshot e propor a UAT da R2. O roteiro está na última mensagem da sessão de 2026-11-19 (servidor: `DJANGO_DEBUG=True .venv/bin/python manage.py runserver`; PostgreSQL na porta 5433, que pode precisar ser religado com o `pg_ctl`). Os resultados entram numa seção "UAT" do `validation.md`. Depois, o deploy da R1 e da R2 juntas, com o ok explícito do usuário. As specs `link-administracao` e `gestao-por-unidade` seguem em especificação, sem aprovação.
 - **Branch**: `main`, só local; push pelo usuário. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local ligado na 5433 nesta sessão.
 
 ### Anterior (2026-11-15) — fundacao-do-redesign (R1) concluída com risco aceito
