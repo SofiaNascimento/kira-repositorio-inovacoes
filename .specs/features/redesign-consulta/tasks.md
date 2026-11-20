@@ -625,7 +625,7 @@ T23 → T24
 
 ---
 
-### T24: Edge cases da paginação e do título longo (correção da validação, iteração 1)
+### T24: Edge cases da paginação e do título longo (correção da validação, iteração 1) ✅
 
 **What**: teste de `page` inválida (`0`, `abc`) marcando a página 1 como atual; título de 150 caracteres sem espaço renderizado inteiro no `h2` do cartão, com `overflow-wrap: anywhere` no `.cartao-inovacao__titulo`.
 **Where**: `templates/kira.css`
@@ -637,8 +637,8 @@ T23 → T24
 
 **Done when**:
 
-- [ ] Testes novos em `test_views_lista_paginacao.py` e `test_views_lista_cartoes.py`
-- [ ] Gate build passa; test count ≥ anterior + 3
+- [x] Testes novos em `test_views_lista_paginacao.py` e `test_views_lista_cartoes.py`
+- [x] Gate build passa; test count ≥ anterior + 3
 
 **Tests**: e2e
 **Gate**: build

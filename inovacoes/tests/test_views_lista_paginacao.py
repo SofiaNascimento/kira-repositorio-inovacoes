@@ -185,3 +185,13 @@ def test_cores_da_paginacao_estao_no_ds08_nos_dois_temas():
             assert _contraste(_token_alto(cor), _token_alto(fundo)) >= minimo
             conferidos += 1
     assert conferidos >= 4
+
+
+@pytest.mark.parametrize("pagina", ["0", "-3", "abc"])
+def test_pagina_invalida_marca_a_primeira_pagina(logado, vinte_e_cinco_paginas, pagina):
+    """Edge case (CONS-05, RCON-22): page invalida mostra e marca a pagina 1."""
+    html = logado.get(f"{LISTA}?page={pagina}").content.decode()
+    itens = _itens(html)
+    assert [texto for tipo, texto in itens if tipo == "atual"] == ["1"]
+    assert itens[0] == ("desabilitado", "Anterior")
+    assert "Página 1 de 25" in _nav(html)

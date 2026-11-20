@@ -11,6 +11,7 @@ from django.test.utils import CaptureQueriesContext
 
 from inovacoes.models import Categoria, Inovacao, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.tests.test_views_lista import _linhas
+from inovacoes.tests.test_views_sistema_design import _corpos
 from inovacoes.tests.visibilidade import CLASSES_OCULTAS, VAZIOS, exibido
 
 LISTA = "/inovacoes/"
@@ -441,3 +442,14 @@ def test_folha_nao_esconde_a_barra_de_resultados():
     """RCON-09, RCON-17 (L-044): a barra e o alternador nao somem por regra da folha."""
     for classe in ("resultados", "alternador", "total"):
         assert classe not in CLASSES_OCULTAS
+
+
+def test_titulo_de_150_caracteres_sem_espaco_quebra_dentro_do_cartao(logado, criar_inovacao):
+    """Edge case (RCON-49): o titulo maximo aparece inteiro no h2 e a folha o quebra em
+    qualquer ponto, para nao rolar a pagina na horizontal a 320px."""
+    titulo = "A" * 150
+    criar_inovacao(titulo=titulo)
+    (artigo,) = _artigos(_exibida(logado.get(LISTA)))
+    h2 = re.search(r"<h2\b[^>]*>(.*?)</h2>", artigo, re.S).group(1)
+    assert _textos(h2) == [titulo]
+    assert re.search(r"overflow-wrap:\s*anywhere\s*;", _corpos(".cartao-ino\\76 acao__titulo"))

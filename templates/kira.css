@@ -801,7 +801,7 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   justify-content: space-between;
   gap: var(--space-2) var(--space-3);
 }
-.cartao-ino\76 acao__titulo { margin: 0; font-size: var(--fs-lg); }
+.cartao-ino\76 acao__titulo { margin: 0; font-size: var(--fs-lg); overflow-wrap: anywhere; }
 .cartao-ino\76 acao__titulo a { color: var(--brand-blue); text-decoration: none; }
 .cartao-ino\76 acao:hover .cartao-ino\76 acao__titulo a { text-decoration: underline; }
 .cartao-ino\76 acao__resumo { margin: 0; }
