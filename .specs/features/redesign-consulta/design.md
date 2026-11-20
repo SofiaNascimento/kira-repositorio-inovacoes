@@ -342,3 +342,8 @@ lista.
   `.reaproveitamentos` por `.tabela` no `CADEIA_DO_COMPONENTE` (com `caption`, `th` e o
   hover da linha, todos em pares do DS-08). O T-N acrescenta só o `clip: rect(0 0 0 0)` da
   `.visualmente-oculto`: a largura de 1px não conta como ocultação na guarda da folha.
+- **T22, folha:** os testes novos ficam em `test_folha_v2.py` e passaram sem ajuste na folha.
+  O RCON-48 confere também que toda classe usada na lista, no detalhe e nas parciais existe na
+  `kira.css` (com o `\76` desfeito). O RCON-47 fixa o único posicionamento explícito da folha
+  (o do `.detalhe`) e só aceita `position: absolute` da R2 em pseudo-elemento decorativo ou na
+  `.visualmente-oculto`.

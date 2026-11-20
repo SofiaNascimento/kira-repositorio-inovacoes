@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/redesign-consulta/spec.md`
 **Design**: `.specs/features/redesign-consulta/design.md`
-**Status**: Approved (2026-11-19) · In Progress
+**Status**: Approved (2026-11-19) · Implementado (T1–T22); falta o Verifier
 
 ---
 
@@ -575,7 +575,7 @@ T22
 
 ---
 
-### T22: Garantias da folha da R2
+### T22: Garantias da folha da R2 ✅
 
 **What**: testes de folha para as regras acrescentadas pela R2: ordem de leitura (RCON-47), AD-010 nos templates (RCON-48), pares de cor no DS-08 inclusive alto contraste, reduced motion e reflow (RCON-49), uma coluna abaixo de 720px (RCON-50); ajusta a folha onde algum falhar.
 **Where**: `inovacoes/tests/test_folha_v2.py`
@@ -587,8 +587,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: nenhuma regra da R2 com `order` ou posicionamento que ponha um elemento antes de um irmão anterior; nenhum `style` nos templates novos; cada par novo no DS-08 normal e alto; transições novas no `prefers-reduced-motion`; nenhuma largura acima de 320px fora de `min()`/`max-width`
-- [ ] Gate build passa; test count ≥ anterior + 5
+- [x] Testes novos: nenhuma regra da R2 com `order` ou posicionamento que ponha um elemento antes de um irmão anterior; nenhum `style` nos templates novos; cada par novo no DS-08 normal e alto; transições novas no `prefers-reduced-motion`; nenhuma largura acima de 320px fora de `min()`/`max-width`
+- [x] Gate build passa; test count ≥ anterior + 5
 
 **Tests**: unit
 **Gate**: build

@@ -6,8 +6,10 @@ Os helpers da folha sao os do sistema de design (DS-06 a DS-09), importados sem 
 
 import re
 from html.parser import HTMLParser
+from pathlib import Path
 
 import pytest
+from django.conf import settings
 
 # `paginas` e a fixture do DS-02 a DS-05, reusada sem mudanca.
 from inovacoes.tests.test_views_sistema_design import (
@@ -1081,3 +1083,211 @@ def test_exibicao_atual_do_alternador_e_navy_com_texto_sobre_a_marca():
     corpo = _corpos(".alternador a[aria-current=true]")
     assert _tem(corpo, "background", "var(--brand-navy)")
     assert _tem(corpo, "color", "var(--on-brand)")
+
+
+# --- redesign-consulta (R2), T22: garantias da folha (RCON-47 a RCON-50) -------------
+
+# Prefixos das regras que a R2 acrescentou a folha (lista, detalhe e a legenda oculta).
+R2_COMPONENTES = [
+    ".busca",
+    ".resultados",
+    ".alternador",
+    ".cartoes",
+    ".paginacao",
+    ".vazio__",
+    ".acoes-pagina",
+    ".detalhe",
+    ".narrativa",
+    ".ficha-resumo",
+    ".visualmente-oculto",
+]
+TEMPLATES_R2 = Path(settings.BASE_DIR) / "inovacoes" / "templates" / "inovacoes"
+
+
+def _regras_r2():
+    """(contexto, seletor, corpo) de cada regra da R2, inclusive dentro de @media."""
+    return [
+        (contexto, seletor, corpo)
+        for contexto, lista, corpo in _regras_aninhadas(_sem_comentarios(CSS))
+        if not lista.startswith("@")
+        for seletor in _seletores(lista)
+        if any(seletor.startswith(prefixo) for prefixo in R2_COMPONENTES)
+    ]
+
+
+@pytest.mark.unit
+def test_regras_da_r2_existem_para_cada_componente():
+    """RCON-49: cada componente novo tem regra na folha (a guarda abaixo nao fica vazia)."""
+    seletores = {seletor for _, seletor, _ in _regras_r2()}
+    for prefixo in R2_COMPONENTES:
+        assert any(s.startswith(prefixo) for s in seletores), prefixo
+
+
+@pytest.mark.unit
+def test_folha_nao_reordena_nada_por_css():
+    """RCON-47: sem `order`, sem areas nem reversao; o unico posicionamento e o do detalhe.
+
+    O aside vai na coluna 2 a partir da linha 1, ao lado da narrativa que o precede no codigo;
+    todo o resto da grade fica na coluna 1, na ordem do codigo.
+    """
+    css = _sem_comentarios(CSS)
+    assert not re.search(r"(?<![\w-])order\s*:", css)
+    assert not re.search(r"grid-template-areas|grid-area\s*:", css)
+    assert not re.search(r"(?:row|column|wrap)-reverse", css)
+    posicoes = {
+        (seletor, f"{propriedade}: {' '.join(valor.split())}")
+        for _, lista, corpo in _regras_aninhadas(css)
+        for seletor in _seletores(lista)
+        for propriedade, valor in re.findall(r"(grid-(?:row|column)[\w-]*)\s*:\s*([^;]+);", corpo)
+    }
+    assert posicoes == {
+        (".detalhe > *", "grid-column: 1"),
+        (".detalhe > aside", "grid-column: 2"),
+        (".detalhe > aside", "grid-row: 1 / span 3"),
+    }
+
+
+@pytest.mark.unit
+def test_regras_da_r2_so_posicionam_decoracao_ou_a_legenda_oculta():
+    """RCON-47: `position: absolute` so em pseudo-elemento decorativo ou no .visualmente-oculto."""
+    absolutos = [
+        seletor
+        for _, seletor, corpo in _regras_r2()
+        if re.search(r"position\s*:\s*absolute", corpo)
+    ]
+    assert absolutos
+    assert [
+        s
+        for s in absolutos
+        if not (s.endswith(("::before", "::after")) or s == ".visualmente-oculto")
+    ] == []
+
+
+def _classes_da_folha():
+    css = re.sub(r"\\([0-9a-fA-F]{1,6})\s?", lambda m: chr(int(m.group(1), 16)), CSS)
+    return set(re.findall(r"\.(-?[_a-zA-Z][\w-]*)", _sem_comentarios(css)))
+
+
+@pytest.mark.unit
+def test_templates_da_consulta_so_usam_a_folha_central():
+    """RCON-48, AD-010: lista, detalhe e parciais sem <style> nem style=; so classes da folha."""
+    arquivos = [
+        TEMPLATES_R2 / "inovacao_list.html",
+        TEMPLATES_R2 / "inovacao_detail.html",
+        *sorted((TEMPLATES_R2 / "parciais").iterdir()),
+    ]
+    da_folha = _classes_da_folha()
+    for arquivo in arquivos:
+        fonte = arquivo.read_text()
+        assert "<style" not in fonte, arquivo.name
+        assert "style=" not in fonte, arquivo.name
+        for valor in re.findall(r'\bclass="([^"]*)"', fonte):
+            for classe in re.sub(r"\{\{.*?\}\}|\{%.*?%\}", " ", valor).split():
+                if classe.endswith("--"):
+                    continue  # variante montada no template (selo--{{ status }}, etapa--...)
+                assert classe in da_folha, (arquivo.name, classe)
+
+
+# Onde cada componente da R2 com cor e desenhado: o fundo em volta quando a regra nao tem.
+CORES_R2 = [
+    (".busca__principal", "surface"),
+    (".paginacao", "bg"),
+    (".narrativa", "bg"),
+    (".ficha-resumo", "surface"),
+    (".vazio__ilustracao", "surface"),
+    # A T20 deu cor ao ponto da linha do tempo, que fica sobre o fundo da pagina.
+    (".linha-do-tempo__ponto", "bg"),
+]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(("componente", "contexto"), CORES_R2)
+def test_pares_de_cor_da_r2_estao_no_ds08_nos_dois_temas(componente, contexto):
+    """RCON-48: todo par de texto novo esta no DS-08, com 4.5:1 no tema normal e no alto.
+
+    Limites (borda) contam com 3:1 e podem ser um par de componente aprovado na R1.
+    """
+    conferidos = 0
+    for seletores, corpo in _regras_de(componente):
+        for cor, fundo, e_texto in _pares_da_regra(corpo, contexto):
+            minimo = 4.5 if e_texto else 3
+            aprovados = PARES_DS08 if e_texto else PARES_DS08 | PARES_APROVADOS_DE_COMPONENTE
+            assert (cor, fundo) in aprovados, (seletores, cor, fundo)
+            assert _contraste(_token(cor), _token(fundo)) >= minimo, (seletores, cor, fundo)
+            assert _contraste(_token_alto(cor), _token_alto(fundo)) >= minimo, (seletores, cor)
+            conferidos += 1
+    assert conferidos
+
+
+@pytest.mark.unit
+def test_transicoes_da_r2_desligam_com_reduzir_movimento():
+    """RCON-49, RED-11: as transicoes novas usam o token e o bloco reduce vale para `*`."""
+    transicoes = [
+        (seletor, corpo)
+        for contexto, seletor, corpo in _regras_r2()
+        if re.search(r"(?<![\w-])(?:transition|animation)\s*:", corpo)
+    ]
+    assert transicoes
+    for seletor, corpo in transicoes:
+        assert not re.search(r"(?<![\w-])animation\s*:", corpo), seletor
+        for valor in re.findall(r"(?<![\w-])transition\s*:\s*([^;]+);", corpo):
+            assert re.fullmatch(r"[\w-]+ var\(--transicao\)(?:, [\w-]+ var\(--transicao\))*", valor)
+    bloco = re.search(r"@media \(prefers-reduced-motion: reduce\)\s*\{(.*?)\n\}", CSS, re.S)
+    regras = re.findall(r"([^{}]+)\{([^}]*)\}", bloco.group(1))
+    assert any(
+        {"*", "*::before", "*::after"} <= set(_seletores(lista))
+        and re.search(r"transition\s*:\s*none\s*!important", corpo)
+        for lista, corpo in regras
+    )
+
+
+def _sem_min(valor):
+    """O valor sem o que esta dentro de min(...): ali a largura cede a tela estreita."""
+    while "min(" in valor:
+        inicio = valor.index("min(")
+        nivel, i = 1, inicio + 4
+        while nivel:
+            nivel += {"(": 1, ")": -1}.get(valor[i], 0)
+            i += 1
+        valor = valor[:inicio] + valor[i:]
+    return valor
+
+
+@pytest.mark.unit
+def test_regras_da_r2_refluem_sem_largura_acima_de_320px():
+    """RCON-49, RED-12: sem position fixed e sem largura acima de 320px fora de min()/max-width."""
+    largas = []
+    for contexto, seletor, corpo in _regras_r2():
+        assert not re.search(r"position\s*:\s*fixed", corpo), seletor
+        if any("max-width" in c for c in contexto):
+            continue
+        for propriedade, valor in re.findall(
+            r"(?<![\w-])((?:min-)?width|flex(?:-basis)?|grid-template-columns)\s*:\s*([^;]+);",
+            corpo,
+        ):
+            for numero, unidade in re.findall(r"(\d*\.?\d+)(px|rem|em)\b", _sem_min(valor)):
+                if _em_px(numero, unidade) > 320:
+                    largas.append((seletor, propriedade, valor))
+    assert largas == []
+
+
+@pytest.mark.unit
+def test_abaixo_de_720px_cartoes_e_detalhe_ficam_em_uma_coluna():
+    """RCON-50: fora da @media (min-width: 45rem) os cartoes e o detalhe tem uma coluna so."""
+    globais = {
+        seletor: corpo
+        for contexto, lista, corpo in _regras_aninhadas(_sem_comentarios(CSS))
+        if contexto == ()
+        for seletor in _seletores(lista)
+    }
+    assert re.search(r"grid-template-columns\s*:\s*minmax\(0,\s*1fr\)\s*;", globais[".cartoes"])
+    assert "grid-template-columns" not in globais[".detalhe"]
+    larga = ("@media (min-width: 45rem)",)
+    multiplas = {
+        (contexto, seletor)
+        for contexto, seletor, corpo in _regras_r2()
+        if seletor in (".cartoes", ".detalhe")
+        for valor in re.findall(r"grid-template-columns\s*:\s*([^;]+);", corpo)
+        if " ".join(valor.split()) != "minmax(0, 1fr)"
+    }
+    assert multiplas == {(larga, ".cartoes"), (larga, ".detalhe")}
