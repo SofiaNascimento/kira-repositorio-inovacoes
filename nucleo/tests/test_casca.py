@@ -116,12 +116,35 @@ def test_atalho_da_busca_aponta_para_o_campo_da_lista(caminho, esperado):
 
 ICONES = Path(settings.BASE_DIR) / "templates" / "icones"
 
-NOMES_DOS_ICONES = ["lampada", "circulo-mais", "grafico-barras", "contraste"]
+NOMES_DOS_ICONES_DA_CASCA = ["lampada", "circulo-mais", "grafico-barras", "contraste"]
+
+# R2 (redesign-consulta, RCON-15): status no selo (frasco, visto, caixa-seta), busca,
+# remocao de etiqueta, alternador (grade, tabela), metadados do cartao (predio,
+# etiqueta, repetir).
+NOMES_DOS_ICONES_DA_CONSULTA = [
+    "frasco",
+    "visto",
+    "caixa-seta",
+    "lupa",
+    "fechar",
+    "grade",
+    "tabela",
+    "predio",
+    "etiqueta",
+    "repetir",
+]
+
+NOMES_DOS_ICONES = NOMES_DOS_ICONES_DA_CASCA + NOMES_DOS_ICONES_DA_CONSULTA
 
 
 @pytest.mark.unit
-def test_pasta_traz_os_quatro_icones_da_casca():
-    """RED-16, RED-23: lampada, circulo com mais, grafico e meio circulo."""
+def test_pasta_traz_os_icones_da_casca_e_da_consulta():
+    """RED-16, RED-23: lampada, circulo com mais, grafico e meio circulo.
+
+    T-O (redesign-consulta, T6): a pasta deixa de ter exatamente os 4 da R1 e passa a ter
+    os 4 da R1 mais os 10 da R2 (RCON-15), nem mais nem menos. A garantia da RED-16 e da
+    RED-23 continua: os 4 da casca estao la.
+    """
     assert sorted(a.stem for a in ICONES.glob("*.svg")) == sorted(NOMES_DOS_ICONES)
 
 
@@ -141,6 +164,8 @@ def test_icone_e_um_svg_decorativo_no_traco_do_texto(nome):
         assert atributo in abertura, atributo
     assert "<title" not in fonte
     assert not re.search(r"\sid=", fonte)
+    # T-O (redesign-consulta, T6): nenhum estilo embutido no icone (AD-010).
+    assert "style" not in fonte
     assert fonte.rstrip().endswith("</svg>")
 
 

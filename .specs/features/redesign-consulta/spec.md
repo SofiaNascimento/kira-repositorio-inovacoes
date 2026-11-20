@@ -336,7 +336,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-12 | P1: Cartões | Design | Pending |
 | RCON-13 | P1: Cartões | Design | Implementing |
 | RCON-14 | P1: Cartões | Design | Implementing |
-| RCON-15 | P1: Cartões | Design | Pending |
+| RCON-15 | P1: Cartões | Design | Implementing |
 | RCON-16 | P1: Cartões | Design | Implementing |
 | RCON-17 | P1: Tabela | Design | Pending |
 | RCON-18 | P1: Tabela | Design | Implementing |

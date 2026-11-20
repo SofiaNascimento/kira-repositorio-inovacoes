@@ -206,7 +206,7 @@ T22
 
 ---
 
-### T6: Ícones novos
+### T6: Ícones novos ✅
 
 **What**: os 10 SVG Lucide da design (`frasco`, `visto`, `caixa-seta`, `lupa`, `fechar`, `grade`, `tabela`, `predio`, `etiqueta`, `repetir`).
 **Where**: `templates/icones/`
@@ -218,8 +218,8 @@ T22
 
 **Done when**:
 
-- [ ] T-O (parte dos ícones): `nucleo/tests/test_casca.py:123` passa a exigir os 4 da R1 mais os 10 da R2; cada um com `aria-hidden="true"`, `focusable="false"`, `stroke="currentColor"`, sem `style`
-- [ ] Gate quick passa; test count ≥ anterior
+- [x] T-O (parte dos ícones): `nucleo/tests/test_casca.py:123` passa a exigir os 4 da R1 mais os 10 da R2; cada um com `aria-hidden="true"`, `focusable="false"`, `stroke="currentColor"`, sem `style`
+- [x] Gate quick passa; test count ≥ anterior
 
 **Tests**: unit
 **Gate**: quick
