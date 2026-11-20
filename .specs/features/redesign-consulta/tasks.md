@@ -252,7 +252,7 @@ T22
 
 ---
 
-### T8: Contexto da lista
+### T8: Contexto da lista ✅
 
 **What**: `InovacaoListView.get_context_data` passa `exibicao`, `url_cartoes`, `url_tabela`, `etiquetas` (vazia com form inválido), `url_limpar` e `paginas`.
 **Where**: `inovacoes/views.py`
@@ -264,8 +264,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes e2e em `test_views_lista_filtros.py` sobre `response.context`: cada chave com o valor exato para filtros válidos, form inválido (CONS-30), `exibicao=tabela` e página 2
-- [ ] Gate full passa; test count ≥ anterior + 5
+- [x] Testes e2e em `test_views_lista_filtros.py` sobre `response.context`: cada chave com o valor exato para filtros válidos, form inválido (CONS-30), `exibicao=tabela` e página 2
+- [x] Gate full passa; test count ≥ anterior + 5
 
 **Tests**: e2e
 **Gate**: full

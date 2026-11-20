@@ -329,7 +329,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-05 | P1: Busca e filtros | Design | Implementing |
 | RCON-06 | P1: Busca e filtros | Design | Implementing |
 | RCON-07 | P1: Busca e filtros | Design | Implementing |
-| RCON-08 | P1: Busca e filtros | Design | Pending |
+| RCON-08 | P1: Busca e filtros | Design | Implementing |
 | RCON-09 | P1: Cartões | Design | Pending |
 | RCON-10 | P1: Cartões | Design | Pending |
 | RCON-11 | P1: Cartões | Design | Pending |

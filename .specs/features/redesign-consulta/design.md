@@ -269,3 +269,11 @@ lista.
 - **T7, selo:** a parcial `inovacoes/parciais/selo.html` recebe `status` (o valor) e `rotulo`
   (o texto), e não a inovação inteira, para o DS-13 renderizá-la sem banco. Até a T16 o `dd.selo`
   do detalhe fica sem forma: o `::before` saiu da folha e o detalhe ainda não usa a parcial.
+
+### Lote 2
+
+- **T8, etiquetas com o form inválido:** a view passa `etiquetas(form.cleaned_data, GET)` também
+  com o form inválido, e não uma lista vazia. O `cleaned_data` guarda só os campos válidos, então
+  o parâmetro inválido fica sem etiqueta (RCON-08) e os válidos mantêm a sua, como pede o "Done
+  when" da T12 ("só as válidas + Limpar filtros"). Com só o parâmetro inválido a lista continua
+  vazia. Marcado com `SPEC_DEVIATION` em `inovacoes/views.py`.

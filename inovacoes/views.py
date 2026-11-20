@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, QueryDict
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
@@ -13,6 +13,7 @@ from django.views.generic import (
     UpdateView,
 )
 
+from inovacoes import apresentacao
 from inovacoes.forms import BuscaForm, InovacaoForm, ReaproveitamentoForm
 from inovacoes.models import (
     MENSAGEM_REAPROVEITAMENTO_STATUS,
@@ -356,7 +357,23 @@ class InovacaoListView(ListView):
             busca.get("unidade"),
             busca.get("status"),
         )
-        return super().get_context_data(form=self.form, filtros_ativos=any(ativos), **kwargs)
+        contexto = super().get_context_data(form=self.form, filtros_ativos=any(ativos), **kwargs)
+        # R2: o template so itera; a montagem fica em apresentacao.py (RCON-04 a 08, 18, 20, 22).
+        # SPEC_DEVIATION: o design pede etiquetas vazias com o form invalido.
+        # Reason: a T12 pede "so as validas" com o form invalido; o cleaned_data guarda so os
+        # campos validos, e a RCON-08 so proibe a etiqueta do parametro invalido.
+        escolhida = apresentacao.exibicao(busca)
+        contexto.update(
+            exibicao=escolhida,
+            url_cartoes=apresentacao.url_da_lista(busca, exibicao=None),
+            url_tabela=apresentacao.url_da_lista(busca, exibicao="tabela"),
+            etiquetas=apresentacao.etiquetas(self.form.cleaned_data, busca),
+            url_limpar=apresentacao.url_da_lista(
+                QueryDict(), exibicao="tabela" if escolhida == "tabela" else None
+            ),
+            paginas=apresentacao.paginas(contexto["page_obj"]),
+        )
+        return contexto
 
     # SPEC_DEVIATION: o design chama get_page() com o valor cru de ?page=.
     # Reason: get_page() manda page=0 para a ultima pagina; a T5 pede a primeira.
