@@ -61,7 +61,7 @@ AC original (docstring com a AC). Se outro teste antigo quebrar, a task para e p
 | T-L | T18 (`.ciclo`), T20 (`.historico`), T21 (`.reaproveitamentos`) |
 | T-M | toda task que cria parcial |
 | T-N | T14 (ilustração), T21 (`caption`) |
-| T-O | T6 (ícones), T16 (cabeçalho) |
+| T-O | T6 (ícones), T15 (cabeçalho da lista, estendido em 2026-11-19), T16 (cabeçalho do detalhe) |
 | T-P | T7 |
 | T-Q | T13 (achado no Execute, autorizado em 2026-11-19) |
 | T-R | T14 (achado no Execute, autorizado em 2026-11-19) |
