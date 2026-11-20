@@ -344,10 +344,10 @@ ordem em que aparecem e sem perder nada.
 | RCON-18 | P1: Tabela | Design | Implementing |
 | RCON-19 | P1: Tabela | Design | Implementing |
 | RCON-20 | P1: Tabela | Design | Implementing |
-| RCON-21 | P1: Paginação | Design | Pending |
+| RCON-21 | P1: Paginação | Design | Implementing |
 | RCON-22 | P1: Paginação | Design | Implementing |
-| RCON-23 | P1: Paginação | Design | Pending |
-| RCON-24 | P1: Paginação | Design | Pending |
+| RCON-23 | P1: Paginação | Design | Implementing |
+| RCON-24 | P1: Paginação | Design | Implementing |
 | RCON-25 | P1: Vazios | Design | Pending |
 | RCON-26 | P1: Vazios | Design | Pending |
 | RCON-27 | P1: Vazios | Design | Pending |

@@ -280,7 +280,9 @@ lista.
 - **T9, resumo do cartão:** o template corta o problema com `slice:":159"` mais "…" quando ele
   passa de 160 caracteres, e não com `truncatechars:160`. A tradução pt-BR do Django devolve
   `" %(truncated_text)s…"`: o filtro põe um espaço na frente e deixa 158 caracteres. A RCON-13
-  pede 159 seguidos de "…". Marcado com `SPEC_DEVIATION` em `parciais/cartao.html`.
+  pede 159 seguidos de "…". A spec foi ajustada depois (commit e4a1d02): a RCON-13 não nomeia
+  mais o filtro, só o resultado. O `slice` deixou de ser desvio e o `SPEC_DEVIATION` saiu do
+  `parciais/cartao.html` (T13).
 - **T9, testes antigos adiantados:** a T9 é a task que tira a tabela da exibição padrão, e por
   isso quebra, além de T-A, T-E e CONS-06, também CONS-38 e DS-16 (T-B, previstos na T10) e o
   DS-12 da lista (T-C, previsto na T7, que ainda lia a tabela). Os três mudam na T9, do jeito
@@ -289,3 +291,6 @@ lista.
 - **T9, `_titulos` sem lista:** o helper só devolve `[]` quando a página exibe o
   `div.vazio`; sem a lista e sem o vazio, falha. Assim o `== []` da CONS-28 continua testando
   alguma coisa.
+- **T13, testes antigos T-Q:** CONS-03 (`test_views_lista.py`, primeira e última página) deixa
+  de exigir a ausência de "Anterior"/"Próxima" e passa a exigir que a ponta não seja link e
+  exista como `span aria-disabled="true"` (RCON-23). Autorizado pelo usuário em 2026-11-19.

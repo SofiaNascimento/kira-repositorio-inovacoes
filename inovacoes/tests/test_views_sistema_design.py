@@ -410,6 +410,8 @@ PECAS = {
     "inovacoes/parciais/tabela.html",
     # T-M (T12): as etiquetas dos filtros ativos (RCON-04 a RCON-08).
     "inovacoes/parciais/etiquetas.html",
+    # T-M (T13): a paginacao numerada (RCON-21 a RCON-24).
+    "inovacoes/parciais/paginacao.html",
 }
 
 

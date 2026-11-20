@@ -225,25 +225,35 @@ def _paginacao(html):
 
 
 def test_primeira_pagina_tem_20_linhas_pagina_x_de_y_e_so_proxima(logado, vinte_e_cinco):
-    """CONS-03."""
+    """CONS-03.
+
+    T-Q (redesign-consulta, T13, RCON-23): na primeira pagina "Anterior" deixa de faltar e
+    vira texto com aria-disabled="true". A garantia da CONS-03 continua: a ponta nao e link.
+    """
     html = logado.get(LISTA).content.decode()
     titulos = [linha[0] for linha in _linhas(html)]
     assert titulos == [f"I{n:02d}" for n in range(24, 4, -1)]
     nav = _paginacao(html)
     assert "Página 1 de 2" in nav
     assert re.search(r'<a href="\?page=2">\s*Próxima\s*</a>', nav)
-    assert "Anterior" not in nav
+    assert not re.search(r"<a\b[^>]*>\s*Anterior\s*</a>", nav)
+    assert re.search(r'<span aria-disabled="true">\s*Anterior\s*</span>', nav)
 
 
 def test_ultima_pagina_tem_o_restante_e_so_anterior(logado, vinte_e_cinco):
-    """CONS-03."""
+    """CONS-03.
+
+    T-Q (redesign-consulta, T13, RCON-23): na ultima pagina "Próxima" deixa de faltar e
+    vira texto com aria-disabled="true". A garantia da CONS-03 continua: a ponta nao e link.
+    """
     html = logado.get(f"{LISTA}?page=2").content.decode()
     titulos = [linha[0] for linha in _linhas(html)]
     assert titulos == [f"I{n:02d}" for n in range(4, -1, -1)]
     nav = _paginacao(html)
     assert "Página 2 de 2" in nav
     assert re.search(r'<a href="\?page=1">\s*Anterior\s*</a>', nav)
-    assert "Próxima" not in nav
+    assert not re.search(r"<a\b[^>]*>\s*Próxima\s*</a>", nav)
+    assert re.search(r'<span aria-disabled="true">\s*Próxima\s*</span>', nav)
 
 
 def test_vinte_inovacoes_cabem_numa_pagina_sem_navegacao(logado, criar_inovacao):

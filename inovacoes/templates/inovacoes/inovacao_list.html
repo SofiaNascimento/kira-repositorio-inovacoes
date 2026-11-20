@@ -61,18 +61,8 @@
       </ul>
     {% endif %}
 
-    {# CONS-39: os links de pagina ficam num nav rotulado. #}
-    {% if is_paginated %}
-      <nav aria-label="Paginação">
-        {% if page_obj.has_previous %}
-          <a href="{% querystring page=page_obj.previous_page_number %}">Anterior</a>
-        {% endif %}
-        <span>Página {{ page_obj.number }} de {{ paginator.num_pages }}</span>
-        {% if page_obj.has_next %}
-          <a href="{% querystring page=page_obj.next_page_number %}">Próxima</a>
-        {% endif %}
-      </nav>
-    {% endif %}
+    {# RCON-21 a RCON-24: paginacao numerada (CONS-39). #}
+    {% include "inovacoes/parciais/paginacao.html" %}
   {% elif filtros_ativos %}
     {# CONS-35: consulta sem resultado, sem tabela vazia. #}
     <div class="vazio">

@@ -838,6 +838,42 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   .cartoes { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
 }
 
+/* Paginacao numerada (RCON-21 a RCON-24): pontas desabilitadas e a atual sao texto. */
+.paginacao { margin: var(--space-5) 0 0; }
+.paginacao ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.paginacao li > a,
+.paginacao li > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 var(--space-2);
+  border-radius: var(--raio);
+}
+.paginacao li > a {
+  color: var(--brand-blue);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color var(--transicao);
+}
+.paginacao li > a:hover { background: var(--info-tint); }
+.paginacao [aria-current=page] {
+  background: var(--brand-navy);
+  color: var(--on-brand);
+  font-weight: 600;
+}
+.paginacao [aria-disabled=true] { color: var(--text-muted); }
+.paginacao p { margin: var(--space-2) 0 0; color: var(--text-muted); font-size: var(--fs-sm); }
+
 /* Indicador de etapas: a situacao vai no texto; o marcador e decorativo. */
 .etapas { margin: 0 0 var(--space-5); padding: 0; list-style: none; color: var(--text); }
 .etapa {

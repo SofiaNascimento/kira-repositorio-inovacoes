@@ -369,7 +369,7 @@ T22
 
 ---
 
-### T13: Paginação numerada
+### T13: Paginação numerada ✅
 
 **What**: `parciais/paginacao.html` com pontas desabilitadas, números, "…" e "Página X de Y"; CSS `.paginacao`.
 **Where**: `parciais/paginacao.html`, `inovacao_list.html`, `templates/kira.css`
@@ -381,9 +381,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: janela na página 1, 5 e última com 25 páginas; atual sem link com `aria-current="page"`; pontas como texto `aria-disabled`; links mantêm `q`, filtros e `exibicao`; CONS-03 a 05 e CONS-41 intactos
-- [ ] T-M: `PECAS` + `paginacao.html`
-- [ ] Gate build passa; test count ≥ anterior + 6
+- [x] Testes novos: janela na página 1, 5 e última com 25 páginas; atual sem link com `aria-current="page"`; pontas como texto `aria-disabled`; links mantêm `q`, filtros e `exibicao`; CONS-03 a 05 e CONS-41 intactos
+- [x] T-M: `PECAS` + `paginacao.html`
+- [x] Gate build passa; test count ≥ anterior + 6
 
 **Tests**: e2e
 **Gate**: build

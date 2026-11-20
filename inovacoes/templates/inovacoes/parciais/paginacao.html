@@ -1,0 +1,16 @@
+{# RCON-21 a RCON-24: paginacao numerada. Recebe page_obj, paginator, paginas e is_paginated. #}
+{# CONS-39: os links de pagina ficam num nav rotulado; CONS-41: pontas e atual sao texto, sem role. #}
+{% if is_paginated %}
+  <div class="paginacao">
+    <nav aria-label="Paginação">
+      <ul>
+        <li>{% if page_obj.has_previous %}<a href="{% querystring page=page_obj.previous_page_number %}">Anterior</a>{% else %}<span aria-disabled="true">Anterior</span>{% endif %}</li>
+        {% for numero in paginas %}
+          <li>{% if numero == page_obj.number %}<span aria-current="page">{{ numero }}</span>{% elif numero == "…" %}<span>…</span>{% else %}<a href="{% querystring page=numero %}">{{ numero }}</a>{% endif %}</li>
+        {% endfor %}
+        <li>{% if page_obj.has_next %}<a href="{% querystring page=page_obj.next_page_number %}">Próxima</a>{% else %}<span aria-disabled="true">Próxima</span>{% endif %}</li>
+      </ul>
+      <p>Página {{ page_obj.number }} de {{ paginator.num_pages }}</p>
+    </nav>
+  </div>
+{% endif %}
