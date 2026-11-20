@@ -358,8 +358,8 @@ ordem em que aparecem e sem perder nada.
 | RCON-32 | P1: Detalhe | Design | Implementing |
 | RCON-33 | P1: Detalhe | Design | Implementing |
 | RCON-34 | P1: Detalhe | Design | Implementing |
-| RCON-35 | P1: Detalhe | Design | Pending |
-| RCON-36 | P1: Detalhe | Design | Pending |
+| RCON-35 | P1: Detalhe | Design | Implementing |
+| RCON-36 | P1: Detalhe | Design | Implementing |
 | RCON-37 | P1: Ações | Design | Implementing |
 | RCON-38 | P1: Ações | Design | Implementing |
 | RCON-39 | P1: Ações | Design | Implementing |

@@ -743,14 +743,29 @@ def _reaproveitamento(inovacao, nome, por, data=None):
 
 
 def _reaproveitamentos(html):
-    """(textos fora de lista, itens da lista) da secao "Reaproveitamentos"."""
+    """(secao, linhas da tabela) da secao "Reaproveitamentos ({n})".
+
+    T-J (redesign-consulta, T21, RCON-35): a secao tem o titulo com a contagem e uma tabela
+    Unidade, Registrado por, Data, em vez do `ol.reaproveitamentos` e de "Reaproveitada por N
+    unidades."; cada linha e (unidade, quem registrou, data). O titulo traz o numero de linhas.
+    """
     secao = _secao(html, "reaproveitamentos-titulo")
     # L-028, L-030: nada da secao, nem ela, sai da tela ou do leitor de tela.
-    assert _secao(exibido(html), "reaproveitamentos-titulo") == secao
-    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Reaproveitamentos"]
-    lista = re.search(r'<ol class="reaproveitamentos">(.*?)</ol>', secao, re.S)
-    itens = re.findall(r"<li\b[^>]*>(.*?)</li>", lista.group(1), re.S) if lista else []
-    return secao, [re.sub(r"<[^>]+>", "", item).strip() for item in itens]
+    assert _secao(exibido(html, rigoroso=True), "reaproveitamentos-titulo") == secao
+    corpo = re.search(r"<tbody>(.*?)</tbody>", secao, re.S)
+    linhas = [
+        tuple(re.sub(r"<[^>]+>", "", celula).strip() for celula in celulas)
+        for celulas in (
+            re.findall(r"<td>(.*?)</td>", linha, re.S)
+            for linha in re.findall(r"<tr>(.*?)</tr>", corpo.group(1) if corpo else "", re.S)
+        )
+    ]
+    titulo = f"Reaproveitamentos ({len(linhas)})"
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == [titulo]
+    if linhas:
+        cabecalho = re.findall(r'<th scope="col">(.*?)</th>', secao)
+        assert cabecalho == ["Unidade", "Registrado por", "Data"]
+    return secao, linhas
 
 
 def test_disponivel_mostra_o_link_de_sinalizar_a_todo_perfil(
@@ -790,31 +805,35 @@ def test_fora_de_disponivel_nao_ha_link_nem_texto_de_sinalizar(
 @pytest.mark.parametrize(
     ("nomes", "texto"),
     [
-        ([], "Nenhum reaproveitamento registrado."),
-        (["Sede"], "Reaproveitada por 1 unidade."),
-        (["Sede", "Filial Norte"], "Reaproveitada por 2 unidades."),
+        ([], "Reaproveitamentos (0)"),
+        (["Sede"], "Reaproveitamentos (1)"),
+        (["Sede", "Filial Norte"], "Reaproveitamentos (2)"),
     ],
     ids=["zero", "um", "dois"],
 )
 def test_secao_reaproveitamentos_mostra_a_contagem(logado, autor, criar_inovacao, nomes, texto):
-    """REAP-17: o texto muda com zero, um e N reaproveitamentos."""
+    """REAP-17: o texto muda com zero, um e N reaproveitamentos.
+
+    T-J (redesign-consulta, T21, RCON-35): a contagem vai no titulo "Reaproveitamentos ({n})";
+    com zero, "Nenhum reaproveitamento registrado." e nenhuma tabela.
+    """
     inovacao = criar_inovacao(status=DISPONIVEL)
     for nome in nomes:
         _reaproveitamento(inovacao, nome, autor)
     secao, itens = _reaproveitamentos(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode())
-    textos = [
-        "Nenhum reaproveitamento registrado.",
-        "Reaproveitada por 1 unidade.",
-        "Reaproveitada por 2 unidades.",
-    ]
-    assert [t for t in textos if t in secao] == [texto]
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == [texto]
+    assert ("Nenhum reaproveitamento registrado." in secao) is (nomes == [])
+    assert ("<table>" in secao) is (nomes != [])
     assert len(itens) == len(nomes)
 
 
 def test_secao_lista_unidade_e_data_do_mais_antigo_ao_mais_recente(
     logado, autor, terceiro, criar_inovacao
 ):
-    """REAP-18: a data manda, mesmo contra a ordem do id; outra inovacao nao aparece."""
+    """REAP-18: a data manda, mesmo contra a ordem do id; outra inovacao nao aparece.
+
+    T-J (redesign-consulta, T21, RCON-35): cada linha da tabela e unidade, quem registrou e data.
+    """
     inovacao = criar_inovacao(status=DISPONIVEL)
     outra = criar_inovacao(titulo="Robo de Conciliacao", status=DISPONIVEL)
     # Criado primeiro, mas com a data mais recente.
@@ -822,14 +841,17 @@ def test_secao_lista_unidade_e_data_do_mais_antigo_ao_mais_recente(
     _reaproveitamento(inovacao, "Filial Norte", terceiro, _utc(2026, 10, 2, 15, 0))
     _reaproveitamento(outra, "Filial Sul", autor, _utc(2026, 10, 3, 15, 0))
     _, itens = _reaproveitamentos(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode())
-    assert itens == ["Filial Norte — 02/10/2026", "Sede — 05/10/2026"]
+    assert itens == [("Filial Norte", "bruno", "02/10/2026"), ("Sede", "Ana Souza", "05/10/2026")]
 
 
 @pytest.mark.parametrize("quantidade", [1, 4])
 def test_reaproveitamentos_nao_crescem_em_consultas(
     logado, autor, criar_inovacao, django_assert_num_queries, quantidade
 ):
-    """REAP-43: 1 e 4 reaproveitamentos custam o mesmo numero de consultas."""
+    """REAP-43: 1 e 4 reaproveitamentos custam o mesmo numero de consultas.
+
+    T-J (redesign-consulta, T21): contadas as linhas da tabela.
+    """
     inovacao = criar_inovacao(status=DISPONIVEL)
     for nome in ["Sede", "Filial Norte", "Filial Sul", "Filial Leste"][:quantidade]:
         _reaproveitamento(inovacao, nome, autor)

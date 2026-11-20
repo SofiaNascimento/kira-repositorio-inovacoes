@@ -337,3 +337,8 @@ lista.
   `CADEIA_DO_COMPONENTE`; como o prefixo pega também `.linha-do-tempo__ponto` (fundo
   `--brand-blue`) e a variante do cadastro (fundo `--surface`), as duas regras da R1 ganham uma
   `color` em par do DS-08 (`--surface` e `--text`). O ponto não tem texto; a cor só fecha o par.
+- **T21, tabela de reaproveitamentos:** a view passa `reaproveitamentos` em lista, com
+  `select_related("unidade", "registrado_por")`; o total segue 8 consultas. O T-L troca
+  `.reaproveitamentos` por `.tabela` no `CADEIA_DO_COMPONENTE` (com `caption`, `th` e o
+  hover da linha, todos em pares do DS-08). O T-N acrescenta só o `clip: rect(0 0 0 0)` da
+  `.visualmente-oculto`: a largura de 1px não conta como ocultação na guarda da folha.

@@ -114,23 +114,38 @@
     </div>
   </aside>
 
+  {# RCON-35, REAP-17: a contagem sai da lista ja carregada, sem COUNT a parte (REAP-43). #}
+  {% with total=reaproveitamentos|length %}
   <section aria-labelledby="reaproveitamentos-titulo">
-    <h2 id="reaproveitamentos-titulo">Reaproveitamentos</h2>
-    {# REAP-17: a contagem sai da lista ja carregada, sem COUNT a parte (REAP-43). #}
-    {% with total=reaproveitamentos|length %}
-      {% if total == 0 %}
-        <p class="vazio">Nenhum reaproveitamento registrado.</p>
-      {% else %}
-        <p>Reaproveitada por {{ total }} unidade{{ total|pluralize:"s" }}.</p>
-        {# REAP-18: do mais antigo ao mais recente (Meta.ordering de Reaproveitamento). #}
-        <ol class="reaproveitamentos">
-          {% for r in reaproveitamentos %}
-            <li>{{ r.unidade.nome }} — <time>{{ r.data|date:"d/m/Y" }}</time></li>
-          {% endfor %}
-        </ol>
-      {% endif %}
-    {% endwith %}
+    <h2 id="reaproveitamentos-titulo">Reaproveitamentos ({{ total }})</h2>
+    {% if total == 0 %}
+      <p class="vazio">Nenhum reaproveitamento registrado.</p>
+    {% else %}
+      {# REAP-18: do mais antigo ao mais recente (Meta.ordering de Reaproveitamento). #}
+      <div class="tabela">
+        <table>
+          <caption class="visualmente-oculto">Unidades que reaproveitaram a inovação</caption>
+          <thead>
+            <tr>
+              <th scope="col">Unidade</th>
+              <th scope="col">Registrado por</th>
+              <th scope="col">Data</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in reaproveitamentos %}
+              <tr>
+                <td>{{ r.unidade.nome }}</td>
+                <td>{{ r.registrado_por.get_full_name|default:r.registrado_por.get_username }}</td>
+                <td><time>{{ r.data|date:"d/m/Y" }}</time></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
   </section>
+  {% endwith %}
 
   {# RCON-43 a RCON-46, STAT-24 a STAT-27: o cadastro e cada mudanca, do mais antigo ao mais recente, para qualquer usuario. #}
   <section aria-labelledby="historico-titulo">

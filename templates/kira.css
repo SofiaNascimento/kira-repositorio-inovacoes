@@ -565,6 +565,20 @@ textarea[aria-\69 nvalid=true] { border: 2px solid var(--error); }
 
 .total { color: var(--text-muted); font-size: var(--fs-sm); }
 
+/* Fora da tela, mas lido pelo leitor de tela: a legenda da tabela de reaproveitamentos
+   do detalhe (RCON-35), que o titulo da secao ja diz a quem ve. */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 nav[aria-label=Paginação] {
   display: flex;
   flex-wrap: wrap;
@@ -700,14 +714,6 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 .vazio__acento { fill: var(--info-tint); }
 
 .estado-erro { max-width: 40rem; }
-
-/* --- Reaproveitamentos no detalhe (§10 F6) ------------------------------- */
-
-/* Mesmo desenho da .historico: texto sobre o fundo da pagina (REAP-48). */
-.reaproveitamentos { margin: 0 0 var(--space-5); padding: 0; list-style: none; color: var(--text); }
-.reaproveitamentos li { padding: var(--space-2) 0; border-top: 1px solid var(--border); }
-.reaproveitamentos li:first-child { border-top: 0; }
-.reaproveitamentos time { color: var(--text-muted); }
 
 /* --- Painel de indicadores (§10 F6) ------------------------------------- */
 

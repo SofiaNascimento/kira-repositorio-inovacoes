@@ -8,7 +8,7 @@ import pytest
 from django.conf import settings
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao, Unidade
+from inovacoes.models import Inovacao, MudancaDeStatus, Reaproveitamento, StatusInovacao, Unidade
 from inovacoes.tests.test_folha_v2 import _regras_aninhadas, _seletores, _sem_comentarios
 from inovacoes.tests.test_views_detalhe import CONSULTAS_DO_DETALHE
 from inovacoes.tests.test_views_sistema_design import CSS, _corpos
@@ -662,3 +662,92 @@ def test_reaproveitamentos_e_historico_fecham_a_pagina_antes_do_link_de_volta(
     historico = tela.index('<section aria-labelledby="historico-titulo">')
     voltar = tela.index('<a href="/inovacoes/">Voltar para a lista de inovações</a>')
     assert aside < reaproveitamentos < historico < voltar
+
+
+# --- RCON-35, RCON-36: reaproveitamentos em tabela ---
+
+
+def _reaproveitar(inovacao, nome, por, data):
+    """Registra pelo metodo do modelo (AD-012) e fixa a data."""
+    registro = inovacao.registrar_reaproveitamento(unidade=Unidade.objects.get(nome=nome), por=por)
+    Reaproveitamento.objects.filter(pk=registro.pk).update(data=data)
+
+
+def _secao_reaproveitamentos(tela):
+    inicio = tela.index('<section aria-labelledby="reaproveitamentos-titulo">')
+    return tela[inicio : tela.index("</section>", inicio)]
+
+
+def test_tabela_de_reaproveitamentos_tem_titulo_colunas_e_linhas_em_ordem(
+    logado, autor, administrador, terceiro, criar_inovacao
+):
+    """RCON-35, REAP-18: titulo com 3; colunas Unidade, Registrado por, Data; mais antigo antes."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    _reaproveitar(inovacao, "Sede", autor, _utc(2026, 10, 5, 15, 0))
+    _reaproveitar(inovacao, "Filial Norte", terceiro, _utc(2026, 10, 2, 15, 0))
+    _reaproveitar(inovacao, "Filial Sul", administrador, _utc(2026, 10, 3, 15, 0))
+    secao = _secao_reaproveitamentos(exibido(_pagina(logado, inovacao), rigoroso=True))
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Reaproveitamentos (3)"]
+    assert re.findall(r"<th\b[^>]*>(.*?)</th>", secao) == ["Unidade", "Registrado por", "Data"]
+    linhas = [
+        [re.sub(r"<[^>]+>", "", celula) for celula in re.findall(r"<td>(.*?)</td>", linha)]
+        for linha in re.findall(r"<tr>(.*?)</tr>", secao.split("<tbody>")[1], re.S)
+    ]
+    assert linhas == [
+        ["Filial Norte", "bruno", "02/10/2026"],
+        ["Filial Sul", "carla", "03/10/2026"],
+        ["Sede", "Ana Souza", "05/10/2026"],
+    ]
+    assert "Nenhum reaproveitamento registrado." not in secao
+
+
+def test_sem_reaproveitamento_le_a_frase_e_nao_tem_tabela(logado, criar_inovacao):
+    """RCON-35: n = 0 le "Nenhum reaproveitamento registrado." e nao renderiza tabela."""
+    secao = _secao_reaproveitamentos(
+        exibido(_pagina(logado, criar_inovacao(status=DISPONIVEL)), rigoroso=True)
+    )
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Reaproveitamentos (0)"]
+    assert '<p class="vazio">Nenhum reaproveitamento registrado.</p>' in secao
+    assert "<table" not in secao
+
+
+def test_legenda_da_tabela_fica_so_para_o_leitor_de_tela(logado, autor, criar_inovacao):
+    """RCON-35: o caption existe para o leitor de tela e sai so da tela (clip + 1px)."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    _reaproveitar(inovacao, "Sede", autor, _utc(2026, 10, 5, 15, 0))
+    secao = _secao_reaproveitamentos(exibido(_pagina(logado, inovacao), rigoroso=True))
+    assert re.search(
+        r'<table>\s*<caption class="visualmente-oculto">'
+        r"Unidades que reaproveitaram a inovação</caption>",
+        secao,
+    )
+    corpo = _corpos(".visualmente-oculto")
+    assert re.search(r"position\s*:\s*absolute", corpo)
+    assert re.search(r"(?<![\w-])width\s*:\s*1px", corpo)
+    assert re.search(r"(?<![\w-])height\s*:\s*1px", corpo)
+    assert re.search(r"overflow\s*:\s*hidden", corpo)
+    assert re.search(r"clip\s*:\s*rect\(0 0 0 0\)", corpo)
+    # So da tela: nada que tire do leitor de tela.
+    assert not re.search(r"display\s*:\s*none|visibility\s*:\s*hidden", corpo)
+    assert "visualmente-oculto" not in CLASSES_OCULTAS
+
+
+@pytest.mark.parametrize("quantidade", [0, 3])
+def test_tabela_mantem_as_consultas_do_detalhe(
+    logado, autor, administrador, terceiro, criar_inovacao, django_assert_num_queries, quantidade
+):
+    """RCON-36: CONSULTAS_DO_DETALHE = 8 com 0 e 3 reaproveitamentos de quem registrou diferente."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    contas = [autor, administrador, terceiro]
+    for nome, conta in list(zip(["Sede", "Filial Norte", "Filial Sul"], contas))[:quantidade]:
+        _reaproveitar(inovacao, nome, conta, _utc(2026, 10, 5, 15, 0))
+    with django_assert_num_queries(CONSULTAS_DO_DETALHE):
+        resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
+    secao = _secao_reaproveitamentos(resposta.content.decode())
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == [f"Reaproveitamentos ({quantidade})"]
+    assert len(re.findall(r"<tr>\s*<td>", secao)) == quantidade
+
+
+def test_regras_da_lista_antiga_de_reaproveitamentos_sairam_da_folha():
+    """RCON-35: o `ol.reaproveitamentos` deu lugar a tabela; a regra antiga nao tem mais uso."""
+    assert ".reaproveitamentos" not in _sem_comentarios(CSS)

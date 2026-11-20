@@ -945,6 +945,9 @@ ESCONDIDOS_PELA_SPEC = {
     ((), f"{ALTO} .faixa-marca", "display: none"),  # RED-28: a faixa do gradiente some
     # T-N (redesign-consulta, T14): RCON-27, a ilustracao do vazio some no tema alto.
     ((), f"{ALTO} .vazio__ilustracao", "display: none"),
+    # T-N (redesign-consulta, T21): RCON-35, a legenda da tabela de reaproveitamentos fica
+    # so para o leitor de tela (oculta so na tela, pelo padrao clip + 1px).
+    ((), ".visualmente-oculto", "clip: rect(0 0 0 0)"),
 }
 
 

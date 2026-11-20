@@ -671,11 +671,12 @@ CADEIA_DO_COMPONENTE = {
         ".linha-do-tempo li",
         ".linha-do-tempo",
     ],
-    # REAP-48: a lista de reaproveitamentos do detalhe, no desenho da .historico.
-    ".reaproveitamentos": [],
-    ".reaproveitamentos li": [".reaproveitamentos"],
-    ".reaproveitamentos li:first-child": [".reaproveitamentos li", ".reaproveitamentos"],
-    ".reaproveitamentos time": [".reaproveitamentos li", ".reaproveitamentos"],
+    # T-L (redesign-consulta, T21, RCON-35): os reaproveitamentos do detalhe sao uma tabela
+    # (`.tabela`); as regras `.reaproveitamentos` sairam da folha.
+    ".tabela": [],
+    ".tabela caption": [".tabela"],
+    ".tabela th": [".tabela"],
+    ".tabela tbody tr:hover": [".tabela"],
     # REAP-48: os cards e os graficos do painel ficam dentro de um .cartao.
     ".metrica": [".cartao"],
     ".metrica dt": [".metrica", ".cartao"],
@@ -710,7 +711,7 @@ def _cor_desenhada(seletor, propriedade):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "classe", [".etapas", ".linha-do-tempo", ".reaproveitamentos", ".metrica", ".grafico"]
+    "classe", [".etapas", ".linha-do-tempo", ".tabela", ".metrica", ".grafico"]
 )
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
     """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.

@@ -154,8 +154,11 @@ class InovacaoDetailView(DetailView):
             historico=apresentacao.itens_do_historico(
                 self.object, list(self.object.mudancas_de_status.select_related("responsavel"))
             ),
-            # REAP-18, REAP-43: uma consulta so, com a unidade junto (sem N+1).
-            reaproveitamentos=self.object.reaproveitamentos.select_related("unidade"),
+            # REAP-18, REAP-43, RCON-35, RCON-36: uma consulta so, com a unidade e quem
+            # registrou junto (sem N+1), avaliada aqui em lista.
+            reaproveitamentos=list(
+                self.object.reaproveitamentos.select_related("unidade", "registrado_por")
+            ),
             **kwargs,
         )
 

@@ -552,7 +552,7 @@ T22
 
 ---
 
-### T21: Reaproveitamentos em tabela
+### T21: Reaproveitamentos em tabela ✅
 
 **What**: seção "Reaproveitamentos ({n})" com tabela Unidade, Registrado por, Data (`caption.visualmente-oculto`); `select_related("unidade", "registrado_por")`; sai a regra `.reaproveitamentos`.
 **Where**: `inovacoes/views.py`, `inovacao_detail.html`, `templates/kira.css`
@@ -564,9 +564,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: título com a contagem; colunas e linhas na ordem (REAP-18); vazio sem tabela; caption oculto só visualmente; `CONSULTAS_DO_DETALHE = 8` com 0 e 3 reaproveitamentos
-- [ ] T-J, T-L (`.reaproveitamentos`), T-N (`caption`)
-- [ ] Gate build passa (fecha a Fase 3); test count ≥ anterior + 4
+- [x] Testes novos: título com a contagem; colunas e linhas na ordem (REAP-18); vazio sem tabela; caption oculto só visualmente; `CONSULTAS_DO_DETALHE = 8` com 0 e 3 reaproveitamentos
+- [x] T-J, T-L (`.reaproveitamentos`), T-N (`caption`)
+- [x] Gate build passa (fecha a Fase 3); test count ≥ anterior + 4
 
 **Tests**: e2e
 **Gate**: build
