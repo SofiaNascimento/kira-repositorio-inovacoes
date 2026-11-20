@@ -94,6 +94,12 @@ T16 → T17 → T18 → T19 → T20 → T21
 T22
 ```
 
+### Phase 5: Correções da validação (iteração 1)
+
+```
+T23 → T24
+```
+
 ---
 
 ## Task Breakdown
@@ -597,6 +603,50 @@ T22
 
 ---
 
+### T23: Lista e vazio se excluem (correção da validação, iteração 1)
+
+**What**: teste que, com resultados (cartões e tabela, com e sem filtro), a tela não exibe o estado vazio: nem `div.vazio`, nem os textos das duas variantes, nem a ilustração. Mata o mutante M27.
+**Where**: `inovacoes/tests/test_views_lista_vazio.py`
+**Depends on**: None (a Fase 4 inteira antes)
+**Reuses**: `ILUSTRACAO`, `_main`, `exibido`
+**Requirement**: RCON-10, RCON-19, RCON-25, RCON-26
+
+**Tools**: MCP: NONE · Skill: NONE
+
+**Done when**:
+
+- [ ] Teste novo falha com o vazio renderizado junto dos resultados (M27) e passa no código atual
+- [ ] Gate full passa; test count ≥ 1559 + 4
+
+**Tests**: e2e
+**Gate**: full
+
+**Commit**: `test(inovacoes): exige que a lista e o estado vazio se excluam`
+
+---
+
+### T24: Edge cases da paginação e do título longo (correção da validação, iteração 1)
+
+**What**: teste de `page` inválida (`0`, `abc`) marcando a página 1 como atual; título de 150 caracteres sem espaço renderizado inteiro no `h2` do cartão, com `overflow-wrap: anywhere` no `.cartao-inovacao__titulo`.
+**Where**: `templates/kira.css`
+**Depends on**: T23
+**Reuses**: `_itens` da paginação, `_artigos` dos cartões, `_corpos` da folha
+**Requirement**: Edge cases da spec (CONS-05, título de 150 caracteres), RCON-22, RCON-49
+
+**Tools**: MCP: NONE · Skill: NONE
+
+**Done when**:
+
+- [ ] Testes novos em `test_views_lista_paginacao.py` e `test_views_lista_cartoes.py`
+- [ ] Gate build passa; test count ≥ anterior + 3
+
+**Tests**: e2e
+**Gate**: build
+
+**Commit**: `fix(design): quebra titulos longos no cartao da lista`
+
+---
+
 ## Phase Execution Map
 
 ```
@@ -652,6 +702,8 @@ Lotes de sub-agente (~7 tasks, fases inteiras): **Lote 1** Fase 1 (T1–T7) · *
 | T20 | T19 | T19 → T20 | ✅ |
 | T21 | T20 | T20 → T21 | ✅ |
 | T22 | None (Fase 3 antes) | início da Fase 4 | ✅ |
+| T23 | None (Fase 4 antes) | início da Fase 5 | ✅ |
+| T24 | T23 | T23 → T24 | ✅ |
 
 ## Test Co-location Validation
 

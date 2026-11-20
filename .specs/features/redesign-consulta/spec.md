@@ -229,9 +229,9 @@ resultado em sequência e achar logo a quem perguntar.
 3. RCON-30: IF `resultado` is empty THEN the third step SHALL read "Resultado ainda não informado.".
 4. RCON-31: The detail SHALL render an `aside aria-label="Resumo da inovação"` after the narrative and before the reuse section in source order, containing, in order, the contact card, the life-cycle block and the fact sheet.
 5. RCON-32: The contact card SHALL have the title "Contato responsável", the `contato` text as typed with line breaks preserved, and the line "Procure esta pessoa para tirar dúvidas antes de replicar.".
-6. RCON-33: The fact sheet SHALL be a `dl` with, in order, Unidade de origem, Categoria, Cadastrada por, Cadastrada em ({dd/mm/aaaa}) and Reaproveitamentos ({n}).
+6. RCON-33: The fact sheet SHALL be a `dl` whose `dt`/`dd` pairs are, in order, "Unidade de origem"/{unidade}, "Categoria"/{categoria}, "Cadastrada por"/{autor}, "Cadastrada em"/{dd/mm/aaaa} and "Reaproveitamentos"/{n}.
 7. RCON-34: The life-cycle block SHALL keep the `h2` "Ciclo de vida" and render an `ol` with the three stages in cycle order, where stages before the current one read "{rótulo} · concluída", the current one "{rótulo} (status atual)" with `aria-current="step"`, and later ones "{rótulo} · próxima etapa"; the stage markers SHALL be `aria-hidden="true"`.
-8. RCON-35: The detail SHALL render the section "Reaproveitamentos ({n})" with a table (visually hidden caption) of columns Unidade, Registrado por, Data, oldest first (REAP-18); IF n = 0 THEN it SHALL read "Nenhum reaproveitamento registrado." and render no table.
+8. RCON-35: The detail SHALL render the section "Reaproveitamentos ({n})" with a table (visually hidden caption "Unidades que reaproveitaram a inovação") of columns Unidade, Registrado por, Data, oldest first (REAP-18); IF n = 0 THEN it SHALL read "Nenhum reaproveitamento registrado." and render no table.
 9. RCON-36: The detail SHALL keep `CONSULTAS_DO_DETALHE = 8` queries.
 
 **Independent Test**: abrir uma inovação do acervo e ler, de cima a baixo: narrativa, contato,
