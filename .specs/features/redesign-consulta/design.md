@@ -299,3 +299,7 @@ lista.
   `--brand-navy` por `currentColor`. T-D muda a constante do vazio com filtro em
   `test_views_busca.py` (vale para os quatro testes da CONS-35 que a usam) e T-R muda o EDEX-37
   em `test_views_exclusao.py`, os dois para "Nenhuma inovação encontrada para esta busca.".
+- **T15, T-O estendido à lista:** a regex `CABECALHO_DE_PAGINA` de `nucleo/tests/test_casca.py`
+  aceita, depois do h1, a descrição (`p`) e a ação principal (`a`), nessa ordem. Continua
+  exigindo o h1 único logo depois do status, como primeiro título do `main` (RED-29, RED-31).
+  Autorizado pelo usuário em 2026-11-19.

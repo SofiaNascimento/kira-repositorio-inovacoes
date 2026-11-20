@@ -6,6 +6,11 @@
 
 {% block titulo %}Inovações{% endblock %}
 
+{# RCON-01: descricao e a acao principal do cabecalho de pagina (RED-29). #}
+{% block descricao %}<p>Encontre soluções que outras unidades já testaram antes de começar do zero.</p>{% endblock %}
+
+{% block acao_principal %}<a class="botao" href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a>{% endblock %}
+
 {% block conteudo %}
   {# CONS-30 (RF12): resumo antes dos campos, anunciado pelo leitor de tela. #}
   {% if form.errors %}

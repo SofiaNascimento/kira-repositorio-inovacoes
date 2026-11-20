@@ -480,9 +480,14 @@ H1_DE_HOJE = {
     "acesso_negado": "Acesso negado",
     "erro_500": "Algo deu errado do nosso lado",
 }
+# T-O (redesign-consulta, estendido a lista, T15, RCON-01): depois do h1, dentro do
+# cabecalho de pagina, podem vir a descricao (um p) e a acao principal (um link), nessa
+# ordem e nada mais. A garantia do RED-29/RED-31 continua: o h1 unico e o primeiro titulo
+# do main, logo depois do status.
 CABECALHO_DE_PAGINA = re.compile(
     r'^<main id="conteudo">\s*<div role="status">.*?</div>\s*'
-    r'<div class="cabecalho-pagina">\s*<h1>(.*?)</h1>\s*</div>',
+    r'<div class="cabecalho-pagina">\s*<h1>(.*?)</h1>\s*'
+    r"(?:<p>[^<]*</p>\s*)?(?:<a\b[^>]*>[^<]*</a>\s*)?</div>",
     re.S,
 )
 

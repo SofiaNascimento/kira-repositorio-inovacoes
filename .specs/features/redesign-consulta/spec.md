@@ -324,7 +324,7 @@ ordem em que aparecem e sem perder nada.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| RCON-01 | P1: Busca e filtros | Design | Pending |
+| RCON-01 | P1: Busca e filtros | Design | Implementing |
 | RCON-02 | P1: Busca e filtros | Design | Implementing |
 | RCON-03 | P1: Busca e filtros | Design | Implementing |
 | RCON-04 | P1: Busca e filtros | Design | Implementing |

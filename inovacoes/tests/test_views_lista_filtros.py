@@ -412,3 +412,35 @@ def test_etiqueta_escapa_o_termo(logado):
     html = logado.get(LISTA, {"q": "<b>x</b>"}).content.decode()
     assert "Busca: “&lt;b&gt;x&lt;/b&gt;”" in html
     assert "<b>x</b>" not in html
+
+
+# --- T15: cabecalho da lista (RCON-01) ---
+
+DESCRICAO = "Encontre soluções que outras unidades já testaram antes de começar do zero."
+
+
+def test_cabecalho_tem_trilha_h1_descricao_e_acao_nessa_ordem(logado):
+    """RCON-01: trilha "Inovações", h1, descricao e "Cadastrar inovação" -> /inovacoes/nova/."""
+    html = exibido(logado.get(LISTA).content.decode(), rigoroso=True)
+    trilha = re.search(r'<nav class="trilha" aria-label="Você está em">(.*?)</nav>', html, re.S)
+    assert trilha
+    assert [" ".join(t.split()) for t in re.split(r"<[^>]+>", trilha.group(1)) if t.strip()] == [
+        "Inovações"
+    ]
+    cabecalho = re.search(
+        r'<div class="cabecalho-pagina">\s*<h1>Inovações</h1>\s*'
+        rf"<p>{re.escape(DESCRICAO)}</p>\s*"
+        r'<a class="botao" href="/inovacoes/nova/">Cadastrar inovação</a>\s*</div>',
+        html,
+    )
+    assert cabecalho
+    assert trilha.start() < cabecalho.start()
+    # O cabecalho vem antes da busca e dos resultados.
+    assert cabecalho.end() < html.index('<div role="search"')
+
+
+def test_acao_principal_do_cabecalho_tem_estilo_de_botao_e_nao_some():
+    """RCON-01 (L-044): a acao usa o .botao da folha, que nao a esconde."""
+    assert "botao" not in CLASSES_OCULTAS
+    assert "cabecalho-pagina" not in CLASSES_OCULTAS
+    assert re.search(r"background\s*:\s*var\(--brand-blue\)", _corpos(".botao"))

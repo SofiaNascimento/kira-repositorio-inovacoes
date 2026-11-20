@@ -415,7 +415,7 @@ T22
 
 ---
 
-### T15: Cabeçalho da lista
+### T15: Cabeçalho da lista ✅
 
 **What**: blocos `descricao` e `acao_principal` da lista.
 **Where**: `inovacao_list.html`
@@ -427,8 +427,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: trilha, h1, descrição e "Cadastrar inovação" → `/inovacoes/nova/`, na ordem; RED-29/31 intactos
-- [ ] Gate build passa (fecha a Fase 2); test count ≥ anterior + 2
+- [x] Testes novos: trilha, h1, descrição e "Cadastrar inovação" → `/inovacoes/nova/`, na ordem; RED-29/31 intactos
+- [x] Gate build passa (fecha a Fase 2); test count ≥ anterior + 2
 
 **Tests**: e2e
 **Gate**: build
