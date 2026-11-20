@@ -603,7 +603,7 @@ T23 → T24
 
 ---
 
-### T23: Lista e vazio se excluem (correção da validação, iteração 1)
+### T23: Lista e vazio se excluem (correção da validação, iteração 1) ✅
 
 **What**: teste que, com resultados (cartões e tabela, com e sem filtro), a tela não exibe o estado vazio: nem `div.vazio`, nem os textos das duas variantes, nem a ilustração. Mata o mutante M27.
 **Where**: `inovacoes/tests/test_views_lista_vazio.py`
@@ -615,8 +615,8 @@ T23 → T24
 
 **Done when**:
 
-- [ ] Teste novo falha com o vazio renderizado junto dos resultados (M27) e passa no código atual
-- [ ] Gate full passa; test count ≥ 1559 + 4
+- [x] Teste novo falha com o vazio renderizado junto dos resultados (M27) e passa no código atual
+- [x] Gate full passa; test count ≥ 1559 + 4
 
 **Tests**: e2e
 **Gate**: full

@@ -106,3 +106,31 @@ def test_alto_contraste_esconde_so_a_ilustracao():
     assert "vazio__ilustracao" not in CLASSES_OCULTAS
     assert "vazio" not in CLASSES_OCULTAS
     assert _tem(_corpos(".vazio__ilustracao"), "max-width", "160px")
+
+
+# --- Correcao da iteracao 1 (M27): a lista e o vazio se excluem ---
+
+TEXTOS_DO_VAZIO = (
+    "Nenhuma inovação cadastrada ainda.",
+    "Cadastrar a primeira inovação",
+    "Nenhuma inovação encontrada para esta busca.",
+    "Tente outras palavras ou remova algum filtro.",
+)
+
+
+@pytest.mark.parametrize(
+    "consulta", ["", "?exibicao=tabela", "?q=Planilha", "?q=Planilha&exibicao=tabela"]
+)
+def test_com_resultados_o_estado_vazio_nao_existe(logado, criar_inovacao, consulta):
+    """RCON-10, RCON-19, RCON-25, RCON-26: havendo resultados, nenhum pedaco do vazio aparece."""
+    criar_inovacao(titulo="Planilha de reembolso")
+    html = logado.get(f"{LISTA}{consulta}").content.decode()
+    main = _main(html)
+    assert 'class="vazio"' not in main
+    assert not ILUSTRACAO.search(main)
+    exibido_main = _main(exibido(html, rigoroso=True))
+    for texto in TEXTOS_DO_VAZIO:
+        assert texto not in exibido_main
+    # Os resultados estao la, na exibicao pedida.
+    assert ("<table" in exibido_main) == ("exibicao=tabela" in consulta)
+    assert ('aria-label="Resultados"' in exibido_main) == ("exibicao=tabela" not in consulta)
