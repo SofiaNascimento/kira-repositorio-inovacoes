@@ -331,3 +331,9 @@ lista.
   regex literal de `_links` por uma leitura do DOM exibido (`href` + texto, qualquer ordem de
   atributos); STAT-03 e REAP-01 procuram no cabeçalho de página. O T-K procura o Avançar no
   cabeçalho e confere o `aria-describedby` contra a explicação do bloco do ciclo.
+- **T20, linha do tempo:** a view passa só `historico` (os itens da T5 sobre `mudancas` em
+  lista); `mudancas` sai do contexto. A seção "Histórico de status" vai para depois dos
+  reaproveitamentos, como na ordem do design. O T-L troca `.historico` por `.linha-do-tempo` no
+  `CADEIA_DO_COMPONENTE`; como o prefixo pega também `.linha-do-tempo__ponto` (fundo
+  `--brand-blue`) e a variante do cadastro (fundo `--surface`), as duas regras da R1 ganham uma
+  `color` em par do DS-08 (`--surface` e `--text`). O ponto não tem texto; a cor só fecha o par.

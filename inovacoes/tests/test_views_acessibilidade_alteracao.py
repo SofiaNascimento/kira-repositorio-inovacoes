@@ -171,7 +171,8 @@ PAGINAS_DO_CICLO = {
 # T-K (redesign-consulta, T18, RCON-34): a lista do ciclo e o indicador de etapas.
 SECOES_DO_CICLO = {
     "ciclo": ("ciclo-titulo", "Ciclo de vida", "etapas"),
-    "historico": ("historico-titulo", "Histórico de status", "historico"),
+    # T-K (redesign-consulta, T20, RCON-43): o historico e a linha do tempo da R1.
+    "historico": ("historico-titulo", "Histórico de status", "linha-do-tempo"),
 }
 
 

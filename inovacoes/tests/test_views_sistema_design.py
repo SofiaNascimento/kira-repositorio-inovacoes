@@ -661,10 +661,16 @@ def _regras_do_componente(classe):
 # as regras `.ciclo` sairam da folha.
 CADEIA_DO_COMPONENTE = {
     ".etapas": [],
-    ".historico": [],
-    ".historico li": [".historico"],
-    ".historico li:first-child": [".historico li", ".historico"],
-    ".historico time": [".historico li", ".historico"],
+    # T-L (redesign-consulta, T20, RCON-43): o historico e a linha do tempo da R1
+    # (`.linha-do-tempo`); as regras `.historico` sairam da folha.
+    ".linha-do-tempo": [],
+    # O ponto e o span dentro do li; o do cadastro e o mesmo span com a variante.
+    ".linha-do-tempo__ponto": [".linha-do-tempo li", ".linha-do-tempo"],
+    ".linha-do-tempo__ponto--cadastro": [
+        ".linha-do-tempo__ponto",
+        ".linha-do-tempo li",
+        ".linha-do-tempo",
+    ],
     # REAP-48: a lista de reaproveitamentos do detalhe, no desenho da .historico.
     ".reaproveitamentos": [],
     ".reaproveitamentos li": [".reaproveitamentos"],
@@ -704,7 +710,7 @@ def _cor_desenhada(seletor, propriedade):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "classe", [".etapas", ".historico", ".reaproveitamentos", ".metrica", ".grafico"]
+    "classe", [".etapas", ".linha-do-tempo", ".reaproveitamentos", ".metrica", ".grafico"]
 )
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
     """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.

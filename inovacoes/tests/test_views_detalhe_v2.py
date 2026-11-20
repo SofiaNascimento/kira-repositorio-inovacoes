@@ -8,8 +8,9 @@ import pytest
 from django.conf import settings
 
 from contas.models import Usuario
-from inovacoes.models import Inovacao, StatusInovacao, Unidade
+from inovacoes.models import Inovacao, MudancaDeStatus, StatusInovacao, Unidade
 from inovacoes.tests.test_folha_v2 import _regras_aninhadas, _seletores, _sem_comentarios
+from inovacoes.tests.test_views_detalhe import CONSULTAS_DO_DETALHE
 from inovacoes.tests.test_views_sistema_design import CSS, _corpos
 from inovacoes.tests.visibilidade import CLASSES_OCULTAS, exibido
 
@@ -547,3 +548,117 @@ def test_grupo_de_perigo_e_separado_por_divisor_e_32px():
     perigo = _corpos(".acoes-pagina__perigo")
     assert re.search(r"padding-left\s*:\s*32px", perigo)
     assert re.search(r"border-left\s*:\s*1px solid var\(--border\)", perigo)
+
+
+# --- RCON-43 a RCON-46: historico como linha do tempo ---
+
+
+def _utc(*args):
+    return datetime.datetime(*args, tzinfo=datetime.UTC)
+
+
+def _mudanca(inovacao, responsavel, anterior, novo, data):
+    """Grava direto, so para preparar o historico; o caminho da aplicacao e o metodo (AD-011)."""
+    mudanca = MudancaDeStatus.objects.create(
+        inovacao=inovacao, status_anterior=anterior, status_novo=novo, responsavel=responsavel
+    )
+    MudancaDeStatus.objects.filter(pk=mudanca.pk).update(data=data)
+
+
+def _linha_do_tempo(html):
+    """(data e hora, frase) de cada item exibido do `ol.linha-do-tempo`."""
+    tela = exibido(html, rigoroso=True)
+    inicio = tela.index('<section aria-labelledby="historico-titulo">')
+    secao = tela[inicio : tela.index("</section>", inicio)]
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Histórico de status"]
+    lista = re.search(r'<ol class="linha-do-tempo">(.*?)</ol>', secao, re.S).group(1)
+    return [
+        (data, " ".join(frase.split()))
+        for data, frase in re.findall(r"<li>\s*<time>(.*?)</time>(.*?)</li>", lista, re.S)
+    ]
+
+
+@pytest.mark.parametrize(
+    ("status", "mudancas", "cadastro"),
+    [
+        (DISPONIVEL, [], "Cadastrada como “Disponível para replicação”, por Ana Souza"),
+        (DISPONIVEL, [(VALIDADA, DISPONIVEL)], "Cadastrada como “Validada”, por Ana Souza"),
+        (VALIDADA, [(EM_TESTE, VALIDADA)], "Cadastrada como “Em teste”, por Ana Souza"),
+    ],
+    ids=["sem_mudancas", "nasceu_validada", "nasceu_em_teste"],
+)
+def test_primeiro_item_e_o_cadastro_com_data_hora_e_status_inicial(
+    logado, autor, criar_inovacao, status, mudancas, cadastro
+):
+    """RCON-43, RCON-45: data e hora no fuso; status anterior da 1a mudanca ou o atual."""
+    inovacao = criar_inovacao(status=status)
+    Inovacao.objects.filter(pk=inovacao.pk).update(data_criacao=_utc(2026, 9, 15, 2, 30))
+    for anterior, novo in mudancas:
+        _mudanca(inovacao, autor, anterior, novo, _utc(2026, 10, 1, 12, 5))
+    itens = _linha_do_tempo(_pagina(logado, inovacao))
+    assert itens[0] == ("14/09/2026 23:30", cadastro)
+    assert len(itens) == len(mudancas) + 1
+
+
+def test_cadastro_usa_o_username_do_autor_sem_nome(logado, criar_inovacao):
+    """RCON-43 (autor como na CONS-13): sem nome completo, o username."""
+    bruno = Usuario.objects.create_user(username="bruno", email="bruno@x.com")
+    inovacao = criar_inovacao(autor=bruno)
+    [(_, frase)] = _linha_do_tempo(_pagina(logado, inovacao))
+    assert frase == "Cadastrada como “Em teste”, por bruno"
+
+
+def test_mudancas_seguem_o_cadastro_da_mais_antiga_a_mais_recente(
+    logado, autor, administrador, criar_inovacao
+):
+    """RCON-44: cada mudanca com data e hora e "De “X” para “Y”, por {responsável}"."""
+    inovacao = criar_inovacao(status=DISPONIVEL)
+    Inovacao.objects.filter(pk=inovacao.pk).update(data_criacao=_utc(2026, 9, 30, 12, 0))
+    # Criada primeiro, mas com a data mais recente.
+    _mudanca(inovacao, administrador, VALIDADA, DISPONIVEL, _utc(2026, 10, 2, 18, 45))
+    _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    assert _linha_do_tempo(_pagina(logado, inovacao)) == [
+        ("30/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("01/10/2026 09:05", "De “Em teste” para “Validada”, por Ana Souza"),
+        ("02/10/2026 15:45", "De “Validada” para “Disponível para replicação”, por carla"),
+    ]
+
+
+def test_pontos_da_linha_do_tempo_sao_decorativos(logado, autor, criar_inovacao):
+    """RCON-46: cada item tem o ponto `aria-hidden="true"`; o do cadastro e o vazado."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    html = _pagina(logado, inovacao)
+    lista = re.search(r'<ol class="linha-do-tempo">(.*?)</ol>', html, re.S).group(1)
+    pontos = re.findall(r"<li>\s*<span ([^>]*)></span>\s*<time>", lista)
+    assert pontos == [
+        'class="linha-do-tempo__ponto linha-do-tempo__ponto--cadastro" aria-hidden="true"',
+        'class="linha-do-tempo__ponto" aria-hidden="true"',
+    ]
+    assert not {"linha-do-tempo", "linha-do-tempo__ponto"} & CLASSES_OCULTAS
+    assert ".historico" not in _sem_comentarios(CSS)
+
+
+@pytest.mark.parametrize("quantidade", [0, 3])
+def test_linha_do_tempo_mantem_as_consultas_do_detalhe(
+    logado, autor, administrador, terceiro, criar_inovacao, django_assert_num_queries, quantidade
+):
+    """RCON-36: CONSULTAS_DO_DETALHE = 8 com 0 e 3 mudancas de responsaveis diferentes."""
+    inovacao = criar_inovacao(status=VALIDADA)
+    for conta in [autor, administrador, terceiro][:quantidade]:
+        _mudanca(inovacao, conta, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
+    with django_assert_num_queries(CONSULTAS_DO_DETALHE):
+        resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
+    assert len(_linha_do_tempo(resposta.content.decode())) == quantidade + 1
+
+
+def test_reaproveitamentos_e_historico_fecham_a_pagina_antes_do_link_de_volta(
+    logado, criar_inovacao
+):
+    """RCON-31 e a ordem de leitura do detalhe: aside, reaproveitamentos, historico, Voltar."""
+    tela = exibido(_pagina(logado, criar_inovacao()), rigoroso=True)
+    aside = tela.index("<aside")
+    reaproveitamentos = tela.index('<section aria-labelledby="reaproveitamentos-titulo">')
+    historico = tela.index('<section aria-labelledby="historico-titulo">')
+    voltar = tela.index('<a href="/inovacoes/">Voltar para a lista de inovações</a>')
+    assert aside < reaproveitamentos < historico < voltar

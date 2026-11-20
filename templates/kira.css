@@ -701,11 +701,6 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 
 .estado-erro { max-width: 40rem; }
 
-.historico { margin: 0 0 var(--space-5); padding: 0; list-style: none; }
-.historico li { padding: var(--space-2) 0; border-top: 1px solid var(--border); }
-.historico li:first-child { border-top: 0; }
-.historico time { color: var(--text-muted); }
-
 /* --- Reaproveitamentos no detalhe (§10 F6) ------------------------------- */
 
 /* Mesmo desenho da .historico: texto sobre o fundo da pagina (REAP-48). */
@@ -972,8 +967,14 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   border: 2px solid var(--brand-blue);
   border-radius: 50%;
   background: var(--brand-blue);
+  /* Sem texto dentro; a cor fica num par do DS-08 com o fundo (STAT-37). */
+  color: var(--surface);
 }
-.linha-do-tempo__ponto--cadastro { border-color: var(--borda-campo); background: var(--surface); }
+.linha-do-tempo__ponto--cadastro {
+  border-color: var(--borda-campo);
+  background: var(--surface);
+  color: var(--text);
+}
 .linha-do-tempo time { display: block; font-weight: 700; }
 
 /* Cartao de contato: o texto livre do campo, como foi digitado. */

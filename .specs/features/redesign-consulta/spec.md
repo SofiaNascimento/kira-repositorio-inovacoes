@@ -369,7 +369,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-43 | P1: Histórico | Design | Implementing |
 | RCON-44 | P1: Histórico | Design | Implementing |
 | RCON-45 | P1: Histórico | Design | Implementing |
-| RCON-46 | P1: Histórico | Design | Pending |
+| RCON-46 | P1: Histórico | Design | Implementing |
 | RCON-47 | P1: Ordem e folha | Design | Pending |
 | RCON-48 | P1: Ordem e folha | Design | Pending |
 | RCON-49 | P1: Ordem e folha | Design | Pending |

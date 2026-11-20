@@ -582,10 +582,25 @@ def test_quem_pode_alterar_le_a_ajuda_de_um_estagio_por_vez(
 
 
 def _historico(html):
+    """(data e hora, frase) de cada item exibido da linha do tempo.
+
+    T-I (redesign-consulta, T20, RCON-43 a RCON-46): a secao e um `ol.linha-do-tempo`; cada
+    item tem um `time` e a frase; o primeiro e o cadastro. Os pontos sao decorativos
+    (`aria-hidden`) e nao entram no texto; o item tem de estar exibido (L-028, L-030).
+    """
     secao = _secao(html, "historico-titulo")
     assert re.findall(r"<h2[^>]*>(.*?)</h2>", secao) == ["Histórico de status"]
-    itens = re.findall(r"<li\b[^>]*>(.*?)</li>", secao, re.S)
-    return [re.sub(r"<[^>]+>", "", item).strip() for item in itens]
+    tela = _secao(exibido(html, rigoroso=True), "historico-titulo")
+    lista = re.search(r'<ol class="linha-do-tempo">(.*?)</ol>', tela, re.S)
+    assert lista, "sem a linha do tempo exibida"
+    itens = re.findall(r"<li>\s*<time>(.*?)</time>(.*?)</li>", lista.group(1), re.S)
+    assert len(itens) == len(re.findall(r"<li\b", secao))
+    return [(data, " ".join(frase.split())) for data, frase in itens]
+
+
+def _cadastrada_em(inovacao, data):
+    """Fixa a data de cadastro, para o item do cadastro ter data e hora conhecidas."""
+    Inovacao.objects.filter(pk=inovacao.pk).update(data_criacao=data)
 
 
 def _mudanca(inovacao, responsavel, anterior, novo, data):
@@ -603,81 +618,115 @@ def _utc(*args):
 def test_historico_lista_as_mudancas_do_mais_antigo_ao_mais_recente(
     logado, autor, administrador, criar_inovacao
 ):
-    """STAT-24, STAT-25: a data manda, mesmo contra a ordem de criacao."""
+    """STAT-24, STAT-25: a data manda, mesmo contra a ordem de criacao.
+
+    T-I (redesign-consulta, T20, RCON-43, RCON-44): o cadastro abre a lista; cada mudanca le
+    "De “X” para “Y”, por N", com a data e hora no `time`.
+    """
     inovacao = criar_inovacao(status=DISPONIVEL)
+    _cadastrada_em(inovacao, _utc(2026, 9, 30, 12, 0))
     # Criada primeiro, mas com a data mais recente.
     _mudanca(inovacao, administrador, VALIDADA, DISPONIVEL, _utc(2026, 10, 2, 18, 45))
     _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
     html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
     assert _historico(html) == [
-        "01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza",
-        "02/10/2026 15:45 — de “Validada” para “Disponível para replicação”, por carla",
+        ("30/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("01/10/2026 09:05", "De “Em teste” para “Validada”, por Ana Souza"),
+        ("02/10/2026 15:45", "De “Validada” para “Disponível para replicação”, por carla"),
     ]
 
 
 def test_historico_mostra_a_data_no_fuso_de_sao_paulo(logado, autor, criar_inovacao):
-    """STAT-25: 02:30 UTC de 15/09 e 23:30 de 14/09 em America/Sao_Paulo."""
+    """STAT-25: 02:30 UTC de 15/09 e 23:30 de 14/09 em America/Sao_Paulo.
+
+    T-I (redesign-consulta, T20, RCON-43): o cadastro tambem, 01:00 UTC de 10/09 e 22:00 de 09/09.
+    """
     inovacao = criar_inovacao(status=VALIDADA)
+    _cadastrada_em(inovacao, _utc(2026, 9, 10, 1, 0))
     _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 9, 15, 2, 30))
     html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert _historico(html) == ["14/09/2026 23:30 — de “Em teste” para “Validada”, por Ana Souza"]
+    assert _historico(html) == [
+        ("09/09/2026 22:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("14/09/2026 23:30", "De “Em teste” para “Validada”, por Ana Souza"),
+    ]
 
 
 def test_historico_sem_registros_diz_que_nao_ha_mudancas(logado, criar_inovacao):
-    """STAT-26: inovacao sem historico, inclusive a ja avancada antes da F5."""
+    """STAT-26: inovacao sem historico, inclusive a ja avancada antes da F5.
+
+    T-I (redesign-consulta, T20, RCON-45): sem mudanca, a lista tem so o item do cadastro,
+    com o status atual, e nao mais o texto "Nenhuma mudança de status registrada.".
+    """
     inovacao = criar_inovacao(status=VALIDADA)
-    secao = _secao(logado.get(f"/inovacoes/{inovacao.pk}/").content.decode(), "historico-titulo")
-    assert '<p class="vazio">Nenhuma mudança de status registrada.</p>' in secao
-    assert "<li" not in secao
+    _cadastrada_em(inovacao, _utc(2026, 9, 30, 12, 0))
+    html = logado.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    assert _historico(html) == [("30/09/2026 09:00", "Cadastrada como “Validada”, por Ana Souza")]
+    assert "Nenhuma mudança de status registrada." not in html
 
 
 def test_terceiro_ve_o_historico(client, autor, terceiro, criar_inovacao):
-    """STAT-27: quem nao pode alterar tambem ve o historico."""
+    """STAT-27: quem nao pode alterar tambem ve o historico.
+
+    T-I (redesign-consulta, T20, RCON-43): com o item do cadastro na frente.
+    """
     inovacao = criar_inovacao(status=VALIDADA)
+    _cadastrada_em(inovacao, _utc(2026, 9, 30, 12, 0))
     _mudanca(inovacao, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
     client.force_login(terceiro)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
-    assert _historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]
+    assert _historico(html) == [
+        ("30/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("01/10/2026 09:05", "De “Em teste” para “Validada”, por Ana Souza"),
+    ]
 
 
 def test_historico_lista_so_as_mudancas_da_inovacao_aberta(
     logado, autor, administrador, criar_inovacao
 ):
-    """STAT-24, STAT-26: o historico de outra inovacao nao aparece no detalhe."""
+    """STAT-24, STAT-26: o historico de outra inovacao nao aparece no detalhe.
+
+    T-I (redesign-consulta, T20, RCON-43, RCON-45): cada uma com o proprio item de cadastro.
+    """
     primeira = criar_inovacao(titulo="Planilha de Caixa", status=VALIDADA)
     segunda = criar_inovacao(titulo="Robo de Conciliacao", status=DISPONIVEL)
     sem_historico = criar_inovacao(titulo="Fila de Reembolso", status=EM_TESTE)
+    for inovacao, dia in [(primeira, 27), (segunda, 28), (sem_historico, 29)]:
+        _cadastrada_em(inovacao, _utc(2026, 9, dia, 12, 0))
     _mudanca(primeira, autor, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
     _mudanca(segunda, administrador, EM_TESTE, VALIDADA, _utc(2026, 10, 3, 13, 0))
     _mudanca(segunda, administrador, VALIDADA, DISPONIVEL, _utc(2026, 10, 4, 14, 30))
 
     html = logado.get(f"/inovacoes/{primeira.pk}/").content.decode()
-    assert _historico(html) == ["01/10/2026 09:05 — de “Em teste” para “Validada”, por Ana Souza"]
+    assert _historico(html) == [
+        ("27/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("01/10/2026 09:05", "De “Em teste” para “Validada”, por Ana Souza"),
+    ]
 
     html = logado.get(f"/inovacoes/{segunda.pk}/").content.decode()
     assert _historico(html) == [
-        "03/10/2026 10:00 — de “Em teste” para “Validada”, por carla",
-        "04/10/2026 11:30 — de “Validada” para “Disponível para replicação”, por carla",
+        ("28/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza"),
+        ("03/10/2026 10:00", "De “Em teste” para “Validada”, por carla"),
+        ("04/10/2026 11:30", "De “Validada” para “Disponível para replicação”, por carla"),
     ]
 
-    secao = _secao(
-        logado.get(f"/inovacoes/{sem_historico.pk}/").content.decode(), "historico-titulo"
-    )
-    assert '<p class="vazio">Nenhuma mudança de status registrada.</p>' in secao
-    assert "<li" not in secao
+    html = logado.get(f"/inovacoes/{sem_historico.pk}/").content.decode()
+    assert _historico(html) == [("29/09/2026 09:00", "Cadastrada como “Em teste”, por Ana Souza")]
 
 
 @pytest.mark.parametrize("quantidade", [0, 3])
 def test_historico_nao_cresce_em_consultas_com_os_registros(
     logado, autor, administrador, terceiro, criar_inovacao, django_assert_num_queries, quantidade
 ):
-    """STAT-24, STAT-25: tres responsaveis diferentes nao custam consulta a mais (sem N+1)."""
+    """STAT-24, STAT-25: tres responsaveis diferentes nao custam consulta a mais (sem N+1).
+
+    T-I (redesign-consulta, T20, RCON-43): a lista tem as mudancas mais o item do cadastro.
+    """
     inovacao = criar_inovacao(status=VALIDADA)
     for conta in [autor, administrador, terceiro][:quantidade]:
         _mudanca(inovacao, conta, EM_TESTE, VALIDADA, _utc(2026, 10, 1, 12, 5))
     with django_assert_num_queries(CONSULTAS_DO_DETALHE):
         resposta = logado.get(f"/inovacoes/{inovacao.pk}/")
-    assert len(_historico(resposta.content.decode())) == quantidade
+    assert len(_historico(resposta.content.decode())) == quantidade + 1
 
 
 # --- F6: sinalizacao e secao "Reaproveitamentos" ---------------------------------

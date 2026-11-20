@@ -529,7 +529,7 @@ T22
 
 ---
 
-### T20: Histórico como linha do tempo
+### T20: Histórico como linha do tempo ✅
 
 **What**: a view passa `historico` (T5) com `mudancas` em lista; o template renderiza `ol.linha-do-tempo`; sai a regra `.historico`.
 **Where**: `inovacoes/views.py`, `inovacao_detail.html`, `templates/kira.css`
@@ -541,9 +541,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: item de cadastro com data/hora no fuso e status inicial certo (com e sem mudanças); mudanças na ordem; pontos `aria-hidden`; `CONSULTAS_DO_DETALHE = 8` com 0 e 3 mudanças
-- [ ] T-I, T-K (`historico`), T-L (`.historico`)
-- [ ] Gate build passa; test count ≥ anterior + 4
+- [x] Testes novos: item de cadastro com data/hora no fuso e status inicial certo (com e sem mudanças); mudanças na ordem; pontos `aria-hidden`; `CONSULTAS_DO_DETALHE = 8` com 0 e 3 mudanças
+- [x] T-I, T-K (`historico`), T-L (`.historico`)
+- [x] Gate build passa; test count ≥ anterior + 4
 
 **Tests**: e2e
 **Gate**: build
