@@ -408,6 +408,8 @@ PECAS = {
     # T-M (redesign-consulta, T9, DS-01): o cartao e a tabela da lista (RCON-10, RCON-19).
     "inovacoes/parciais/cartao.html",
     "inovacoes/parciais/tabela.html",
+    # T-M (T12): as etiquetas dos filtros ativos (RCON-04 a RCON-08).
+    "inovacoes/parciais/etiquetas.html",
 }
 
 

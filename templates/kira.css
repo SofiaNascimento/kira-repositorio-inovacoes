@@ -717,7 +717,6 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 /* --- Busca (§10 F3) ------------------------------------------------------ */
 
 .busca { margin-bottom: var(--space-5); }
-.busca .acoes { margin-top: 0; }
 /* Linha principal (RCON-02): lupa, campo em destaque e o botao, na ordem do codigo. */
 .busca__principal {
   display: grid;

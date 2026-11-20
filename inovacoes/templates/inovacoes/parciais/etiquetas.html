@@ -1,0 +1,15 @@
+{# RCON-04 a RCON-08: os filtros ativos, fora do form (um form so, CONS-31). Recebe etiquetas, filtros_ativos e url_limpar. #}
+{% if filtros_ativos %}
+  {% if etiquetas %}
+    <div class="filtros-ativos" role="group" aria-labelledby="rotulo-filtros-ativos">
+      <span id="rotulo-filtros-ativos">Filtros ativos:</span>
+      {% for etiqueta in etiquetas %}
+        <span class="etiqueta-filtro">{{ etiqueta.texto }}<a href="{{ etiqueta.href }}" aria-label="Remover filtro {{ etiqueta.texto }}">{% include "icones/fechar.svg" %}</a></span>
+      {% endfor %}
+      <a href="{{ url_limpar }}">Limpar filtros</a>
+    </div>
+  {% else %}
+    {# RCON-08: so parametro invalido; nenhuma etiqueta, mas o caminho de volta (CONS-32). #}
+    <div class="filtros-ativos"><a href="{{ url_limpar }}">Limpar filtros</a></div>
+  {% endif %}
+{% endif %}

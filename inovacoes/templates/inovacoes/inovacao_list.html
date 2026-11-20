@@ -29,9 +29,9 @@
         <div class="campo">{{ form.unidade.as_field_group }}</div>
         <div class="campo">{{ form.status.as_field_group }}</div>
       </div>
-      {# CONS-32: so quando ha algo a limpar. #}
-      {% if filtros_ativos %}<div class="acoes"><a href="{% url 'inovacoes:lista' %}">Limpar filtros</a></div>{% endif %}
     </form>
+    {# CONS-32, RCON-04 a RCON-08: etiquetas e "Limpar filtros", so quando ha algo a limpar. #}
+    {% include "inovacoes/parciais/etiquetas.html" %}
   </div>
 
   {% if form.errors %}

@@ -1,6 +1,8 @@
 """Testes e2e dos filtros ativos e do contexto de apresentacao da lista (R2)."""
 
+import html as html_lib
 import re
+from html.parser import HTMLParser
 from pathlib import Path
 
 import pytest
@@ -229,3 +231,184 @@ def test_folha_nao_esconde_a_busca():
     """RCON-02, RCON-03 (L-044): a linha principal e os filtros nao somem pela folha."""
     for classe in ("busca", "busca__principal", "busca__filtros", "campo", "helptext"):
         assert classe not in CLASSES_OCULTAS
+
+
+# --- T12: etiquetas na tela (RCON-04 a RCON-08) ---
+
+
+class _Grupo(HTMLParser):
+    """O grupo de filtros ativos dentro do role="search": rotulo, etiquetas e links."""
+
+    def __init__(self):
+        super().__init__()
+        self.ids = {}
+        self._id = None
+        self.dentro_da_busca = False
+        self.depois_do_form = False
+        self.grupo = None
+        self._nivel = 0
+        self.itens = []  # ("etiqueta", texto, link) | ("link", texto, atributos)
+        self._etiqueta = None
+        self._link = None
+
+    def handle_starttag(self, tag, attrs):
+        a = dict(attrs)
+        if a.get("id"):
+            self._id = a["id"]
+            self.ids[self._id] = ""
+        if a.get("role") == "search":
+            self.dentro_da_busca = True
+        if tag == "div" and "filtros-ativos" in (a.get("class") or "").split():
+            self.grupo = {**a, "na_busca": self.dentro_da_busca, "depois": self.depois_do_form}
+            self._nivel = 1
+            return
+        if not self._nivel:
+            return
+        if tag == "div":
+            self._nivel += 1
+        if tag == "span" and "etiqueta-filtro" in (a.get("class") or "").split():
+            self._etiqueta = ["etiqueta", "", None]
+        elif tag == "a":
+            self._link = [a, ""]
+
+    def handle_endtag(self, tag):
+        if tag == "form":
+            self.depois_do_form = True
+        if tag == "span":
+            self._id = None
+            if self._etiqueta and not self._link:
+                self.itens.append(tuple(self._etiqueta))
+                self._etiqueta = None
+        if not self._nivel:
+            return
+        if tag == "a" and self._link:
+            if self._etiqueta:
+                self._etiqueta[2] = self._link[0]
+            else:
+                self.itens.append(("link", self._link[1].strip(), self._link[0]))
+            self._link = None
+        if tag == "div":
+            self._nivel -= 1
+
+    def handle_data(self, data):
+        if self._id:
+            self.ids[self._id] += data
+        if self._link:
+            self._link[1] += data
+        elif self._etiqueta:
+            self._etiqueta[1] += data
+
+
+def _grupo(html):
+    leitor = _Grupo()
+    leitor.feed(exibido(html, rigoroso=True))
+    leitor.close()
+    return leitor
+
+
+def test_etiquetas_rotulo_ordem_texto_nome_acessivel_e_href(logado, financeiro, sede):
+    """RCON-04, RCON-05, RCON-06: "Filtros ativos:", 4 etiquetas na ordem, Limpar por ultimo."""
+    c, u = financeiro.pk, sede.pk
+    html = logado.get(f"{LISTA}?status=VALIDADA&unidade={u}&categoria={c}&q=planilha").content
+    grupo = _grupo(html.decode())
+
+    assert grupo.grupo is not None
+    assert grupo.grupo["role"] == "group"
+    assert grupo.grupo["na_busca"] and grupo.grupo["depois"]
+    assert grupo.ids[grupo.grupo["aria-labelledby"]].strip() == "Filtros ativos:"
+    etiquetas = [i for i in grupo.itens if i[0] == "etiqueta"]
+    assert [" ".join(texto.split()) for _, texto, _ in etiquetas] == [
+        "Busca: “planilha”",
+        "Categoria: Financeiro",
+        "Unidade: Sede",
+        "Status: Validada",
+    ]
+    restante = f"status=VALIDADA&unidade={u}&categoria={c}&q=planilha"
+    esperados = {
+        "Busca: “planilha”": restante.replace("&q=planilha", ""),
+        "Categoria: Financeiro": restante.replace(f"&categoria={c}", ""),
+        "Unidade: Sede": restante.replace(f"&unidade={u}", ""),
+        "Status: Validada": restante.replace("status=VALIDADA&", ""),
+    }
+    for _, texto, link in etiquetas:
+        texto = " ".join(texto.split())
+        assert link["aria-label"] == f"Remover filtro {texto}"
+        assert html_lib.unescape(link["href"]) == f"/inovacoes/?{esperados[texto]}"
+    # "Limpar filtros" e o ultimo item do grupo.
+    assert grupo.itens[-1][:2] == ("link", "Limpar filtros")
+    assert grupo.itens[-1][2]["href"] == "/inovacoes/"
+    assert len([i for i in grupo.itens if i[0] == "link"]) == 1
+
+
+def test_x_da_etiqueta_e_um_icone_decorativo(logado, financeiro):
+    """RCON-05: o link mostra so o icone aria-hidden; o nome vem do aria-label."""
+    html = logado.get(f"{LISTA}?categoria={financeiro.pk}").content.decode()
+    link = re.search(r'<a href="[^"]*" aria-label="Remover filtro [^"]*">(.*?)</a>', html, re.S)
+    assert link
+    assert re.fullmatch(r'\s*<svg aria-hidden="true"[^>]*>.*</svg>\s*', link.group(1), re.S)
+
+
+def test_remover_tira_o_page_e_mantem_a_exibicao(logado, criar_inovacao):
+    """RCON-05, RCON-06: o link tira o parametro e o page, mantem exibicao; Limpar tambem."""
+    html = logado.get(f"{LISTA}?q=planilha&status=EM_TESTE&page=2&exibicao=tabela").content
+    grupo = _grupo(html.decode())
+    hrefs = {
+        " ".join(t.split()): html_lib.unescape(link["href"])
+        for tipo, t, link in grupo.itens
+        if tipo == "etiqueta"
+    }
+    assert hrefs == {
+        "Busca: “planilha”": "/inovacoes/?status=EM_TESTE&exibicao=tabela",
+        "Status: Em teste": "/inovacoes/?q=planilha&exibicao=tabela",
+    }
+    assert grupo.itens[-1][:2] == ("link", "Limpar filtros")
+    assert html_lib.unescape(grupo.itens[-1][2]["href"]) == "/inovacoes/?exibicao=tabela"
+
+
+@pytest.mark.parametrize("consulta", ["", "?q=%20%20%20", "?exibicao=tabela", "?page=2"])
+def test_sem_filtro_valido_nao_ha_grupo_nem_etiqueta(logado, criar_inovacao, consulta):
+    """RCON-07 (CONS-21): sem filtro (ou so espacos na busca), nenhum grupo "Filtros ativos:"."""
+    criar_inovacao()
+    html = logado.get(f"{LISTA}{consulta}").content.decode()
+    conteudo = html[html.index("<main") :]
+    assert "Filtros ativos:" not in conteudo
+    assert "etiqueta-filtro" not in conteudo
+    assert "Remover filtro" not in conteudo
+
+
+def test_form_invalido_mostra_so_as_etiquetas_validas_e_limpar(logado, financeiro):
+    """RCON-08: alerta e erro do campo; nenhuma etiqueta do invalido; as validas e Limpar."""
+    html = logado.get(f"{LISTA}?categoria={financeiro.pk}&status=X").content.decode()
+    assert 'role="alert"' in html
+    assert re.search(r'id="id_status_error"', html)
+    grupo = _grupo(html)
+    etiquetas = [" ".join(t.split()) for tipo, t, _ in grupo.itens if tipo == "etiqueta"]
+    assert etiquetas == ["Categoria: Financeiro"]
+    assert grupo.itens[-1][:2] == ("link", "Limpar filtros")
+
+
+def test_form_so_com_parametro_invalido_mostra_limpar_sem_grupo(logado):
+    """RCON-08: so o invalido; nenhuma etiqueta nem "Filtros ativos:", mas "Limpar filtros"."""
+    html = logado.get(f"{LISTA}?status=X").content.decode()
+    exibida = exibido(html[html.index("<main") :], rigoroso=True)
+    assert "Filtros ativos:" not in exibida
+    assert "Remover filtro" not in exibida
+    assert re.search(r'<a href="/inovacoes/">Limpar filtros</a>', exibida)
+
+
+def test_etiquetas_ficam_fora_do_unico_form(logado, financeiro):
+    """RCON-04 (CONS-31, DS-14): um so form e um so botao; as etiquetas fora do form."""
+    html = logado.get(f"{LISTA}?categoria={financeiro.pk}").content.decode()
+    conteudo = html[html.index("<main") : html.index("</main>")]
+    assert conteudo.count("<form") == 1
+    form = re.search(r"<form method=\"get\".*?</form>", conteudo, re.S).group(0)
+    assert "Remover filtro" not in form
+    assert "Limpar filtros" not in form
+    assert re.findall(r"<button\b", form) == ["<button"]
+
+
+def test_etiqueta_escapa_o_termo(logado):
+    """RCON-04 (CONS-17): o termo da busca sai escapado na etiqueta."""
+    html = logado.get(LISTA, {"q": "<b>x</b>"}).content.decode()
+    assert "Busca: “&lt;b&gt;x&lt;/b&gt;”" in html
+    assert "<b>x</b>" not in html

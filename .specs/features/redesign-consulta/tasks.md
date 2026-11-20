@@ -343,7 +343,7 @@ T22
 
 ---
 
-### T12: Etiquetas na tela
+### T12: Etiquetas na tela ✅
 
 **What**: `parciais/etiquetas.html` dentro do `div role="search"`, depois do form.
 **Where**: `parciais/etiquetas.html`, `inovacao_list.html`
@@ -355,10 +355,10 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: rótulo "Filtros ativos:", etiquetas na ordem e com o texto, nome acessível "Remover filtro …" e `href` exato; "Limpar filtros" por último; nenhuma etiqueta sem filtro; form inválido → só as válidas + "Limpar filtros"; um só `<form>`
-- [ ] T-D: `LIMPAR` aceita classe e `?exibicao=tabela`
-- [ ] T-M: `PECAS` + `etiquetas.html`
-- [ ] Gate full passa; test count ≥ anterior + 7
+- [x] Testes novos: rótulo "Filtros ativos:", etiquetas na ordem e com o texto, nome acessível "Remover filtro …" e `href` exato; "Limpar filtros" por último; nenhuma etiqueta sem filtro; form inválido → só as válidas + "Limpar filtros"; um só `<form>`
+- [x] T-D: `LIMPAR` aceita classe e `?exibicao=tabela` (não foi preciso na T12: o link "Limpar filtros" não ganhou classe e nenhum teste antigo usa `exibicao`; o `LIMPAR` segue igual)
+- [x] T-M: `PECAS` + `etiquetas.html`
+- [x] Gate full passa; test count ≥ anterior + 7
 
 **Tests**: e2e
 **Gate**: full
