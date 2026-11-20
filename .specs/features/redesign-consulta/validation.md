@@ -1,12 +1,18 @@
 # Redesign da Consulta (R2) Validation
 
 **Date**: 2026-11-19
-**Iteration**: 1
-**Spec**: `.specs/features/redesign-consulta/spec.md` (RCON-01 … RCON-50; edge cases; regras de teste da feature; testes antigos T-A a T-R)
-**Diff range**: `98d79dd..459c85b` em `main` (T1 `5776a76` … T22 `459c85b`, com commits `docs(specs)` intercalados; spec em `79c51b3`, design em `295f5fd`)
+**Iteration**: 2 (registro da iteração 1 mantido abaixo; a iteração 2 está no fim do arquivo)
+**Spec**: `.specs/features/redesign-consulta/spec.md` (RCON-01 … RCON-50, com a RCON-33 e a RCON-35 emendadas em `cb1880c`; edge cases; regras de teste da feature; testes antigos T-A a T-R)
+**Diff range**: `98d79dd..9c91a77` em `main` (iteração 1: `98d79dd..459c85b`; correções: `cb1880c`, `7c0c4a7` T23, `9c91a77` T24)
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ (iteração 1)
+**Verdict**: FAIL ❌ (iteração 2)
+
+Iteração 2: os quatro itens da iteração 1 estão fechados (M27 morre, RCON-33 e RCON-35 emendadas e com teste no valor novo, os dois edge cases com teste), o gate passa com 1567 testes e as correções só acrescentaram testes. O FAIL vem de **1 mutante sobrevivente em 11** (N10): um `white-space: nowrap` na regra do título do cartão impede a quebra do título de 150 caracteres e a suíte passa, porque o teste da T24 só confere que o `overflow-wrap: anywhere` existe. É **lacuna de teste, não defeito de produção**: a folha atual não tem `white-space` no título (`templates/kira.css:804`). Detalhes na seção "Iteração 2".
+
+### Registro da iteração 1
+
+**Verdict (iteração 1)**: FAIL ❌
 
 As 50 ACs têm evidência `file:line` que afirma o valor da spec, o gate passa (1559 testes, +233) e nenhum teste antigo fora de T-A..T-R (mais T-P do design e o par do DS-08) mudou ou perdeu asserção. O FAIL vem de **1 mutante sobrevivente em 34** (M27): a lista pode renderizar o estado vazio ("Nenhuma inovação cadastrada ainda." e "Cadastrar a primeira inovação") junto com os resultados e a suíte inteira passa. É **lacuna de teste, não defeito de produção**: o template atual exclui o vazio quando há resultados (`inovacoes/templates/inovacoes/inovacao_list.html:44-74`). Dois spec-precision gaps (RCON-33, RCON-35) ficam sinalizados, sem reprovar.
 
@@ -277,3 +283,73 @@ validate_state: 1 error(s) across [redesign-consulta]
 **Lições registradas** (`lessons.py add`, todas candidatas): L-058 (M27, exclusão mútua de estados), L-059 (RCON-33), L-060 (RCON-35), L-061 (SPEC_DEVIATION da janela de páginas), L-062 (SPEC_DEVIATION das etiquetas com form inválido), L-063 (edge case do título longo). `.specs/LESSONS.md` e `.specs/lessons.json` ficam sem commit, junto com as mudanças locais do usuário.
 
 **Next steps**: rodar o fix de M27 (uma task de teste) e reverificar (iteração 2 de no máximo 3).
+
+---
+
+## Iteração 2
+
+**Date**: 2026-11-19
+**Diff range**: `98d79dd..9c91a77` (correções desta iteração: `a8317ed..9c91a77`)
+**Verdict**: FAIL ❌ (1 mutante sobrevivente, N10; nenhum defeito de produção)
+
+### Itens da iteração 1
+
+| Item | Valor da spec | `file:line` + asserção | Resultado |
+| ---- | ------------- | ---------------------- | --------- |
+| M27 (lista × vazio) | RCON-10/19: com resultados, a lista (cartões ou tabela); RCON-25/26: o vazio só quando nada existe ou casa | `inovacoes/tests/test_views_lista_vazio.py:121-136` - nas 4 combinações (`""`, `exibicao=tabela`, `q`, `q`+tabela): `'class="vazio"' not in main`, `not ILUSTRACAO.search(main)`, nenhum dos 4 textos do vazio na tela exibida (`rigoroso=True`), e `("<table" in exibido_main) == ("exibicao=tabela" in consulta)` | ✅ M27 reinjetado morre (`test_com_resultados_o_estado_vazio_nao_existe[]`) |
+| RCON-33 (emendada) | pares `dt`/`dd` na ordem "Unidade de origem"/{unidade}, "Categoria"/{categoria}, "Cadastrada por"/{autor}, "Cadastrada em"/{dd/mm/aaaa}, "Reaproveitamentos"/{n} | `inovacoes/tests/test_views_detalhe_v2.py:228-236` - `pares == [("Unidade de origem","Teste Unidade"), ("Categoria","Teste Categoria"), ("Cadastrada por","Ana Souza"), ("Cadastrada em","14/09/2026"), ("Reaproveitamentos","2")]` e 5 `dt` | ✅ a emenda descreve o que o teste já fixava; o spec-precision gap está fechado |
+| RCON-35 (emendada) | caption oculta "Unidades que reaproveitaram a inovação" | `inovacoes/tests/test_views_detalhe_v2.py:714-726` - regex `<table>\s*<caption class="visualmente-oculto">Unidades que reaproveitaram a inovação</caption>` + `clip` e `width: 1px` | ✅ texto da spec = texto do teste; gap fechado |
+| Edge case `page` inválida | "a paginação marca a página de fato mostrada" (CONS-05: inválida → página 1) | `inovacoes/tests/test_views_lista_paginacao.py:190-197` - para `0`, `-3`, `abc`: atual `== ["1"]`, `itens[0] == ("desabilitado", "Anterior")`, `"Página 1 de 25"`; mais `inovacoes/tests/test_views_lista.py:277-282` (200 e "Página 1 de 2") | ✅ |
+| Edge case título de 150 caracteres | "o cartão quebra o título sem rolagem horizontal" | `inovacoes/tests/test_views_lista_cartoes.py:447-455` - `_textos(h2) == ["A"*150]` e `overflow-wrap:\s*anywhere` no corpo de `.cartao-ino\76 acao__titulo`; produção em `templates/kira.css:804` | ⚠️ coberto, mas não discrimina: o teste afirma a presença de uma propriedade, não a ausência do que a anula (N10) |
+
+**Integridade dos testes** (`git diff a8317ed..HEAD -- '*tests*'`): três arquivos, só acréscimos (`test_views_lista_vazio.py` +28, `test_views_lista_cartoes.py` +12, `test_views_lista_paginacao.py` +10). Nenhuma linha de teste removida ou alterada, nenhuma asserção enfraquecida. Fora dos testes, a única mudança de código é `templates/kira.css:804` (+`overflow-wrap: anywhere`); spec e tasks em `cb1880c`. `tasks.md` marca T23 e T24 com ✅.
+
+### Gate
+
+- **Comando**: `.venv/bin/ruff check . && .venv/bin/ruff format --check . && .venv/bin/python manage.py makemigrations --check --dry-run && .venv/bin/pytest -q` (PostgreSQL 16 na porta 5433)
+- **Resultado**: `All checks passed!`; `176 files already formatted`; `No changes detected`; **1567 passed**, 0 failed, 0 skipped (37,9 s).
+- **Contagem**: 1559 na iteração 1 → 1567 (+8: 4 casos da T23, 1 do título, 3 da `page` inválida). Antes da feature: 1326 (+241 no total).
+
+### Sensor
+
+Worktree isolada em `9c91a77` no scratchpad (`git worktree add --detach`, `.env` por symlink), rodando o `.venv/bin/pytest` do projeto com `-x`. Baseline na worktree: 1567 passed. Depois de cada mutante, `git checkout -- .` na worktree; `git status --porcelain` da worktree vazio no fim. Worktree removida com `git worktree remove --force` + `git worktree prune`. A árvore real ficou igual ao baseline (` M .specs/LESSONS.md`, ` M .specs/lessons.json`, `?? .specs/features/gestao-por-unidade/`, `?? .specs/features/link-administracao/`).
+
+| # | Arquivo | Mutação | Resultado (primeiro teste que falhou) |
+| - | ------- | ------- | ------------------------------------- |
+| M27 | `inovacao_list.html:70` | vazio incluído depois da paginação, junto com os resultados (reaplicado) | ✅ morto, `test_views_lista_vazio.py::test_com_resultados_o_estado_vazio_nao_existe[]` |
+| N1 | `templates/kira.css:804` | tira o `overflow-wrap: anywhere` do título do cartão | ✅ morto, `test_views_lista_cartoes.py::test_titulo_de_150_caracteres_sem_espaco_quebra_dentro_do_cartao` |
+| N2 | `inovacao_list.html:62` | vazio só na exibição em tabela | ✅ morto, `test_com_resultados_o_estado_vazio_nao_existe[?exibicao=tabela]` |
+| N3 | `inovacoes/views.py:398` | `page` não inteira vai para a última página | ✅ morto, `test_views_lista.py::test_pagina_invalida_mostra_a_primeira[abc]` |
+| N4 | `inovacoes/views.py:396` | sem o `max(..., 1)`: `page=0`/`-3` caem na última página | ✅ morto, `test_views_lista.py::test_pagina_invalida_mostra_a_primeira[0]` |
+| N5 | `inovacao_detail.html:127` | caption "Reaproveitamentos da inovação" | ✅ morto, `test_views_detalhe_v2.py::test_legenda_da_tabela_fica_so_para_o_leitor_de_tela` |
+| N6 | `inovacao_detail.html:105-106` | `dd` antes do `dt` no par Categoria | ✅ morto, `test_views_detalhe_v2.py::test_ficha_tem_os_cinco_pares_na_ordem` |
+| N7 | `inovacoes/apresentacao.py:63` | etiqueta "Busca: {termo}" sem as aspas | ✅ morto, `test_views_lista_filtros.py::test_contexto_com_filtros_validos` |
+| N8 | `inovacao_detail.html:110` | "Cadastrada em" com `d/m/y` (ano de 2 dígitos) | ✅ morto, `test_views_detalhe_v2.py::test_ficha_tem_os_cinco_pares_na_ordem` |
+| N9 | `inovacao_list.html:70` | textos do vazio soltos (sem `div.vazio` nem ilustração) junto com os resultados | ✅ morto, `test_com_resultados_o_estado_vazio_nao_existe[]` |
+| N10 | `templates/kira.css:804` | `white-space: nowrap` somado ao título do cartão (o `overflow-wrap` fica, mas não quebra mais) | ❌ **sobreviveu** (1567 passed) |
+
+**Result**: 10/11 mortos. **FAIL ❌** (N10).
+
+**Por que N10 sobrevive.** O teste da T24 (`inovacoes/tests/test_views_lista_cartoes.py:455`) prova a quebra pela presença de `overflow-wrap: anywhere` no corpo de `.cartao-ino\76 acao__titulo`. Com `white-space: nowrap` na mesma regra (ou no `a` do título) não há oportunidade de quebra, o título de 150 caracteres rola a página a 320px e nada falha. Nenhum teste da folha restringe `white-space` fora da `.cartao-contato`.
+
+### Ranked gaps
+
+1. **N10, quebra do título longo afirmada por proxy** (edge case "título de 150 caracteres", RCON-49): `templates/kira.css:804`, teste `inovacoes/tests/test_views_lista_cartoes.py:447-455`. Severidade: Minor (lacuna de teste).
+   - **Fix task**: no mesmo teste, afirmar também que nenhuma regra de `.cartao-ino\76 acao__titulo` nem de `.cartao-ino\76 acao__titulo a` declara `white-space` com `nowrap` ou `pre`. Done when: N10 reinjetado morre (na regra do título e na do `a`).
+
+### `validate_state.py`
+
+`python3 .claude/skills/tlc-spec-driven/scripts/validate_state.py redesign-consulta`: exit 1, como esperado para um FAIL:
+
+```
+  ERROR redesign-consulta: validation.md verdict is FAIL - route the ranked gaps to fix tasks, then re-verify (feature is not done)
+
+validate_state: 1 error(s) across [redesign-consulta]
+```
+
+### Lições
+
+- L-058 a L-063 continuam candidatas: a promoção conta features distintas e esta reverificação é da mesma feature (`redesign-consulta`), então não as corrobora; `penalize` só vale para lições confirmadas. As correções da iteração 2 aplicaram L-058 (M27 e N9 morrem), L-059 e L-060 (spec emendada) e L-063 (o título de 150 caracteres agora é renderizado).
+- Falha nova destilada: N10 → **L-064** (candidata, `surviving_mutant`, escopo `tests`): "When a test proves a layout behavior by the presence of a CSS property, also assert that no rule on the same element declares a property that cancels it". `.specs/LESSONS.md` e `.specs/lessons.json` ficam sem commit.
+
+**Next steps**: rodar a fix task de N10 (uma task de teste) e reverificar (iteração 3 de no máximo 3).
