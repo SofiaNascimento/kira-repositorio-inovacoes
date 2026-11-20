@@ -140,7 +140,7 @@ T22
 
 ---
 
-### T3: Etiquetas de filtro ativo
+### T3: Etiquetas de filtro ativo ✅
 
 **What**: `etiquetas(dados_validos, consulta) -> list[Etiqueta]`.
 **Where**: `inovacoes/apresentacao.py`
@@ -152,8 +152,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes unitários: ordem Busca, Categoria, Unidade, Status; textos exatos ("Busca: “termo”", "Categoria: {nome}", "Unidade: {nome}", "Status: {rótulo}"); `q` só com espaços não gera etiqueta (CONS-21); cada `href` tira o próprio parâmetro e o `page` e mantém `exibicao`; sem filtro → `[]`
-- [ ] Gate quick passa; test count ≥ anterior + 7
+- [x] Testes unitários: ordem Busca, Categoria, Unidade, Status; textos exatos ("Busca: “termo”", "Categoria: {nome}", "Unidade: {nome}", "Status: {rótulo}"); `q` só com espaços não gera etiqueta (CONS-21); cada `href` tira o próprio parâmetro e o `page` e mantém `exibicao`; sem filtro → `[]`
+- [x] Gate quick passa; test count ≥ anterior + 7
 
 **Tests**: unit
 **Gate**: quick

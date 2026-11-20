@@ -3,7 +3,8 @@
 import pytest
 from django.http import QueryDict
 
-from inovacoes.apresentacao import exibicao, url_da_lista
+from inovacoes.apresentacao import Etiqueta, etiquetas, exibicao, url_da_lista
+from inovacoes.models import Categoria, Unidade
 
 # --- url_da_lista (RCON-05, RCON-06, RCON-18) ---
 
@@ -106,3 +107,97 @@ def test_exibicao_tabela_escolhe_a_tabela():
 def test_qualquer_outro_valor_de_exibicao_da_cartoes(query):
     """RCON-20: ausente, vazio, outra caixa ou valor desconhecido -> cartoes, sem erro."""
     assert exibicao(QueryDict(query)) == "cartoes"
+
+
+# --- etiquetas (RCON-04, RCON-05, RCON-07, CONS-21) ---
+
+# Objetos em memoria: a funcao so le o nome, nao consulta o banco.
+FINANCEIRO = Categoria(pk=3, nome="Financeiro")
+NORTE = Unidade(pk=4, nome="Filial Norte")
+
+TODOS = {"q": "planilha", "categoria": FINANCEIRO, "unidade": NORTE, "status": "VALIDADA"}
+CONSULTA_TODOS = "q=planilha&categoria=3&unidade=4&status=VALIDADA&page=2&exibicao=tabela"
+
+
+@pytest.mark.unit
+def test_etiquetas_na_ordem_busca_categoria_unidade_status_com_os_textos_da_spec():
+    """RCON-04: ordem e textos exatos."""
+    textos = [e.texto for e in etiquetas(TODOS, QueryDict(CONSULTA_TODOS))]
+
+    assert textos == [
+        "Busca: “planilha”",
+        "Categoria: Financeiro",
+        "Unidade: Filial Norte",
+        "Status: Validada",
+    ]
+
+
+@pytest.mark.unit
+def test_cada_link_tira_o_proprio_parametro_e_o_page_e_mantem_exibicao():
+    """RCON-05: o href de cada etiqueta, com exibicao=tabela mantida."""
+    hrefs = [e.href for e in etiquetas(TODOS, QueryDict(CONSULTA_TODOS))]
+
+    assert hrefs == [
+        "/inovacoes/?categoria=3&unidade=4&status=VALIDADA&exibicao=tabela",
+        "/inovacoes/?q=planilha&unidade=4&status=VALIDADA&exibicao=tabela",
+        "/inovacoes/?q=planilha&categoria=3&status=VALIDADA&exibicao=tabela",
+        "/inovacoes/?q=planilha&categoria=3&unidade=4&exibicao=tabela",
+    ]
+
+
+@pytest.mark.unit
+def test_unico_filtro_removido_leva_a_lista_sem_interrogacao():
+    """RCON-05: com so a categoria e a pagina, remover a categoria da /inovacoes/."""
+    dados = {"q": "", "categoria": FINANCEIRO, "unidade": None, "status": ""}
+
+    resultado = etiquetas(dados, QueryDict("categoria=3&page=2"))
+
+    assert resultado == [Etiqueta("Categoria: Financeiro", "/inovacoes/")]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("dados", "query", "esperada"),
+    [
+        ({"q": "planilha"}, "q=planilha", Etiqueta("Busca: “planilha”", "/inovacoes/")),
+        ({"unidade": NORTE}, "unidade=4", Etiqueta("Unidade: Filial Norte", "/inovacoes/")),
+        (
+            {"status": "DISPONIVEL_PARA_REPLICACAO"},
+            "status=DISPONIVEL_PARA_REPLICACAO",
+            Etiqueta("Status: Disponível para replicação", "/inovacoes/"),
+        ),
+    ],
+)
+def test_cada_filtro_sozinho_gera_so_a_propria_etiqueta(dados, query, esperada):
+    """RCON-04, RCON-05: um filtro valido, uma etiqueta."""
+    vazios = {"q": "", "categoria": None, "unidade": None, "status": ""}
+
+    assert etiquetas({**vazios, **dados}, QueryDict(query)) == [esperada]
+
+
+@pytest.mark.unit
+def test_busca_so_com_espacos_nao_gera_etiqueta():
+    """CONS-21: q so com espacos nao e filtro."""
+    dados = {"q": "   ", "categoria": None, "unidade": None, "status": "VALIDADA"}
+
+    resultado = etiquetas(dados, QueryDict("q=+++&status=VALIDADA"))
+
+    assert [e.texto for e in resultado] == ["Status: Validada"]
+    assert resultado[0].href == "/inovacoes/?q=+++"
+
+
+@pytest.mark.unit
+def test_termo_da_busca_aparece_sem_os_espacos_das_pontas():
+    """RCON-04: "Busca: “{termo}”" com o termo aparado, como o form o entrega."""
+    dados = {"q": "  planilha  ", "categoria": None, "unidade": None, "status": ""}
+
+    assert [e.texto for e in etiquetas(dados, QueryDict("q=planilha"))] == ["Busca: “planilha”"]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("query", ["", "exibicao=tabela&page=3"])
+def test_sem_filtro_valido_nao_ha_etiqueta(query):
+    """RCON-07: sem filtro, lista vazia; exibicao e page nao sao filtros."""
+    dados = {"q": "", "categoria": None, "unidade": None, "status": ""}
+
+    assert etiquetas(dados, QueryDict(query)) == []
