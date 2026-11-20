@@ -434,3 +434,116 @@ def test_botao_desabilitado_so_no_ultimo_estagio_para_quem_pode_alterar(
         assert 'aria-describedby="ciclo-explicacao"' in atributos
     else:
         assert botoes == []
+
+
+# --- RCON-37 a RCON-41: acoes em hierarquia no cabecalho ---
+
+
+def _acoes(tela):
+    """([(classe, texto, href)] fora do grupo de perigo, [...] dentro dele) do cabecalho exibido.
+
+    Devolve None quando o cabecalho nao tem o grupo de acoes.
+    """
+    cabecalho = _cabecalho(tela)
+    cabecalho = cabecalho[: cabecalho.index('<div class="detalhe">')]
+    inicio = cabecalho.find('<div class="acoes-pagina">')
+    if inicio == -1:
+        return None
+    grupo = cabecalho[inicio:]
+    corte = grupo.find('<div class="acoes-pagina__perigo">')
+    principal, perigo = (grupo, "") if corte == -1 else (grupo[:corte], grupo[corte:])
+
+    def links(trecho):
+        return [
+            (
+                re.search(r'\bclass="([^"]*)"', atributos).group(1),
+                " ".join(texto.split()),
+                re.search(r'\bhref="([^"]*)"', atributos).group(1),
+            )
+            for atributos, texto in re.findall(r"<a\b([^>]*)>([^<]*)</a>", trecho)
+        ]
+
+    return links(principal), links(perigo)
+
+
+def _esperado(status, perfil, pk):
+    pode = perfil in PODEM_ALTERAR
+    primaria = []
+    if status == DISPONIVEL:
+        primaria = [("botao", "Sinalizar reaproveitamento", f"/inovacoes/{pk}/reaproveitar/")]
+    elif pode:
+        proximo = "Validada" if status == EM_TESTE else "Disponível para replicação"
+        primaria = [("botao", f"Avançar para “{proximo}”", f"/inovacoes/{pk}/status/")]
+    if not pode:
+        return (primaria, []) if primaria else None
+    editar = ("botao botao--secundario", "Editar", f"/inovacoes/{pk}/editar/")
+    excluir = ("botao botao--perigo", "Excluir", f"/inovacoes/{pk}/excluir/")
+    return [*primaria, editar], [excluir]
+
+
+@pytest.mark.parametrize("perfil", PERFIS)
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA, DISPONIVEL], ids=str)
+def test_acoes_do_cabecalho_por_status_e_perfil(
+    client, request, criar_inovacao, staff, status, perfil
+):
+    """RCON-37 a RCON-40: a primaria certa, Editar depois e Excluir por ultimo no grupo separado."""
+    inovacao = criar_inovacao(status=status)
+    tela = exibido(_como(client, request, perfil, inovacao), rigoroso=True)
+    acoes = _acoes(tela)
+    assert acoes == _esperado(status, perfil, inovacao.pk)
+    if acoes:
+        # RCON-40: no maximo uma acao primaria (botao sem variante).
+        principal, perigo = acoes
+        assert len([classe for classe, _, _ in principal + perigo if classe == "botao"]) <= 1
+    assert not {"acoes-pagina", "acoes-pagina__perigo", "botao"} & CLASSES_OCULTAS
+
+
+@pytest.mark.parametrize("perfil", ["terceiro", "staff"])
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA, DISPONIVEL], ids=str)
+def test_quem_nao_pode_alterar_nao_ve_avancar_editar_nem_excluir(
+    client, request, criar_inovacao, staff, status, perfil
+):
+    """RCON-41: sem "Avançar para …", "Editar" e "Excluir" a USUARIO, com is_staff ou nao."""
+    inovacao = criar_inovacao(status=status)
+    html = _como(client, request, perfil, inovacao)
+    tela = exibido(html, rigoroso=True)
+    textos = [" ".join(t.split()) for t in re.findall(r"<a\b[^>]*>([^<]*)</a>", tela)]
+    assert [t for t in textos if t.startswith("Avançar para") or t in ("Editar", "Excluir")] == []
+    for sufixo in ("status", "editar", "excluir"):
+        assert f"/inovacoes/{inovacao.pk}/{sufixo}/" not in html
+
+
+@pytest.mark.parametrize("perfil", ["autor", "administrador"])
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA], ids=str)
+def test_avancar_e_descrito_pela_explicacao_do_bloco_do_ciclo(
+    client, request, criar_inovacao, status, perfil
+):
+    """RCON-37: o link do cabecalho aponta, por aria-describedby, para a explicacao do ciclo."""
+    inovacao = criar_inovacao(status=status)
+    tela = exibido(_como(client, request, perfil, inovacao), rigoroso=True)
+    link = re.search(
+        rf'<a class="botao" href="/inovacoes/{inovacao.pk}/status/"[^>]*>', _cabecalho(tela)
+    )
+    assert link
+    alvo = re.search(r'aria-describedby="([^"]*)"', link.group(0)).group(1)
+    bloco = _ciclo_exibido(tela)
+    assert re.search(rf'<p\b[^>]*\bid="{alvo}"[^>]*>(.*?)</p>', bloco).group(1) == AJUDA_DO_AVANCO
+    assert tela.count(f'id="{alvo}"') == 1
+
+
+def test_acoes_ficam_depois_da_linha_de_autoria(logado, criar_inovacao):
+    """RCON-39: as acoes vem no cabecalho, depois do h1 e da linha "Cadastrada por"."""
+    tela = exibido(_pagina(logado, criar_inovacao()), rigoroso=True)
+    assert re.search(
+        r"<h1>Controle de Caixa</h1>\s*<p>Cadastrada por [^<]*</p>\s*"
+        r'<div class="acoes-pagina">',
+        tela,
+    )
+
+
+def test_grupo_de_perigo_e_separado_por_divisor_e_32px():
+    """RCON-39: o Excluir fica afastado (divisor vertical e 32px); os botoes quebram de linha."""
+    assert re.search(r"flex-wrap\s*:\s*wrap", _corpos(".acoes-pagina"))
+    perigo = _corpos(".acoes-pagina__perigo")
+    assert re.search(r"padding-left\s*:\s*32px", perigo)
+    assert re.search(r"border-left\s*:\s*1px solid var\(--border\)", perigo)

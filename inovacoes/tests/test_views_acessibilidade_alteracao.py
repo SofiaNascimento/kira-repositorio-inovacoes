@@ -240,7 +240,11 @@ def test_avancar_status_so_tem_controles_nativos(pagina_do_ciclo):
 
 @pytest.mark.parametrize("secao", list(SECOES_DO_CICLO))
 def test_secoes_do_detalhe_sao_nativas_e_rotuladas_pelo_h2(client, autor, criar_inovacao, secao):
-    """STAT-34: cada secao e um section rotulado pelo seu h2, com lista ordenada e links."""
+    """STAT-34: cada secao e um section rotulado pelo seu h2, com lista ordenada e links.
+
+    T-K (redesign-consulta, T19, RCON-37): o link de Avancar sai da secao do ciclo e vai para
+    o cabecalho de pagina, nativo e descrito pela explicacao que ficou no bloco.
+    """
     titulo_id, titulo, classe = SECOES_DO_CICLO[secao]
     inovacao = criar_inovacao(status=StatusInovacao.VALIDADA)
     _registrar_validacao(inovacao, autor)
@@ -253,10 +257,17 @@ def test_secoes_do_detalhe_sao_nativas_e_rotuladas_pelo_h2(client, autor, criar_
     listas = [(tag, a.get("class")) for tag, a, _ in parser.elementos if tag in {"ol", "ul"}]
     assert listas == [("ol", classe)]
     links = [a["href"] for tag, a, _ in parser.elementos if tag == "a"]
+    assert links == []
     if secao == "ciclo":
-        assert links == [f"/inovacoes/{inovacao.pk}/status/"]
-    else:
-        assert links == []
+        cabecalho = _analisar(_cabecalho_de_pagina(html))
+        _afirma_so_nativos(cabecalho)
+        avancar = [
+            a
+            for tag, a, _ in cabecalho.elementos
+            if tag == "a" and a["href"] == f"/inovacoes/{inovacao.pk}/status/"
+        ]
+        assert [a.get("aria-describedby") for a in avancar] == ["ciclo-explicacao"]
+        assert 'id="ciclo-explicacao"' in trecho
 
 
 @pytest.mark.parametrize("pagina_do_ciclo", list(PAGINAS_DO_CICLO), indirect=True)
@@ -308,6 +319,12 @@ def test_estagio_atual_e_identificavel_sem_css(client, autor, criar_inovacao):
 # --- STAT-41: controle de transicao do ciclo (passe de design) -------------------
 
 
+def _cabecalho_de_pagina(html):
+    """O `div.cabecalho-pagina` do main (T-K, T19: as acoes do detalhe ficam nele)."""
+    inicio = html.index('<div class="cabecalho-pagina">')
+    return html[inicio : html.index('<div class="detalhe">', inicio)]
+
+
 def _texto_do_id(html, id_):
     achado = re.search(rf'<(\w+)\b[^>]*\bid="{id_}"[^>]*>(.*?)</\1>', html, re.S)
     assert achado, f"falta o elemento #{id_}"
@@ -345,9 +362,20 @@ def test_botao_desabilitado_continua_focavel_e_le_a_explicacao(client, autor, cr
 
 @pytest.mark.parametrize("status", [StatusInovacao.EM_TESTE, StatusInovacao.VALIDADA], ids=str)
 def test_link_de_avancar_e_descrito_pela_ajuda(client, autor, criar_inovacao, status):
-    """STAT-41: o link "Avancar para" aponta para a ajuda de um estagio por vez."""
-    trecho = _ciclo_do_autor(client, autor, criar_inovacao, status)
-    links = [a for tag, a, _ in _analisar(trecho).elementos if tag == "a"]
+    """STAT-41: o link "Avancar para" aponta para a ajuda de um estagio por vez.
+
+    T-K (redesign-consulta, T19, RCON-37): o link e procurado no cabecalho de pagina; o
+    `aria-describedby` aponta para a explicacao que continua no bloco do ciclo.
+    """
+    inovacao = criar_inovacao(status=status)
+    client.force_login(autor)
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    trecho = _secao(html, "ciclo-titulo")
+    links = [
+        a
+        for tag, a, _ in _analisar(_cabecalho_de_pagina(html)).elementos
+        if tag == "a" and a["href"] == f"/inovacoes/{inovacao.pk}/status/"
+    ]
     assert len(links) == 1
     assert _texto_do_id(trecho, links[0]["aria-describedby"]) == (
         "O status avança um estágio por vez e não volta ao anterior."

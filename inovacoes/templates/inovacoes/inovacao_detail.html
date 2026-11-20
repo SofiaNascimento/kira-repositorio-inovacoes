@@ -12,15 +12,28 @@
 {# RCON-28, CONS-13: autor pelo nome completo ou, sem nome, pelo username; data no fuso do projeto. #}
 {% block descricao %}<p>Cadastrada por {{ inovacao.autor.get_full_name|default:inovacao.autor.get_username }} em {{ inovacao.data_criacao|date:"d/m/Y" }} · {{ inovacao.unidade.nome }} · {{ inovacao.categoria.nome }}</p>{% endblock %}
 
-{% block conteudo %}
-
-  {# EDEX-03, EDEX-24, EDEX-31: so para o autor e o administrador (AD-009). #}
-  {% if pode_alterar %}
-    <p class="acoes">
-      <a href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a>
-      <a href="{% url 'inovacoes:excluir' inovacao.pk %}">Excluir</a>
-    </p>
+{# RCON-37 a RCON-41: no maximo uma acao primaria, Editar depois e Excluir por ultimo, num grupo separado. #}
+{# EDEX-03, EDEX-24, EDEX-31, STAT-03: Avancar, Editar e Excluir so para o autor e o administrador (AD-009). #}
+{# REAP-01, REAP-02: Sinalizar so em "Disponivel para replicacao", para qualquer usuario. #}
+{% block acao_principal %}
+  {% if pode_alterar or inovacao.pode_ser_reaproveitada %}
+    <div class="acoes-pagina">
+      {% if pode_alterar and inovacao.proximo_status %}
+        <a class="botao" href="{% url 'inovacoes:status' inovacao.pk %}" aria-describedby="ciclo-explicacao">Avançar para “{{ inovacao.proximo_status.label }}”</a>
+      {% elif inovacao.pode_ser_reaproveitada %}
+        <a class="botao" href="{% url 'inovacoes:reaproveitar' inovacao.pk %}">Sinalizar reaproveitamento</a>
+      {% endif %}
+      {% if pode_alterar %}
+        <a class="botao botao--secundario" href="{% url 'inovacoes:editar' inovacao.pk %}">Editar</a>
+        <div class="acoes-pagina__perigo">
+          <a class="botao botao--perigo" href="{% url 'inovacoes:excluir' inovacao.pk %}">Excluir</a>
+        </div>
+      {% endif %}
+    </div>
   {% endif %}
+{% endblock %}
+
+{% block conteudo %}
 
   {# RCON-31, RCON-47: narrativa, resumo lateral e as secoes seguintes, na ordem de leitura. #}
   {# Na tela larga a grade poe o aside na coluna da direita, ao lado da narrativa (RCON-50). #}
@@ -77,7 +90,7 @@
         {% endif %}
         <p id="ciclo-explicacao">Último estágio do ciclo. O status avança um estágio por vez e não volta.</p>
       {% elif pode_alterar %}
-        <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}" aria-describedby="ciclo-explicacao">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
+        {# RCON-37: o link "Avancar para" fica no cabecalho de pagina, descrito por este texto. #}
         <p id="ciclo-explicacao" class="helptext">O status avança um estágio por vez e não volta ao anterior.</p>
       {% else %}
         <p id="ciclo-explicacao">Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>
@@ -114,11 +127,6 @@
       <p class="vazio">Nenhuma mudança de status registrada.</p>
     {% endif %}
   </section>
-
-  {# REAP-01, REAP-02: o link so existe em inovacao "Disponivel para replicacao", para qualquer usuario. #}
-  {% if inovacao.pode_ser_reaproveitada %}
-    <p class="acoes"><a href="{% url 'inovacoes:reaproveitar' inovacao.pk %}">Sinalizar reaproveitamento</a></p>
-  {% endif %}
 
   <section aria-labelledby="reaproveitamentos-titulo">
     <h2 id="reaproveitamentos-titulo">Reaproveitamentos</h2>

@@ -246,12 +246,27 @@ CONSULTAS_DO_DETALHE = 8
 
 
 def _links(html, rotulo):
-    """hrefs de todos os links com o texto exato do rotulo.
+    """hrefs de todos os links exibidos com o texto exato do rotulo.
 
-    Depois do href, so um aria-describedby opcional (STAT-41): hidden ou
-    aria-hidden fazem o link nao contar como exibido.
+    T-G (redesign-consulta, T19, RCON-37 a RCON-39): o link e achado pelo `href` e pelo
+    texto exibido, em qualquer ordem de atributos (as acoes ganham as classes de botao).
+    A garantia continua: hidden, inert ou aria-hidden no link ou num ancestral fazem o link
+    nao contar como exibido (`exibido(rigoroso=True)`, L-028, L-030).
     """
-    return re.findall(rf'<a href="([^"]*)"(?: aria-describedby="[^"]*")?>\s*{rotulo}\s*</a>', html)
+    return [
+        href
+        for atributos, texto in re.findall(
+            r"<a\b([^>]*)>(.*?)</a>", exibido(html, rigoroso=True), re.S
+        )
+        if " ".join(re.sub(r"<[^>]+>", "", texto).split()) == rotulo
+        for href in re.findall(r'\bhref="([^"]*)"', atributos)
+    ]
+
+
+def _cabecalho_de_pagina(html):
+    """O `div.cabecalho-pagina` do main (T-G, T19: as acoes ficam nele, RCON-37 a RCON-39)."""
+    inicio = html.index('<div class="cabecalho-pagina">')
+    return html[inicio : html.index('<div class="detalhe">', inicio)]
 
 
 def test_autor_ve_o_link_editar_no_detalhe(logado, criar_inovacao):
@@ -414,10 +429,19 @@ def test_ciclo_marca_so_o_estagio_atual_com_texto(client, autor, criar_inovacao,
 def test_quem_pode_alterar_ve_o_link_de_avancar(
     client, criar_inovacao, request, conta, status, proximo
 ):
-    """STAT-03: autor e administrador veem "Avancar para" o proximo, para /status/."""
+    """STAT-03: autor e administrador veem "Avancar para" o proximo, para /status/.
+
+    T-G (redesign-consulta, T19, RCON-37): o link fica no cabecalho de pagina, como acao
+    primaria, e nao mais na secao do ciclo.
+    """
     inovacao = criar_inovacao(status=status)
-    secao = _ciclo(client, request.getfixturevalue(conta), inovacao)
-    assert _links(secao, f"Avançar para “{proximo}”") == [f"/inovacoes/{inovacao.pk}/status/"]
+    client.force_login(request.getfixturevalue(conta))
+    html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+    secao = _secao(html, "ciclo-titulo")
+    assert _links(_cabecalho_de_pagina(html), f"Avançar para “{proximo}”") == [
+        f"/inovacoes/{inovacao.pk}/status/"
+    ]
+    assert _links(html, f"Avançar para “{proximo}”") == [f"/inovacoes/{inovacao.pk}/status/"]
     assert "Último estágio do ciclo." not in secao
 
 
@@ -683,11 +707,17 @@ def _reaproveitamentos(html):
 def test_disponivel_mostra_o_link_de_sinalizar_a_todo_perfil(
     client, autor, administrador, nao_autor_usuario, criar_inovacao
 ):
-    """REAP-01: autor, terceiro USUARIO (comum, staff, superuser) e administrador."""
+    """REAP-01: autor, terceiro USUARIO (comum, staff, superuser) e administrador.
+
+    T-G (redesign-consulta, T19, RCON-38): o link e a acao primaria do cabecalho de pagina.
+    """
     inovacao = criar_inovacao(status=DISPONIVEL)
     for conta in [autor, administrador, nao_autor_usuario]:
         client.force_login(conta)
         html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
+        assert _links(_cabecalho_de_pagina(html), SINALIZAR) == [
+            f"/inovacoes/{inovacao.pk}/reaproveitar/"
+        ], conta
         assert _links(html, SINALIZAR) == [f"/inovacoes/{inovacao.pk}/reaproveitar/"], conta
         # L-028, L-030: o link e cada ancestral ficam na tela e no leitor de tela.
         assert _links(exibido(html), SINALIZAR) == [f"/inovacoes/{inovacao.pk}/reaproveitar/"], (

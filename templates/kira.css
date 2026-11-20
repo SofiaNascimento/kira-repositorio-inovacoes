@@ -583,6 +583,27 @@ nav[aria-label=Paginação] a {
 }
 nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs-sm); }
 
+/* --- Acoes do detalhe em hierarquia (§10 v2; RCON-37 a RCON-40) --------- */
+
+/* Primaria, secundaria e, afastado por um divisor e 32px, o grupo de perigo. Em tela
+   estreita os botoes quebram de linha na ordem do codigo. */
+.acoes-pagina {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.acoes-pagina__perigo {
+  display: flex;
+  margin-left: var(--space-5);
+  padding-left: 32px;
+  border-left: 1px solid var(--border);
+}
+@media (max-width: 30rem) {
+  .acoes-pagina__perigo { margin-left: 0; padding-left: 0; border-left: 0; }
+}
+
 /* --- Detalhe (§10 v2; RCON-29 a RCON-33, RCON-50) ---------------------- */
 
 /* Uma coluna na ordem do codigo; a partir de 45rem, o aside vai na coluna da direita, ao

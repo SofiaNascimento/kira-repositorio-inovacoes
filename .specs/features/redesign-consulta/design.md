@@ -326,3 +326,8 @@ lista.
   `CADEIA_DO_COMPONENTE` e o STAT-37 passa a ler `.etapa--atual` (negrito) e
   `.etapa--atual .etapa__marcador` (`--brand-blue` com `--on-brand`, par aprovado da §2 v2).
   O link "Avançar para …" fica no bloco até a T19.
+- **T19, ações:** o bloco `acao_principal` do detalhe só renderiza o `div.acoes-pagina` quando
+  há alguma ação (quem pode alterar, ou status "Disponível para replicação"). O T-G troca o
+  regex literal de `_links` por uma leitura do DOM exibido (`href` + texto, qualquer ordem de
+  atributos); STAT-03 e REAP-01 procuram no cabeçalho de página. O T-K procura o Avançar no
+  cabeçalho e confere o `aria-describedby` contra a explicação do bloco do ciclo.

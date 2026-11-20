@@ -506,7 +506,7 @@ T22
 
 ---
 
-### T19: Ações em hierarquia
+### T19: Ações em hierarquia ✅
 
 **What**: bloco `acao_principal` do detalhe com `div.acoes-pagina` (primária por status, Editar, Excluir separado); CSS `.acoes-pagina`.
 **Where**: `inovacao_detail.html`, `templates/kira.css`
@@ -518,9 +518,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: matriz status × perfil (autor, `ADMINISTRADOR`, `USUARIO`, `USUARIO` com `is_staff`): no máximo uma primária, a certa; Editar depois; Excluir por último no grupo separado; `aria-describedby` do Avançar aponta para a explicação do bloco; nenhuma ação a quem não pode
-- [ ] T-G (`_links`), T-K (link descrito)
-- [ ] Gate build passa; test count ≥ anterior + 8
+- [x] Testes novos: matriz status × perfil (autor, `ADMINISTRADOR`, `USUARIO`, `USUARIO` com `is_staff`): no máximo uma primária, a certa; Editar depois; Excluir por último no grupo separado; `aria-describedby` do Avançar aponta para a explicação do bloco; nenhuma ação a quem não pode
+- [x] T-G (`_links`), T-K (link descrito)
+- [x] Gate build passa; test count ≥ anterior + 8
 
 **Tests**: e2e
 **Gate**: build
