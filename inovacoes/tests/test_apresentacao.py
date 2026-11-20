@@ -1,9 +1,10 @@
 """Testes unitarios das funcoes de apresentacao da consulta (R2)."""
 
 import pytest
+from django.core.paginator import Paginator
 from django.http import QueryDict
 
-from inovacoes.apresentacao import Etiqueta, etiquetas, exibicao, url_da_lista
+from inovacoes.apresentacao import Etiqueta, etiquetas, exibicao, paginas, url_da_lista
 from inovacoes.models import Categoria, Unidade
 
 # --- url_da_lista (RCON-05, RCON-06, RCON-18) ---
@@ -201,3 +202,40 @@ def test_sem_filtro_valido_nao_ha_etiqueta(query):
     dados = {"q": "", "categoria": None, "unidade": None, "status": ""}
 
     assert etiquetas(dados, QueryDict(query)) == []
+
+
+# --- paginas (RCON-22) ---
+
+
+def _pagina(total_de_paginas, numero):
+    # 20 por pagina, como a lista (paginate_by = 20).
+    return Paginator(range(total_de_paginas * 20), 20).page(numero)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    ("numero", "esperada"),
+    [
+        (1, [1, 2, 3, "…", 25]),
+        (4, [1, 2, 3, 4, 5, 6, "…", 25]),
+        (5, [1, "…", 3, 4, 5, 6, 7, "…", 25]),
+        (21, [1, "…", 19, 20, 21, 22, 23, "…", 25]),
+        (25, [1, "…", 23, 24, 25]),
+    ],
+)
+def test_janela_de_25_paginas(numero, esperada):
+    """RCON-22: primeira, ultima e a atual +- 2, com um "…" para cada salto, ate de uma pagina."""
+    assert paginas(_pagina(25, numero)) == esperada
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("numero", [1, 2, 3])
+def test_tres_paginas_sem_reticencias(numero):
+    """RCON-22: sem salto, sem "…"."""
+    assert paginas(_pagina(3, numero)) == [1, 2, 3]
+
+
+@pytest.mark.unit
+def test_uma_pagina_so():
+    """RCON-22: a primeira e a ultima sao a mesma, sem repetir."""
+    assert paginas(_pagina(1, 1)) == [1]

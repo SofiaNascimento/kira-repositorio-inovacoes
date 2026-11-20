@@ -7,6 +7,7 @@ Mesmo padrao do modulo busca.py (AD-002, AD-008).
 
 from typing import NamedTuple
 
+from django.core.paginator import Paginator
 from django.urls import reverse
 
 from inovacoes.models import StatusInovacao
@@ -62,3 +63,19 @@ def etiquetas(dados_validos, consulta):
         Etiqueta(texto, url_da_lista(consulta, **{parametro: None, "page": None}))
         for parametro, texto in textos
     ]
+
+
+# SPEC_DEVIATION: o design manda usar Paginator.get_elided_page_range(on_each_side=2, on_ends=1).
+# Reason: esse metodo nao poe "…" no lugar de uma pagina so (na 5 de 25 da 1 2 3 4 5 6 7 … 25),
+# e a RCON-22 pede um "…" para cada salto (1 … 3 4 5 6 7 … 25). A janela e calculada aqui.
+def paginas(page_obj):
+    """Primeira, ultima e a atual +- 2, em ordem, com um "…" por salto (RCON-22)."""
+    atual = page_obj.number
+    total = page_obj.paginator.num_pages
+    numeros = sorted({1, total, *range(max(atual - 2, 1), min(atual + 2, total) + 1)})
+    janela = []
+    for numero in numeros:
+        if janela and numero > janela[-1] + 1:
+            janela.append(Paginator.ELLIPSIS)
+        janela.append(numero)
+    return janela

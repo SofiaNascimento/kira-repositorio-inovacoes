@@ -162,7 +162,7 @@ T22
 
 ---
 
-### T4: Janela de páginas
+### T4: Janela de páginas ✅
 
 **What**: `paginas(page_obj) -> list[int | str]` com `get_elided_page_range(on_each_side=2, on_ends=1)`.
 **Where**: `inovacoes/apresentacao.py`
@@ -174,8 +174,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes unitários: 25 páginas na 1 (`1 2 3 … 25`), na 5 (`1 … 3 4 5 6 7 … 25`), na 25; 3 páginas sem "…"; 1 página
-- [ ] Gate quick passa; test count ≥ anterior + 5
+- [x] Testes unitários: 25 páginas na 1 (`1 2 3 … 25`), na 5 (`1 … 3 4 5 6 7 … 25`), na 25; 3 páginas sem "…"; 1 página
+- [x] Gate quick passa; test count ≥ anterior + 5
 
 **Tests**: unit
 **Gate**: quick

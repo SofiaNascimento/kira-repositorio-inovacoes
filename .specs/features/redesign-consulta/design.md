@@ -254,3 +254,15 @@ lista.
 | Página atual e pontas da paginação | `span` com `aria-current="page"` / `aria-disabled="true"`, sem `role` e sem `tabindex` | CONS-41: todo `a` tem `href` e nenhum controle ganha `role` |
 | Alternador | Dois links com `href`, o atual com `aria-current="true"` | §10; CONS-41 |
 | Etapas com situação | A view passa `(valor, rótulo, situação)` | O template não compara posições; a regra fica testável na view |
+
+---
+
+## Ajustes do Execute
+
+### Lote 1
+
+- **T4, janela de páginas:** `paginas()` calcula a janela em Python e não usa
+  `Paginator.get_elided_page_range(on_each_side=2, on_ends=1)`. Esse método não troca uma página
+  só por "…": na 5 de 25 devolve `1 2 3 4 5 6 7 … 25`, e a RCON-22 (e o "Done when" da T4) pede
+  `1 … 3 4 5 6 7 … 25`. O "…" continua sendo `Paginator.ELLIPSIS`. Marcado com `SPEC_DEVIATION`
+  em `inovacoes/apresentacao.py`.
