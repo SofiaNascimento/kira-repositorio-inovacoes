@@ -58,6 +58,32 @@
       <p class="cartao-contato__nota">Procure esta pessoa para tirar dúvidas antes de replicar.</p>
     </div>
 
+    {# RCON-34: as etapas em ordem; a situacao vai no texto e o marcador e decorativo (STAT-37). #}
+    <section aria-labelledby="ciclo-titulo">
+      <h2 id="ciclo-titulo">Ciclo de vida</h2>
+      <ol class="etapas">
+        {% for valor, rotulo, situacao in etapas %}
+          <li class="etapa etapa--{{ situacao }}"{% if situacao == "atual" %} aria-current="step"{% endif %}>
+            <span class="etapa__marcador" aria-hidden="true">{% if situacao == "concluida" %}{% include "icones/visto.svg" %}{% else %}{{ forloop.counter }}{% endif %}</span>
+            <span>{% if situacao == "concluida" %}{{ rotulo }} · concluída{% elif situacao == "atual" %}{{ rotulo }} (status atual){% else %}{{ rotulo }} · próxima etapa{% endif %}</span>
+          </li>
+        {% endfor %}
+      </ol>
+      {# STAT-03 a STAT-05, STAT-38 a STAT-41, RCON-41, RCON-42: a transicao indisponivel aparece desabilitada ou explicada, nunca some sem motivo. #}
+      {# aria-disabled e nao disabled: o botao continua no Tab e le a explicacao. #}
+      {% if not inovacao.proximo_status %}
+        {% if pode_alterar %}
+          <p class="acoes"><button type="button" aria-disabled="true" aria-describedby="ciclo-explicacao">Avançar status</button></p>
+        {% endif %}
+        <p id="ciclo-explicacao">Último estágio do ciclo. O status avança um estágio por vez e não volta.</p>
+      {% elif pode_alterar %}
+        <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}" aria-describedby="ciclo-explicacao">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
+        <p id="ciclo-explicacao" class="helptext">O status avança um estágio por vez e não volta ao anterior.</p>
+      {% else %}
+        <p id="ciclo-explicacao">Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>
+      {% endif %}
+    </section>
+
     {# RCON-33: os cinco pares da ficha; a contagem sai da lista ja carregada (REAP-43). #}
     <div class="cartao">
       <dl class="ficha-resumo">
@@ -74,33 +100,6 @@
       </dl>
     </div>
   </aside>
-
-  <section aria-labelledby="ciclo-titulo">
-    <h2 id="ciclo-titulo">Ciclo de vida</h2>
-    {# STAT-01, STAT-02: o estagio atual marcado por texto, nao so por cor (STAT-37). #}
-    <ol class="ciclo">
-      {% for valor, rotulo in etapas %}
-        {% if valor == inovacao.status %}
-          <li aria-current="step"><strong>{{ rotulo }} (status atual)</strong></li>
-        {% else %}
-          <li>{{ rotulo }}</li>
-        {% endif %}
-      {% endfor %}
-    </ol>
-    {# STAT-03 a STAT-05, STAT-38 a STAT-41: transicao indisponivel aparece desabilitada ou explicada, nunca some sem motivo. #}
-    {# aria-disabled e nao disabled: o botao continua no Tab e le a explicacao. #}
-    {% if not inovacao.proximo_status %}
-      {% if pode_alterar %}
-        <p class="acoes"><button type="button" aria-disabled="true" aria-describedby="ciclo-explicacao">Avançar status</button></p>
-      {% endif %}
-      <p id="ciclo-explicacao">Último estágio do ciclo.</p>
-    {% elif pode_alterar %}
-      <p class="acoes"><a href="{% url 'inovacoes:status' inovacao.pk %}" aria-describedby="ciclo-explicacao">Avançar para “{{ inovacao.proximo_status.label }}”</a></p>
-      <p id="ciclo-explicacao" class="helptext">O status avança um estágio por vez e não volta ao anterior.</p>
-    {% else %}
-      <p id="ciclo-explicacao">Só quem cadastrou a inovação ou um administrador pode avançar o status.</p>
-    {% endif %}
-  </section>
 
   <section aria-labelledby="historico-titulo">
     <h2 id="historico-titulo">Histórico de status</h2>

@@ -139,10 +139,16 @@ class InovacaoDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         # EDEX-03, EDEX-24: as acoes so aparecem para quem pode alterar (AD-009).
-        # STAT-01: a ordem do enum ja e a ordem do ciclo.
+        # STAT-01: a ordem do enum ja e a ordem do ciclo. RCON-34: cada etapa vem com a
+        # situacao pela posicao do status atual; o template nao compara posicoes.
+        atual = StatusInovacao.values.index(self.object.status)
+        etapas = [
+            (valor, rotulo, "concluida" if i < atual else "atual" if i == atual else "futura")
+            for i, (valor, rotulo) in enumerate(StatusInovacao.choices)
+        ]
         return super().get_context_data(
             pode_alterar=self.object.pode_ser_alterada_por(self.request.user),
-            etapas=StatusInovacao.choices,
+            etapas=etapas,
             # STAT-24, STAT-25: uma consulta so, com o responsavel junto (sem N+1).
             mudancas=self.object.mudancas_de_status.select_related("responsavel"),
             # REAP-18, REAP-43: uma consulta so, com a unidade junto (sem N+1).

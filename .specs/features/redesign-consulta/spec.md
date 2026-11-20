@@ -357,7 +357,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-31 | P1: Detalhe | Design | Implementing |
 | RCON-32 | P1: Detalhe | Design | Implementing |
 | RCON-33 | P1: Detalhe | Design | Implementing |
-| RCON-34 | P1: Detalhe | Design | Pending |
+| RCON-34 | P1: Detalhe | Design | Implementing |
 | RCON-35 | P1: Detalhe | Design | Pending |
 | RCON-36 | P1: Detalhe | Design | Pending |
 | RCON-37 | P1: Ações | Design | Pending |
@@ -365,7 +365,7 @@ ordem em que aparecem e sem perder nada.
 | RCON-39 | P1: Ações | Design | Pending |
 | RCON-40 | P1: Ações | Design | Pending |
 | RCON-41 | P1: Ações | Design | Pending |
-| RCON-42 | P1: Ações | Design | Pending |
+| RCON-42 | P1: Ações | Design | Implementing |
 | RCON-43 | P1: Histórico | Design | Implementing |
 | RCON-44 | P1: Histórico | Design | Implementing |
 | RCON-45 | P1: Histórico | Design | Implementing |

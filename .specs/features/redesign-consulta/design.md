@@ -320,3 +320,9 @@ lista.
   as regras `.ficha` (e o `@media (max-width: 40rem)` dela): a `dl` da lateral usa só
   `.ficha-resumo` e nenhum outro template usa `.ficha`. O número dos passos da narrativa usa o
   par `on-brand`/`brand-navy`, que já está no DS-08 (T10); nenhum par novo.
+- **T18, bloco do ciclo:** continua uma `section aria-labelledby="ciclo-titulo"`, agora dentro
+  do `aside`, entre o contato e a ficha. O marcador da etapa concluída é o ícone `visto.svg`; o
+  da atual e das futuras, o número da etapa. O T-L troca `.ciclo` por `.etapas` no
+  `CADEIA_DO_COMPONENTE` e o STAT-37 passa a ler `.etapa--atual` (negrito) e
+  `.etapa--atual .etapa__marcador` (`--brand-blue` com `--on-brand`, par aprovado da §2 v2).
+  O link "Avançar para …" fica no bloco até a T19.

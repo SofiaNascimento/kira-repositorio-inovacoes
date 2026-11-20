@@ -168,8 +168,9 @@ PAGINAS_DO_CICLO = {
     "detalhe_final": (StatusInovacao.DISPONIVEL_PARA_REPLICACAO, ""),
 }
 # Secao do detalhe -> (id do h2, texto do h2, classe da lista).
+# T-K (redesign-consulta, T18, RCON-34): a lista do ciclo e o indicador de etapas.
 SECOES_DO_CICLO = {
-    "ciclo": ("ciclo-titulo", "Ciclo de vida", "ciclo"),
+    "ciclo": ("ciclo-titulo", "Ciclo de vida", "etapas"),
     "historico": ("historico-titulo", "Histórico de status", "historico"),
 }
 
@@ -282,7 +283,11 @@ def test_avancar_status_tem_um_unico_h1_e_title(pagina_do_ciclo):
 
 
 def test_estagio_atual_e_identificavel_sem_css(client, autor, criar_inovacao):
-    """STAT-37: sem estilo, o texto da secao ainda diz qual e o estagio atual."""
+    """STAT-37: sem estilo, o texto da secao ainda diz qual e o estagio atual.
+
+    T-K (redesign-consulta, T18, RCON-34): cada etapa diz a situacao em texto; o marcador
+    decorativo (`aria-hidden`) fica de fora, como o leitor de tela o le.
+    """
     inovacao = criar_inovacao(status=StatusInovacao.VALIDADA)
     client.force_login(autor)
     html = client.get(f"/inovacoes/{inovacao.pk}/").content.decode()
@@ -291,9 +296,13 @@ def test_estagio_atual_e_identificavel_sem_css(client, autor, criar_inovacao):
     assert "style=" not in trecho
     itens = [
         " ".join(re.sub(r"<[^>]+>", "", item).split())
-        for item in re.findall(r"<li\b[^>]*>(.*?)</li>", trecho, re.S)
+        for item in re.findall(r"<li\b[^>]*>(.*?)</li>", exibido(trecho), re.S)
     ]
-    assert itens == ["Em teste", "Validada (status atual)", "Disponível para replicação"]
+    assert itens == [
+        "Em teste · concluída",
+        "Validada (status atual)",
+        "Disponível para replicação · próxima etapa",
+    ]
 
 
 # --- STAT-41: controle de transicao do ciclo (passe de design) -------------------
@@ -328,7 +337,10 @@ def test_botao_desabilitado_continua_focavel_e_le_a_explicacao(client, autor, cr
     # STAT-41 (emendada): na ordem do Tab, entao tabindex ausente ou 0; -1 o tiraria.
     assert atributos.get("tabindex", "0") == "0"
     assert no_form is False
-    assert _texto_do_id(trecho, atributos["aria-describedby"]) == "Último estágio do ciclo."
+    # T-K (redesign-consulta, T18, RCON-42): o texto do ultimo estagio ganha a regra do ciclo.
+    assert _texto_do_id(trecho, atributos["aria-describedby"]) == (
+        "Último estágio do ciclo. O status avança um estágio por vez e não volta."
+    )
 
 
 @pytest.mark.parametrize("status", [StatusInovacao.EM_TESTE, StatusInovacao.VALIDADA], ids=str)

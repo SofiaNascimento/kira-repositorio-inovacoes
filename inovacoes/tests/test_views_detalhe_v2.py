@@ -294,3 +294,143 @@ def test_regras_da_ficha_antiga_sairam_da_folha():
         for s in _seletores(lista)
     ]
     assert [s for s in seletores if re.search(r"\.ficha(?![\w-])|\.destaque\b", s)] == []
+
+
+# --- RCON-34, RCON-41 (texto), RCON-42: ciclo de vida no resumo ---
+
+AJUDA_DO_AVANCO = "O status avança um estágio por vez e não volta ao anterior."
+QUEM_PODE_AVANCAR = "Só quem cadastrou a inovação ou um administrador pode avançar o status."
+ULTIMO_ESTAGIO = "Último estágio do ciclo. O status avança um estágio por vez e não volta."
+PERFIS = ["autor", "administrador", "terceiro", "staff"]
+PODEM_ALTERAR = {"autor", "administrador"}
+
+
+@pytest.fixture
+def staff(db):
+    """USUARIO com is_staff que nao e o autor: nao pode alterar (AD-009, L-003)."""
+    return Usuario.objects.create_user(username="dora_staff", email="ds@x.com", is_staff=True)
+
+
+def _como(client, request, perfil, inovacao):
+    client.force_login(request.getfixturevalue(perfil))
+    return _pagina(client, inovacao)
+
+
+def _ciclo_exibido(html):
+    """O bloco "Ciclo de vida" do aside, como a tela o exibe."""
+    lateral = _aside(exibido(html, rigoroso=True))
+    inicio = lateral.index('<section aria-labelledby="ciclo-titulo">')
+    return lateral[inicio : lateral.index("</section>", inicio)]
+
+
+def _etapas(bloco):
+    lista = re.search(r'<ol class="etapas">(.*?)</ol>', bloco, re.S).group(1)
+    return [
+        (atributos, " ".join(re.sub(r"<[^>]+>", "", item).split()))
+        for atributos, item in re.findall(r"<li\b([^>]*)>(.*?)</li>", lista, re.S)
+    ]
+
+
+@pytest.mark.parametrize(
+    ("status", "esperado"),
+    [
+        (
+            EM_TESTE,
+            [
+                "Em teste (status atual)",
+                "Validada · próxima etapa",
+                "Disponível para replicação · próxima etapa",
+            ],
+        ),
+        (
+            VALIDADA,
+            [
+                "Em teste · concluída",
+                "Validada (status atual)",
+                "Disponível para replicação · próxima etapa",
+            ],
+        ),
+        (
+            DISPONIVEL,
+            [
+                "Em teste · concluída",
+                "Validada · concluída",
+                "Disponível para replicação (status atual)",
+            ],
+        ),
+    ],
+    ids=str,
+)
+def test_etapas_dizem_a_situacao_em_texto_e_so_a_atual_tem_aria_current(
+    logado, criar_inovacao, status, esperado
+):
+    """RCON-34: h2 "Ciclo de vida", ol com as tres etapas na ordem e a situacao em texto."""
+    bloco = _ciclo_exibido(_pagina(logado, criar_inovacao(status=status)))
+    assert re.findall(r"<h2[^>]*>(.*?)</h2>", bloco) == ["Ciclo de vida"]
+    etapas = _etapas(bloco)
+    assert [texto for _, texto in etapas] == esperado
+    atuais = [texto for atributos, texto in etapas if 'aria-current="step"' in atributos]
+    assert atuais == [t for t in esperado if t.endswith("(status atual)")]
+
+
+def test_marcadores_das_etapas_sao_decorativos(logado, criar_inovacao):
+    """RCON-34: cada etapa tem um marcador `aria-hidden="true"`, fora do texto lido."""
+    html = _pagina(logado, criar_inovacao(status=VALIDADA))
+    lateral = _aside(html)
+    itens = re.findall(r'<li class="etapa etapa--(\w+)"[^>]*>(.*?)</li>', lateral, re.S)
+    assert [situacao for situacao, _ in itens] == ["concluida", "atual", "futura"]
+    for _, item in itens:
+        assert re.match(r'\s*<span class="etapa__marcador" aria-hidden="true">', item)
+    # O texto da situacao, fora do marcador, continua exibido (L-028, L-044).
+    assert not {"etapas", "etapa", "etapa--atual"} & CLASSES_OCULTAS
+
+
+def test_ciclo_fica_entre_o_contato_e_a_ficha(logado, criar_inovacao):
+    """RCON-31: dentro do aside, contato, ciclo de vida e ficha, nessa ordem."""
+    lateral = _aside(exibido(_pagina(logado, criar_inovacao()), rigoroso=True))
+    contato = lateral.index('<div class="cartao-contato">')
+    ciclo = lateral.index('<section aria-labelledby="ciclo-titulo">')
+    ficha = lateral.index('<dl class="ficha-resumo">')
+    assert contato < ciclo < ficha
+
+
+def _explicacao(bloco):
+    achado = re.search(r'<p\b[^>]*\bid="ciclo-explicacao"[^>]*>(.*?)</p>', bloco, re.S)
+    assert achado, "sem a explicacao exibida"
+    return achado.group(1).strip()
+
+
+@pytest.mark.parametrize("perfil", PERFIS)
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA, DISPONIVEL], ids=str)
+def test_explicacao_do_ciclo_por_status_e_perfil(
+    client, request, criar_inovacao, staff, status, perfil
+):
+    """RCON-41, RCON-42: o texto exato por status e por quem pode ou nao alterar (L-003)."""
+    bloco = _ciclo_exibido(_como(client, request, perfil, criar_inovacao(status=status)))
+    if status == DISPONIVEL:
+        esperado = ULTIMO_ESTAGIO
+    elif perfil in PODEM_ALTERAR:
+        esperado = AJUDA_DO_AVANCO
+    else:
+        esperado = QUEM_PODE_AVANCAR
+    assert _explicacao(bloco) == esperado
+    outros = {ULTIMO_ESTAGIO, AJUDA_DO_AVANCO, QUEM_PODE_AVANCAR} - {esperado}
+    assert [texto for texto in outros if texto in bloco] == []
+
+
+@pytest.mark.parametrize("perfil", PERFIS)
+@pytest.mark.parametrize("status", [EM_TESTE, VALIDADA, DISPONIVEL], ids=str)
+def test_botao_desabilitado_so_no_ultimo_estagio_para_quem_pode_alterar(
+    client, request, criar_inovacao, staff, status, perfil
+):
+    """RCON-42: "Avançar status" com aria-disabled, descrito pelo texto, so para quem pode."""
+    bloco = _ciclo_exibido(_como(client, request, perfil, criar_inovacao(status=status)))
+    botoes = re.findall(r"<button\b([^>]*)>(.*?)</button>", bloco, re.S)
+    if status == DISPONIVEL and perfil in PODEM_ALTERAR:
+        assert [texto.strip() for _, texto in botoes] == ["Avançar status"]
+        atributos = botoes[0][0]
+        assert 'aria-disabled="true"' in atributos
+        assert re.search(r"\sdisabled\b", atributos.replace("aria-disabled", "")) is None
+        assert 'aria-describedby="ciclo-explicacao"' in atributos
+    else:
+        assert botoes == []

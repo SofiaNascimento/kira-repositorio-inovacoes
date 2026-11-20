@@ -657,11 +657,10 @@ def _regras_do_componente(classe):
 # estagio atual e o proprio li, entao a regra do li vale junto. Depois da cadeia
 # vem o body: as secoes do detalhe ficam fora do cartao e o main nao tem fundo.
 # Regra nova do componente precisa entrar aqui.
+# T-L (redesign-consulta, T18, RCON-34): o ciclo e o indicador de etapas da R1 (`.etapas`);
+# as regras `.ciclo` sairam da folha.
 CADEIA_DO_COMPONENTE = {
-    ".ciclo": [],
-    ".ciclo li": [".ciclo"],
-    ".ciclo li + li::before": [".ciclo li", ".ciclo"],
-    ".ciclo [aria-current=step]": [".ciclo li", ".ciclo"],
+    ".etapas": [],
     ".historico": [],
     ".historico li": [".historico"],
     ".historico li:first-child": [".historico li", ".historico"],
@@ -705,7 +704,7 @@ def _cor_desenhada(seletor, propriedade):
 
 @pytest.mark.unit
 @pytest.mark.parametrize(
-    "classe", [".ciclo", ".historico", ".reaproveitamentos", ".metrica", ".grafico"]
+    "classe", [".etapas", ".historico", ".reaproveitamentos", ".metrica", ".grafico"]
 )
 def test_ciclo_e_historico_so_usam_cores_de_pares_conferidos(classe):
     """STAT-37, AD-010: nenhuma cor nova; o par texto e fundo desenhado e do DS-08.
@@ -756,7 +755,16 @@ def test_fill_do_grafico_usa_token_com_contraste_sobre_o_cartao(seletor, minimo,
 
 @pytest.mark.unit
 def test_estagio_atual_do_ciclo_tem_estilo_proprio():
-    """STAT-37: o estagio atual ganha borda e cor de pares conferidos, alem do texto."""
-    corpo = _regra(".ciclo [aria-current=step]")
-    assert "var(--brand-blue)" in corpo
-    assert re.search(r"(?:^|;)\s*color\s*:\s*var\(--brand-navy\)", corpo)
+    """STAT-37: o estagio atual ganha borda e cor de pares conferidos, alem do texto.
+
+    T-L (redesign-consulta, T18, RCON-34): o estagio atual e a `.etapa--atual` do indicador de
+    etapas: texto em negrito e marcador cheio de --brand-blue (borda e fundo) com o numero em
+    --on-brand, par aprovado da §2 v2 com 4.5:1. Nenhuma regra `.ciclo` sobra na folha.
+    """
+    assert re.search(r"font-weight\s*:\s*700", _regra(".etapa--atual"))
+    corpo = _regra(".etapa--atual .etapa__marcador")
+    assert re.search(r"(?:^|;)\s*border-color\s*:\s*var\(--brand-blue\)", corpo)
+    assert re.search(r"(?:^|;)\s*background\s*:\s*var\(--brand-blue\)", corpo)
+    assert re.search(r"(?:^|;)\s*color\s*:\s*var\(--on-brand\)", corpo)
+    assert _contraste(_token("on-brand"), _token("brand-blue")) >= 4.5
+    assert ".ciclo" not in re.sub(r"/\*.*?\*/", "", CSS, flags=re.S)

@@ -483,7 +483,7 @@ T22
 
 ---
 
-### T18: Ciclo de vida no resumo
+### T18: Ciclo de vida no resumo ✅
 
 **What**: a view passa `etapas` com a situação; o bloco "Ciclo de vida" vai para o `aside` com `ol.etapas`, explicações e o botão desabilitado; sai a regra `.ciclo`.
 **Where**: `inovacoes/views.py`, `inovacao_detail.html`, `templates/kira.css`
@@ -495,9 +495,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: textos "· concluída" / "(status atual)" / "· próxima etapa" nos três status; `aria-current="step"` só no atual; marcadores `aria-hidden`; explicações exatas por status e perfil (inclusive `USUARIO` com `is_staff`); botão `aria-disabled` só para quem pode alterar no último estágio
-- [ ] T-H, T-K (etapas), T-L (`.ciclo` → `.etapas`)
-- [ ] Gate build passa; test count ≥ anterior + 6
+- [x] Testes novos: textos "· concluída" / "(status atual)" / "· próxima etapa" nos três status; `aria-current="step"` só no atual; marcadores `aria-hidden`; explicações exatas por status e perfil (inclusive `USUARIO` com `is_staff`); botão `aria-disabled` só para quem pode alterar no último estágio
+- [x] T-H, T-K (etapas), T-L (`.ciclo` → `.etapas`)
+- [x] Gate build passa; test count ≥ anterior + 6
 
 **Tests**: e2e
 **Gate**: build
