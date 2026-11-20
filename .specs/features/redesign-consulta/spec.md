@@ -331,16 +331,16 @@ ordem em que aparecem e sem perder nada.
 | RCON-07 | P1: Busca e filtros | Design | Implementing |
 | RCON-08 | P1: Busca e filtros | Design | Implementing |
 | RCON-09 | P1: Cartões | Design | Pending |
-| RCON-10 | P1: Cartões | Design | Pending |
-| RCON-11 | P1: Cartões | Design | Pending |
-| RCON-12 | P1: Cartões | Design | Pending |
+| RCON-10 | P1: Cartões | Design | Implementing |
+| RCON-11 | P1: Cartões | Design | Implementing |
+| RCON-12 | P1: Cartões | Design | Implementing |
 | RCON-13 | P1: Cartões | Design | Implementing |
 | RCON-14 | P1: Cartões | Design | Implementing |
 | RCON-15 | P1: Cartões | Design | Implementing |
 | RCON-16 | P1: Cartões | Design | Implementing |
 | RCON-17 | P1: Tabela | Design | Pending |
 | RCON-18 | P1: Tabela | Design | Implementing |
-| RCON-19 | P1: Tabela | Design | Pending |
+| RCON-19 | P1: Tabela | Design | Implementing |
 | RCON-20 | P1: Tabela | Design | Implementing |
 | RCON-21 | P1: Paginação | Design | Pending |
 | RCON-22 | P1: Paginação | Design | Implementing |

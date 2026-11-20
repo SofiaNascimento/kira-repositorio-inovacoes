@@ -37,32 +37,14 @@
       {% else %}{% with total=inovacoes|length %}{{ total }} inovaç{{ total|pluralize:"ão,ões" }} encontrada{{ total|pluralize }}{% endwith %}{% endif %}
     </p>
 
-    {# CONS-38: legenda e cabecalhos de coluna; CONS-40: status sempre por texto. #}
-    {# DS-16: em tela estreita a tabela rola dentro do quadro, nao a pagina. #}
-    <div class="tabela">
-    <table>
-      <caption>Inovações cadastradas</caption>
-      <thead>
-        <tr>
-          <th scope="col">Título</th>
-          <th scope="col">Categoria</th>
-          <th scope="col">Unidade</th>
-          <th scope="col">Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for inovacao in inovacoes %}
-          <tr>
-            <td><a href="{{ inovacao.get_absolute_url }}">{{ inovacao.titulo }}</a></td>
-            <td>{{ inovacao.categoria.nome }}</td>
-            <td>{{ inovacao.unidade.nome }}</td>
-            {# DS-12, RCON-15: selo com texto, cor e o icone do status. #}
-            <td>{% include "inovacoes/parciais/selo.html" with status=inovacao.status rotulo=inovacao.get_status_display %}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    </div>
+    {# RCON-10, RCON-19: cartoes por padrao; a tabela so com exibicao=tabela, mesmos itens e ordem. #}
+    {% if exibicao == "tabela" %}
+      {% include "inovacoes/parciais/tabela.html" %}
+    {% else %}
+      <ul class="cartoes" aria-label="Resultados">
+        {% for inovacao in inovacoes %}{% include "inovacoes/parciais/cartao.html" %}{% endfor %}
+      </ul>
+    {% endif %}
 
     {# CONS-39: os links de pagina ficam num nav rotulado. #}
     {% if is_paginated %}

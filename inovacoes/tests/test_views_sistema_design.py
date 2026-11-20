@@ -403,6 +403,9 @@ PECAS = {
     "indicadores/grafico.html",
     "paginas/trilha.html",
     "inovacoes/parciais/selo.html",
+    # T-M (redesign-consulta, T9, DS-01): o cartao e a tabela da lista (RCON-10, RCON-19).
+    "inovacoes/parciais/cartao.html",
+    "inovacoes/parciais/tabela.html",
 }
 
 
@@ -458,24 +461,28 @@ def test_lista_mostra_o_status_num_selo_com_o_rotulo(
 ):
     """DS-12, na listagem.
 
-    T-C (redesign-consulta, T7, RCON-15): o selo da tabela traz o SVG decorativo
-    (`aria-hidden`) antes do rotulo. A garantia da DS-12 continua: o status aparece num
+    T-C (redesign-consulta, T7, RCON-15): o selo traz o SVG decorativo (`aria-hidden`)
+    antes do rotulo. T-C (T9, RCON-10): o selo e o do cartao, na lista de resultados, e nao
+    mais o da tabela. A garantia da DS-12 continua: o status aparece num
     `span.selo.selo--x` com o rotulo em texto, exibido na pagina (L-028, L-030).
     """
     criar_inovacao(status=status)
     client.force_login(autor)
     html = client.get("/inovacoes/").content.decode()
-    corpo = re.search(r"<tbody>(.*?)</tbody>", html, re.S).group(1)
+    corpo = re.search(r'<ul class="cartoes" aria-label="Resultados">(.*)</article>', html, re.S)
     assert re.search(
-        rf'<td>\s*<span class="selo selo--{classe}">\s*'
-        rf'<svg aria-hidden="true"[^>]*>.*?</svg>\s*{re.escape(rotulo)}\s*</span>\s*</td>',
-        corpo,
+        rf'<article class="cartao-inovacao">.*?<span class="selo selo--{classe}">\s*'
+        rf'<svg aria-hidden="true"[^>]*>.*?</svg>\s*{re.escape(rotulo)}\s*</span>',
+        corpo.group(1),
         re.S,
     )
-    exibida = re.search(r"<tbody>(.*?)</tbody>", exibido(html, rigoroso=True), re.S).group(1)
+    exibida = re.search(
+        r'<ul class="cartoes" aria-label="Resultados">(.*)</article>',
+        exibido(html, rigoroso=True),
+        re.S,
+    ).group(1)
     assert re.search(
-        rf'<td>\s*<span class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</span>\s*</td>',
-        exibida,
+        rf'<span class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</span>', exibida
     )
 
 
@@ -597,10 +604,14 @@ def test_login_fica_num_card_com_a_marca_no_topo(client):
 
 
 def test_tabela_fica_num_quadro_que_rola_na_horizontal(client, autor, criar_inovacao):
-    """DS-16."""
+    """DS-16.
+
+    T-B (redesign-consulta, T9, RCON-19): a tabela so aparece na exibicao em tabela; o
+    teste abre `?exibicao=tabela`. A garantia continua: o quadro que rola na horizontal.
+    """
     criar_inovacao()
     client.force_login(autor)
-    html = client.get("/inovacoes/").content.decode()
+    html = client.get("/inovacoes/?exibicao=tabela").content.decode()
     assert re.search(r'<div class="tabela">\s*<table>', html)
     assert re.search(r"</table>\s*</div>", html)
     assert re.search(r"overflow-x\s*:\s*auto", _corpos(".tabela"))

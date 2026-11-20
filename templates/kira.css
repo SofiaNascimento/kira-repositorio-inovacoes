@@ -766,6 +766,22 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   font-size: var(--fs-sm);
   list-style: none;
 }
+.cartao-ino\76 acao__meta li { display: inline-flex; align-items: center; gap: var(--space-1); }
+.cartao-ino\76 acao__meta svg { flex: none; width: 1.125em; height: 1.125em; }
+
+/* Lista de resultados em cartoes (RCON-10): uma coluna abaixo de 720px (RCON-50);
+   acima, quantas colunas de 320px couberem, na ordem do codigo. */
+.cartoes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+@media (min-width: 45rem) {
+  .cartoes { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+}
 
 /* Indicador de etapas: a situacao vai no texto; o marcador e decorativo. */
 .etapas { margin: 0 0 var(--space-5); padding: 0; list-style: none; color: var(--text); }

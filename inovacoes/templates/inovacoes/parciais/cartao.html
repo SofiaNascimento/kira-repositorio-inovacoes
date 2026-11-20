@@ -1,0 +1,17 @@
+{# RCON-11 a RCON-14: um resultado da lista. Ordem: selo e data; titulo (o unico link); resumo; unidade, categoria e reaproveitamentos. Recebe inovacao. #}
+<li>
+  <article class="cartao-inovacao">
+    <div class="cartao-inovacao__cabeca">
+      {% include "inovacoes/parciais/selo.html" with status=inovacao.status rotulo=inovacao.get_status_display %}
+      <span>Cadastrada em <time>{{ inovacao.data_criacao|date:"d/m/Y" }}</time></span>
+    </div>
+    <h2 class="cartao-inovacao__titulo"><a href="{{ inovacao.get_absolute_url }}">{{ inovacao.titulo }}</a></h2>
+    {# SPEC_DEVIATION: a RCON-13 nomeia o filtro truncatechars:160. Reason: a traducao pt-BR do Django poe um espaco antes do texto cortado (" %(truncated_text)s…") e corta 158 caracteres; a RCON-13 pede 159 seguidos de "…". #}
+    <p class="cartao-inovacao__resumo">{% if inovacao.problema|length > 160 %}{{ inovacao.problema|slice:":159" }}…{% else %}{{ inovacao.problema }}{% endif %}</p>
+    <ul class="cartao-inovacao__meta">
+      <li>{% include "icones/predio.svg" %}{{ inovacao.unidade.nome }}</li>
+      <li>{% include "icones/etiqueta.svg" %}{{ inovacao.categoria.nome }}</li>
+      <li>{% include "icones/repetir.svg" %}{% with total=inovacao.total_reaproveitamentos %}{% if total %}{{ total }} reaproveitamento{{ total|pluralize }}{% else %}Nenhum reaproveitamento{% endif %}{% endwith %}</li>
+    </ul>
+  </article>
+</li>

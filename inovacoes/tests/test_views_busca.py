@@ -9,6 +9,7 @@ import pytest
 
 from inovacoes.models import Categoria, StatusInovacao, Unidade
 from inovacoes.tests.test_views_lista import LISTA, _linhas
+from inovacoes.tests.visibilidade import exibido
 
 
 @pytest.fixture
@@ -18,10 +19,18 @@ def logado(client, autor):
 
 
 def _titulos(resposta):
+    """Titulos dos resultados, em ordem alfabetica.
+
+    T-A (redesign-consulta, T9, RCON-10): le os cartoes da lista de resultados. Sem a
+    lista, so devolve [] quando a pagina exibe o estado vazio (CONS-34, CONS-35); em
+    qualquer outro caso falha, em vez de devolver [] sem testar nada.
+    """
     assert resposta.status_code == 200
     html = resposta.content.decode()
-    # Sem resultado a pagina nao tem tabela (CONS-34, CONS-35).
-    return sorted(linha[0] for linha in _linhas(html)) if "<tbody>" in html else []
+    if 'aria-label="Resultados"' not in html:
+        assert '<div class="vazio">' in exibido(html, rigoroso=True)
+        return []
+    return sorted(linha[0] for linha in _linhas(html))
 
 
 @pytest.fixture

@@ -7,6 +7,7 @@ from pytest_django.asserts import assertRedirects, assertTemplateUsed
 
 from contas.models import Usuario
 from inovacoes.models import Inovacao
+from inovacoes.tests.test_views_lista import _linhas
 
 NEGADO = "Você não tem permissão para alterar esta inovação."
 SO_AUTOR = "Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la."
@@ -164,8 +165,9 @@ def test_inovacao_excluida_some_da_lista_da_busca_e_da_contagem(client, autor, c
     assert [i.titulo for i in lista.context["inovacoes"]] == ["Planilha de Compras"]
     html = lista.content.decode()
     assert "1 inovação encontrada" in html
-    tabela = html[html.index("<table>") : html.index("</table>")]
-    assert "Controle de Caixa" not in tabela
+    # T-E (redesign-consulta, T9, RCON-10): os resultados sao os cartoes da lista, nao a
+    # tabela; a garantia continua: a excluida nao aparece entre os resultados exibidos.
+    assert [linha[0] for linha in _linhas(html)] == ["Planilha de Compras"]
     busca = logado.get("/inovacoes/?q=Controle de Caixa")
     assert list(busca.context["inovacoes"]) == []
     assert "Nenhuma inovação encontrada para a busca e os filtros informados." in (

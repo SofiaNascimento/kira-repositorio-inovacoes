@@ -2,11 +2,13 @@
 
 import datetime
 import re
+from html.parser import HTMLParser
 
 import pytest
 
 from contas.models import Usuario
 from inovacoes.models import Categoria, Inovacao, StatusInovacao, Unidade
+from inovacoes.tests.visibilidade import VAZIOS, exibido
 
 LISTA = "/inovacoes/"
 
@@ -17,13 +19,73 @@ def logado(client, autor):
     return client
 
 
+class _Cartoes(HTMLParser):
+    """Cada `article` do `ul aria-label="Resultados"`: o titulo (h2), o selo e os metadados."""
+
+    def __init__(self):
+        super().__init__()
+        self.achou_lista = False
+        self.pilha = []  # (tag, classes) abertas dentro da lista
+        self.cartoes = []
+
+    def handle_starttag(self, tag, attrs):
+        atributos = dict(attrs)
+        if not self.pilha:
+            if tag == "ul" and atributos.get("aria-label") == "Resultados":
+                self.achou_lista = True
+                self.pilha.append((tag, []))
+            return
+        if tag in VAZIOS:
+            return
+        self.pilha.append((tag, (atributos.get("class") or "").split()))
+        if tag == "article":
+            self.cartoes.append({"titulo": "", "selo": "", "meta": []})
+        elif tag == "li" and self._dentro_do_cartao():
+            self.cartoes[-1]["meta"].append("")
+
+    def handle_endtag(self, tag):
+        if tag in [aberta for aberta, _ in self.pilha]:
+            while self.pilha.pop()[0] != tag:
+                pass
+
+    def _dentro_do_cartao(self):
+        return any(aberta == "article" for aberta, _ in self.pilha)
+
+    def handle_data(self, data):
+        if not self._dentro_do_cartao():
+            return
+        tags = [aberta for aberta, _ in self.pilha]
+        dentro = self.pilha[tags.index("article") + 1 :]
+        cartao = self.cartoes[-1]
+        if any(aberta == "h2" for aberta, _ in dentro):
+            cartao["titulo"] += data
+        elif any("selo" in classes for _, classes in dentro):
+            cartao["selo"] += data
+        elif any(aberta == "li" for aberta, _ in dentro):
+            cartao["meta"][-1] += data
+
+
+def _texto(valor):
+    return " ".join(valor.split())
+
+
 def _linhas(html):
-    """Cada <tr> do <tbody> como lista do texto de suas celulas."""
-    corpo = re.search(r"<tbody>(.*?)</tbody>", html, re.S).group(1)
-    linhas = re.findall(r"<tr[^>]*>(.*?)</tr>", corpo, re.S)
+    """Cada cartao da lista de resultados como [titulo, categoria, unidade, status].
+
+    T-A (redesign-consulta, T9, RCON-10): os resultados sao cartoes do
+    `ul aria-label="Resultados"`, lidos no DOM do que a pagina exibe (L-028, L-030), e nao
+    mais as linhas da tabela. A garantia das CONS-01 a 05, 08, 19 a 21, 27, 28, 40, 47 e 48
+    continua: os mesmos quatro campos de cada item, na ordem da pagina. Sem a lista o
+    helper falha, em vez de devolver uma lista vazia que passaria sem testar nada.
+    """
+    leitor = _Cartoes()
+    leitor.feed(exibido(html, rigoroso=True))
+    leitor.close()
+    assert leitor.achou_lista, 'a pagina nao exibe o ul aria-label="Resultados"'
+    # RCON-11: os metadados vem na ordem unidade, categoria, reaproveitamentos.
     return [
-        [re.sub(r"<[^>]+>", "", c).strip() for c in re.findall(r"<td[^>]*>(.*?)</td>", linha, re.S)]
-        for linha in linhas
+        [_texto(c["titulo"]), _texto(c["meta"][1]), _texto(c["meta"][0]), _texto(c["selo"])]
+        for c in leitor.cartoes
     ]
 
 
@@ -70,11 +132,15 @@ def test_lista_ordena_pela_mais_recente_e_desempata_por_id(logado, criar_inovaca
 
 
 def test_titulo_de_cada_linha_e_link_para_o_detalhe(logado, criar_inovacao):
-    """CONS-06."""
+    """CONS-06.
+
+    T-B (redesign-consulta, T9, RCON-11): o link fica no `h2` do cartao, e nao mais na
+    celula da tabela. A garantia continua: o titulo exibido e o link para o detalhe.
+    """
     inovacao = criar_inovacao(titulo="Controle de Caixa")
-    html = logado.get(LISTA).content.decode()
+    html = exibido(logado.get(LISTA).content.decode(), rigoroso=True)
     url = re.escape(inovacao.get_absolute_url())
-    assert re.search(rf'<td[^>]*>\s*<a href="{url}">\s*Controle de Caixa\s*</a>', html)
+    assert re.search(rf'<h2[^>]*>\s*<a href="{url}">\s*Controle de Caixa\s*</a>\s*</h2>', html)
     assert inovacao.get_absolute_url() == f"/inovacoes/{inovacao.pk}/"
 
 
@@ -134,9 +200,13 @@ def test_h1_e_titulo_da_pagina(logado):
 
 
 def test_tabela_tem_caption_e_quatro_cabecalhos_de_coluna(logado, criar_inovacao):
-    """CONS-38."""
+    """CONS-38.
+
+    T-B (redesign-consulta, T9, RCON-19): a tabela so aparece na exibicao em tabela; o
+    teste abre `?exibicao=tabela`. A garantia continua: legenda e os quatro cabecalhos.
+    """
     criar_inovacao()
-    html = logado.get(LISTA).content.decode()
+    html = logado.get(f"{LISTA}?exibicao=tabela").content.decode()
     assert "<caption>Inovações cadastradas</caption>" in html
     cabecalhos = re.findall(r'<th scope="col">(.*?)</th>', html, re.S)
     assert [c.strip() for c in cabecalhos] == ["Título", "Categoria", "Unidade", "Status"]

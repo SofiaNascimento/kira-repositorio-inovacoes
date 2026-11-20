@@ -274,7 +274,7 @@ T22
 
 ---
 
-### T9: Cartões como exibição padrão
+### T9: Cartões como exibição padrão ✅
 
 **What**: a lista renderiza os cartões (`parciais/cartao.html`, `ul aria-label="Resultados"`) e só mostra a tabela (`parciais/tabela.html`, sem mudança de conteúdo) com `exibicao=tabela`; CSS `.cartoes`.
 **Where**: `inovacao_list.html`, `parciais/cartao.html`, `parciais/tabela.html`, `templates/kira.css`
@@ -286,10 +286,10 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos em `test_views_lista_cartoes.py`: ordem dos elementos do cartão; título único link; resumo com 160 e 161 caracteres; "Nenhum/1/3 reaproveitamento(s)"; sem tabela; com `exibicao=tabela` a tabela e sem cartões, mesmos itens e ordem; RCON-16 com 20 cartões de contagens diferentes
-- [ ] T-A: `_linhas` e `_titulos` leem os cartões pelo DOM e falham sem a lista (CONS-01 a 05, 08, 19 a 21, 27, 28, 40, 47, 48); T-B (CONS-06); T-E (EDEX-37)
-- [ ] T-M: `PECAS` + `cartao.html`, `tabela.html`
-- [ ] Gate build passa; test count ≥ anterior + 10
+- [x] Testes novos em `test_views_lista_cartoes.py`: ordem dos elementos do cartão; título único link; resumo com 160 e 161 caracteres; "Nenhum/1/3 reaproveitamento(s)"; sem tabela; com `exibicao=tabela` a tabela e sem cartões, mesmos itens e ordem; RCON-16 com 20 cartões de contagens diferentes
+- [x] T-A: `_linhas` e `_titulos` leem os cartões pelo DOM e falham sem a lista (CONS-01 a 05, 08, 19 a 21, 27, 28, 40, 47, 48); T-B (CONS-06); T-E (EDEX-37)
+- [x] T-M: `PECAS` + `cartao.html`, `tabela.html`
+- [x] Gate build passa; test count ≥ anterior + 10
 
 **Tests**: e2e
 **Gate**: build
@@ -311,7 +311,7 @@ T22
 **Done when**:
 
 - [ ] Testes novos: contador singular/plural com total de todas as páginas; links com `href` exato mantendo `q`, filtros e `page`; `aria-current="true"` só no atual; valor desconhecido → Cartões atual, sem erro; CONS-41 intacto
-- [ ] T-B: CONS-38 e DS-16 abrem `?exibicao=tabela`
+- [ ] T-B: CONS-38 e DS-16 abrem `?exibicao=tabela` (feito na T9, que é quem os quebra; ver design.md, Ajustes do Execute)
 - [ ] Gate build passa; test count ≥ anterior + 6
 
 **Tests**: e2e

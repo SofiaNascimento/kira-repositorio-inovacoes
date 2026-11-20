@@ -277,3 +277,15 @@ lista.
   o parâmetro inválido fica sem etiqueta (RCON-08) e os válidos mantêm a sua, como pede o "Done
   when" da T12 ("só as válidas + Limpar filtros"). Com só o parâmetro inválido a lista continua
   vazia. Marcado com `SPEC_DEVIATION` em `inovacoes/views.py`.
+- **T9, resumo do cartão:** o template corta o problema com `slice:":159"` mais "…" quando ele
+  passa de 160 caracteres, e não com `truncatechars:160`. A tradução pt-BR do Django devolve
+  `" %(truncated_text)s…"`: o filtro põe um espaço na frente e deixa 158 caracteres. A RCON-13
+  pede 159 seguidos de "…". Marcado com `SPEC_DEVIATION` em `parciais/cartao.html`.
+- **T9, testes antigos adiantados:** a T9 é a task que tira a tabela da exibição padrão, e por
+  isso quebra, além de T-A, T-E e CONS-06, também CONS-38 e DS-16 (T-B, previstos na T10) e o
+  DS-12 da lista (T-C, previsto na T7, que ainda lia a tabela). Os três mudam na T9, do jeito
+  que a tabela da spec descreve: CONS-38 e DS-16 abrem `?exibicao=tabela`; o DS-12 lê o selo
+  do cartão. A regra "muda no commit da task que o quebra" vale sobre a coluna de task.
+- **T9, `_titulos` sem lista:** o helper só devolve `[]` quando a página exibe o
+  `div.vazio`; sem a lista e sem o vazio, falha. Assim o `== []` da CONS-28 continua testando
+  alguma coisa.
