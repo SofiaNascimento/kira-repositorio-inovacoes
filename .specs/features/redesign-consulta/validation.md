@@ -6,7 +6,7 @@
 **Diff range**: `98d79dd..9c91a77` em `main` (iteração 1: `98d79dd..459c85b`; correções: `cb1880c`, `7c0c4a7` T23, `9c91a77` T24)
 **Verifier**: independent sub-agent (author ≠ verifier)
 
-**Verdict**: FAIL ❌ (iteração 2)
+**Verdict**: FAIL ❌ (iteração 2), **com risco residual de teste aceito pelo usuário em 2026-11-19** (N10): ver [Decisão do usuário](#decisão-do-usuário-2026-11-19).
 
 Iteração 2: os quatro itens da iteração 1 estão fechados (M27 morre, RCON-33 e RCON-35 emendadas e com teste no valor novo, os dois edge cases com teste), o gate passa com 1567 testes e as correções só acrescentaram testes. O FAIL vem de **1 mutante sobrevivente em 11** (N10): um `white-space: nowrap` na regra do título do cartão impede a quebra do título de 150 caracteres e a suíte passa, porque o teste da T24 só confere que o `overflow-wrap: anywhere` existe. É **lacuna de teste, não defeito de produção**: a folha atual não tem `white-space` no título (`templates/kira.css:804`). Detalhes na seção "Iteração 2".
 
@@ -283,6 +283,12 @@ validate_state: 1 error(s) across [redesign-consulta]
 **Lições registradas** (`lessons.py add`, todas candidatas): L-058 (M27, exclusão mútua de estados), L-059 (RCON-33), L-060 (RCON-35), L-061 (SPEC_DEVIATION da janela de páginas), L-062 (SPEC_DEVIATION das etiquetas com form inválido), L-063 (edge case do título longo). `.specs/LESSONS.md` e `.specs/lessons.json` ficam sem commit, junto com as mudanças locais do usuário.
 
 **Next steps**: rodar o fix de M27 (uma task de teste) e reverificar (iteração 2 de no máximo 3).
+
+---
+
+## Decisão do usuário (2026-11-19)
+
+Depois da iteração 2, o usuário escolheu **aceitar o risco residual e fechar**, sem iteração 3. O único risco aceito é o mutante N10: um `white-space: nowrap` ou `pre` no título do cartão (`templates/kira.css:804`) impediria a quebra do título de 150 caracteres, e a suíte não pegaria. É lacuna de teste, não defeito de produção. Na spec, a RCON-49 fica `Implementing (risco residual aceito)` e as outras 49 RCON ficam `Verified`. A ideia de correção está em Deferred Ideas do `context.md`. O veredito do Verifier não foi reescrito: a feature foi fechada por decisão, não por PASS, e o `validate_state.py` sai com 1 de propósito.
 
 ---
 

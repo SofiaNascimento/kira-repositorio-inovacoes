@@ -124,7 +124,20 @@
 
 ## Handoff
 
-### Atual (2026-11-15) — fundacao-do-redesign (R1) concluída com risco aceito
+### Atual (2026-11-19) — redesign-consulta (R2) concluída com risco aceito
+
+- **Feature**: redesign-consulta (R2) — `.specs/features/redesign-consulta/`. **Concluída** em 2026-11-19. Lista e detalhe refeitos pela `design-spec.md` v2 §10: busca em destaque, filtros em linha e etiquetas removíveis; cartões como exibição padrão e a tabela atual em `?exibicao=tabela`; paginação numerada; estados vazios com ilustração; detalhe com selo e autoria no cabeçalho, ações em hierarquia (uma primária, Editar e Excluir separado), narrativa Problema → Solução → Resultado, `aside` (contato → ciclo → ficha), reaproveitamentos em tabela e histórico como linha do tempo que começa no cadastro. Sem model nem migration; nenhuma AD nova (conforma AD-002, 008–015).
+- **Phases**: Specify ✅ (Discuss: Avançar no cabeçalho, textos da §10, vazios da §10, paginação dentro) · Design ✅ (`inovacoes/apresentacao.py` com funções puras; bloco `sobretitulo` no base; T-P) · Tasks ✅ (T1–T22) · Execute ✅ por 3 sub-agentes · Verifier it. 1 FAIL (50/50 ACs; 33/34 mutantes, M27) → T23, T24 e emendas da RCON-33 e da RCON-35 → it. 2 FAIL (10/11, N10: `white-space: nowrap` no título do cartão). **O usuário aceitou o risco residual N10 e fechou** sem iteração 3. RCON-49 `Implementing (risco residual aceito)`; as outras 49 `Verified`. `validate_state.py` sai com 1 de propósito.
+- **Commits**: spec `79c51b3`, design `295f5fd`, tasks `98d79dd`; T1 `5776a76` … T22 `459c85b`; T23 `7c0c4a7`, T24 `9c91a77`; validação `a8317ed`, `9387c0b`. **1567 testes**, build gate verde.
+- **Testes antigos alterados**: T-A a T-P (aprovados com a spec e o design) e, no Execute, T-Q (CONS-03), T-R (EDEX-37) e o T-O estendido à lista (RED-31). O inventário inicial deixou passar esses três.
+- **Desvios registrados** (`design.md`, Ajustes do Execute): janela de páginas em Python (o `get_elided_page_range` não troca uma página só por "…"); com o form inválido, as etiquetas mostram só os filtros válidos; o resumo corta em 159 + "…" (o `truncatechars` em pt-BR entrega 158, e a RCON-13 foi emendada); a ilustração usa `--info-tint` (o DS-08 proíbe `--brand-blue-light`); regras mortas saíram da folha (`.ficha`, `.meta`, `.ciclo`, `.historico`, `.reaproveitamentos`, `::before` do selo).
+- **Lições**: candidatas novas L-058 a L-064. `.specs/LESSONS.md` e `lessons.json` seguem com mudanças locais fora dos commits.
+- **Preferência nova do usuário**: depois de um FAIL do Verifier, perguntar antes de abrir outra rodada.
+- **Pendente**: conferência no navegador (UAT). Conferir os 10 ícones Lucide desenhados de memória, o alto contraste, o zoom de 200%, o valor dos reaproveitamentos na ficha e a legenda oculta da tabela de reaproveitamentos. Deploy da R1 e da R2 (produção ainda sem a R1).
+- **Next step**: UAT da R2; depois, deploy com o ok explícito do usuário.
+- **Branch**: `main`, só local; push pelo usuário. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local ligado na 5433 nesta sessão.
+
+### Anterior (2026-11-15) — fundacao-do-redesign (R1) concluída com risco aceito
 
 - **Feature**: fundacao-do-redesign (R1) — `.specs/features/fundacao-do-redesign/`. **Concluída** em 2026-11-15: casca da `design-spec.md` v2 (fonte Inter local, barra do eMAG com atalhos 1/2/3, menu com ícones e página atual, cabeçalho de página e trilha, rodapé com Acessibilidade e Ajuda, alto contraste por cookie sem JS) e os componentes da §6 v2 na `kira.css`.
 - **Phases**: Specify ✅ · Design ✅ (AD-013, AD-014, AD-015) · Tasks ✅ (T1–T20) · Execute ✅ por 3 sub-agentes + Fase 4 de correção · Verifier it. 1 FAIL (38/42) → T18–T20 → it. 2 FAIL só por lacuna de teste (42/42 ACs com evidência; 16/31 mutantes novos sobrevivem). **Limite de 1 iteração** (decisão do usuário); **o usuário aceitou o risco residual** e fechou. RED-16 e RED-22 `Implementing (risco residual aceito)`; as outras 40 `Verified`. `validate_state.py` sai com 1 de propósito.

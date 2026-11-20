@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-11-19
 **Spec:** `.specs/features/redesign-consulta/spec.md`
-**Status:** Spec aprovada em 2026-11-19; pronta para o Design
+**Status:** Concluída em 2026-11-19 (risco residual N10 aceito)
 
 ---
 
@@ -68,3 +68,7 @@ model ou migration novos.
 - Esqueleto de carregamento dos cartões (só faria sentido com carregamento assíncrono).
 - Colunas "Cadastrada em" e "Reaproveitamentos" na tabela (§10), caso a tabela atual se mostre
   pobre na UAT.
+- Correção do risco residual N10 (aceito em 2026-11-19): no teste do título de 150 caracteres
+  (`inovacoes/tests/test_views_lista_cartoes.py`), proibir `white-space` `nowrap`/`pre` em toda
+  regra de `.cartao-ino\76 acao__titulo` e do link dele, para o teste não depender só da presença
+  do `overflow-wrap` (lição candidata L-064).

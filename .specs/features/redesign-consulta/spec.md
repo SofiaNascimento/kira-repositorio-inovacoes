@@ -1,6 +1,6 @@
 # Redesign da Consulta (R2) — Specification
 
-**Status:** Aprovada pelo usuário em 2026-11-19 (assumptions confirmadas; testes antigos T-A a T-O autorizados). Escopo Large: segue para Design e Tasks.
+**Status:** Concluída em 2026-11-19 com risco residual de teste aceito (RCON-49, mutante N10). Aprovada em 2026-11-19 (testes antigos T-A a T-P autorizados; T-Q, T-R e a extensão do T-O autorizados no Execute).
 
 Fonte do visual: `docs/design-spec.md` **v2 §10** (Lista de inovações; Detalhe da inovação), com os
 componentes da §6 que a R1 já pôs na `kira.css` (cartão de inovação, indicador de etapas, linha
@@ -324,60 +324,60 @@ ordem em que aparecem e sem perder nada.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| RCON-01 | P1: Busca e filtros | Design | Implementing |
-| RCON-02 | P1: Busca e filtros | Design | Implementing |
-| RCON-03 | P1: Busca e filtros | Design | Implementing |
-| RCON-04 | P1: Busca e filtros | Design | Implementing |
-| RCON-05 | P1: Busca e filtros | Design | Implementing |
-| RCON-06 | P1: Busca e filtros | Design | Implementing |
-| RCON-07 | P1: Busca e filtros | Design | Implementing |
-| RCON-08 | P1: Busca e filtros | Design | Implementing |
-| RCON-09 | P1: Cartões | Design | Implementing |
-| RCON-10 | P1: Cartões | Design | Implementing |
-| RCON-11 | P1: Cartões | Design | Implementing |
-| RCON-12 | P1: Cartões | Design | Implementing |
-| RCON-13 | P1: Cartões | Design | Implementing |
-| RCON-14 | P1: Cartões | Design | Implementing |
-| RCON-15 | P1: Cartões | Design | Implementing |
-| RCON-16 | P1: Cartões | Design | Implementing |
-| RCON-17 | P1: Tabela | Design | Implementing |
-| RCON-18 | P1: Tabela | Design | Implementing |
-| RCON-19 | P1: Tabela | Design | Implementing |
-| RCON-20 | P1: Tabela | Design | Implementing |
-| RCON-21 | P1: Paginação | Design | Implementing |
-| RCON-22 | P1: Paginação | Design | Implementing |
-| RCON-23 | P1: Paginação | Design | Implementing |
-| RCON-24 | P1: Paginação | Design | Implementing |
-| RCON-25 | P1: Vazios | Design | Implementing |
-| RCON-26 | P1: Vazios | Design | Implementing |
-| RCON-27 | P1: Vazios | Design | Implementing |
-| RCON-28 | P1: Detalhe | Design | Implementing |
-| RCON-29 | P1: Detalhe | Design | Implementing |
-| RCON-30 | P1: Detalhe | Design | Implementing |
-| RCON-31 | P1: Detalhe | Design | Implementing |
-| RCON-32 | P1: Detalhe | Design | Implementing |
-| RCON-33 | P1: Detalhe | Design | Implementing |
-| RCON-34 | P1: Detalhe | Design | Implementing |
-| RCON-35 | P1: Detalhe | Design | Implementing |
-| RCON-36 | P1: Detalhe | Design | Implementing |
-| RCON-37 | P1: Ações | Design | Implementing |
-| RCON-38 | P1: Ações | Design | Implementing |
-| RCON-39 | P1: Ações | Design | Implementing |
-| RCON-40 | P1: Ações | Design | Implementing |
-| RCON-41 | P1: Ações | Design | Implementing |
-| RCON-42 | P1: Ações | Design | Implementing |
-| RCON-43 | P1: Histórico | Design | Implementing |
-| RCON-44 | P1: Histórico | Design | Implementing |
-| RCON-45 | P1: Histórico | Design | Implementing |
-| RCON-46 | P1: Histórico | Design | Implementing |
-| RCON-47 | P1: Ordem e folha | Design | Implementing |
-| RCON-48 | P1: Ordem e folha | Design | Implementing |
-| RCON-49 | P1: Ordem e folha | Design | Implementing |
-| RCON-50 | P1: Ordem e folha | Design | Implementing |
+| RCON-01 | P1: Busca e filtros | Design | Verified |
+| RCON-02 | P1: Busca e filtros | Design | Verified |
+| RCON-03 | P1: Busca e filtros | Design | Verified |
+| RCON-04 | P1: Busca e filtros | Design | Verified |
+| RCON-05 | P1: Busca e filtros | Design | Verified |
+| RCON-06 | P1: Busca e filtros | Design | Verified |
+| RCON-07 | P1: Busca e filtros | Design | Verified |
+| RCON-08 | P1: Busca e filtros | Design | Verified |
+| RCON-09 | P1: Cartões | Design | Verified |
+| RCON-10 | P1: Cartões | Design | Verified |
+| RCON-11 | P1: Cartões | Design | Verified |
+| RCON-12 | P1: Cartões | Design | Verified |
+| RCON-13 | P1: Cartões | Design | Verified |
+| RCON-14 | P1: Cartões | Design | Verified |
+| RCON-15 | P1: Cartões | Design | Verified |
+| RCON-16 | P1: Cartões | Design | Verified |
+| RCON-17 | P1: Tabela | Design | Verified |
+| RCON-18 | P1: Tabela | Design | Verified |
+| RCON-19 | P1: Tabela | Design | Verified |
+| RCON-20 | P1: Tabela | Design | Verified |
+| RCON-21 | P1: Paginação | Design | Verified |
+| RCON-22 | P1: Paginação | Design | Verified |
+| RCON-23 | P1: Paginação | Design | Verified |
+| RCON-24 | P1: Paginação | Design | Verified |
+| RCON-25 | P1: Vazios | Design | Verified |
+| RCON-26 | P1: Vazios | Design | Verified |
+| RCON-27 | P1: Vazios | Design | Verified |
+| RCON-28 | P1: Detalhe | Design | Verified |
+| RCON-29 | P1: Detalhe | Design | Verified |
+| RCON-30 | P1: Detalhe | Design | Verified |
+| RCON-31 | P1: Detalhe | Design | Verified |
+| RCON-32 | P1: Detalhe | Design | Verified |
+| RCON-33 | P1: Detalhe | Design | Verified |
+| RCON-34 | P1: Detalhe | Design | Verified |
+| RCON-35 | P1: Detalhe | Design | Verified |
+| RCON-36 | P1: Detalhe | Design | Verified |
+| RCON-37 | P1: Ações | Design | Verified |
+| RCON-38 | P1: Ações | Design | Verified |
+| RCON-39 | P1: Ações | Design | Verified |
+| RCON-40 | P1: Ações | Design | Verified |
+| RCON-41 | P1: Ações | Design | Verified |
+| RCON-42 | P1: Ações | Design | Verified |
+| RCON-43 | P1: Histórico | Design | Verified |
+| RCON-44 | P1: Histórico | Design | Verified |
+| RCON-45 | P1: Histórico | Design | Verified |
+| RCON-46 | P1: Histórico | Design | Verified |
+| RCON-47 | P1: Ordem e folha | Design | Verified |
+| RCON-48 | P1: Ordem e folha | Design | Verified |
+| RCON-49 | P1: Ordem e folha | Design | Implementing (risco residual aceito) |
+| RCON-50 | P1: Ordem e folha | Design | Verified |
 
 **Status values:** Pending → In Design → In Tasks → Implementing → Verified
 
-**Coverage:** 50 total, 0 mapped to tasks, 50 unmapped (Tasks ainda não feitas).
+**Coverage:** 50 total, 50 mapped to tasks (T1–T24), 0 unmapped. 49 `Verified`; RCON-49 com risco residual de teste aceito pelo usuário em 2026-11-19 (`validation.md`, Decisão do usuário).
 
 **Regras de teste para a feature toda:** toda AC de "está exibido" ou "não está exibido" usa
 `exibido(html, rigoroso=True)` de `inovacoes/tests/visibilidade.py` sobre o DOM da página inteira
