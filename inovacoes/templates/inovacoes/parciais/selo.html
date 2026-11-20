@@ -1,0 +1,2 @@
+{# RCON-15, DS-12, DS-13: selo de status com icone decorativo (a forma, alem da cor) e o rotulo em texto. Recebe status (valor) e rotulo. #}
+<span class="selo selo--{{ status|lower }}">{% if status == "EM_TESTE" %}{% include "icones/frasco.svg" %}{% elif status == "VALIDADA" %}{% include "icones/visto.svg" %}{% elif status == "DISPONIVEL_PARA_REPLICACAO" %}{% include "icones/caixa-seta.svg" %}{% endif %}{{ rotulo }}</span>

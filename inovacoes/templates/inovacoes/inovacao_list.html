@@ -56,8 +56,8 @@
             <td><a href="{{ inovacao.get_absolute_url }}">{{ inovacao.titulo }}</a></td>
             <td>{{ inovacao.categoria.nome }}</td>
             <td>{{ inovacao.unidade.nome }}</td>
-            {# DS-12: selo com texto, cor e forma. #}
-            <td><span class="selo selo--{{ inovacao.status|lower }}">{{ inovacao.get_status_display }}</span></td>
+            {# DS-12, RCON-15: selo com texto, cor e o icone do status. #}
+            <td>{% include "inovacoes/parciais/selo.html" with status=inovacao.status rotulo=inovacao.get_status_display %}</td>
           </tr>
         {% endfor %}
       </tbody>

@@ -608,7 +608,7 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 
 .meta { color: var(--text-muted); font-size: var(--fs-sm); }
 
-/* --- Selo de status (§6): texto + cor + forma ---------------------------- */
+/* --- Selo de status (§6): texto + cor + forma (o icone do status, RCON-15) - */
 
 .selo {
   display: inline-flex;
@@ -622,19 +622,10 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   font-weight: 600;
   white-space: nowrap;
 }
-.selo::before {
-  content: "";
-  flex: none;
-  width: 0.6em;
-  height: 0.6em;
-  background: currentcolor;
-}
+.selo svg { flex: none; width: 1em; height: 1em; }
 .selo--em_teste { color: var(--warning); background: var(--warning-tint); }
-.selo--em_teste::before { border-radius: 50%; }
 .selo--validada { color: var(--info); background: var(--info-tint); }
-.selo--validada::before { border-radius: 1px; }
 .selo--disponivel_para_replicacao { color: var(--success); background: var(--success-tint); }
-.selo--disponivel_para_replicacao::before { transform: rotate(45deg); }
 
 /* --- Estados de tela (§7) ------------------------------------------------ */
 

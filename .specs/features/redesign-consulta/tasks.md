@@ -228,7 +228,7 @@ T22
 
 ---
 
-### T7: Selo com ícone
+### T7: Selo com ícone ✅
 
 **What**: parcial `inovacoes/parciais/selo.html` (ícone por status + rótulo), usada na tabela atual; a folha perde as formas `::before` do `.selo`.
 **Where**: `inovacoes/templates/inovacoes/parciais/selo.html`, `inovacao_list.html`, `templates/kira.css`
@@ -240,10 +240,10 @@ T22
 
 **Done when**:
 
-- [ ] T-P: DS-13 exige, para cada status, um SVG `aria-hidden` diferente no selo renderizado e nenhum `::before` com forma no `.selo`
-- [ ] T-C (lista): DS-12 lê o selo com o rótulo depois do SVG
-- [ ] T-M: `PECAS` + `parciais/selo.html`
-- [ ] Gate build passa; test count ≥ anterior
+- [x] T-P: DS-13 exige, para cada status, um SVG `aria-hidden` diferente no selo renderizado e nenhum `::before` com forma no `.selo`
+- [x] T-C (lista): DS-12 lê o selo com o rótulo depois do SVG
+- [x] T-M: `PECAS` + `parciais/selo.html`
+- [x] Gate build passa; test count ≥ anterior
 
 **Tests**: e2e
 **Gate**: build

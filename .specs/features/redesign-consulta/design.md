@@ -266,3 +266,6 @@ lista.
   só por "…": na 5 de 25 devolve `1 2 3 4 5 6 7 … 25`, e a RCON-22 (e o "Done when" da T4) pede
   `1 … 3 4 5 6 7 … 25`. O "…" continua sendo `Paginator.ELLIPSIS`. Marcado com `SPEC_DEVIATION`
   em `inovacoes/apresentacao.py`.
+- **T7, selo:** a parcial `inovacoes/parciais/selo.html` recebe `status` (o valor) e `rotulo`
+  (o texto), e não a inovação inteira, para o DS-13 renderizá-la sem banco. Até a T16 o `dd.selo`
+  do detalhe fica sem forma: o `::before` saiu da folha e o detalhe ainda não usa a parcial.

@@ -13,6 +13,8 @@ from django.contrib.messages import constants
 from django.contrib.messages.storage.base import Message
 from django.template.loader import render_to_string
 
+from inovacoes.tests.visibilidade import exibido
+
 CSS = (Path(settings.BASE_DIR) / "templates" / "kira.css").read_text()
 FOCAVEIS = {"a", "button", "input", "select", "textarea"}
 
@@ -392,12 +394,15 @@ RAIZES = [
 # Pecas incluidas, nao telas: o proprio base, a marca e o grupo de campo.
 # F6: e o grafico de barras do painel (REAP-34), incluido tres vezes.
 # T-C (fundacao-do-redesign, RED-30): e a parcial da trilha de navegacao.
+# T-M (redesign-consulta, T7, DS-01): e a parcial do selo de status (RCON-15). Peca
+# incluida, nao tela: a contagem de telas segue 13 e ela continua sem estilo proprio.
 PECAS = {
     "base.html",
     "marca.html",
     "inovacoes/campo.html",
     "indicadores/grafico.html",
     "paginas/trilha.html",
+    "inovacoes/parciais/selo.html",
 }
 
 
@@ -451,13 +456,26 @@ STATUS = [
 def test_lista_mostra_o_status_num_selo_com_o_rotulo(
     client, autor, criar_inovacao, status, classe, rotulo
 ):
-    """DS-12, na listagem."""
+    """DS-12, na listagem.
+
+    T-C (redesign-consulta, T7, RCON-15): o selo da tabela traz o SVG decorativo
+    (`aria-hidden`) antes do rotulo. A garantia da DS-12 continua: o status aparece num
+    `span.selo.selo--x` com o rotulo em texto, exibido na pagina (L-028, L-030).
+    """
     criar_inovacao(status=status)
     client.force_login(autor)
     html = client.get("/inovacoes/").content.decode()
     corpo = re.search(r"<tbody>(.*?)</tbody>", html, re.S).group(1)
     assert re.search(
-        rf'<td>\s*<span class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</span>\s*</td>', corpo
+        rf'<td>\s*<span class="selo selo--{classe}">\s*'
+        rf'<svg aria-hidden="true"[^>]*>.*?</svg>\s*{re.escape(rotulo)}\s*</span>\s*</td>',
+        corpo,
+        re.S,
+    )
+    exibida = re.search(r"<tbody>(.*?)</tbody>", exibido(html, rigoroso=True), re.S).group(1)
+    assert re.search(
+        rf'<td>\s*<span class="selo selo--{classe}">\s*{re.escape(rotulo)}\s*</span>\s*</td>',
+        exibida,
     )
 
 
@@ -476,17 +494,51 @@ def test_detalhe_mostra_o_status_num_selo_com_o_rotulo(
     )
 
 
+# RCON-15: frasco para "Em teste", visto para "Validada", caixa com seta para "Disponível".
+ICONE_DO_STATUS = {
+    "EM_TESTE": "frasco",
+    "VALIDADA": "visto",
+    "DISPONIVEL_PARA_REPLICACAO": "caixa-seta",
+}
+
+
 @pytest.mark.unit
 def test_cada_status_tem_uma_forma_propria_alem_da_cor():
-    """DS-13: a forma distingue o status sem depender da cor (WCAG 1.4.1)."""
-    formas = []
-    for _, classe, _ in STATUS:
-        regra = _corpos(f".selo--{classe}::before")
-        forma = re.search(r"(border-radius|transform)\s*:\s*([^;]+);", regra)
-        assert forma, classe
-        formas.append(forma.groups())
-    assert len(set(formas)) == len(STATUS)
-    assert re.search(r'content:\s*""', _corpos(".selo::before"))
+    """DS-13: a forma distingue o status sem depender da cor (WCAG 1.4.1).
+
+    T-P (redesign-consulta, T7, RCON-15): a forma passa a ser o icone do status no selo
+    renderizado, e nao mais o `::before` da folha. Cada status tem um SVG `aria-hidden`
+    diferente (o do Lucide que a RCON-15 nomeia), e nenhuma regra da folha desenha forma
+    no `::before` do selo, para o selo nao ter duas marcas.
+    """
+    icones = Path(settings.BASE_DIR) / "templates" / "icones"
+    svgs = []
+    for status, classe, rotulo in STATUS:
+        selo = render_to_string(
+            "inovacoes/parciais/selo.html", {"status": status, "rotulo": rotulo}
+        )
+        achado = re.fullmatch(
+            rf'\s*<span class="selo selo--{classe}">\s*(<svg .*?</svg>)\s*'
+            rf"{re.escape(rotulo)}</span>\s*",
+            selo,
+            re.S,
+        )
+        assert achado, status
+        svg = achado.group(1)
+        assert svg.startswith('<svg aria-hidden="true" '), status
+        esperado = (icones / f"{ICONE_DO_STATUS[status]}.svg").read_text().strip()
+        assert svg == esperado, status
+        svgs.append(svg)
+    assert len(set(svgs)) == len(STATUS)
+    sem_comentarios = re.sub(r"/\*.*?\*/", "", CSS, flags=re.S)
+    seletores_do_selo = [
+        seletor.strip()
+        for seletores in re.findall(r"([^{}]+)\{", sem_comentarios)
+        for seletor in seletores.split(",")
+        if ".selo" in seletor
+    ]
+    assert seletores_do_selo, "a folha precisa ter as regras do selo"
+    assert [s for s in seletores_do_selo if "::before" in s or ":before" in s] == []
 
 
 # --- DS-14: botoes --------------------------------------------------------------
