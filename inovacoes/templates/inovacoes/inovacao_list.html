@@ -17,14 +17,20 @@
   {# CONS-31, CONS-37: um form GET, enviado so pelo botao; nada muda ao trocar um select. #}
   <div role="search" class="cartao">
     <form method="get" action="{% url 'inovacoes:lista' %}" class="busca">
-      {% for campo in form %}
-        <div class="campo">{{ campo.as_field_group }}</div>
-      {% endfor %}
-      <div class="acoes">
+      {# RCON-02: lupa decorativa, o campo "Buscar" com a ajuda e o botao, nessa ordem. #}
+      <div class="busca__principal">
+        {% include "icones/lupa.svg" %}
+        <div class="campo">{{ form.q.as_field_group }}</div>
         <button type="submit">Buscar</button>
-        {# CONS-32: so quando ha algo a limpar. #}
-        {% if filtros_ativos %}<a href="{% url 'inovacoes:lista' %}">Limpar filtros</a>{% endif %}
       </div>
+      {# RCON-03: os tres selects depois do botao; trocar um nao envia nada. #}
+      <div class="busca__filtros">
+        <div class="campo">{{ form.categoria.as_field_group }}</div>
+        <div class="campo">{{ form.unidade.as_field_group }}</div>
+        <div class="campo">{{ form.status.as_field_group }}</div>
+      </div>
+      {# CONS-32: so quando ha algo a limpar. #}
+      {% if filtros_ativos %}<div class="acoes"><a href="{% url 'inovacoes:lista' %}">Limpar filtros</a></div>{% endif %}
     </form>
   </div>
 

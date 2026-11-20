@@ -321,7 +321,7 @@ T22
 
 ---
 
-### T11: Busca em destaque e filtros em linha
+### T11: Busca em destaque e filtros em linha ✅
 
 **What**: `form.busca` com `.busca__principal` (lupa, campo de 52px, botão) e `.busca__filtros` (três selects em grade).
 **Where**: `inovacao_list.html`, `templates/kira.css`
@@ -333,8 +333,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: ordem lupa → `q` → ajuda → "Buscar" → selects; lupa `aria-hidden`; sem `onchange` nem `<script>`; regra CSS de 52px e 17px; CONS-31, CONS-37, CONS-43, DS-14 e RED-14 intactos
-- [ ] Gate build passa; test count ≥ anterior + 4
+- [x] Testes novos: ordem lupa → `q` → ajuda → "Buscar" → selects; lupa `aria-hidden`; sem `onchange` nem `<script>`; regra CSS de 52px e 17px; CONS-31, CONS-37, CONS-43, DS-14 e RED-14 intactos
+- [x] Gate build passa; test count ≥ anterior + 4
 
 **Tests**: e2e
 **Gate**: build

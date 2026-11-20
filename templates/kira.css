@@ -716,14 +716,30 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
 
 /* --- Busca (§10 F3) ------------------------------------------------------ */
 
-.busca {
+.busca { margin-bottom: var(--space-5); }
+.busca .acoes { margin-top: 0; }
+/* Linha principal (RCON-02): lupa, campo em destaque e o botao, na ordem do codigo. */
+.busca__principal {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 0 var(--space-5);
-  margin-bottom: var(--space-5);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0 var(--space-3);
 }
-.busca .campo:first-child { grid-column: 1 / -1; }
-.busca .acoes { grid-column: 1 / -1; margin-top: 0; }
+/* A lupa e o botao descem a altura do rotulo, para alinhar com o campo. */
+.busca__principal > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-top: calc(var(--space-1) + 1.5em + 14px);
+  color: var(--text-muted);
+}
+.busca__principal button { min-height: 52px; margin-top: calc(var(--space-1) + 1.5em); }
+.busca__principal input { min-height: 52px; font-size: 1.0625rem; }
+/* Filtros em linha (RCON-03): quantos couberem, uma coluna na tela estreita. */
+.busca__filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: 0 var(--space-5);
+}
 
 /* --- Componentes v2: detalhe e formulario (§6 v2) ------------------------ */
 
