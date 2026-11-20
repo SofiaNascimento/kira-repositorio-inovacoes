@@ -392,7 +392,7 @@ T22
 
 ---
 
-### T14: Estados vazios com ilustração
+### T14: Estados vazios com ilustração ✅
 
 **What**: `parciais/vazio.html` e `parciais/ilustracao_vazio.svg`, nas duas variantes; ilustração escondida no alto contraste.
 **Where**: `parciais/vazio.html`, `parciais/ilustracao_vazio.svg`, `inovacao_list.html`, `templates/kira.css`
@@ -404,9 +404,9 @@ T22
 
 **Done when**:
 
-- [ ] Testes novos: textos e ações exatos de cada variante; etiquetas visíveis na variante sem resultado; nada de contador, cartões, tabela ou paginação; ilustração `aria-hidden`; regra `display: none` só sob `[data-contraste=alto]`
-- [ ] T-D: CONS-34 e CONS-35 com os textos da §10; T-N (ilustração); T-M (`vazio.html`)
-- [ ] Gate build passa; test count ≥ anterior + 5
+- [x] Testes novos: textos e ações exatos de cada variante; etiquetas visíveis na variante sem resultado; nada de contador, cartões, tabela ou paginação; ilustração `aria-hidden`; regra `display: none` só sob `[data-contraste=alto]`
+- [x] T-D: CONS-34 e CONS-35 com os textos da §10; T-N (ilustração); T-M (`vazio.html`)
+- [x] Gate build passa; test count ≥ anterior + 5
 
 **Tests**: e2e
 **Gate**: build

@@ -1,0 +1,14 @@
+{# RCON-25, RCON-26: estado vazio com a ilustracao decorativa (some no alto contraste, RCON-27). Recebe filtros_ativos e url_limpar. #}
+<div class="vazio">
+  {% include "inovacoes/parciais/ilustracao_vazio.svg" %}
+  {% if filtros_ativos %}
+    {# CONS-35, RCON-26: consulta sem resultado; as etiquetas continuam no role="search". #}
+    <p>Nenhuma inovação encontrada para esta busca.</p>
+    <p>Tente outras palavras ou remova algum filtro.</p>
+    <p class="acoes acoes--primaria"><a href="{{ url_limpar }}">Limpar filtros</a></p>
+  {% else %}
+    {# CONS-34, RCON-25: repositorio vazio. #}
+    <p>Nenhuma inovação cadastrada ainda.</p>
+    <p class="acoes acoes--primaria"><a href="{% url 'inovacoes:nova' %}">Cadastrar a primeira inovação</a></p>
+  {% endif %}
+</div>

@@ -412,6 +412,8 @@ PECAS = {
     "inovacoes/parciais/etiquetas.html",
     # T-M (T13): a paginacao numerada (RCON-21 a RCON-24).
     "inovacoes/parciais/paginacao.html",
+    # T-M (T14): o estado vazio da lista (RCON-25, RCON-26).
+    "inovacoes/parciais/vazio.html",
 }
 
 

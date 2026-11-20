@@ -637,6 +637,16 @@ nav[aria-label=Paginação] span { color: var(--text-muted); font-size: var(--fs
   text-align: center;
 }
 .vazio .acoes { justify-content: center; }
+/* Ilustracao do vazio (RCON-25, RCON-26): decorativa, ate 160px; traco navy, acento suave. */
+.vazio__ilustracao {
+  display: block;
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  margin: 0 auto var(--space-4);
+  color: var(--brand-navy);
+}
+.vazio__acento { fill: var(--info-tint); }
 
 .estado-erro { max-width: 40rem; }
 
@@ -1130,6 +1140,8 @@ nav[aria-label=Paginação],
 /* Decorativos e a faixa do gradiente somem. */
 :root[data-contraste=alto] .decorativo,
 :root[data-contraste=alto] .faixa-marca { display: none; }
+/* RCON-27: a ilustracao do estado vazio some no tema alto (§7). */
+:root[data-contraste=alto] .vazio__ilustracao { display: none; }
 /* Selos, alertas e variacoes: sem fundo (as tintas viram preto) e com borda na cor do texto. */
 :root[data-contraste=alto] .selo,
 :root[data-contraste=alto] .alerta,

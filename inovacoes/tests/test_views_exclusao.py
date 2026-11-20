@@ -170,9 +170,8 @@ def test_inovacao_excluida_some_da_lista_da_busca_e_da_contagem(client, autor, c
     assert [linha[0] for linha in _linhas(html)] == ["Planilha de Compras"]
     busca = logado.get("/inovacoes/?q=Controle de Caixa")
     assert list(busca.context["inovacoes"]) == []
-    assert "Nenhuma inovação encontrada para a busca e os filtros informados." in (
-        busca.content.decode()
-    )
+    # T-R (redesign-consulta, T14, RCON-26): o texto do vazio sem resultado e o da §10.
+    assert "Nenhuma inovação encontrada para esta busca." in busca.content.decode()
 
 
 def test_exclusao_confirma_na_lista_uma_vez_so(client, autor, criar_inovacao):

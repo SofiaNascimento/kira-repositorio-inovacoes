@@ -185,12 +185,19 @@ def test_contagem_no_plural(logado, criar_inovacao):
 
 
 def test_repositorio_vazio_mostra_mensagem_e_link_de_cadastro_sem_tabela(logado):
-    """CONS-34."""
+    """CONS-34.
+
+    T-D (redesign-consulta, T14, RCON-25): o link do vazio passa a ser o da §10, "Cadastrar
+    a primeira inovação"; "sem tabela" vira sem lista de resultados nem tabela.
+    """
     html = logado.get(LISTA).content.decode()
     conteudo = html[html.index("<h1") :]
     assert "Nenhuma inovação cadastrada ainda." in conteudo
-    assert re.search(r'<a href="/inovacoes/nova/">\s*Cadastrar inovação\s*</a>', conteudo)
+    assert re.search(
+        r'<a href="/inovacoes/nova/">\s*Cadastrar a primeira inovação\s*</a>', conteudo
+    )
     assert "<table" not in html
+    assert 'aria-label="Resultados"' not in html
     assert "encontrada" not in html
 
 

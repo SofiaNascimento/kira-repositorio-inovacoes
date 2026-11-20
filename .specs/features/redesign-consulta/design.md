@@ -294,3 +294,8 @@ lista.
 - **T13, testes antigos T-Q:** CONS-03 (`test_views_lista.py`, primeira e última página) deixa
   de exigir a ausência de "Anterior"/"Próxima" e passa a exigir que a ponta não seja link e
   exista como `span aria-disabled="true"` (RCON-23). Autorizado pelo usuário em 2026-11-19.
+- **T14, estados vazios:** o acento da ilustração usa `--info-tint`, e não `--brand-blue-light`
+  como dizia o design: o DS-08 proíbe o azul claro fora do gradiente da marca. O traço segue
+  `--brand-navy` por `currentColor`. T-D muda a constante do vazio com filtro em
+  `test_views_busca.py` (vale para os quatro testes da CONS-35 que a usam) e T-R muda o EDEX-37
+  em `test_views_exclusao.py`, os dois para "Nenhuma inovação encontrada para esta busca.".

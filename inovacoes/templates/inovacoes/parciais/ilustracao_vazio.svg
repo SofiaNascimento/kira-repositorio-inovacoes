@@ -1,0 +1,7 @@
+<svg class="vazio__ilustracao" aria-hidden="true" focusable="false" width="160" height="120" viewBox="0 0 160 120" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <rect class="vazio__acento" x="18" y="40" width="84" height="56" rx="8"/>
+  <rect x="30" y="28" width="84" height="56" rx="8"/>
+  <path d="M44 46h40M44 58h28M44 70h34"/>
+  <circle class="vazio__acento" cx="112" cy="74" r="20"/>
+  <path d="m126 88 16 16"/>
+</svg>

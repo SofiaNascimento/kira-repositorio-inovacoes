@@ -348,9 +348,9 @@ ordem em que aparecem e sem perder nada.
 | RCON-22 | P1: Paginação | Design | Implementing |
 | RCON-23 | P1: Paginação | Design | Implementing |
 | RCON-24 | P1: Paginação | Design | Implementing |
-| RCON-25 | P1: Vazios | Design | Pending |
-| RCON-26 | P1: Vazios | Design | Pending |
-| RCON-27 | P1: Vazios | Design | Pending |
+| RCON-25 | P1: Vazios | Design | Implementing |
+| RCON-26 | P1: Vazios | Design | Implementing |
+| RCON-27 | P1: Vazios | Design | Implementing |
 | RCON-28 | P1: Detalhe | Design | Pending |
 | RCON-29 | P1: Detalhe | Design | Pending |
 | RCON-30 | P1: Detalhe | Design | Pending |

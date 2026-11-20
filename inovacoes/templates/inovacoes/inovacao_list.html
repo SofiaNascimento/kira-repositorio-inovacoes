@@ -63,17 +63,8 @@
 
     {# RCON-21 a RCON-24: paginacao numerada (CONS-39). #}
     {% include "inovacoes/parciais/paginacao.html" %}
-  {% elif filtros_ativos %}
-    {# CONS-35: consulta sem resultado, sem tabela vazia. #}
-    <div class="vazio">
-      <p>Nenhuma inovação encontrada para a busca e os filtros informados.</p>
-      <p class="acoes acoes--primaria"><a href="{% url 'inovacoes:lista' %}">Limpar filtros</a></p>
-    </div>
   {% else %}
-    {# CONS-34: repositorio vazio, sem tabela. #}
-    <div class="vazio">
-      <p>Nenhuma inovação cadastrada ainda.</p>
-      <p class="acoes acoes--primaria"><a href="{% url 'inovacoes:nova' %}">Cadastrar inovação</a></p>
-    </div>
+    {# CONS-34, CONS-35, RCON-25, RCON-26: sem tabela, cartoes, contador nem paginacao. #}
+    {% include "inovacoes/parciais/vazio.html" %}
   {% endif %}
 {% endblock %}

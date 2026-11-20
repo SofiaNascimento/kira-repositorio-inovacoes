@@ -943,6 +943,8 @@ def test_com_o_cookie_alto_a_pagina_traz_a_mesma_folha(client, autor, autenticad
 ESCONDIDOS_PELA_SPEC = {
     ((), f"{ALTO} .decorativo", "display: none"),  # RED-28: decorativos somem no tema alto
     ((), f"{ALTO} .faixa-marca", "display: none"),  # RED-28: a faixa do gradiente some
+    # T-N (redesign-consulta, T14): RCON-27, a ilustracao do vazio some no tema alto.
+    ((), f"{ALTO} .vazio__ilustracao", "display: none"),
 }
 
 

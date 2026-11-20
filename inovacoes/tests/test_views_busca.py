@@ -303,7 +303,10 @@ def test_consulta_valida_nao_mostra_o_alerta_nem_marca_controle_invalido(logado,
     assert "aria-invalid" not in html
 
 
-MENSAGEM_VAZIO_COM_FILTRO = "Nenhuma inovação encontrada para a busca e os filtros informados."
+# T-D (redesign-consulta, T14, RCON-26): o texto do vazio com filtro passa a ser o da §10,
+# com a sugestao logo depois. A garantia da CONS-35 continua: diz o que houve e oferece limpar.
+MENSAGEM_VAZIO_COM_FILTRO = "Nenhuma inovação encontrada para esta busca."
+SUGESTAO_VAZIO_COM_FILTRO = "Tente outras palavras ou remova algum filtro."
 MENSAGEM_REPOSITORIO_VAZIO = "Nenhuma inovação cadastrada ainda."
 LIMPAR = re.compile(r'<a href="/inovacoes/">\s*Limpar filtros\s*</a>')
 
@@ -339,27 +342,41 @@ def test_qualquer_busca_ou_filtro_ativo_mostra_limpar_filtros_para_a_lista_sem_q
 
 
 def test_consulta_sem_resultado_diz_o_que_houve_e_oferece_limpar_sem_tabela(logado, tres):
-    """CONS-35: com inovacoes no banco, a busca "inexistente" nao acha nenhuma."""
+    """CONS-35: com inovacoes no banco, a busca "inexistente" nao acha nenhuma.
+
+    T-D (redesign-consulta, T14, RCON-26): texto da §10 e a sugestao; "sem tabela" vira sem
+    lista de resultados nem tabela (os cartoes sao o padrao, RCON-10).
+    """
     html = logado.get(LISTA, {"q": "inexistente"}).content.decode()
     assert "<table" not in html
+    assert 'aria-label="Resultados"' not in html
     assert MENSAGEM_REPOSITORIO_VAZIO not in html
     posicao = html.index(MENSAGEM_VAZIO_COM_FILTRO)
+    assert html.index(SUGESTAO_VAZIO_COM_FILTRO, posicao) > posicao
     assert LIMPAR.search(html, posicao)
 
 
 def test_filtro_sem_resultado_tambem_cai_no_estado_vazio_com_filtro(logado, tres):
-    """CONS-35: filtro combinado sem correspondencia (Filial Norte + Validada)."""
+    """CONS-35: filtro combinado sem correspondencia (Filial Norte + Validada).
+
+    T-D (redesign-consulta, T14, RCON-26): sem lista de resultados nem tabela.
+    """
     html = logado.get(LISTA, {"unidade": tres["norte"].pk, "status": "VALIDADA"}).content.decode()
     assert MENSAGEM_VAZIO_COM_FILTRO in html
     assert "<table" not in html
+    assert 'aria-label="Resultados"' not in html
 
 
 def test_banco_vazio_com_busca_mostra_a_mensagem_de_filtro_e_nao_a_do_repositorio(logado):
-    """CONS-35, CONS-34: filtro ativo vence o repositorio vazio."""
+    """CONS-35, CONS-34: filtro ativo vence o repositorio vazio.
+
+    T-D (redesign-consulta, T14, RCON-26): sem lista de resultados nem tabela.
+    """
     html = logado.get(LISTA, {"q": "x"}).content.decode()
     assert MENSAGEM_VAZIO_COM_FILTRO in html
     assert MENSAGEM_REPOSITORIO_VAZIO not in html
     assert "<table" not in html
+    assert 'aria-label="Resultados"' not in html
 
 
 def test_banco_vazio_sem_parametros_continua_com_a_mensagem_do_repositorio(logado):
