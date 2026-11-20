@@ -1,11 +1,22 @@
 """Testes unitarios das funcoes de apresentacao da consulta (R2)."""
 
+import datetime
+
 import pytest
 from django.core.paginator import Paginator
 from django.http import QueryDict
 
-from inovacoes.apresentacao import Etiqueta, etiquetas, exibicao, paginas, url_da_lista
-from inovacoes.models import Categoria, Unidade
+from contas.models import Usuario
+from inovacoes.apresentacao import (
+    Etiqueta,
+    ItemDoHistorico,
+    etiquetas,
+    exibicao,
+    itens_do_historico,
+    paginas,
+    url_da_lista,
+)
+from inovacoes.models import Categoria, Inovacao, MudancaDeStatus, StatusInovacao, Unidade
 
 # --- url_da_lista (RCON-05, RCON-06, RCON-18) ---
 
@@ -239,3 +250,79 @@ def test_tres_paginas_sem_reticencias(numero):
 def test_uma_pagina_so():
     """RCON-22: a primeira e a ultima sao a mesma, sem repetir."""
     assert paginas(_pagina(1, 1)) == [1]
+
+
+# --- itens_do_historico (RCON-43, RCON-44, RCON-45) ---
+# Objetos em memoria, sem banco: a funcao recebe as mudancas ja carregadas.
+
+
+def _hora(dia, hora):
+    return datetime.datetime(2026, 9, dia, hora, 30, tzinfo=datetime.UTC)
+
+
+ANA = Usuario(username="ana", first_name="Ana", last_name="Souza")
+SEM_NOME = Usuario(username="bruno")
+
+
+def _inovacao(status, autor=ANA):
+    return Inovacao(titulo="Controle", status=status, autor=autor, data_criacao=_hora(1, 9))
+
+
+def _mudanca(inovacao, anterior, novo, responsavel, data):
+    return MudancaDeStatus(
+        inovacao=inovacao,
+        status_anterior=anterior,
+        status_novo=novo,
+        responsavel=responsavel,
+        data=data,
+    )
+
+
+@pytest.mark.unit
+def test_sem_mudancas_so_o_cadastro_com_o_status_atual():
+    """RCON-43, RCON-45: sem mudanca, um item: o cadastro, com o status atual."""
+    inovacao = _inovacao(StatusInovacao.VALIDADA)
+
+    assert itens_do_historico(inovacao, []) == [
+        ItemDoHistorico(_hora(1, 9), "Cadastrada como “Validada”, por Ana Souza", True)
+    ]
+
+
+@pytest.mark.unit
+def test_com_mudancas_o_cadastro_usa_o_status_anterior_da_primeira_e_segue_cada_mudanca():
+    """RCON-43, RCON-44: cadastro com o status inicial e uma linha por mudanca, na ordem."""
+    inovacao = _inovacao(StatusInovacao.DISPONIVEL_PARA_REPLICACAO)
+    mudancas = [
+        _mudanca(inovacao, "EM_TESTE", "VALIDADA", ANA, _hora(2, 10)),
+        _mudanca(inovacao, "VALIDADA", "DISPONIVEL_PARA_REPLICACAO", SEM_NOME, _hora(3, 11)),
+    ]
+
+    assert itens_do_historico(inovacao, mudancas) == [
+        ItemDoHistorico(_hora(1, 9), "Cadastrada como “Em teste”, por Ana Souza", True),
+        ItemDoHistorico(_hora(2, 10), "De “Em teste” para “Validada”, por Ana Souza", False),
+        ItemDoHistorico(
+            _hora(3, 11), "De “Validada” para “Disponível para replicação”, por bruno", False
+        ),
+    ]
+
+
+@pytest.mark.unit
+def test_mudancas_seguem_a_ordem_recebida():
+    """RCON-44: a view entrega do mais antigo ao mais recente; a funcao nao reordena."""
+    inovacao = _inovacao(StatusInovacao.VALIDADA)
+    segunda = _mudanca(inovacao, "VALIDADA", "DISPONIVEL_PARA_REPLICACAO", ANA, _hora(1, 8))
+    primeira = _mudanca(inovacao, "EM_TESTE", "VALIDADA", ANA, _hora(5, 8))
+
+    datas = [item.data for item in itens_do_historico(inovacao, [primeira, segunda])]
+
+    assert datas == [_hora(1, 9), _hora(5, 8), _hora(1, 8)]
+
+
+@pytest.mark.unit
+def test_autor_sem_nome_completo_aparece_pelo_username():
+    """RCON-43, CONS-13: sem nome completo, o username."""
+    inovacao = _inovacao(StatusInovacao.EM_TESTE, autor=SEM_NOME)
+
+    [cadastro] = itens_do_historico(inovacao, [])
+
+    assert cadastro.texto == "Cadastrada como “Em teste”, por bruno"

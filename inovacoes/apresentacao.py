@@ -13,6 +13,14 @@ from django.urls import reverse
 from inovacoes.models import StatusInovacao
 
 
+class ItemDoHistorico(NamedTuple):
+    """Um ponto da linha do tempo do historico (RCON-43, RCON-44)."""
+
+    data: object
+    texto: str
+    cadastro: bool
+
+
 class Etiqueta(NamedTuple):
     """Um filtro ativo: o texto exibido e o link que o remove (RCON-04, RCON-05)."""
 
@@ -79,3 +87,31 @@ def paginas(page_obj):
             janela.append(Paginator.ELLIPSIS)
         janela.append(numero)
     return janela
+
+
+def _nome(usuario):
+    # CONS-13: nome completo ou, sem ele, o username.
+    return usuario.get_full_name() or usuario.get_username()
+
+
+def itens_do_historico(inovacao, mudancas):
+    """O cadastro e depois cada mudanca de status, na ordem recebida (RCON-43 a RCON-45).
+
+    O status do cadastro e o status_anterior da primeira mudanca ou, sem mudancas,
+    o status atual. Recebe as mudancas ja carregadas: nao consulta o banco.
+    """
+    inicial = mudancas[0].status_anterior if mudancas else inovacao.status
+    itens = [
+        ItemDoHistorico(
+            inovacao.data_criacao,
+            f"Cadastrada como “{StatusInovacao(inicial).label}”, por {_nome(inovacao.autor)}",
+            True,
+        )
+    ]
+    for mudanca in mudancas:
+        texto = (
+            f"De “{mudanca.get_status_anterior_display()}” para "
+            f"“{mudanca.get_status_novo_display()}”, por {_nome(mudanca.responsavel)}"
+        )
+        itens.append(ItemDoHistorico(mudanca.data, texto, False))
+    return itens

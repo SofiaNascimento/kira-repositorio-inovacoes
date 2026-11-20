@@ -184,7 +184,7 @@ T22
 
 ---
 
-### T5: Itens do histórico
+### T5: Itens do histórico ✅
 
 **What**: `itens_do_historico(inovacao, mudancas) -> list[ItemDoHistorico]`.
 **Where**: `inovacoes/apresentacao.py`
@@ -196,8 +196,8 @@ T22
 
 **Done when**:
 
-- [ ] Testes unitários (objetos em memória, sem banco): sem mudanças → só o cadastro com o status atual; com mudanças → cadastro com o `status_anterior` da primeira + uma por mudança, na ordem recebida; textos exatos; nome completo ou `username`
-- [ ] Gate quick passa; test count ≥ anterior + 4
+- [x] Testes unitários (objetos em memória, sem banco): sem mudanças → só o cadastro com o status atual; com mudanças → cadastro com o `status_anterior` da primeira + uma por mudança, na ordem recebida; textos exatos; nome completo ou `username`
+- [x] Gate quick passa; test count ≥ anterior + 4
 
 **Tests**: unit
 **Gate**: quick
