@@ -330,8 +330,10 @@ Com o endereço `https://<domínio>`:
 2. **Lista:** você é levado para a lista de inovações (vazia, ou com 500 se rodou o 2.4).
 3. **Cadastro:** cadastre uma inovação de teste. Salvar sem erro 403 prova que o CSRF atrás do
    proxy funciona. Ela deve aparecer na lista e no detalhe.
-4. **Admin:** abra `https://<domínio>/admin/`. O admin deve aparecer com o estilo padrão do Django
-   (barra azul, fontes). Se aparecer HTML cru, o `collectstatic` não rodou (Parte 5).
+4. **Admin:** clique em **Administração** no cabeçalho (ao lado do nome; só aparece para o perfil
+   ADMINISTRADOR) ou abra `https://<domínio>/admin/`. O admin deve aparecer com o título
+   "KIRA — Administração" e o estilo padrão do Django (barra azul, fontes); o "Ver o site" volta à
+   lista. Se aparecer HTML cru, o `collectstatic` não rodou (Parte 5).
 5. **Cookies seguros:** nas ferramentas do navegador (F12 → Application/Armazenamento → Cookies),
    `sessionid` e `csrftoken` aparecem com **Secure** marcado.
 6. **Sem página de depuração:** abra `https://<domínio>/nao-existe/`. Deve aparecer a página de

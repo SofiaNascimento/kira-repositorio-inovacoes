@@ -217,6 +217,10 @@ Ordem de cima para baixo, igual em todas as telas autenticadas:
 - **Usuário no cabeçalho:** nome completo (ou o nome de usuário, se o nome estiver vazio) e o botão
   "Sair" (secundário, pequeno). Iniciais num círculo `--brand-navy` são decorativas (`aria-hidden`).
   Não há unidade: o `Usuario` não tem esse campo.
+- **Administração:** só para o perfil ADMINISTRADOR (nunca por `is_staff`), um link "Administração"
+  entre o nome e o "Sair", com o ícone de engrenagem decorativo (`aria-hidden`), que leva ao admin
+  (`/admin/`). Cor e sublinhado são os dos links da casca, inclusive no alto contraste. O admin se
+  identifica como "KIRA — Administração" e o "Ver o site" volta à lista de inovações.
 - **Navegação consistente** em todas as telas (H4 — consistência; eMAG — apresentação consistente).
 - **Pular para o conteúdo:** primeiro link focável da página, "Ir para o conteúdo", dentro da barra de acessibilidade (§5.1) (eMAG; WCAG 2.4.1).
 - **Idioma:** `<html lang="pt-br">`.
