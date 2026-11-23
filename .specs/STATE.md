@@ -131,7 +131,8 @@
 - **Teste antigo alterado**: `nucleo/tests/test_casca.py` (lista da pasta de ícones ganha `engrenagem`), autorizado pelo usuário na conferência da spec. DS-05 sem mudança.
 - **Verifier**: it. 1 FAIL só por lacuna de teste (7/7 ACs com evidência; 17/22 mutantes: CSS que esconde o link, seletor prefixado de cor/sublinhado, desenho do ícone não fixado). **O usuário aceitou o risco e fechou** sem it. 2. ADM-01, ADM-04, ADM-07 `Implementing (risco residual aceito)`; as outras 4 `Verified`. `validate_state.py` sai com 1 de propósito.
 - **Lições**: L-044 penalizada; candidatas novas L-065 e L-066. `.specs/LESSONS.md` e `lessons.json` seguem fora dos commits.
-- **Pendente**: UAT da R2 no navegador (continua pendente); conferir o link no navegador (admin e USUARIO staff); push e deploy só com ok explícito do usuário. `gestao-por-unidade` segue em especificação, sem aprovação.
+- **Deploy (2026-11-23, ok explícito do usuário)**: publicada em produção (`npx vercel --prod`, deploy `kira-4oxhlzyhc-kira-6c77.vercel.app`, alias `kira-nu-green.vercel.app`) a partir de `9ee6732`, com 1594 testes passando antes; sem migration. Fumaça: `/entrar/` 200, `/` 302, fonte 200, `/admin/login/` 200 com "KIRA — Administração".
+- **Pendente**: UAT da R2 no navegador (continua pendente); conferir o link no navegador (admin e USUARIO staff); push só com ok explícito do usuário. `gestao-por-unidade` segue em especificação, sem aprovação.
 - **Branch**: `main`, só local. **In-progress**: nenhum. **Blockers**: nenhum.
 
 ### Pausa atual (2026-11-19) — redesign-consulta (R2) concluída com risco aceito, aguardando UAT
