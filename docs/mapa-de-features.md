@@ -35,6 +35,7 @@ F1 autenticacao  →  F2 cadastro-inovacao  →  F3 consulta-inovacoes
 | deploy-producao | RNF06: publicação na Vercel (CLI, Python 3.13) com PostgreSQL no Neon (plano gratuito, São Paulo); roteiro em `docs/roteiro-deploy.md` | **Concluída** em 2026-11-15: publicada em `https://kira-nu-green.vercel.app` com o banco no Neon (reaberta em 2026-11-09 para a troca); UAT da Parte 4 aprovada, acervo de 500 inovações carregado |
 | acervo-realista | Carga de demonstração com 500 inovações plausíveis, 15 autores, histórico e reaproveitamentos | Concluída (Verifier PASS); carga no banco de produção (Neon) pendente |
 | fundacao-do-redesign (R1) | Casca da design-spec v2: tokens, fonte Inter local, barra de acessibilidade (eMAG), menu com ícones, cabeçalho de página, alto contraste, componentes da §6 v2 | Concluída em 2026-11-15 com risco de teste aceito (RED-16, RED-22); conferência no navegador local ✅; deploy pendente |
+| link-administracao | Link "Administração" no cabeçalho, só para o perfil ADMINISTRADOR (AD-007), com o ícone de engrenagem; admin identificado como KIRA e "Ver o site" levando a `/inovacoes/` | Concluída em 2026-11-23 com risco de teste aceito (ADM-01, ADM-04, ADM-07); só local, sem push nem deploy |
 
 ---
 

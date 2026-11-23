@@ -1,6 +1,6 @@
 # Link da Administração — Specification
 
-**Status:** Aprovada (2026-11-23). Escopo Small/Medium: spec breve, sem Design nem Tasks
+**Status:** Concluída em 2026-11-23 com risco de teste aceito (ver `validation.md`). Aprovada em 2026-11-23. Escopo Small/Medium: spec breve, sem Design nem Tasks
 formais; plano inline no Execute. Escrita em 2026-11-15 e conferida em 2026-11-23 contra o código
 depois da R2 (`redesign-consulta`): referências de código válidas; a R2 fixou a pasta de ícones
 (ver "Testes antigos que mudam").
@@ -96,15 +96,15 @@ mudar, para e pede.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| ADM-01 | P1: Acesso ao admin (AC 1) | Execute | Implemented |
-| ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Implemented |
-| ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Implemented |
-| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | Implemented |
-| ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Implemented |
-| ADM-06 | Edge: rebaixamento | Execute | Implemented |
-| ADM-07 | Edge: alto contraste | Execute | Implemented |
+| ADM-01 | P1: Acesso ao admin (AC 1) | Execute | Implementing (risco residual aceito) |
+| ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Verified |
+| ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Verified |
+| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | Implementing (risco residual aceito) |
+| ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Verified |
+| ADM-06 | Edge: rebaixamento | Execute | Verified |
+| ADM-07 | Edge: alto contraste | Execute | Implementing (risco residual aceito) |
 
-**Coverage:** 7 total, 0 mapped to tasks (plano inline), 0 unmapped.
+**Coverage:** 7 total, 0 mapped to tasks (plano inline), 0 unmapped. Verifier it. 1: FAIL só por lacuna de teste (17/22 mutantes); 4 Verified, 3 com risco residual aceito.
 
 ---
 

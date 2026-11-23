@@ -124,6 +124,16 @@
 
 ## Handoff
 
+### Atual (2026-11-23) — link-administracao concluída com risco aceito
+
+- **Feature**: link-administracao — `.specs/features/link-administracao/`. Small/Medium, sem Design nem tasks.md (plano inline de 4 passos). Link "Administração" na `div.usuario` do `templates/base.html`, entre o nome e o Sair, só com `user.is_administrador` (AD-007, L-003); ícone `templates/icones/engrenagem.svg` copiado do `settings.svg` oficial do Lucide (AD-013); admin com `site_header` "KIRA — Administração" e `site_url="/inovacoes/"` em `config/urls.py`. Nenhuma AD nova.
+- **Commits**: spec + linha de deploy do STATE `46c8ca8`; ícone `6bfe0a9`; link `a53814f`; admin `0b6fef1`; fechamento (este). **1594 testes**, ruff limpo.
+- **Teste antigo alterado**: `nucleo/tests/test_casca.py` (lista da pasta de ícones ganha `engrenagem`), autorizado pelo usuário na conferência da spec. DS-05 sem mudança.
+- **Verifier**: it. 1 FAIL só por lacuna de teste (7/7 ACs com evidência; 17/22 mutantes: CSS que esconde o link, seletor prefixado de cor/sublinhado, desenho do ícone não fixado). **O usuário aceitou o risco e fechou** sem it. 2. ADM-01, ADM-04, ADM-07 `Implementing (risco residual aceito)`; as outras 4 `Verified`. `validate_state.py` sai com 1 de propósito.
+- **Lições**: L-044 penalizada; candidatas novas L-065 e L-066. `.specs/LESSONS.md` e `lessons.json` seguem fora dos commits.
+- **Pendente**: UAT da R2 no navegador (continua pendente); conferir o link no navegador (admin e USUARIO staff); push e deploy só com ok explícito do usuário. `gestao-por-unidade` segue em especificação, sem aprovação.
+- **Branch**: `main`, só local. **In-progress**: nenhum. **Blockers**: nenhum.
+
 ### Pausa atual (2026-11-19) — redesign-consulta (R2) concluída com risco aceito, aguardando UAT
 
 - **Feature**: redesign-consulta (R2) — `.specs/features/redesign-consulta/`. **Concluída** em 2026-11-19. Lista e detalhe refeitos pela `design-spec.md` v2 §10: busca em destaque, filtros em linha e etiquetas removíveis; cartões como exibição padrão e a tabela atual em `?exibicao=tabela`; paginação numerada; estados vazios com ilustração; detalhe com selo e autoria no cabeçalho, ações em hierarquia (uma primária, Editar e Excluir separado), narrativa Problema → Solução → Resultado, `aside` (contato → ciclo → ficha), reaproveitamentos em tabela e histórico como linha do tempo que começa no cadastro. Sem model nem migration; nenhuma AD nova (conforma AD-002, 008–015).
