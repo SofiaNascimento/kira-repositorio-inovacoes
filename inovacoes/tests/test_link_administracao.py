@@ -156,3 +156,20 @@ def test_no_alto_contraste_o_link_usa_os_pares_dos_links_da_casca(client, admini
     # Os pares da casca: o link segue o `a` do tema alto (sublinhado, --brand-blue amarelo).
     assert re.search(r":root\[data-contraste=alto\] a \{ text-decoration: underline; \}", CSS)
     assert re.search(r"(?:^|\n)a \{ color: var\(--brand-blue\);", CSS)
+
+
+def test_admin_se_identifica_como_kira_e_volta_ao_sistema_pelo_ver_o_site(client, administrador):
+    """ADM-05: cabecalho "KIRA — Administração" e "Ver o site" -> /inovacoes/."""
+    client.force_login(administrador)
+    resposta = client.get(ADMIN)
+    assert resposta.status_code == 200
+    tela = exibido(resposta.content.decode())
+    marca = re.search(r'<div id="site-name">(.*?)</div>', tela, re.S)
+    assert marca
+    assert _texto(marca.group(1)) == "KIRA — Administração"
+    ver_o_site = [
+        href
+        for href, conteudo in re.findall(r'<a\b[^>]*\bhref="([^"]*)"[^>]*>(.*?)</a>', tela, re.S)
+        if _texto(conteudo) == "Ver o site"
+    ]
+    assert ver_o_site == ["/inovacoes/"]

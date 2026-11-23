@@ -100,7 +100,7 @@ mudar, para e pede.
 | ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Implemented |
 | ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Implemented |
 | ADM-04 | P1: Acesso ao admin (AC 4) | Execute | Implemented |
-| ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Pending |
+| ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Implemented |
 | ADM-06 | Edge: rebaixamento | Execute | Implemented |
 | ADM-07 | Edge: alto contraste | Execute | Implemented |
 

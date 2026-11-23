@@ -18,6 +18,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
+# ADM-05: o admin se identifica como KIRA; "Ver o site" leva a lista, a pagina inicial real
+# (a raiz so redireciona para ela, CONS-09).
+admin.site.site_header = "KIRA — Administração"
+admin.site.site_title = "KIRA"
+admin.site.index_title = "Administração do KIRA"
+admin.site.site_url = "/inovacoes/"
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("contas.urls")),
