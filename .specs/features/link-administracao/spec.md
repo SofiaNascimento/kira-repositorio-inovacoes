@@ -96,13 +96,13 @@ mudar, para e pede.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| ADM-01 | P1: Acesso ao admin (AC 1) | Execute | Pending |
-| ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Pending |
-| ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Pending |
-| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | In Progress (ícone pronto) |
+| ADM-01 | P1: Acesso ao admin (AC 1) | Execute | Implemented |
+| ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Implemented |
+| ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Implemented |
+| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | Implemented |
 | ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Pending |
-| ADM-06 | Edge: rebaixamento | Execute | Pending |
-| ADM-07 | Edge: alto contraste | Execute | Pending |
+| ADM-06 | Edge: rebaixamento | Execute | Implemented |
+| ADM-07 | Edge: alto contraste | Execute | Implemented |
 
 **Coverage:** 7 total, 0 mapped to tasks (plano inline), 0 unmapped.
 

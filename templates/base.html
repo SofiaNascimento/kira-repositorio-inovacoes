@@ -52,6 +52,10 @@
           {# RED-20: iniciais decorativas; o nome completo (ou o username) num span sem atributo. #}
           <span class="usuario__iniciais" aria-hidden="true">{% if user.first_name %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% else %}{{ user.get_username|first|upper }}{% endif %}</span>
           <span>{{ user.get_full_name|default:user.get_username }}</span>
+          {# ADM-01 a ADM-04: so o perfil ADMINISTRADOR, nunca is_staff (AD-007, L-003); icone decorativo (AD-013). #}
+          {% if user.is_administrador %}
+            <a href="{% url 'admin:index' %}">{% include "icones/engrenagem.svg" %}Administração</a>
+          {% endif %}
           {# LogoutView so aceita POST: sair e um formulario, nao um link. #}
           <form method="post" action="{% url 'contas:sair' %}">
             {% csrf_token %}
