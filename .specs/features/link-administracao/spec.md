@@ -99,7 +99,7 @@ mudar, para e pede.
 | ADM-01 | P1: Acesso ao admin (AC 1) | Execute | Pending |
 | ADM-02 | P1: Acesso ao admin (AC 2) | Execute | Pending |
 | ADM-03 | P1: Acesso ao admin (AC 3) | Execute | Pending |
-| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | Pending |
+| ADM-04 | P1: Acesso ao admin (AC 4) | Execute | In Progress (ícone pronto) |
 | ADM-05 | P1: Acesso ao admin (AC 5) | Execute | Pending |
 | ADM-06 | Edge: rebaixamento | Execute | Pending |
 | ADM-07 | Edge: alto contraste | Execute | Pending |

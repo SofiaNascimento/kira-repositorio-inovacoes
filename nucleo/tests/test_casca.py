@@ -134,7 +134,13 @@ NOMES_DOS_ICONES_DA_CONSULTA = [
     "repetir",
 ]
 
-NOMES_DOS_ICONES = NOMES_DOS_ICONES_DA_CASCA + NOMES_DOS_ICONES_DA_CONSULTA
+# link-administracao (ADM-04): a engrenagem (Lucide `settings`) do link "Administração".
+# Mudanca autorizada pelo usuario em 2026-11-23: a pasta passa a ter os 14 mais este.
+NOMES_DOS_ICONES_DA_ADMINISTRACAO = ["engrenagem"]
+
+NOMES_DOS_ICONES = (
+    NOMES_DOS_ICONES_DA_CASCA + NOMES_DOS_ICONES_DA_CONSULTA + NOMES_DOS_ICONES_DA_ADMINISTRACAO
+)
 
 
 @pytest.mark.unit
