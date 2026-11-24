@@ -66,6 +66,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Nega por padrao (AD-006): view publica so com @login_not_required.
     "django.contrib.auth.middleware.LoginRequiredMiddleware",
+    # Senha provisoria: so a troca e o sair ate trocar (AD-017).
+    "contas.middleware.SenhaProvisoriaMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]

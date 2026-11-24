@@ -356,7 +356,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-37 | P1 Senha (AC 1) | T12 | Implementing |
 | GEST-38 | P1 Senha (AC 2) | T12 | Implementing |
 | GEST-39 | P1 Senha (AC 3) | T12 | Implementing |
-| GEST-40 | P1 Senha (AC 4) | T14 | Pending |
+| GEST-40 | P1 Senha (AC 4) | T14 | Implementing |
 | GEST-41 | P1 Senha (AC 5) | T13, T16 | Implementing |
 | GEST-42 | P1 Senha (AC 6) | T13 | Implementing |
 | GEST-43 | P1 Senha (AC 7) | T13 | Implementing |
@@ -382,7 +382,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-63 | Edge: desativação simultânea | T11 | Implementing |
 | GEST-64 | Edge: unidade renomeada | T8 | Implementing |
 | GEST-65 | Edge: unidade só com o gestor | T8 | Implementing |
-| GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
+| GEST-66 | Edge: senha provisória antes do papel | T14 | Implementing |
 | GEST-67 | Edge: CSRF inválido | T11 | Implementing |
 | GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |
 | GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Implementing |

@@ -403,3 +403,10 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   `new_password1`, e com erro o formulário tira o `autofocus` que o Django põe na Senha atual. O
   aviso da GEST-42 é um `p.alerta.alerta--warning` no conteúdo, depois do resumo de erros e antes
   do cartão.
+- **T14, ordem do middleware**: o `SenhaProvisoriaMiddleware` testa a marca de view pública
+  antes de ler o `request.user`. O resultado é o mesmo da ordem do design; assim a view pública
+  não carrega a conta só por causa do middleware, e nenhum teste de número de consultas muda.
+- **T14, varredura com o admin**: a varredura da senha provisória inclui o admin. Os dois
+  `re_path` dele (lista de uma app e o `catch-all`) recebem uma amostra: a primeira alternativa
+  do grupo ou `x`. A tela de login do admin é pública (`@login_not_required` do Django) e
+  responde como para a conta sem senha provisória.

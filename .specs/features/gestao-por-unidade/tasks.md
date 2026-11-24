@@ -408,7 +408,7 @@ T16
 
 ---
 
-### T14: Troca obrigatória da senha provisória
+### T14: Troca obrigatória da senha provisória ✅
 
 **What**: `contas.middleware.SenhaProvisoriaMiddleware` (AD-017) no `MIDDLEWARE`, logo depois do `LoginRequiredMiddleware`.
 **Where**: `contas/middleware.py`
@@ -420,9 +420,9 @@ T16
 
 **Done when**:
 
-- [ ] Varredura: com uma conta de senha provisória, toda rota interna lida do resolver (a mesma coleta da `contas/tests/test_controle_acesso.py`) responde 302 para `/conta/senha/`, salvo `/conta/senha/` (200) e `/sair/` (POST encerra a sessão); as rotas públicas (`ROTAS_PUBLICAS`) respondem como hoje
-- [ ] Testes e2e: gestor com senha provisória em `/minha-unidade/` e USUARIO com senha provisória em `/admin/` vão para `/conta/senha/` antes da checagem de papel; POST também redireciona sem gravar; sem senha provisória, nada muda; anônimo continua indo ao login com `next`; fluxo completo: gestor cria a conta, a pessoa entra, cai em "Trocar senha", não abre a lista pela URL, troca e chega à lista
-- [ ] Gate build passa; test count ≥ T13 + 8
+- [x] Varredura: com uma conta de senha provisória, toda rota interna lida do resolver (a mesma coleta da `contas/tests/test_controle_acesso.py`) responde 302 para `/conta/senha/`, salvo `/conta/senha/` (200) e `/sair/` (POST encerra a sessão); as rotas públicas (`ROTAS_PUBLICAS`) respondem como hoje
+- [x] Testes e2e: gestor com senha provisória em `/minha-unidade/` e USUARIO com senha provisória em `/admin/` vão para `/conta/senha/` antes da checagem de papel; POST também redireciona sem gravar; sem senha provisória, nada muda; anônimo continua indo ao login com `next`; fluxo completo: gestor cria a conta, a pessoa entra, cai em "Trocar senha", não abre a lista pela URL, troca e chega à lista
+- [x] Gate build passa; test count ≥ T13 + 8
 
 **Tests**: e2e
 **Gate**: build
