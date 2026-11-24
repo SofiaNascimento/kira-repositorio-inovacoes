@@ -122,7 +122,7 @@ T16
 
 ---
 
-### T2: Situação da conta e escopo do gestor
+### T2: Situação da conta e escopo do gestor ✅
 
 **What**: `SituacaoConta`, `TRANSICOES`, `Usuario.situacao`, `Usuario.mudar_situacao(para)`, `Usuario.pode_ser_administrada_por(gestor)` e o `UsuarioQuerySet` com `da_unidade(unidade)` e `administraveis_por(gestor)`, ligado ao `UsuarioManager` por `from_queryset` (AD-016).
 **Where**: `contas/models.py`
@@ -134,9 +134,9 @@ T16
 
 **Done when**:
 
-- [ ] Testes: `situacao` ATIVA/DESATIVADA pelo `is_active`; `TRANSICOES` exatamente `{ATIVA: {DESATIVADA}, DESATIVADA: {ATIVA}}`; `mudar_situacao` grava só `is_active` (outro campo alterado em memória não vai ao banco); `da_unidade` com todas as contas da unidade, inclusive desativadas e o gestor, sem outra unidade nem unidade nula, na ordem nome, sobrenome, usuário; `administraveis_por` só USUARIO da unidade do gestor (fora: outra unidade, sem unidade, o próprio gestor, outro gestor, ADMINISTRADOR da unidade) e vazio para quem não é gestor; `pode_ser_administrada_por` igual ao queryset para cada um desses casos, sem consulta
-- [ ] `createsuperuser` continua nascendo ADMINISTRADOR (AUTH-20 verde)
-- [ ] Gate full passa; test count ≥ T1 + 12
+- [x] Testes: `situacao` ATIVA/DESATIVADA pelo `is_active`; `TRANSICOES` exatamente `{ATIVA: {DESATIVADA}, DESATIVADA: {ATIVA}}`; `mudar_situacao` grava só `is_active` (outro campo alterado em memória não vai ao banco); `da_unidade` com todas as contas da unidade, inclusive desativadas e o gestor, sem outra unidade nem unidade nula, na ordem nome, sobrenome, usuário; `administraveis_por` só USUARIO da unidade do gestor (fora: outra unidade, sem unidade, o próprio gestor, outro gestor, ADMINISTRADOR da unidade) e vazio para quem não é gestor; `pode_ser_administrada_por` igual ao queryset para cada um desses casos, sem consulta
+- [x] `createsuperuser` continua nascendo ADMINISTRADOR (AUTH-20 verde)
+- [x] Gate full passa; test count ≥ T1 + 12
 
 **Tests**: integration
 **Gate**: full

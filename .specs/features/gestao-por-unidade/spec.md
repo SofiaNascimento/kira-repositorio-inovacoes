@@ -329,11 +329,11 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-11 | P1 Minha unidade (AC 3) | T9 | Pending |
 | GEST-12 | P1 Minha unidade (AC 4) | T8 | Pending |
 | GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Pending |
-| GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Pending |
-| GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Pending |
+| GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Implementing |
+| GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Implementing |
 | GEST-16 | P1 Minha unidade (AC 8) | T8 | Pending |
-| GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Pending |
-| GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Pending |
+| GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Implementing |
+| GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Implementing |
 | GEST-19 | P1 Minha unidade (AC 11) | T8 | Pending |
 | GEST-20 | P1 Criar conta (AC 1) | T10 | Pending |
 | GEST-21 | P1 Criar conta (AC 2) | T10 | Pending |
@@ -347,7 +347,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-29 | P1 Criar conta (AC 10) | T10 | Pending |
 | GEST-30 | P1 Desativar (AC 1) | T11 | Pending |
 | GEST-31 | P1 Desativar (AC 2) | T11 | Pending |
-| GEST-32 | P1 Desativar (AC 3) | T2, T11 | Pending |
+| GEST-32 | P1 Desativar (AC 3) | T2, T11 | Implementing |
 | GEST-33 | P1 Desativar (AC 4) | T11 | Pending |
 | GEST-34 | P1 Desativar (AC 5) | T11 | Pending |
 | GEST-35 | P1 Desativar (AC 6) | T11 | Pending |
@@ -376,7 +376,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Pending |
 | GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Pending |
 | GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Pending |
-| GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Pending |
+| GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing |
 | GEST-62 | Edge: id inexistente → 404 | T11, T12 | Pending |
 | GEST-63 | Edge: desativação simultânea | T11 | Pending |
 | GEST-64 | Edge: unidade renomeada | T8 | Pending |

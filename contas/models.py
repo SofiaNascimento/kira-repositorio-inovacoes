@@ -18,12 +18,48 @@ class PerfilUsuario(models.TextChoices):
     GESTOR_DE_UNIDADE = "GESTOR_DE_UNIDADE", "Gestor de unidade"
 
 
-class UsuarioManager(UserManager):
+class SituacaoConta(models.TextChoices):
+    """Situacao da conta, derivada e sem coluna (AD-016).
+
+    Hoje sai so do is_active, que continua o unico portao de login e de
+    sessao do Django.
+    """
+
+    ATIVA = "ATIVA", "Ativa"
+    DESATIVADA = "DESATIVADA", "Desativada"
+
+
+# AD-016: fonte unica das mudancas de situacao que o gestor pode fazer.
+TRANSICOES = {
+    SituacaoConta.ATIVA: {SituacaoConta.DESATIVADA},
+    SituacaoConta.DESATIVADA: {SituacaoConta.ATIVA},
+}
+
+
+class UsuarioQuerySet(models.QuerySet):
+    """Consultas da gestao por unidade (GEST-14, GEST-15, GEST-61)."""
+
+    def da_unidade(self, unidade):
+        """Todas as contas da unidade, inclusive desativadas e o gestor."""
+        return self.filter(unidade=unidade).order_by("first_name", "last_name", "username")
+
+    def administraveis_por(self, gestor):
+        """Contas USUARIO da unidade do gestor; vazio para quem nao e gestor.
+
+        Fora ficam o proprio gestor, outro gestor e o ADMINISTRADOR: o gestor
+        nao administra quem tem poder igual ou maior (escalada lateral).
+        """
+        if not gestor.is_gestor_de_unidade:
+            return self.none()
+        return self.filter(perfil=PerfilUsuario.USUARIO, unidade_id=gestor.unidade_id)
+
+
+class UsuarioManager(UserManager.from_queryset(UsuarioQuerySet)):
     """Manager de Usuario.
 
-    Existe por um motivo so: garantir que a conta criada por createsuperuser
-    nasca ADMINISTRADOR (AUTH-20). No MVP e assim que o primeiro
-    administrador passa a existir, e ele precisa dos poderes de curadoria.
+    Garante que a conta criada por createsuperuser nasca ADMINISTRADOR
+    (AUTH-20): no MVP e assim que o primeiro administrador passa a existir, e
+    ele precisa dos poderes de curadoria. Expoe tambem o UsuarioQuerySet.
     """
 
     def create_superuser(self, username, email=None, password=None, **extra_fields):
@@ -112,3 +148,25 @@ class Usuario(AbstractUser):
     def is_gestor_de_unidade(self) -> bool:
         """Ponto unico de consulta do papel de gestor (AD-004 estendida)."""
         return self.perfil == PerfilUsuario.GESTOR_DE_UNIDADE
+
+    @property
+    def situacao(self) -> SituacaoConta:
+        """AD-016: derivada do is_active."""
+        return SituacaoConta.ATIVA if self.is_active else SituacaoConta.DESATIVADA
+
+    def mudar_situacao(self, para):
+        """Grava a situacao de destino; so o is_active vai ao banco (GEST-30 a GEST-32).
+
+        Nao decide autorizacao nem transicao: a view ja passou por
+        administraveis_por e por TRANSICOES.
+        """
+        self.is_active = SituacaoConta(para) == SituacaoConta.ATIVA
+        self.save(update_fields=["is_active"])
+
+    def pode_ser_administrada_por(self, gestor) -> bool:
+        """A regra de administraveis_por sobre a instancia, sem consulta (GEST-17, GEST-18)."""
+        return (
+            gestor.is_gestor_de_unidade
+            and self.perfil == PerfilUsuario.USUARIO
+            and self.unidade_id == gestor.unidade_id
+        )
