@@ -3,6 +3,7 @@ from django.contrib.auth.forms import (
     AdminUserCreationForm,
     AuthenticationForm,
     BaseUserCreationForm,
+    PasswordChangeForm,
     SetPasswordForm,
     UserChangeForm,
 )
@@ -139,4 +140,46 @@ class SenhaProvisoriaForm(FormularioV2Mixin, SetPasswordForm):
 
     def save(self, commit=True):
         self.user.senha_provisoria = True
+        return super().save(commit=commit)
+
+
+class TrocarSenhaForm(FormularioV2Mixin, PasswordChangeForm):
+    """Trocar a propria senha (GEST-41, GEST-43 a GEST-47).
+
+    A senha nova e definitiva: o save() desliga a senha provisoria.
+    """
+
+    error_messages = {
+        **PasswordChangeForm.error_messages,
+        "password_incorrect": "Senha atual incorreta.",
+        "password_mismatch": SENHAS_DIFERENTES,
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["old_password"].label = "Senha atual"
+        self.fields["new_password1"].label = "Nova senha"
+        self.fields["new_password2"].label = "Confirmação da nova senha"
+
+    def clean_new_password1(self):
+        senha = self.cleaned_data["new_password1"]
+        if self.user.check_password(senha):
+            raise ValidationError("A nova senha precisa ser diferente da atual.")
+        return senha
+
+    def clean(self):
+        # GEST-46: como na criacao, o validador acusa no campo da nova senha, nao na
+        # confirmacao (o SetPasswordForm usaria o new_password2).
+        self.validate_passwords("new_password1", "new_password2")
+        self.validate_password_for_user(self.user, "new_password1")
+        return forms.Form.clean(self)
+
+    def full_clean(self):
+        super().full_clean()
+        if self._errors:
+            # §6 v2: com erro, o foco vai ao resumo, nao ao campo Senha atual.
+            self.fields["old_password"].widget.attrs.pop("autofocus", None)
+
+    def save(self, commit=True):
+        self.user.senha_provisoria = False
         return super().save(commit=commit)

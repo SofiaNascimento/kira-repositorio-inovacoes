@@ -741,6 +741,9 @@ PAGINAS_DA_FIXTURE = [
     "criar_conta_erro",
     # T-7 (T12): "Redefinir senha".
     "redefinir_senha",
+    # T-7 (T13): "Trocar senha", sem e com senha provisoria.
+    "trocar_senha",
+    "trocar_senha_provisoria",
 ]
 
 

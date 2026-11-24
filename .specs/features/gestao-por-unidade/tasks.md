@@ -385,7 +385,7 @@ T16
 
 ---
 
-### T13: Trocar a própria senha
+### T13: Trocar a própria senha ✅
 
 **What**: `TrocarSenhaForm` em `contas/forms.py`, `TrocarSenhaView` em `contas/views.py`, a rota `/conta/senha/` (`contas:trocar_senha`) e o template `contas/trocar_senha.html`.
 **Where**: `contas/views.py`
@@ -397,9 +397,9 @@ T16
 
 **Done when**:
 
-- [ ] T-5: contagem 18 → 19; T-6: `trocar_senha` (com e sem senha provisória) na fixture `paginas`
-- [ ] Testes e2e: h1 "Trocar senha" e os três campos; aviso exato da GEST-42 só com senha provisória; troca válida desliga a senha provisória, mantém a sessão, vai a `/inovacoes/` com "Senha alterada."; "Senha atual incorreta.", "A nova senha precisa ser diferente da atual.", validador e confirmação no campo certo, com resumo e "Erro:", sem trocar; sem senha provisória, "Cancelar" → `/inovacoes/` e a nota; com senha provisória, nem "Cancelar" nem a nota
-- [ ] Gate full passa; test count ≥ T12 + 12
+- [x] T-5: contagem 18 → 19; T-6: `trocar_senha` (com e sem senha provisória) na fixture `paginas`
+- [x] Testes e2e: h1 "Trocar senha" e os três campos; aviso exato da GEST-42 só com senha provisória; troca válida desliga a senha provisória, mantém a sessão, vai a `/inovacoes/` com "Senha alterada."; "Senha atual incorreta.", "A nova senha precisa ser diferente da atual.", validador e confirmação no campo certo, com resumo e "Erro:", sem trocar; sem senha provisória, "Cancelar" → `/inovacoes/` e a nota; com senha provisória, nem "Cancelar" nem a nota
+- [x] Gate full passa; test count ≥ T12 + 12
 
 **Tests**: e2e
 **Gate**: full

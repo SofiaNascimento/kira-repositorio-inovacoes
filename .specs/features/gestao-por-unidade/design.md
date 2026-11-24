@@ -399,3 +399,7 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
 - **T12, validador no campo da senha**: como na T10, o `SenhaProvisoriaForm.clean` valida pelo
   `new_password1` (o `SetPasswordForm` usaria o `new_password2`), para a GEST-38 acusar "como na
   criação". O link "Redefinir senha" da tabela passou a `{% url 'gestao:redefinir_senha' conta.pk %}`.
+- **T13, trocar senha**: como na T10 e na T12, o `TrocarSenhaForm.clean` valida pelo
+  `new_password1`, e com erro o formulário tira o `autofocus` que o Django põe na Senha atual. O
+  aviso da GEST-42 é um `p.alerta.alerta--warning` no conteúdo, depois do resumo de erros e antes
+  do cartão.

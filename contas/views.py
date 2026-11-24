@@ -1,10 +1,11 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_not_required
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 
-from contas.forms import LoginForm
+from contas.forms import LoginForm, TrocarSenhaForm
 
 
 # Unica excecao a negacao por padrao (AD-006).
@@ -34,4 +35,21 @@ class LogoutUsuarioView(LogoutView):
     def post(self, request, *args, **kwargs):
         resposta = super().post(request, *args, **kwargs)
         messages.success(request, "Sessão encerrada.")
+        return resposta
+
+
+class TrocarSenhaView(PasswordChangeView):
+    """Trocar a propria senha (GEST-41 a GEST-47).
+
+    Aberta a qualquer autenticado; obrigatoria so com senha provisoria (AD-017).
+    O update_session_auth_hash do PasswordChangeView mantem a sessao (GEST-43).
+    """
+
+    form_class = TrocarSenhaForm
+    template_name = "contas/trocar_senha.html"
+    success_url = reverse_lazy("inovacoes:lista")
+
+    def form_valid(self, form):
+        resposta = super().form_valid(form)
+        messages.success(self.request, "Senha alterada.")
         return resposta

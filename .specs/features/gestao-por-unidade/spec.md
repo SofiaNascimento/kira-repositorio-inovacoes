@@ -357,13 +357,13 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-38 | P1 Senha (AC 2) | T12 | Implementing |
 | GEST-39 | P1 Senha (AC 3) | T12 | Implementing |
 | GEST-40 | P1 Senha (AC 4) | T14 | Pending |
-| GEST-41 | P1 Senha (AC 5) | T13, T16 | Pending |
-| GEST-42 | P1 Senha (AC 6) | T13 | Pending |
-| GEST-43 | P1 Senha (AC 7) | T13 | Pending |
-| GEST-44 | P1 Senha (AC 8) | T13 | Pending |
-| GEST-45 | P1 Senha (AC 9) | T13 | Pending |
-| GEST-46 | P1 Senha (AC 10) | T13 | Pending |
-| GEST-47 | P1 Senha (AC 11) | T13 | Pending |
+| GEST-41 | P1 Senha (AC 5) | T13, T16 | Implementing |
+| GEST-42 | P1 Senha (AC 6) | T13 | Implementing |
+| GEST-43 | P1 Senha (AC 7) | T13 | Implementing |
+| GEST-44 | P1 Senha (AC 8) | T13 | Implementing |
+| GEST-45 | P1 Senha (AC 9) | T13 | Implementing |
+| GEST-46 | P1 Senha (AC 10) | T13 | Implementing |
+| GEST-47 | P1 Senha (AC 11) | T13 | Implementing |
 | GEST-48 | P1 Curadoria (AC 1) | T3 | Implementing |
 | GEST-49 | P1 Curadoria (AC 2) | T3 | Implementing |
 | GEST-50 | P1 Curadoria (AC 3) | T3 | Implementing |

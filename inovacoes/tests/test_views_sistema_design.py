@@ -122,6 +122,13 @@ def paginas(client, autor, terceiro, criar_inovacao):
     html["redefinir_senha"] = client.get(
         f"/minha-unidade/contas/{conta.pk}/senha/"
     ).content.decode()
+    # T-6 (T13, GEST-41, GEST-42): "Trocar senha", sem e com senha provisoria.
+    html["trocar_senha"] = client.get("/conta/senha/").content.decode()
+    provisoria = Usuario.objects.create_user(
+        username="zuza", email="zuza@x.com", senha_provisoria=True
+    )
+    client.force_login(provisoria)
+    html["trocar_senha_provisoria"] = client.get("/conta/senha/").content.decode()
     # AUTH-26: o server_error renderiza o 500.html sem contexto.
     html["erro_500"] = render_to_string("500.html")
     return html
@@ -467,7 +474,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     # "Conta não encontrada" (GEST-12, GEST-13, GEST-62).
     # T-5 (T10): e a tela "Criar conta" (GEST-20).
     # T-5 (T12): e a tela "Redefinir senha" (GEST-37).
-    assert len(telas) == 18
+    # T-5 (T13): e a tela "Trocar senha" (GEST-41).
+    assert len(telas) == 19
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome
