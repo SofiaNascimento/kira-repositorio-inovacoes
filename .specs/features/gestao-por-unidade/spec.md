@@ -324,7 +324,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-06 | P1 Unidade e papel (AC 6) | T5 | Implementing |
 | GEST-07 | P1 Unidade e papel (AC 7) | T5 | Implementing |
 | GEST-08 | P1 Unidade e papel (AC 8) | T5 | Implementing |
-| GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Pending |
+| GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Implementing |
 | GEST-10 | P1 Minha unidade (AC 2) | T9 | Pending |
 | GEST-11 | P1 Minha unidade (AC 3) | T9 | Pending |
 | GEST-12 | P1 Minha unidade (AC 4) | T8 | Pending |

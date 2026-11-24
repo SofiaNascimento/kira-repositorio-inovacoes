@@ -219,7 +219,7 @@ T16
 
 ---
 
-### T6: Ícone "usuarios"
+### T6: Ícone "usuarios" ✅
 
 **What**: `templates/icones/usuarios.svg`, cópia do `users.svg` do `lucide-static@1.78.0` com a abertura decorativa da pasta (formas no `design.md`).
 **Where**: `templates/icones/usuarios.svg`
@@ -231,9 +231,9 @@ T16
 
 **Done when**:
 
-- [ ] T-4: `NOMES_DOS_ICONES` ganha `usuarios` numa lista própria da gestão (`nucleo/tests/test_casca.py:137-153`), com a docstring da RED-16 estendida; o teste de atributos decorativos passa a cobri-lo
-- [ ] Teste novo: as formas do SVG, em ordem, são exatamente os três `path` e o `circle` do `users.svg` oficial
-- [ ] Gate quick passa; test count ≥ T5 + 2
+- [x] T-4: `NOMES_DOS_ICONES` ganha `usuarios` numa lista própria da gestão (`nucleo/tests/test_casca.py:137-153`), com a docstring da RED-16 estendida; o teste de atributos decorativos passa a cobri-lo
+- [x] Teste novo: as formas do SVG, em ordem, são exatamente os três `path` e o `circle` do `users.svg` oficial
+- [x] Gate quick passa; test count ≥ T5 + 2
 
 **Tests**: unit
 **Gate**: quick

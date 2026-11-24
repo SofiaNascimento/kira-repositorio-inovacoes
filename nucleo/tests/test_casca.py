@@ -138,8 +138,15 @@ NOMES_DOS_ICONES_DA_CONSULTA = [
 # Mudanca autorizada pelo usuario em 2026-11-23: a pasta passa a ter os 14 mais este.
 NOMES_DOS_ICONES_DA_ADMINISTRACAO = ["engrenagem"]
 
+# T-4 (gestao-por-unidade, T6, GEST-09): o item "Minha unidade" do gestor usa as pessoas
+# (Lucide `users`). A pasta passa a ter os 15 de antes mais este, nem mais nem menos.
+NOMES_DOS_ICONES_DA_GESTAO = ["usuarios"]
+
 NOMES_DOS_ICONES = (
-    NOMES_DOS_ICONES_DA_CASCA + NOMES_DOS_ICONES_DA_CONSULTA + NOMES_DOS_ICONES_DA_ADMINISTRACAO
+    NOMES_DOS_ICONES_DA_CASCA
+    + NOMES_DOS_ICONES_DA_CONSULTA
+    + NOMES_DOS_ICONES_DA_ADMINISTRACAO
+    + NOMES_DOS_ICONES_DA_GESTAO
 )
 
 
@@ -150,8 +157,44 @@ def test_pasta_traz_os_icones_da_casca_e_da_consulta():
     T-O (redesign-consulta, T6): a pasta deixa de ter exatamente os 4 da R1 e passa a ter
     os 4 da R1 mais os 10 da R2 (RCON-15), nem mais nem menos. A garantia da RED-16 e da
     RED-23 continua: os 4 da casca estao la.
+
+    T-4 (gestao-por-unidade, T6): mais a engrenagem (ADM-04) e as pessoas do item "Minha
+    unidade" (GEST-09), e nenhum outro.
     """
     assert sorted(a.stem for a in ICONES.glob("*.svg")) == sorted(NOMES_DOS_ICONES)
+
+
+# Formas do `users.svg` oficial do lucide-static@1.78.0, a mesma versao da engrenagem
+# (conferido em 2026-11-23, design.md da gestao-por-unidade), na ordem do arquivo.
+FORMAS_DE_USERS_DO_LUCIDE = [
+    ("path", {"d": "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"}),
+    ("path", {"d": "M16 3.128a4 4 0 0 1 0 7.744"}),
+    ("path", {"d": "M22 21v-2a4 4 0 0 0-3-3.87"}),
+    ("circle", {"cx": "9", "cy": "7", "r": "4"}),
+]
+
+
+class _Formas(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.formas = []
+
+    def handle_starttag(self, tag, attrs):
+        self.formas.append((tag, dict(attrs)))
+
+    handle_startendtag = handle_starttag
+
+
+@pytest.mark.unit
+def test_icone_usuarios_e_o_users_do_lucide():
+    """GEST-09, AD-013: o SVG copia as formas do `users` oficial, sem desenho proprio,
+    com a abertura decorativa da pasta (a mesma da engrenagem)."""
+    fonte = (ICONES / "usuarios.svg").read_text()
+    leitor = _Formas()
+    leitor.feed(fonte)
+    assert leitor.formas[1:] == FORMAS_DE_USERS_DO_LUCIDE
+    engrenagem = (ICONES / "engrenagem.svg").read_text()
+    assert fonte[: fonte.index(">") + 1] == engrenagem[: engrenagem.index(">") + 1]
 
 
 @pytest.mark.unit
