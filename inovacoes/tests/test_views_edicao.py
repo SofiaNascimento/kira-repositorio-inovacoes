@@ -13,7 +13,11 @@ from inovacoes.views import InovacaoUpdateView
 
 CAMPOS = ["titulo", "unidade", "categoria", "problema", "solucao", "resultado", "contato"]
 NEGADO = "Você não tem permissão para alterar esta inovação."
-SO_AUTOR = "Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la."
+# T-1 (gestao-por-unidade, T4, GEST-52): a regra da EDEX-20 ganha o gestor da unidade de origem.
+SO_AUTOR = (
+    "Só quem cadastrou a inovação, um gestor da unidade de origem ou um administrador "
+    "pode editá-la ou excluí-la."
+)
 
 
 def _editar(inovacao):

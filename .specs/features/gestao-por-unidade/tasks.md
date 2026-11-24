@@ -169,7 +169,7 @@ T16
 
 ---
 
-### T4: Textos de permissão com o gestor
+### T4: Textos de permissão com o gestor ✅
 
 **What**: Os textos novos de recusa e de explicação no `acesso_negado.html` e no `inovacao_detail.html:96`, e o mesmo texto na Ajuda (`templates/paginas/ajuda.html:29`) e na `docs/design-spec.md` (§10, detalhe, linhas 556 e 574).
 **Where**: `inovacoes/templates/inovacoes/acesso_negado.html`
@@ -181,11 +181,11 @@ T16
 
 **Done when**:
 
-- [ ] T-1: `SO_AUTOR` em `test_views_edicao.py:16` e `test_views_exclusao.py:13` com o texto novo
-- [ ] T-2: `QUEM_PODE_AVANCAR` em `test_views_detalhe.py:451` e `test_views_detalhe_v2.py:303` com o texto novo
-- [ ] Teste novo: a Ajuda exibe o texto novo de avançar status (exibido no DOM parseado)
-- [ ] `grep` sem o texto antigo em templates, `docs/design-spec.md` e testes
-- [ ] Gate full passa; test count ≥ T3 + 1
+- [x] T-1: `SO_AUTOR` em `test_views_edicao.py:16` e `test_views_exclusao.py:13` com o texto novo
+- [x] T-2: `QUEM_PODE_AVANCAR` em `test_views_detalhe.py:451` e `test_views_detalhe_v2.py:303` com o texto novo
+- [x] Teste novo: a Ajuda exibe o texto novo de avançar status (exibido no DOM parseado)
+- [x] `grep` sem o texto antigo em templates, `docs/design-spec.md` e testes
+- [x] Gate full passa; test count ≥ T3 + 1
 
 **Tests**: e2e
 **Gate**: full

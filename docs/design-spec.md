@@ -553,8 +553,9 @@ Em teste, Validada, Disponível para replicação.
   {categoria}".
 - **Ações em hierarquia**, à direita do cabeçalho:
   - **primária** (uma, conforme o status): "Avançar para “{próximo status}”" em Em teste e
-    Validada, só para quem pode alterar (autor ou administrador, RN05); "Sinalizar
-    reaproveitamento" em Disponível para replicação, para qualquer usuário (RN09);
+    Validada, só para quem pode alterar (autor, gestor da unidade de origem ou administrador,
+    RN05); "Sinalizar reaproveitamento" em Disponível para replicação, para qualquer usuário
+    (RN09);
   - **secundária:** "Editar", só para quem pode alterar;
   - **perigo separada:** "Excluir", por último, afastada das outras por um divisor vertical e
     32px de respiro. Leva à confirmação (F4).
@@ -571,7 +572,8 @@ Em teste, Validada, Disponível para replicação.
   - **Ciclo de vida:** indicador de etapas (§6). No último estágio, o botão desabilitado
     "Avançar status" com a explicação "Último estágio do ciclo. O status avança um estágio por
     vez e não volta." (F5: desabilitado, não escondido). Para quem não pode alterar: "Só quem
-    cadastrou a inovação ou um administrador pode avançar o status."
+    cadastrou a inovação, um gestor da unidade de origem ou um administrador pode avançar o
+    status."
   - **Contato responsável:** cartão de contato (§6).
   - **Ficha:** `dl` com Unidade de origem, Categoria, Cadastrada por, Cadastrada em,
     Reaproveitamentos (`--numeros`).

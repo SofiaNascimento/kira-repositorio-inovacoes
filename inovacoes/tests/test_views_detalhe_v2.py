@@ -300,7 +300,11 @@ def test_regras_da_ficha_antiga_sairam_da_folha():
 # --- RCON-34, RCON-41 (texto), RCON-42: ciclo de vida no resumo ---
 
 AJUDA_DO_AVANCO = "O status avança um estágio por vez e não volta ao anterior."
-QUEM_PODE_AVANCAR = "Só quem cadastrou a inovação ou um administrador pode avançar o status."
+# T-2 (gestao-por-unidade, T4, GEST-52): a regra da STAT-39/RCON-41 ganha o gestor da unidade.
+QUEM_PODE_AVANCAR = (
+    "Só quem cadastrou a inovação, um gestor da unidade de origem ou um administrador "
+    "pode avançar o status."
+)
 ULTIMO_ESTAGIO = "Último estágio do ciclo. O status avança um estágio por vez e não volta."
 PERFIS = ["autor", "administrador", "terceiro", "staff"]
 PODEM_ALTERAR = {"autor", "administrador"}

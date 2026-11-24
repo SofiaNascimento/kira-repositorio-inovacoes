@@ -448,7 +448,11 @@ def test_quem_pode_alterar_ve_o_link_de_avancar(
 AJUDA_DO_AVANCO = "O status avança um estágio por vez e não volta ao anterior."
 # T-H (redesign-consulta, T18, RCON-42): o texto do ultimo estagio ganha a regra do ciclo.
 ULTIMO_ESTAGIO = "Último estágio do ciclo. O status avança um estágio por vez e não volta."
-QUEM_PODE_AVANCAR = "Só quem cadastrou a inovação ou um administrador pode avançar o status."
+# T-2 (gestao-por-unidade, T4, GEST-52): a regra da STAT-39/RCON-41 ganha o gestor da unidade.
+QUEM_PODE_AVANCAR = (
+    "Só quem cadastrou a inovação, um gestor da unidade de origem ou um administrador "
+    "pode avançar o status."
+)
 
 
 def _explicacao(secao):

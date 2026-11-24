@@ -10,7 +10,11 @@ from inovacoes.models import Inovacao
 from inovacoes.tests.test_views_lista import _linhas
 
 NEGADO = "Você não tem permissão para alterar esta inovação."
-SO_AUTOR = "Só quem cadastrou a inovação ou um administrador pode editá-la ou excluí-la."
+# T-1 (gestao-por-unidade, T4, GEST-52): a regra da EDEX-20 ganha o gestor da unidade de origem.
+SO_AUTOR = (
+    "Só quem cadastrou a inovação, um gestor da unidade de origem ou um administrador "
+    "pode editá-la ou excluí-la."
+)
 AVISO = (
     "Você vai excluir a inovação “Controle de Caixa” (Teste Unidade · Teste Categoria). "
     "Esta ação não pode ser desfeita."

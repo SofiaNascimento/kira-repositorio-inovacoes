@@ -367,7 +367,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-49 | P1 Curadoria (AC 2) | T3 | Implementing |
 | GEST-50 | P1 Curadoria (AC 3) | T3 | Implementing |
 | GEST-51 | P1 Curadoria (AC 4) | T3 | Implementing |
-| GEST-52 | P1 Curadoria (AC 5) | T4 | Pending |
+| GEST-52 | P1 Curadoria (AC 5) | T4 | Implementing |
 | GEST-53 | P1 Curadoria (AC 6) | T3 | Implementing |
 | GEST-54 | P1 Curadoria (AC 7) | T3 | Implementing |
 | GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Pending |
