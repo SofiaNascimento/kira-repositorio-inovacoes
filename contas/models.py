@@ -15,6 +15,7 @@ class PerfilUsuario(models.TextChoices):
 
     USUARIO = "USUARIO", "Usuário"
     ADMINISTRADOR = "ADMINISTRADOR", "Administrador"
+    GESTOR_DE_UNIDADE = "GESTOR_DE_UNIDADE", "Gestor de unidade"
 
 
 class UsuarioManager(UserManager):
@@ -43,10 +44,21 @@ class Usuario(AbstractUser):
     email = models.EmailField("e-mail", unique=True)
     perfil = models.CharField(
         "perfil",
-        max_length=13,
+        max_length=17,
         choices=PerfilUsuario.choices,
         default=PerfilUsuario.USUARIO,
     )
+    # Opcional: contas atuais, autores do acervo e ADMINISTRADORES vivem sem
+    # unidade. So o gestor precisa dela (CHECK abaixo, AD-004 estendida).
+    unidade = models.ForeignKey(
+        "inovacoes.Unidade",
+        verbose_name="unidade",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="usuarios",
+    )
+    senha_provisoria = models.BooleanField("senha provisória", default=False)
 
     objects = UsuarioManager()
 
@@ -66,6 +78,13 @@ class Usuario(AbstractUser):
                 Lower("email"),
                 name="usuario_email_unico_ci",
                 violation_error_message="Já existe uma conta com este e-mail.",
+            ),
+            # GEST-03: gestor sem unidade nao teria escopo. O formulario do
+            # admin avisa no campo (GEST-05); a CHECK e a rede do banco.
+            models.CheckConstraint(
+                condition=~Q(perfil=PerfilUsuario.GESTOR_DE_UNIDADE) | Q(unidade__isnull=False),
+                name="usuario_gestor_tem_unidade",
+                violation_error_message="Gestor de unidade precisa de uma unidade.",
             ),
         ]
 
@@ -88,3 +107,8 @@ class Usuario(AbstractUser):
         As demais features perguntam por aqui em vez de comparar o campo.
         """
         return self.perfil == PerfilUsuario.ADMINISTRADOR
+
+    @property
+    def is_gestor_de_unidade(self) -> bool:
+        """Ponto unico de consulta do papel de gestor (AD-004 estendida)."""
+        return self.perfil == PerfilUsuario.GESTOR_DE_UNIDADE

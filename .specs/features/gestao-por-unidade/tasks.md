@@ -98,7 +98,7 @@ T16
 
 ## Task Breakdown
 
-### T1: Perfil, unidade e senha provisória no `Usuario`
+### T1: Perfil, unidade e senha provisória no `Usuario` ✅
 
 **What**: `GESTOR_DE_UNIDADE` no `PerfilUsuario`, `perfil` com 17 caracteres, `Usuario.unidade` (FK nula, PROTECT, `related_name="usuarios"`), `Usuario.senha_provisoria`, `is_gestor_de_unidade`, CHECK `usuario_gestor_tem_unidade` e a migration `contas/migrations/0005_gestao_por_unidade.py`.
 **Where**: `contas/models.py`
@@ -110,10 +110,10 @@ T16
 
 **Done when**:
 
-- [ ] T-3: `contas/tests/test_models.py:13-15` afirma os três valores, em ordem, com a docstring da AUTH-16 estendida
-- [ ] Testes: rótulo "Gestor de unidade"; `is_gestor_de_unidade` verdadeiro só para o gestor (e falso para USUARIO, ADMINISTRADOR e superusuário USUARIO); gestor sem unidade recusado pelo banco no `create()` e no `update()` em massa (`IntegrityError`, valor inalterado); gestor com unidade, USUARIO e ADMINISTRADOR sem unidade gravam; `GESTOR_DE_UNIDADE` cabe na coluna; `unidade` com `on_delete=PROTECT`; `senha_provisoria` falso por padrão; gestor não ganha `is_staff` no `save()`
-- [ ] Teste de migração: banco em `contas 0004` com uma conta USUARIO e uma ADMINISTRADOR; depois da 0005, as duas iguais, com unidade nula e senha provisória falsa
-- [ ] Gate build passa; test count ≥ 1594 + 10
+- [x] T-3: `contas/tests/test_models.py:13-15` afirma os três valores, em ordem, com a docstring da AUTH-16 estendida
+- [x] Testes: rótulo "Gestor de unidade"; `is_gestor_de_unidade` verdadeiro só para o gestor (e falso para USUARIO, ADMINISTRADOR e superusuário USUARIO); gestor sem unidade recusado pelo banco no `create()` e no `update()` em massa (`IntegrityError`, valor inalterado); gestor com unidade, USUARIO e ADMINISTRADOR sem unidade gravam; `GESTOR_DE_UNIDADE` cabe na coluna; `unidade` com `on_delete=PROTECT`; `senha_provisoria` falso por padrão; gestor não ganha `is_staff` no `save()`
+- [x] Teste de migração: banco em `contas 0004` com uma conta USUARIO e uma ADMINISTRADOR; depois da 0005, as duas iguais, com unidade nula e senha provisória falsa
+- [x] Gate build passa; test count ≥ 1594 + 10
 
 **Tests**: integration
 **Gate**: build

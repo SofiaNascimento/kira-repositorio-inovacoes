@@ -237,17 +237,23 @@ class PerfilUsuario(models.TextChoices):
     ADMINISTRADOR = "ADMINISTRADOR", "Administrador"
     GESTOR_DE_UNIDADE = "GESTOR_DE_UNIDADE", "Gestor de unidade"
 
-class SituacaoConta(models.TextChoices):      # AD-016: derivada, sem coluna
+
+class SituacaoConta(models.TextChoices):  # AD-016: derivada, sem coluna
     ATIVA = "ATIVA", "Ativa"
     DESATIVADA = "DESATIVADA", "Desativada"
 
-TRANSICOES = {SituacaoConta.ATIVA: {SituacaoConta.DESATIVADA},
-              SituacaoConta.DESATIVADA: {SituacaoConta.ATIVA}}
+
+TRANSICOES = {
+    SituacaoConta.ATIVA: {SituacaoConta.DESATIVADA},
+    SituacaoConta.DESATIVADA: {SituacaoConta.ATIVA},
+}
+
 
 class Usuario(AbstractUser):
     perfil = CharField(max_length=17, choices=PerfilUsuario.choices, default=USUARIO)
-    unidade = ForeignKey("inovacoes.Unidade", null=True, blank=True,
-                         on_delete=PROTECT, related_name="usuarios")
+    unidade = ForeignKey(
+        "inovacoes.Unidade", null=True, blank=True, on_delete=PROTECT, related_name="usuarios"
+    )
     senha_provisoria = BooleanField(default=False)
     # Meta.constraints: usuario_perfil_valido (3 valores), usuario_email_unico_ci,
     #                   usuario_gestor_tem_unidade
@@ -332,3 +338,14 @@ conta) e AD-017 (senha provisória).
 Ligados às tasks: T-1, T-2 com a curadoria; T-3 com o modelo; T-4 com o menu; T-5 e T-6 com as
 telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS` ganha
 `paginas/campo.html`, `paginas/resumo_erros.html` e `contas/gestao/parciais/tabela_contas.html`.
+
+---
+
+## Ajustes do Execute
+
+- **T1, dependência da 0005**: o `makemigrations` pôs a 0005 dependendo de `inovacoes 0008`
+  (a última da app). Fixada em `inovacoes 0001_initial`, como este design já dizia: com a 0008,
+  o teste antigo `inovacoes/tests/test_migracoes.py` (que volta a `inovacoes 0005`) desfazia
+  também a `contas 0005` e quebrava. A 0001 já cria a `Unidade`, e a FK só precisa dela.
+- **T1, formatação deste arquivo**: o Ruff 0.16 formata os blocos Python de Markdown, e o bloco
+  de Data Models acima falhava o `ruff format --check .` do build gate. Só a formatação mudou.

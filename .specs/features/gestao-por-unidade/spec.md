@@ -316,9 +316,9 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| GEST-01 | P1 Unidade e papel (AC 1) | T1 | Pending |
-| GEST-02 | P1 Unidade e papel (AC 2) | T1 | Pending |
-| GEST-03 | P1 Unidade e papel (AC 3) | T1 | Pending |
+| GEST-01 | P1 Unidade e papel (AC 1) | T1 | Implementing |
+| GEST-02 | P1 Unidade e papel (AC 2) | T1 | Implementing |
+| GEST-03 | P1 Unidade e papel (AC 3) | T1 | Implementing |
 | GEST-04 | P1 Unidade e papel (AC 4) | T5 | Pending |
 | GEST-05 | P1 Unidade e papel (AC 5) | T5 | Pending |
 | GEST-06 | P1 Unidade e papel (AC 6) | T5 | Pending |

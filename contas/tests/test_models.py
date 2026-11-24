@@ -11,8 +11,12 @@ from contas.models import Usuario
 
 @pytest.mark.unit
 def test_perfil_tem_exatamente_usuario_e_administrador():
-    """AUTH-16: o perfil e restrito a exatamente esses dois valores."""
-    assert Usuario.Perfil.values == ["USUARIO", "ADMINISTRADOR"]
+    """AUTH-16: o perfil e restrito a exatamente esses valores.
+
+    Estendido pela GEST-02 (gestao-por-unidade, T-3): o terceiro valor e o
+    gestor de unidade; nenhum outro entra.
+    """
+    assert Usuario.Perfil.values == ["USUARIO", "ADMINISTRADOR", "GESTOR_DE_UNIDADE"]
 
 
 @pytest.mark.unit
