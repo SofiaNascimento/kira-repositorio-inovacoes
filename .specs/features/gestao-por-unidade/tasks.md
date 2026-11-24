@@ -431,7 +431,7 @@ T16
 
 ---
 
-### T15: Unidade pré-preenchida no cadastro e no reaproveitamento
+### T15: Unidade pré-preenchida no cadastro e no reaproveitamento ✅
 
 **What**: `InovacaoCreateView.get_initial()` com a unidade do usuário e `ReaproveitamentoForm(…, unidade_sugerida=None)` com a unidade sugerida quando elegível.
 **Where**: `inovacoes/views.py`
@@ -443,9 +443,9 @@ T16
 
 **Done when**:
 
-- [ ] Testes e2e: usuário com unidade vê a unidade selecionada no cadastro (exibido) e pode trocar; envio com outra unidade grava a escolhida; usuário sem unidade vê "Selecione…"; a edição mostra a unidade da inovação, não a do usuário; reaproveitamento com a unidade do usuário elegível vem com ela selecionada; com a unidade de origem ou já reaproveitada, sem seleção
-- [ ] Teste de formulário: `ReaproveitamentoForm` sem `unidade_sugerida` igual a hoje
-- [ ] Gate full passa; test count ≥ T14 + 7
+- [x] Testes e2e: usuário com unidade vê a unidade selecionada no cadastro (exibido) e pode trocar; envio com outra unidade grava a escolhida; usuário sem unidade vê "Selecione…"; a edição mostra a unidade da inovação, não a do usuário; reaproveitamento com a unidade do usuário elegível vem com ela selecionada; com a unidade de origem ou já reaproveitada, sem seleção
+- [x] Teste de formulário: `ReaproveitamentoForm` sem `unidade_sugerida` igual a hoje
+- [x] Gate full passa; test count ≥ T14 + 7
 
 **Tests**: e2e
 **Gate**: full

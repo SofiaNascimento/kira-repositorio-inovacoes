@@ -106,7 +106,8 @@ class InovacaoCreateView(GravacaoComTituloUnicoMixin, CreateView):
         # INOV-39: pre-preenchido e editavel; o responsavel nem sempre e o autor.
         usuario = self.request.user
         nome = usuario.get_full_name() or usuario.get_username()
-        return {"contato": f"{nome} ({usuario.email})"}
+        # GEST-55, GEST-56: a unidade do usuario, editavel; sem unidade, "Selecione…".
+        return {"contato": f"{nome} ({usuario.email})", "unidade": usuario.unidade_id}
 
     def get_context_data(self, **kwargs):
         # O template do formulario serve ao cadastro e a edicao (EDEX-01).
@@ -305,7 +306,12 @@ class InovacaoReaproveitarView(FormView):
     # ReaproveitamentoForm(data=None, *, inovacao) da T3 nao aceita.
     def get_form_kwargs(self):
         dados = self.request.POST if self.request.method == "POST" else None
-        return {"data": dados, "inovacao": self.inovacao}
+        # GEST-59, GEST-60: a unidade do usuario, se elegivel, vem escolhida.
+        return {
+            "data": dados,
+            "inovacao": self.inovacao,
+            "unidade_sugerida": self.request.user.unidade_id,
+        }
 
     def form_valid(self, form):
         unidade = form.cleaned_data["unidade"]

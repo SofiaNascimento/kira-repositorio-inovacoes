@@ -184,7 +184,7 @@ class ReaproveitamentoForm(forms.Form):
         },
     )
 
-    def __init__(self, data=None, *, inovacao):
+    def __init__(self, data=None, *, inovacao, unidade_sugerida=None):
         super().__init__(data, label_suffix="")
         campo = self.fields["unidade"]
         # REAP-04: todas menos a origem e as que ja sinalizaram, em ordem alfabetica.
@@ -193,5 +193,9 @@ class ReaproveitamentoForm(forms.Form):
             .exclude(reaproveitamentos__inovacao=inovacao)
             .order_by("nome")
         )
+        # GEST-59, GEST-60: a unidade sugerida (a do usuario) so vem escolhida se
+        # for elegivel; sem ela, nada muda.
+        if unidade_sugerida is not None and campo.queryset.filter(pk=unidade_sugerida).exists():
+            self.initial["unidade"] = unidade_sugerida
         # REAP-44, REAP-45: rotulo, erro e ARIA pelo parcial do projeto.
         campo.template_name = "inovacoes/campo.html"

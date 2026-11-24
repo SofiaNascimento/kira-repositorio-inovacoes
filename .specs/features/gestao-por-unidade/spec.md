@@ -371,12 +371,12 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-52 | P1 Curadoria (AC 5) | T4 | Implementing |
 | GEST-53 | P1 Curadoria (AC 6) | T3 | Implementing |
 | GEST-54 | P1 Curadoria (AC 7) | T3 | Implementing |
-| GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Pending |
-| GEST-56 | P2 Pré-preenchida (AC 2) | T15 | Pending |
-| GEST-57 | P2 Pré-preenchida (AC 3) | T15 | Pending |
-| GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Pending |
-| GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Pending |
-| GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Pending |
+| GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Implementing |
+| GEST-56 | P2 Pré-preenchida (AC 2) | T15 | Implementing |
+| GEST-57 | P2 Pré-preenchida (AC 3) | T15 | Implementing |
+| GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Implementing |
+| GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Implementing |
+| GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Implementing |
 | GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing |
 | GEST-62 | Edge: id inexistente → 404 | T11, T12 | Implementing |
 | GEST-63 | Edge: desativação simultânea | T11 | Implementing |
