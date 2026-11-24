@@ -145,7 +145,7 @@ T16
 
 ---
 
-### T3: Curadoria pela unidade de origem
+### T3: Curadoria pela unidade de origem ✅
 
 **What**: `Inovacao.pode_ser_alterada_por` ganha o gestor da unidade de origem (extensão da AD-009), lendo só ids.
 **Where**: `inovacoes/models.py`
@@ -157,10 +157,10 @@ T16
 
 **Done when**:
 
-- [ ] Testes do método: verdadeiro para autor, ADMINISTRADOR e gestor da unidade de origem (inovação de outro autor); falso para gestor de outra unidade, USUARIO da mesma unidade, USUARIO staff e superusuário USUARIO, anônimo; sem consulta ao banco
-- [ ] Testes e2e: gestor da unidade de origem vê "Editar", "Excluir" e "Avançar para…" no detalhe exibido (Em teste e Validada); edita, exclui com confirmação e avança o status de inovação de outro autor; gestor de outra unidade recebe 403 com `inovacoes/acesso_negado.html` em editar, excluir e status (GET e POST) e nada muda no banco; troca de unidade e perda do perfil no banco valem na requisição seguinte
-- [ ] Os testes de número de consultas do detalhe seguem iguais
-- [ ] Gate full passa; test count ≥ T2 + 14
+- [x] Testes do método: verdadeiro para autor, ADMINISTRADOR e gestor da unidade de origem (inovação de outro autor); falso para gestor de outra unidade, USUARIO da mesma unidade, USUARIO staff e superusuário USUARIO, anônimo; sem consulta ao banco
+- [x] Testes e2e: gestor da unidade de origem vê "Editar", "Excluir" e "Avançar para…" no detalhe exibido (Em teste e Validada); edita, exclui com confirmação e avança o status de inovação de outro autor; gestor de outra unidade recebe 403 com `inovacoes/acesso_negado.html` em editar, excluir e status (GET e POST) e nada muda no banco; troca de unidade e perda do perfil no banco valem na requisição seguinte
+- [x] Os testes de número de consultas do detalhe seguem iguais
+- [x] Gate full passa; test count ≥ T2 + 14
 
 **Tests**: e2e
 **Gate**: full
