@@ -3,6 +3,7 @@ from django.contrib.auth.forms import (
     AdminUserCreationForm,
     AuthenticationForm,
     BaseUserCreationForm,
+    SetPasswordForm,
     UserChangeForm,
 )
 from django.core.exceptions import ValidationError
@@ -114,3 +115,28 @@ class ContaDaUnidadeForm(FormularioV2Mixin, BaseUserCreationForm):
         if self._errors:
             # §6 v2: com erro, o foco vai ao resumo, nao ao primeiro campo.
             self.fields["username"].widget.attrs.pop("autofocus", None)
+
+
+class SenhaProvisoriaForm(FormularioV2Mixin, SetPasswordForm):
+    """Redefinir a senha de uma conta da unidade (GEST-37, GEST-38).
+
+    A senha nova volta a ser provisoria: a pessoa troca no proximo acesso.
+    """
+
+    error_messages = {"password_mismatch": SENHAS_DIFERENTES}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["new_password1"].label = "Nova senha provisória"
+        self.fields["new_password2"].label = "Confirmação da nova senha provisória"
+
+    def clean(self):
+        # GEST-38: como na criacao, o validador acusa no campo da senha, nao na
+        # confirmacao (o SetPasswordForm usaria o new_password2).
+        self.validate_passwords("new_password1", "new_password2")
+        self.validate_password_for_user(self.user, "new_password1")
+        return forms.Form.clean(self)
+
+    def save(self, commit=True):
+        self.user.senha_provisoria = True
+        return super().save(commit=commit)

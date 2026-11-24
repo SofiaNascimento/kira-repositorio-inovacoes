@@ -9,9 +9,9 @@ from django.http import HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, FormView, ListView
 
-from contas.forms import ContaDaUnidadeForm
+from contas.forms import ContaDaUnidadeForm, SenhaProvisoriaForm
 from contas.models import TRANSICOES, PerfilUsuario, SituacaoConta, Usuario
 
 # GEST-30, GEST-31: o alerta sai do estado de destino, nao da transicao (GEST-32).
@@ -111,3 +111,28 @@ class SituacaoDaContaView(GestaoDeUnidadeMixin, View):
         self.conta.mudar_situacao(destino)
         messages.success(request, ALERTA_DA_SITUACAO[destino].format(usuario=self.conta.username))
         return redirect("gestao:painel")
+
+
+class RedefinirSenhaView(GestaoDeUnidadeMixin, FormView):
+    """Redefinir a senha de uma conta da unidade (GEST-37 a GEST-39).
+
+    A troca do hash derruba a sessao aberta da pessoa (verificacao do Django).
+    """
+
+    form_class = SenhaProvisoriaForm
+    template_name = "contas/gestao/redefinir_senha.html"
+    success_url = reverse_lazy("gestao:painel")
+
+    def get_form_kwargs(self):
+        return {**super().get_form_kwargs(), "user": self.conta}
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(conta=self.conta, **kwargs)
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(
+            self.request,
+            f"Senha de “{self.conta.username}” redefinida. Informe a senha provisória à pessoa.",
+        )
+        return super().form_valid(form)

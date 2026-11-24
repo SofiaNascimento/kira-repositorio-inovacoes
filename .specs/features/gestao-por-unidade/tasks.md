@@ -362,7 +362,7 @@ T16
 
 ---
 
-### T12: Redefinir senha
+### T12: Redefinir senha ✅
 
 **What**: `SenhaProvisoriaForm` em `contas/forms.py`, `RedefinirSenhaView` e o template `contas/gestao/redefinir_senha.html`.
 **Where**: `contas/views_gestao.py`
@@ -374,9 +374,9 @@ T16
 
 **Done when**:
 
-- [ ] T-5: contagem 17 → 18; T-6: `redefinir_senha` na fixture `paginas`
-- [ ] Testes e2e: envio válido troca a senha, liga a senha provisória e volta com o alerta exato; validador ou confirmação diferente mostra o erro no campo, o resumo e "Erro:" e não troca; sessão aberta da conta vira anônima; alvo fora do escopo e id inexistente → 404 em GET e POST sem trocar; barra de ações e trilha "Minha unidade › Redefinir senha"; descrição com o usuário da conta
-- [ ] Gate full passa; test count ≥ T11 + 10
+- [x] T-5: contagem 17 → 18; T-6: `redefinir_senha` na fixture `paginas`
+- [x] Testes e2e: envio válido troca a senha, liga a senha provisória e volta com o alerta exato; validador ou confirmação diferente mostra o erro no campo, o resumo e "Erro:" e não troca; sessão aberta da conta vira anônima; alvo fora do escopo e id inexistente → 404 em GET e POST sem trocar; barra de ações e trilha "Minha unidade › Redefinir senha"; descrição com o usuário da conta
+- [x] Gate full passa; test count ≥ T11 + 10
 
 **Tests**: e2e
 **Gate**: full

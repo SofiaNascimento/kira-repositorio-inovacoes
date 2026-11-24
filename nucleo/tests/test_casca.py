@@ -739,6 +739,8 @@ PAGINAS_DA_FIXTURE = [
     # T-7 (T10): "Criar conta", vazia e com erro.
     "criar_conta",
     "criar_conta_erro",
+    # T-7 (T12): "Redefinir senha".
+    "redefinir_senha",
 ]
 
 

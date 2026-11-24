@@ -9,7 +9,7 @@ import pytest
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
-from contas.forms import ContaDaUnidadeForm
+from contas.forms import ContaDaUnidadeForm, SenhaProvisoriaForm
 from contas.models import Usuario
 from contas.tests.conftest import SENHA_NOVA
 
@@ -86,3 +86,47 @@ def test_confirmacao_diferente_acusa_no_campo_de_confirmacao(db):
     form = ContaDaUnidadeForm(data=_dados(password2=SENHA_NOVA + "x"))
     assert not form.is_valid()
     assert form.errors == {"password2": ["As duas senhas não são iguais."]}
+
+
+# --- SenhaProvisoriaForm (T12) ---
+
+
+def _senha(conta, **troca):
+    dados = {"new_password1": SENHA_NOVA, "new_password2": SENHA_NOVA}
+    dados.update(troca)
+    return SenhaProvisoriaForm(conta, data=dados)
+
+
+def test_redefinir_tem_os_dois_campos_obrigatorios(criar_conta):
+    """GEST-37: os rotulos da senha provisoria nova."""
+    form = SenhaProvisoriaForm(criar_conta("bia"))
+    assert [(nome, campo.label, campo.required) for nome, campo in form.fields.items()] == [
+        ("new_password1", "Nova senha provisória", True),
+        ("new_password2", "Confirmação da nova senha provisória", True),
+    ]
+
+
+def test_redefinir_grava_a_senha_e_a_marca_provisoria(criar_conta):
+    """GEST-37."""
+    conta = criar_conta("bia", password="antiga-Senha-99")
+    form = _senha(conta)
+    assert form.is_valid()
+    form.save()
+    conta.refresh_from_db()
+    assert conta.check_password(SENHA_NOVA)
+    assert conta.senha_provisoria is True
+
+
+def test_redefinir_com_senha_recusada_acusa_no_campo_da_senha(criar_conta):
+    """GEST-38: a mensagem do validador, no campo da senha nova, como na criacao."""
+    conta = criar_conta("bia")
+    form = _senha(conta, new_password1="12345678", new_password2="12345678")
+    assert not form.is_valid()
+    assert form.errors == {"new_password1": _mensagens_do_validador("12345678", username="bia")}
+
+
+def test_redefinir_com_confirmacao_diferente_acusa_na_confirmacao(criar_conta):
+    """GEST-38."""
+    form = _senha(criar_conta("bia"), new_password2=SENHA_NOVA + "x")
+    assert not form.is_valid()
+    assert form.errors == {"new_password2": ["As duas senhas não são iguais."]}

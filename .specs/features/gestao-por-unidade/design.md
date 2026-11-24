@@ -396,3 +396,6 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
 - **T10, rota**: "Criar conta" da lista passou a `{% url 'gestao:criar_conta' %}`.
 - **T11, rota**: o `form` de situação da tabela passou a `{% url 'gestao:situacao' conta.pk %}`.
   A varredura por papel ganhou a sanidade de enxergar essa rota, a primeira com `pk`.
+- **T12, validador no campo da senha**: como na T10, o `SenhaProvisoriaForm.clean` valida pelo
+  `new_password1` (o `SetPasswordForm` usaria o `new_password2`), para a GEST-38 acusar "como na
+  criação". O link "Redefinir senha" da tabela passou a `{% url 'gestao:redefinir_senha' conta.pk %}`.

@@ -30,7 +30,7 @@
         <td>
           {% if conta.administravel %}
             <div class="acoes">
-              <a class="botao botao--secundario" href="/minha-unidade/contas/{{ conta.pk }}/senha/">Redefinir senha</a>
+              <a class="botao botao--secundario" href="{% url 'gestao:redefinir_senha' conta.pk %}">Redefinir senha</a>
               <form method="post" action="{% url 'gestao:situacao' conta.pk %}">
                 {% csrf_token %}
                 {% if conta.is_active %}

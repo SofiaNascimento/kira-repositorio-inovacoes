@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{# GEST-68: com erro, o titulo da pagina comeca por "Erro:". #}
+{% block title %}{% if form.errors %}Erro: {% endif %}Redefinir senha{% endblock %}
+
+{% block trilha %}{% include "paginas/trilha.html" with unidade=True atual="Redefinir senha" %}{% endblock %}
+
+{% block titulo %}Redefinir senha{% endblock %}
+
+{% block descricao %}<p>Conta “{{ conta.username }}” ({{ conta.get_full_name|default:conta.username }}). A pessoa troca a senha no próximo acesso.</p>{% endblock %}
+
+{% block conteudo %}
+  {# GEST-68: resumo no topo, so com erro, com o foco ao carregar. #}
+  {% include "paginas/resumo_erros.html" with acao="redefinir a senha" %}
+
+  <div class="cartao">
+    <form method="post" novalidate class="formulario">
+      {% csrf_token %}
+      <div class="campo">{{ form.new_password1.as_field_group }}</div>
+      <div class="campo">{{ form.new_password2.as_field_group }}</div>
+
+      {# GEST-69: barra de acoes da §6 v2; cancelar e um link, nada grava. #}
+      <div class="barra-acoes">
+        <button type="submit">Redefinir senha</button>
+        <a class="botao botao--secundario" href="{% url 'gestao:painel' %}">Cancelar</a>
+        <p class="barra-acoes__nota">Nada é gravado se você cancelar.</p>
+      </div>
+    </form>
+  </div>
+{% endblock %}

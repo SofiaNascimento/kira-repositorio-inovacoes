@@ -353,9 +353,9 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-34 | P1 Desativar (AC 5) | T11 | Implementing |
 | GEST-35 | P1 Desativar (AC 6) | T11 | Implementing |
 | GEST-36 | P1 Desativar (AC 7) | T11 | Implementing |
-| GEST-37 | P1 Senha (AC 1) | T12 | Pending |
-| GEST-38 | P1 Senha (AC 2) | T12 | Pending |
-| GEST-39 | P1 Senha (AC 3) | T12 | Pending |
+| GEST-37 | P1 Senha (AC 1) | T12 | Implementing |
+| GEST-38 | P1 Senha (AC 2) | T12 | Implementing |
+| GEST-39 | P1 Senha (AC 3) | T12 | Implementing |
 | GEST-40 | P1 Senha (AC 4) | T14 | Pending |
 | GEST-41 | P1 Senha (AC 5) | T13, T16 | Pending |
 | GEST-42 | P1 Senha (AC 6) | T13 | Pending |

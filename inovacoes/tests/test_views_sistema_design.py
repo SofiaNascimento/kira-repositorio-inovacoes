@@ -115,6 +115,13 @@ def paginas(client, autor, terceiro, criar_inovacao):
     # T-6 (T10, GEST-20, GEST-68): "Criar conta", vazia e com o resumo de erros.
     html["criar_conta"] = client.get("/minha-unidade/contas/nova/").content.decode()
     html["criar_conta_erro"] = client.post("/minha-unidade/contas/nova/", {}).content.decode()
+    # T-6 (T12, GEST-37): "Redefinir senha" de uma conta USUARIO da unidade.
+    conta = Usuario.objects.create_user(
+        username="bia", email="bia@x.com", unidade=Unidade.objects.get(nome="Sede")
+    )
+    html["redefinir_senha"] = client.get(
+        f"/minha-unidade/contas/{conta.pk}/senha/"
+    ).content.decode()
     # AUTH-26: o server_error renderiza o 500.html sem contexto.
     html["erro_500"] = render_to_string("500.html")
     return html
@@ -459,7 +466,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     # T-5 (gestao-por-unidade, T8): e as telas "Minha unidade", "Acesso restrito" e
     # "Conta não encontrada" (GEST-12, GEST-13, GEST-62).
     # T-5 (T10): e a tela "Criar conta" (GEST-20).
-    assert len(telas) == 17
+    # T-5 (T12): e a tela "Redefinir senha" (GEST-37).
+    assert len(telas) == 18
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome
