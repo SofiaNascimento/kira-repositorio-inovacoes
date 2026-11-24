@@ -1,0 +1,15 @@
+{% comment %}
+  Resumo de erros da §6 v2 (GEST-68). Recebe o form (com o FormularioV2Mixin)
+  e a acao ("criar a conta", "redefinir a senha"...). Sem erro, nao existe no
+  DOM. Um link por campo com erro, na ordem do formulario, para o id do
+  campo; erro geral, sem campo, entra como texto, sem link.
+{% endcomment %}
+{% if form.errors %}
+<div class="resumo-erros" role="alert" tabindex="-1">
+  <p>Não foi possível {{ acao }}. Corrija {{ form.campos_com_erro|length }} campo(s):</p>
+  <ul>
+    {% for erro in form.non_field_errors %}<li>{{ erro }}</li>{% endfor %}
+    {% for campo in form.campos_com_erro %}<li><a href="#{{ campo.id_for_label }}">{{ campo.label }}: {{ campo.errors|join:" " }}</a></li>{% endfor %}
+  </ul>
+</div>
+{% endif %}

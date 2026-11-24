@@ -357,3 +357,14 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   dos apps (`/admin/contas/`, `/admin/inovacoes/`), o Django responde 404, como já faz ao USUARIO
   com `is_staff` (`contas/tests/test_admin_perfil.py`). É a mesma negação da AD-007 ("como nega
   ao USUARIO"), e o teste fixa os dois códigos.
+- **T7, renderizador**: o renderizador padrão de formulários do Django só lê os templates das
+  apps e os dele, e não acha `templates/paginas/campo.html`. O `FormularioV2Mixin` usa
+  `nucleo.formularios.RenderizadorV2` (`default_renderer`), que soma a pasta `templates/` do
+  projeto. O `FORM_RENDERER` do projeto não muda; os formulários de inovação seguem iguais.
+- **T7, `aria-describedby`**: o Django põe a ajuda antes do erro. O mixin troca o BoundField
+  (`bound_field_class = CampoV2`, Django 5.2) para pôr o erro antes da ajuda.
+- **T7, peças**: a parcial do campo não traz o `div.campo`; a tela o põe em volta, como no
+  `inovacao_form.html`. "(obrigatório)" vai num `span.legenda`, classe que já existe (muted).
+  O resumo conta só os campos com erro ("Corrija {n} campo(s)"), um link por campo com as
+  mensagens juntas, e põe os erros gerais, sem link, antes dos campos (a §6 não diz a posição).
+  O foco no resumo ao carregar a página (§6 v2) fica para as telas que o usam.

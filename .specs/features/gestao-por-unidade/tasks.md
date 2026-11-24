@@ -242,7 +242,7 @@ T16
 
 ---
 
-### T7: Campo e resumo de erros da §6 v2
+### T7: Campo e resumo de erros da §6 v2 ✅
 
 **What**: `nucleo/formularios.py` com o `FormularioV2Mixin` e as parciais `templates/paginas/campo.html` (rótulo → ajuda → campo → erro, "(obrigatório)" por escrito, `aria-describedby` erro antes da ajuda) e `templates/paginas/resumo_erros.html`.
 **Where**: `nucleo/formularios.py`
@@ -254,9 +254,9 @@ T16
 
 **Done when**:
 
-- [ ] T-5: `paginas/campo.html` e `paginas/resumo_erros.html` em `PECAS` (`inovacoes/tests/test_views_sistema_design.py:401`)
-- [ ] Testes com um formulário de teste de dois campos: ordem rótulo, ajuda, campo, erro; "(obrigatório)" no rótulo do campo obrigatório; `aria-invalid` e `aria-describedby="{erro} {ajuda}"` com erro; sem erro, nenhum resumo no DOM; com dois erros, título "Não foi possível {ação}. Corrija 2 campo(s):", links `#id_…` na ordem dos campos com "{rótulo}: {mensagem}", `role="alert"` e `tabindex="-1"`; erro sem campo entra como texto sem link
-- [ ] Gate full passa; test count ≥ T6 + 7
+- [x] T-5: `paginas/campo.html` e `paginas/resumo_erros.html` em `PECAS` (`inovacoes/tests/test_views_sistema_design.py:401`)
+- [x] Testes com um formulário de teste de dois campos: ordem rótulo, ajuda, campo, erro; "(obrigatório)" no rótulo do campo obrigatório; `aria-invalid` e `aria-describedby="{erro} {ajuda}"` com erro; sem erro, nenhum resumo no DOM; com dois erros, título "Não foi possível {ação}. Corrija 2 campo(s):", links `#id_…` na ordem dos campos com "{rótulo}: {mensagem}", `role="alert"` e `tabindex="-1"`; erro sem campo entra como texto sem link
+- [x] Gate full passa; test count ≥ T6 + 7
 
 **Tests**: unit
 **Gate**: full

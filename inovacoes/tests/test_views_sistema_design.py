@@ -414,6 +414,10 @@ PECAS = {
     "inovacoes/parciais/paginacao.html",
     # T-M (T14): o estado vazio da lista (RCON-25, RCON-26).
     "inovacoes/parciais/vazio.html",
+    # T-5 (gestao-por-unidade, T7, DS-01): o campo e o resumo de erros da §6 v2 (GEST-68).
+    # Pecas incluidas, nao telas: a contagem segue 13 e elas continuam sem estilo proprio.
+    "paginas/campo.html",
+    "paginas/resumo_erros.html",
 }
 
 

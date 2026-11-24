@@ -1,0 +1,17 @@
+{% comment %}
+  Campo da §6 v2 (GEST-68): rotulo, ajuda, campo, erro. A ajuda vem antes do
+  campo para ser lida antes de digitar; o aria-describedby (CampoV2) aponta
+  para o erro e depois para a ajuda. "(obrigatorio)" vai por escrito no
+  rotulo, sem asterisco. Os ids _helptext e _error sao os do Django. A tela
+  poe o div.campo em volta, como nos formularios de inovacao.
+{% endcomment %}
+{% if field.use_fieldset %}
+  <fieldset{% if field.aria_describedby %} aria-describedby="{{ field.aria_describedby }}"{% endif %}>
+  {% if field.label %}<legend>{{ field.label }}{% if field.field.required %} <span class="legenda">(obrigatório)</span>{% endif %}</legend>{% endif %}
+{% else %}
+  {% if field.label %}<label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="legenda">(obrigatório)</span>{% endif %}</label>{% endif %}
+{% endif %}
+{% if field.help_text %}<div class="helptext"{% if field.auto_id %} id="{{ field.auto_id }}_helptext"{% endif %}>{{ field.help_text|safe }}</div>{% endif %}
+{{ field }}
+{{ field.errors }}
+{% if field.use_fieldset %}</fieldset>{% endif %}

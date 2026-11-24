@@ -383,7 +383,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-65 | Edge: unidade só com o gestor | T8 | Pending |
 | GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
 | GEST-67 | Edge: CSRF inválido | T11 | Pending |
-| GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Pending |
+| GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |
 | GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Pending |
 
 **Coverage:** 69 total, 69 mapeados para tasks, 69 pendentes.
