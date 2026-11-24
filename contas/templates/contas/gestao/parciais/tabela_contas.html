@@ -31,7 +31,7 @@
           {% if conta.administravel %}
             <div class="acoes">
               <a class="botao botao--secundario" href="/minha-unidade/contas/{{ conta.pk }}/senha/">Redefinir senha</a>
-              <form method="post" action="/minha-unidade/contas/{{ conta.pk }}/situacao/">
+              <form method="post" action="{% url 'gestao:situacao' conta.pk %}">
                 {% csrf_token %}
                 {% if conta.is_active %}
                   <button type="submit" class="botao--secundario" name="situacao" value="DESATIVADA">Desativar</button>

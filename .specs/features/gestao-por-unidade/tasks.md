@@ -339,7 +339,7 @@ T16
 
 ---
 
-### T11: Desativar e reativar conta
+### T11: Desativar e reativar conta ✅
 
 **What**: `SituacaoDaContaView` (só POST, destino no corpo) e o `form` de cada linha da tabela, com os botões secundários.
 **Where**: `contas/views_gestao.py`
@@ -351,9 +351,9 @@ T16
 
 **Done when**:
 
-- [ ] Testes e2e: desativar e reativar com os alertas exatos; repetir o mesmo destino mantém o estado e o alerta; valor inválido → 400 sem gravar; GET → 405; conta desativada recusa o login com "Usuário ou senha inválidos."; sessão aberta da conta desativada vira anônima na requisição seguinte (vai ao login); inovações, mudanças de status e reaproveitamentos da conta continuam com a autoria; alvo fora do escopo (outra unidade, sem unidade, o próprio gestor, outro gestor, ADMINISTRADOR) e id inexistente → 404 sem gravar; CSRF inválido → 403 sem gravar; duas desativações seguidas por dois gestores terminam desativada com o mesmo alerta
-- [ ] Os botões "Desativar" e "Reativar" exibidos são secundários (sem classe de perigo)
-- [ ] Gate full passa; test count ≥ T10 + 15
+- [x] Testes e2e: desativar e reativar com os alertas exatos; repetir o mesmo destino mantém o estado e o alerta; valor inválido → 400 sem gravar; GET → 405; conta desativada recusa o login com "Usuário ou senha inválidos."; sessão aberta da conta desativada vira anônima na requisição seguinte (vai ao login); inovações, mudanças de status e reaproveitamentos da conta continuam com a autoria; alvo fora do escopo (outra unidade, sem unidade, o próprio gestor, outro gestor, ADMINISTRADOR) e id inexistente → 404 sem gravar; CSRF inválido → 403 sem gravar; duas desativações seguidas por dois gestores terminam desativada com o mesmo alerta
+- [x] Os botões "Desativar" e "Reativar" exibidos são secundários (sem classe de perigo)
+- [x] Gate full passa; test count ≥ T10 + 15
 
 **Tests**: e2e
 **Gate**: full

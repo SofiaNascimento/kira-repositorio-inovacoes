@@ -93,7 +93,10 @@ def nao_gestor(request, criar_conta, sede):
 
 def test_varredura_enxerga_a_area(db):
     """Sanidade: a varredura le ao menos a tela da unidade."""
-    assert ("painel", False) in _rotas_da_gestao()
+    rotas = _rotas_da_gestao()
+    assert ("painel", False) in rotas
+    # T11: a primeira rota com pk; a varredura do 404 passa a ter alvo.
+    assert ("situacao", True) in rotas
 
 
 @pytest.mark.parametrize("metodo", ["get", "post"])

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from contas.views_gestao import CriarContaView, MinhaUnidadeView
+from contas.views_gestao import CriarContaView, MinhaUnidadeView, SituacaoDaContaView
 
 # Namespace proprio: o PAGINA_ATUAL marca a secao inteira por ele (AD-015).
 app_name = "gestao"
@@ -8,4 +8,5 @@ app_name = "gestao"
 urlpatterns = [
     path("", MinhaUnidadeView.as_view(), name="painel"),
     path("contas/nova/", CriarContaView.as_view(), name="criar_conta"),
+    path("contas/<int:pk>/situacao/", SituacaoDaContaView.as_view(), name="situacao"),
 ]

@@ -394,3 +394,5 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   `nucleo/tests/test_formularios.py` passou a exigir o atributo. Com erro, o formulário tira o
   `autofocus` que o Django põe no campo Usuário, para o foco ir só ao resumo.
 - **T10, rota**: "Criar conta" da lista passou a `{% url 'gestao:criar_conta' %}`.
+- **T11, rota**: o `form` de situação da tabela passou a `{% url 'gestao:situacao' conta.pk %}`.
+  A varredura por papel ganhou a sanidade de enxergar essa rota, a primeira com `pk`.

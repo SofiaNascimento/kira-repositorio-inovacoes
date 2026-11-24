@@ -5,13 +5,20 @@ views que alteram inovacao herdam o AlteracaoDeInovacaoMixin (AD-009).
 """
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.http import HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, ListView
 
 from contas.forms import ContaDaUnidadeForm
-from contas.models import PerfilUsuario, Usuario
+from contas.models import TRANSICOES, PerfilUsuario, SituacaoConta, Usuario
+
+# GEST-30, GEST-31: o alerta sai do estado de destino, nao da transicao (GEST-32).
+ALERTA_DA_SITUACAO = {
+    SituacaoConta.ATIVA: "Conta “{usuario}” reativada.",
+    SituacaoConta.DESATIVADA: "Conta “{usuario}” desativada.",
+}
 
 
 class GestaoDeUnidadeMixin:
@@ -82,3 +89,25 @@ class CriarContaView(GestaoDeUnidadeMixin, CreateView):
             "ela vai trocá-la no primeiro acesso.",
         )
         return HttpResponseRedirect(self.get_success_url())
+
+
+class SituacaoDaContaView(GestaoDeUnidadeMixin, View):
+    """Desativar e reativar (GEST-30 a GEST-33, GEST-63; AD-016).
+
+    So POST, com o estado de destino no corpo: repetir o envio da o mesmo estado e o
+    mesmo alerta. Valor fora de TRANSICOES (ou do estado atual) e 400, sem gravar.
+    """
+
+    http_method_names = ["post"]
+
+    def post(self, request, pk):
+        try:
+            destino = SituacaoConta(request.POST.get("situacao"))
+        except ValueError:
+            return HttpResponseBadRequest()
+        atual = self.conta.situacao
+        if destino not in TRANSICOES[atual] | {atual}:
+            return HttpResponseBadRequest()
+        self.conta.mudar_situacao(destino)
+        messages.success(request, ALERTA_DA_SITUACAO[destino].format(usuario=self.conta.username))
+        return redirect("gestao:painel")

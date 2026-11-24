@@ -346,13 +346,13 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-27 | P1 Criar conta (AC 8) | T10 | Implementing |
 | GEST-28 | P1 Criar conta (AC 9) | T10 | Implementing |
 | GEST-29 | P1 Criar conta (AC 10) | T10 | Implementing |
-| GEST-30 | P1 Desativar (AC 1) | T11 | Pending |
-| GEST-31 | P1 Desativar (AC 2) | T11 | Pending |
+| GEST-30 | P1 Desativar (AC 1) | T11 | Implementing |
+| GEST-31 | P1 Desativar (AC 2) | T11 | Implementing |
 | GEST-32 | P1 Desativar (AC 3) | T2, T11 | Implementing |
-| GEST-33 | P1 Desativar (AC 4) | T11 | Pending |
-| GEST-34 | P1 Desativar (AC 5) | T11 | Pending |
-| GEST-35 | P1 Desativar (AC 6) | T11 | Pending |
-| GEST-36 | P1 Desativar (AC 7) | T11 | Pending |
+| GEST-33 | P1 Desativar (AC 4) | T11 | Implementing |
+| GEST-34 | P1 Desativar (AC 5) | T11 | Implementing |
+| GEST-35 | P1 Desativar (AC 6) | T11 | Implementing |
+| GEST-36 | P1 Desativar (AC 7) | T11 | Implementing |
 | GEST-37 | P1 Senha (AC 1) | T12 | Pending |
 | GEST-38 | P1 Senha (AC 2) | T12 | Pending |
 | GEST-39 | P1 Senha (AC 3) | T12 | Pending |
@@ -378,12 +378,12 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Pending |
 | GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Pending |
 | GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing |
-| GEST-62 | Edge: id inexistente → 404 | T11, T12 | Pending |
-| GEST-63 | Edge: desativação simultânea | T11 | Pending |
+| GEST-62 | Edge: id inexistente → 404 | T11, T12 | Implementing |
+| GEST-63 | Edge: desativação simultânea | T11 | Implementing |
 | GEST-64 | Edge: unidade renomeada | T8 | Implementing |
 | GEST-65 | Edge: unidade só com o gestor | T8 | Implementing |
 | GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
-| GEST-67 | Edge: CSRF inválido | T11 | Pending |
+| GEST-67 | Edge: CSRF inválido | T11 | Implementing |
 | GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |
 | GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Implementing |
 
