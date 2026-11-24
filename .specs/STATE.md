@@ -142,12 +142,12 @@
 
 ## Handoff
 
-### Atual (2026-11-23) — gestao-por-unidade em Execute (Lote A concluído)
+### Atual (2026-11-23) — gestao-por-unidade em Execute (Lotes A e B concluídos)
 
 - **Feature**: gestao-por-unidade — `.specs/features/gestao-por-unidade/`. Complex. Specify ✅ (inventário de testes refeito depois da R2: T-1 a T-6; premissas confirmadas) · Design ✅ (AD-016 situação derivada da conta; AD-017 middleware da senha provisória; extensões da AD-004 e da AD-009; emendas E-1 a E-3 na spec: GEST-07 corrigida, GEST-68 e GEST-69 novas) · Tasks ✅ (T1–T16, `validate_tasks.py` 0 erros) · **Execute não iniciado: o usuário aprovou e pediu para aguardar.**
 - **Decisões do usuário no Design**: botão "Desativar" secundário; contas pendentes da próxima feature numa seção própria; senha trocada no admin não vira provisória sozinha.
-- **Commits**: spec `8b02efe`, design `813489b`, tasks `b86eef4`. **Lote A (T1–T7) concluído**: `20c3504`, `5bf978e`, `679e476`, `c1afd85`, `d07047b`, `dbc3d4e`, `88e2918`; 1697 testes; testes antigos alterados só T-1 a T-5 (dentro do inventário). Ajustes do Execute no fim do `design.md` (0005 presa em `inovacoes 0001`; `RenderizadorV2` para a parcial de campo; admin dá 404 nos índices de app ao gestor com staff, como ao USUARIO staff). Pendente para o Lote B: foco no resumo de erros ao carregar.
-- **Next step**: Lote B (T8–T12), depois Lote C (T13–T16), depois o Verifier (o usuário aceitou os três sub-agentes). Estimativa dada: 1h30 a 2h até o veredito. Se o Verifier der FAIL, perguntar antes de corrigir.
+- **Commits**: spec `8b02efe`, design `813489b`, tasks `b86eef4`. **Lote A (T1–T7) concluído**: `20c3504`, `5bf978e`, `679e476`, `c1afd85`, `d07047b`, `dbc3d4e`, `88e2918`; 1697 testes; testes antigos alterados só T-1 a T-5 (dentro do inventário). Ajustes do Execute no fim do `design.md` (0005 presa em `inovacoes 0001`; `RenderizadorV2` para a parcial de campo; admin dá 404 nos índices de app ao gestor com staff, como ao USUARIO staff). **Lote B (T8–T12) concluído**: `28dc49c`, `fa6d2c5`, `b584980`, `1ee0f2e`, `a10c1b5`; 1827 testes. Teste antigo achado fora do inventário no Lote B: `nucleo/tests/test_casca.py:717-738` (`PAGINAS_DA_FIXTURE`), autorizado pelo usuário como T-7 (`fbd5882`); páginas de recusa do gestor sem trilha (RED-30, decisão do usuário). Ajustes do Lote B no `design.md` (coluna "Ações" na tabela; `autofocus` no resumo de erros; GET de situação fora do escopo dá 404 antes do 405).
+- **Next step**: Lote C (T13–T16), depois o Verifier (o usuário aceitou os três sub-agentes). Estimativa dada: 1h30 a 2h até o veredito. Se o Verifier der FAIL, perguntar antes de corrigir.
 - **Regras do usuário para o Execute**: teste antigo fora de T-1 a T-6 → parar e perguntar; migration mantém válidas as contas atuais e os autores do acervo; ícone `usuarios` copiado do `users.svg` do `lucide-static@1.78.0`; não tocar em `.specs/LESSONS.md` nem `lessons.json` fora do fluxo de lições; nada de push, deploy ou migrate no Neon.
 - **Branch**: `main`, só local. **In-progress**: nenhum. **Blockers**: nenhum. Linha de base: 1594 testes.
 
