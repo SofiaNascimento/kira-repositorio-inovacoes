@@ -10,8 +10,8 @@ UI/UX guiada pelas 10 heurísticas de Nielsen, conformidade WCAG 2.1 AA e modelo
 
 **Versão 2 (2026-11-15).** Referência visual: [protótipo da v2](https://claude.ai/artifact/TB5QrYVMt4fYAGKuLERgGn).
 Os textos, números e nomes de unidades e categorias do protótipo são fictícios. Esta spec usa as
-listas reais (RN07) e só os campos que o modelo tem: o `Usuario` não tem unidade e o contato
-responsável é um texto livre. Quando o protótipo e esta spec divergirem, vale a spec.
+listas reais (RN07) e só os campos que o modelo tem: a unidade do `Usuario` é opcional e o
+contato responsável é um texto livre. Quando o protótipo e esta spec divergirem, vale a spec.
 
 ---
 
@@ -216,7 +216,8 @@ Ordem de cima para baixo, igual em todas as telas autenticadas:
 - **Cabeçalho:** logo KIRA à esquerda (link para a home), navegação principal, menu do usuário à direita.
 - **Usuário no cabeçalho:** nome completo (ou o nome de usuário, se o nome estiver vazio) e o botão
   "Sair" (secundário, pequeno). Iniciais num círculo `--brand-navy` são decorativas (`aria-hidden`).
-  Não há unidade: o `Usuario` não tem esse campo.
+  A unidade da conta não aparece no cabeçalho: ela é opcional (só o gestor de unidade precisa
+  de uma) e o gestor a vê em "Minha unidade" (§10).
 - **Administração:** só para o perfil ADMINISTRADOR (nunca por `is_staff`), um link "Administração"
   entre o nome e o "Sair", com o ícone de engrenagem decorativo (`aria-hidden`), que leva ao admin
   (`/admin/`). Cor e sublinhado são os dos links da casca, inclusive no alto contraste. O admin se
@@ -251,17 +252,24 @@ o login.
 
 ### 5.2 Menu principal
 
-`nav id="menu" aria-label="Principal"`, com três itens, sempre ícone **e** texto:
+`nav id="menu" aria-label="Principal"`, com três itens, sempre ícone **e** texto, e um quarto
+só para o gestor de unidade:
 
 | Item | Ícone (traço) | Destino |
 | ---- | ------------- | ------- |
 | Inovações | lâmpada | lista |
 | Cadastrar inovação | círculo com "+" | formulário de cadastro |
 | Indicadores | barras | painel |
+| Minha unidade | pessoas (Lucide `users`) | área do gestor (`/minha-unidade/`) |
+
+- **"Minha unidade"** vem depois de "Indicadores" e existe só para o perfil "Gestor de unidade":
+  o critério é o perfil, nunca `is_staff` ou `is_superuser`. Os outros perfis não têm o item nem
+  o link no HTML.
 
 - **Página atual:** o item recebe `aria-current="page"` quando a tela é o próprio destino, e
   `aria-current="true"` quando a tela pertence à seção (detalhe, edição, avançar status,
-  sinalizar, excluir pertencem a "Inovações").
+  sinalizar, excluir pertencem a "Inovações"; criar conta e redefinir senha pertencem a "Minha
+  unidade").
 - **Sinal além da cor:** o item atual tem fundo `--info-tint` **e** uma barra de 3px
   `--brand-blue` na base (forma, 5.5:1 sobre o fundo). A barra continua no alto contraste.
 - Estados: padrão (texto `--brand-navy`, peso 600), hover (fundo `--bg`), foco (anel padrão),
@@ -295,6 +303,13 @@ Trilhas:
 | Excluir | Inovações › {título} › Excluir |
 | Indicadores | Indicadores |
 | Acessibilidade | Acessibilidade |
+| Minha unidade | Minha unidade |
+| Criar conta | Minha unidade › Criar conta |
+| Redefinir senha | Minha unidade › Redefinir senha |
+| Trocar senha | Trocar senha |
+
+As páginas de recusa ("Acesso restrito", "Conta não encontrada") não têm trilha, como toda 403 e
+404.
 
 A mensagem de feedback de uma ação (§6, alerta) aparece logo acima do cabeçalho de página.
 
@@ -640,3 +655,59 @@ O mesmo formulário serve às duas telas.
   em tabela" e a tabela acessível com os mesmos números (`caption`, `th scope`, `--numeros`).
 - **Painel vazio** (sem inovação, REAP-37): sem cartões de gráfico; estado vazio com
   "Ainda não há dados para o painel." e o botão "Cadastrar inovação".
+
+### Minha unidade e contas (gestão por unidade)
+
+Telas do gestor de unidade e a troca da própria senha. Os três formulários usam o campo, o resumo
+de erros e a barra de ações da §6 v2: "(obrigatório)" por escrito no rótulo, o resumo no topo com
+o título "Não foi possível {criar a conta | redefinir a senha | trocar a senha}. Corrija {n}
+campo(s):" e o foco nele, e o prefixo "Erro:" no título da página. As senhas voltam vazias depois
+de um envio com erro; os outros campos voltam preenchidos (RF13).
+
+- **Minha unidade** (`/minha-unidade/`, só o gestor):
+  - **Cabeçalho de página:** trilha "Minha unidade", h1 "Minha unidade", descrição com o nome da
+    unidade do gestor, ação principal "Criar conta" (botão primário). A ação continua disponível
+    quando a unidade só tem o gestor.
+  - **Seção "Contas da unidade"** (`h2`) com a tabela (§6) de `caption` "Contas da unidade
+    {nome}" e as colunas Nome, Usuário, E-mail, Perfil, Situação, Último acesso e Ações. Lista
+    todas as contas da unidade, inclusive a do gestor e as desativadas, por nome completo e depois
+    por usuário. Situação por escrito ("Ativa", "Desativada"), nunca só por cor; "Nunca" quando a
+    conta ainda não entrou.
+  - **Ações por linha**, só nas contas de perfil Usuário: o link "Redefinir senha" e um botão
+    "Desativar" (conta ativa) ou "Reativar" (conta desativada), os dois secundários: desativar se
+    desfaz, e o perigo da §6 é só para ação destrutiva. Sem confirmação; o botão envia o estado de
+    destino e volta à lista com o alerta "Conta “{usuário}” desativada." ou "Conta “{usuário}”
+    reativada.". Na linha do gestor, de outro gestor ou de um administrador, a célula fica vazia.
+- **Criar conta** (`/minha-unidade/contas/nova/`):
+  - **Cabeçalho de página:** trilha "Minha unidade › Criar conta", h1 "Criar conta", descrição "A
+    conta nasce como Usuário da unidade {nome}.".
+  - **Cartão do formulário** com dois fieldsets (§6): "Identificação" (Usuário, Nome, Sobrenome,
+    E-mail) e "Senha provisória" (Senha provisória, Confirmação da senha provisória). Todos
+    obrigatórios; sem campo de perfil ou de unidade.
+  - **Barra de ações:** "Criar conta", "Cancelar" (volta a "Minha unidade") e a nota.
+  - Depois de criar, "Minha unidade" abre com o alerta "Conta “{usuário}” criada. Informe a senha
+    provisória à pessoa: ela vai trocá-la no primeiro acesso.".
+- **Redefinir senha** (`/minha-unidade/contas/{id}/senha/`):
+  - **Cabeçalho de página:** trilha "Minha unidade › Redefinir senha", h1 "Redefinir senha",
+    descrição "Conta “{usuário}” ({nome}). A pessoa troca a senha no próximo acesso.".
+  - **Cartão do formulário** com Nova senha provisória e Confirmação da nova senha provisória.
+  - **Barra de ações:** "Redefinir senha", "Cancelar" (volta a "Minha unidade") e a nota.
+  - Depois de redefinir, "Minha unidade" abre com o alerta "Senha de “{usuário}” redefinida.
+    Informe a senha provisória à pessoa.".
+- **Trocar senha** (`/conta/senha/`, qualquer conta autenticada):
+  - **Cabeçalho de página:** trilha "Trocar senha" (primeiro nível), h1 "Trocar senha".
+  - **Com senha provisória:** alerta de aviso (§6) "Sua senha é provisória. Defina uma nova senha
+    para continuar." entre o resumo de erros e o cartão. Toda outra tela interna leva de volta a
+    esta até a troca; "Sair" continua disponível.
+  - **Cartão do formulário** com Senha atual, Nova senha e Confirmação da nova senha.
+  - **Barra de ações:** "Trocar senha"; sem senha provisória, também "Cancelar" (volta à lista de
+    inovações) e a nota. Com senha provisória, a barra não tem "Cancelar" nem a nota: cancelar
+    cairia de novo aqui.
+  - Depois de trocar, a sessão continua aberta e a lista de inovações abre com o alerta "Senha
+    alterada.".
+- **Acesso restrito** (403, quem não é gestor em qualquer tela de "Minha unidade"): h1 "Acesso
+  restrito", sem trilha; cartão de estado de erro com "Acesso restrito a gestores de unidade." e o
+  link "Voltar para as inovações".
+- **Conta não encontrada** (404, conta de outra unidade, fora do alcance do gestor ou
+  inexistente): h1 "Conta não encontrada", sem trilha; cartão de estado de erro com "Esta conta
+  não existe ou não pertence à sua unidade." e o link "Voltar para Minha unidade".

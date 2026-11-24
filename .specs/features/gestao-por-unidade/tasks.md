@@ -454,7 +454,7 @@ T16
 
 ---
 
-### T16: Design-spec da gestão por unidade
+### T16: Design-spec da gestão por unidade ✅
 
 **What**: `docs/design-spec.md`: §5 (usuário no cabeçalho deixa de dizer que não há unidade), §5.2 (quarto item "Minha unidade" só para o gestor, ícone de pessoas), §5.3 (trilhas das telas novas) e §10 (seção "Minha unidade e contas", com as quatro telas e as duas páginas de recusa).
 **Where**: `docs/design-spec.md`
@@ -466,8 +466,8 @@ T16
 
 **Done when**:
 
-- [ ] A design-spec descreve o que as telas fazem (conferido contra os templates)
-- [ ] Gate build passa; test count igual ao da T15
+- [x] A design-spec descreve o que as telas fazem (conferido contra os templates)
+- [x] Gate build passa; test count igual ao da T15
 
 **Tests**: none
 **Gate**: build
