@@ -45,7 +45,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Linha de base:** 1594 testes coletados (`.venv/bin/pytest -q --co`, 2026-11-23). A contagem nunca cai.
 
-**Testes antigos que mudam (inventário aprovado em 2026-11-23):** só T-1 a T-6, cada um na task
+**Testes antigos que mudam (inventário aprovado em 2026-11-23):** só T-1 a T-7, cada um na task
 indicada. Mudam no mesmo commit da task que os quebra, preservando a garantia da AC original
 (docstring com a AC). **Se outro teste antigo quebrar, a task para e pergunta ao usuário.**
 
@@ -57,6 +57,7 @@ indicada. Mudam no mesmo commit da task que os quebra, preservando a garantia da
 | T-5 (`PECAS`) | T7 (`paginas/campo.html`, `paginas/resumo_erros.html`), T8 (`tabela_contas.html`) |
 | T-5 (contagem 13 → 19) | T8 (+3: minha unidade, acesso restrito, conta não encontrada → 16), T10 (+1 → 17), T12 (+1 → 18), T13 (+1 → 19) |
 | T-6 (fixture `paginas`) | T8, T10, T12, T13 (cada tela nova entra na task que a cria) |
+| T-7 (`PAGINAS_DA_FIXTURE`, achado no Execute, autorizado em 2026-11-23) | T8, T10, T12, T13 (junto com a T-6) |
 
 ---
 

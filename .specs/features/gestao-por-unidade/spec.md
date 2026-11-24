@@ -18,7 +18,7 @@ unidade e cria o gestor de unidade, que cuida das contas e da curadoria da próp
 - [ ] Um gestor de unidade edita, exclui e avança o status das inovações cuja unidade de origem é a sua.
 - [ ] Nenhuma senha definida pelo gestor continua valendo depois do primeiro acesso da pessoa.
 - [ ] O admin do Django segue fechado a quem não é ADMINISTRADOR (AD-007 intacta).
-- [ ] Só os testes antigos do inventário (T-1 a T-6) mudam; suíte e build gate verdes.
+- [ ] Só os testes antigos do inventário (T-1 a T-7) mudam; suíte e build gate verdes.
 
 ## Code Reuse Analysis
 
@@ -73,6 +73,7 @@ Principal, `PAGINA_ATUAL`, contagem de telas do DS-01, pasta de ícones e fixtur
 | # | Teste | Muda o quê | Por quê |
 | - | ----- | ---------- | ------- |
 | T-6 | `inovacoes/tests/test_views_sistema_design.py:71` (fixture `paginas`) | Ganha as telas novas (Minha unidade, criar conta, redefinir senha, trocar senha, recusa do gestor), renderizadas por um gestor | DS-02 a DS-05 e as checagens da casca em `test_casca.py` (atalho 1, faixa) passam a cobri-las |
+| T-7 | `nucleo/tests/test_casca.py:717-738` (`PAGINAS_DA_FIXTURE`, RED-32) | A lista ganha os mesmos nomes que entram na fixture `paginas`, na task que cria cada tela | Espelha as chaves da fixture; sem isso, a T-6 a quebra. Achado pelo Lote B no Execute e autorizado pelo usuário em 2026-11-23 |
 
 **Conferidos e sem mudança:**
 
@@ -394,4 +395,4 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 
 - [ ] Um gestor cria uma conta e a pessoa entra, troca a senha e chega à lista, sem nenhum passo do ADMINISTRADOR.
 - [ ] Nenhuma tela nova ou ação nova alcança conta ou inovação fora da unidade do gestor (varredura de rotas por papel, L-003).
-- [ ] Suíte e build gate verdes, com só T-1 a T-6 alterados.
+- [ ] Suíte e build gate verdes, com só T-1 a T-7 alterados.

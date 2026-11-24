@@ -167,7 +167,7 @@ formulários de inovação, que não mudam nesta feature.
 ### Telas
 
 Todas estendem o base, sem `<style>` nem `style=` (DS-01); trilha por `paginas/trilha.html` com
-`unidade=True`; o h1 pelo bloco `titulo`; a ação principal pelo bloco `acao_principal`.
+`unidade=True`, salvo as páginas de recusa, que ficam sem trilha como toda 403 e 404 (RED-30; decisão do usuário em 2026-11-23); o h1 pelo bloco `titulo`; a ação principal pelo bloco `acao_principal`.
 
 | Tela | Template | Trilha | h1 / descrição | Conteúdo |
 | ---- | -------- | ------ | -------------- | -------- |
@@ -175,8 +175,8 @@ Todas estendem o base, sem `<style>` nem `style=` (DS-01); trilha por `paginas/t
 | Criar conta | `contas/gestao/conta_form.html` | Minha unidade › Criar conta | "Criar conta" / "A conta nasce como Usuário da unidade {nome}." | Resumo de erros; cartão com `fieldset.grupo` "Identificação" (Usuário, Nome, Sobrenome, E-mail) e "Senha provisória" (as duas senhas); barra de ações "Criar conta", "Cancelar" → `/minha-unidade/`, nota |
 | Redefinir senha | `contas/gestao/redefinir_senha.html` | Minha unidade › Redefinir senha | "Redefinir senha" / "Conta “{usuário}” ({nome}). A pessoa troca a senha no próximo acesso." | Resumo de erros; cartão com os dois campos; barra de ações "Redefinir senha", "Cancelar", nota |
 | Trocar senha | `contas/trocar_senha.html` | Trocar senha | "Trocar senha" | Com senha provisória, alerta de aviso "Sua senha é provisória. Defina uma nova senha para continuar." (GEST-42) e barra de ações sem "Cancelar" (o cancelamento cairia de novo aqui); sem senha provisória, "Cancelar" → `/inovacoes/` |
-| Acesso restrito | `contas/gestao/acesso_restrito.html` | Minha unidade | "Acesso restrito" | `cartao estado-erro` com "Acesso restrito a gestores de unidade." e o link "Voltar para as inovações" |
-| Conta não encontrada | `contas/gestao/conta_nao_encontrada.html` | Minha unidade | "Conta não encontrada" | "Esta conta não existe ou não pertence à sua unidade." e o link "Voltar para Minha unidade" |
+| Acesso restrito | `contas/gestao/acesso_restrito.html` | sem trilha (RED-30) | "Acesso restrito" | `cartao estado-erro` com "Acesso restrito a gestores de unidade." e o link "Voltar para as inovações" |
+| Conta não encontrada | `contas/gestao/conta_nao_encontrada.html` | sem trilha (RED-30) | "Conta não encontrada" | "Esta conta não existe ou não pertence à sua unidade." e o link "Voltar para Minha unidade" |
 
 Pensado para a `autocadastro-com-aprovacao` (AD-016; seção própria para os pendentes, confirmada pelo usuário em 2026-11-23): a tela "Minha unidade" é uma sequência de
 seções, cada uma com seu `h2` e a parcial de tabela. Hoje há uma ("Contas da unidade"); a feature
