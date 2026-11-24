@@ -349,3 +349,11 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   também a `contas 0005` e quebrava. A 0001 já cria a `Unidade`, e a FK só precisa dela.
 - **T1, formatação deste arquivo**: o Ruff 0.16 formata os blocos Python de Markdown, e o bloco
   de Data Models acima falhava o `ruff format --check .` do build gate. Só a formatação mudou.
+- **T5, GEST-05 conferida**: o `add_error("unidade", …)` no `clean()` faz o Django tirar a
+  `unidade` da validação do modelo, como previsto. O formulário tem só
+  `{"unidade": ["Gestor de unidade precisa de uma unidade."]}` e a mensagem aparece uma vez na
+  página. Sem o `clean()`, a CHECK vira erro geral (`__all__`): o teste pega a diferença.
+- **T5, GEST-07 com `is_staff`**: o 403 vale em toda tela de usuário e de unidade. Nos índices
+  dos apps (`/admin/contas/`, `/admin/inovacoes/`), o Django responde 404, como já faz ao USUARIO
+  com `is_staff` (`contas/tests/test_admin_perfil.py`). É a mesma negação da AD-007 ("como nega
+  ao USUARIO"), e o teste fixa os dois códigos.

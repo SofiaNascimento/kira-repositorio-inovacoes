@@ -194,7 +194,7 @@ T16
 
 ---
 
-### T5: Unidade e senha provisória no admin
+### T5: Unidade e senha provisória no admin ✅
 
 **What**: Seção "Perfil" com perfil, unidade e senha provisória; coluna e filtro "Unidade"; `UsuarioAlteracaoForm.clean()` com o erro da GEST-05 no campo.
 **Where**: `contas/admin.py`
@@ -206,11 +206,11 @@ T16
 
 **Done when**:
 
-- [ ] Testes e2e: o formulário de edição tem `unidade` e `senha_provisoria` na seção "Perfil", junto de `perfil`; salvar gestor sem unidade mostra "Gestor de unidade precisa de uma unidade." no campo Unidade, uma vez só na página, e não grava; salvar gestor com unidade grava; lista com coluna e filtro "Unidade"; conta criada no admin nasce com senha provisória desmarcada
-- [ ] Testes e2e (L-003): gestor sem `is_staff` é mandado ao login do admin em toda tela de usuário e de unidade; gestor com `is_staff` recebe 403 nelas; POST forjado do gestor com staff não muda perfil nem unidade
-- [ ] Teste e2e: excluir no admin uma unidade com conta vinculada é recusado e a unidade continua
-- [ ] Testes antigos de `contas/tests/test_admin*.py` verdes sem mudança
-- [ ] Gate full passa; test count ≥ T4 + 9
+- [x] Testes e2e: o formulário de edição tem `unidade` e `senha_provisoria` na seção "Perfil", junto de `perfil`; salvar gestor sem unidade mostra "Gestor de unidade precisa de uma unidade." no campo Unidade, uma vez só na página, e não grava; salvar gestor com unidade grava; lista com coluna e filtro "Unidade"; conta criada no admin nasce com senha provisória desmarcada
+- [x] Testes e2e (L-003): gestor sem `is_staff` é mandado ao login do admin em toda tela de usuário e de unidade; gestor com `is_staff` recebe 403 nelas; POST forjado do gestor com staff não muda perfil nem unidade
+- [x] Teste e2e: excluir no admin uma unidade com conta vinculada é recusado e a unidade continua
+- [x] Testes antigos de `contas/tests/test_admin*.py` verdes sem mudança
+- [x] Gate full passa; test count ≥ T4 + 9
 
 **Tests**: e2e
 **Gate**: full

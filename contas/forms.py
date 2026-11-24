@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import AdminUserCreationForm, AuthenticationForm, UserChangeForm
 
-from contas.models import Usuario
+from contas.models import PerfilUsuario, Usuario
 
 
 class LoginForm(AuthenticationForm):
@@ -39,3 +39,15 @@ class UsuarioAlteracaoForm(UserChangeForm):
 
     class Meta(UserChangeForm.Meta):
         model = Usuario
+
+    def clean(self):
+        """GEST-05: gestor sem unidade e erro no campo Unidade.
+
+        Com o campo em erro, o ModelForm tira a unidade da validacao do modelo,
+        e a CHECK usuario_gestor_tem_unidade nao repete a mensagem como erro
+        geral; ela fica como rede do banco (GEST-03).
+        """
+        dados = super().clean()
+        if dados.get("perfil") == PerfilUsuario.GESTOR_DE_UNIDADE and not dados.get("unidade"):
+            self.add_error("unidade", "Gestor de unidade precisa de uma unidade.")
+        return dados

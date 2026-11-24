@@ -49,7 +49,9 @@ class UsuarioAdmin(AcessoSomenteAdministradorMixin, UserAdmin):
     add_form = UsuarioCriacaoForm
 
     fieldsets = (
-        UserAdmin.fieldsets[:2] + (("Perfil", {"fields": ("perfil",)}),) + UserAdmin.fieldsets[2:]
+        UserAdmin.fieldsets[:2]
+        + (("Perfil", {"fields": ("perfil", "unidade", "senha_provisoria")}),)
+        + UserAdmin.fieldsets[2:]
     )
     add_fieldsets = (
         (
@@ -60,5 +62,6 @@ class UsuarioAdmin(AcessoSomenteAdministradorMixin, UserAdmin):
             },
         ),
     )
-    list_display = ("username", "email", "perfil", "is_active")
-    list_filter = ("perfil", "is_active", "is_staff", "is_superuser")
+    list_display = ("username", "email", "perfil", "unidade", "is_active")
+    list_filter = ("perfil", "unidade", "is_active", "is_staff", "is_superuser")
+    list_select_related = ("unidade",)
