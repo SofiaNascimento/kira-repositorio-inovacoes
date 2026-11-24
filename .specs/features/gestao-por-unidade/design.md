@@ -368,3 +368,17 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   O resumo conta só os campos com erro ("Corrija {n} campo(s)"), um link por campo com as
   mensagens juntas, e põe os erros gerais, sem link, antes dos campos (a §6 não diz a posição).
   O foco no resumo ao carregar a página (§6 v2) fica para as telas que o usam.
+- **T8, coluna "Ações"**: a tabela ganha um sétimo cabeçalho, "Ações", depois dos seis da
+  GEST-13. A célula das ações precisa de cabeçalho de coluna (`th scope="col"`); as contas sem
+  ação ficam com a célula vazia (GEST-18).
+- **T8, links antes das rotas**: "Criar conta", "Redefinir senha" e o `form` de situação saem com
+  os caminhos do design escritos no template (`/minha-unidade/contas/nova/`,
+  `/minha-unidade/contas/{pk}/senha/`, `/minha-unidade/contas/{pk}/situacao/`). A T10, a T11 e a
+  T12 trocam cada um por `{% url %}` quando a rota nasce (decisão do usuário em 2026-11-23).
+- **T8, contexto**: a view põe a unidade como `unidade_do_gestor`, não `unidade`, porque
+  `unidade` é o parâmetro da trilha e o `include` herda o contexto. Cada linha recebe
+  `administravel` (`pode_ser_administrada_por`, sem consulta), já que o template não passa
+  argumento a método.
+- **T8, porteiro**: nas rotas com `pk`, o `GestaoDeUnidadeMixin` busca a conta no `dispatch`,
+  antes do método HTTP. Um GET do gestor de outra unidade na rota de situação dá 404, não 405;
+  o 405 da GEST-33 vale para a conta do escopo.

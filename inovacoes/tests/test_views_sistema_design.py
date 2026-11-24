@@ -13,6 +13,8 @@ from django.contrib.messages import constants
 from django.contrib.messages.storage.base import Message
 from django.template.loader import render_to_string
 
+from contas.models import Usuario
+from inovacoes.models import Unidade
 from inovacoes.tests.visibilidade import exibido
 
 CSS = (Path(settings.BASE_DIR) / "templates" / "kira.css").read_text()
@@ -98,6 +100,18 @@ def paginas(client, autor, terceiro, criar_inovacao):
         html[nome] = client.get(url).content.decode()
     client.force_login(terceiro)
     html["acesso_negado"] = client.get(f"/inovacoes/{inovacao.pk}/editar/").content.decode()
+    # T-6 (gestao-por-unidade, T8, GEST-12): a 403 propria da area do gestor, para quem
+    # nao e gestor.
+    html["acesso_restrito"] = client.get("/minha-unidade/").content.decode()
+    # T-6 (T8, GEST-13): a tela "Minha unidade", renderizada por um gestor.
+    gestor = Usuario.objects.create_user(
+        username="gil",
+        email="gil@x.com",
+        perfil=Usuario.Perfil.GESTOR_DE_UNIDADE,
+        unidade=Unidade.objects.get(nome="Sede"),
+    )
+    client.force_login(gestor)
+    html["minha_unidade"] = client.get("/minha-unidade/").content.decode()
     # AUTH-26: o server_error renderiza o 500.html sem contexto.
     html["erro_500"] = render_to_string("500.html")
     return html
@@ -418,6 +432,8 @@ PECAS = {
     # Pecas incluidas, nao telas: a contagem segue 13 e elas continuam sem estilo proprio.
     "paginas/campo.html",
     "paginas/resumo_erros.html",
+    # T-5 (gestao-por-unidade, T8, DS-01): a tabela de contas da area do gestor (GEST-13).
+    "contas/gestao/parciais/tabela_contas.html",
 }
 
 
@@ -437,7 +453,9 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     # REAP-03: a F6 acrescenta a tela "Sinalizar reaproveitamento".
     # REAP-29: e a tela "Painel de indicadores".
     # T-C (fundacao-do-redesign, RED-33, RED-35): e as paginas "Acessibilidade" e "Ajuda".
-    assert len(telas) == 13
+    # T-5 (gestao-por-unidade, T8): e as telas "Minha unidade", "Acesso restrito" e
+    # "Conta não encontrada" (GEST-12, GEST-13, GEST-62).
+    assert len(telas) == 16
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

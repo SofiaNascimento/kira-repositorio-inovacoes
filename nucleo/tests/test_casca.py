@@ -732,6 +732,10 @@ PAGINAS_DA_FIXTURE = [
     "nao_encontrada",
     "acesso_negado",
     "erro_500",
+    # T-7 (gestao-por-unidade, T8; autorizado pelo usuario em 2026-11-23): as telas que a
+    # T-6 poe na fixture, para o rodape continuar checado em toda pagina dela.
+    "acesso_restrito",
+    "minha_unidade",
 ]
 
 

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Acesso restrito{% endblock %}
+
+{% block titulo %}Acesso restrito{% endblock %}
+
+{% block conteudo %}
+  {# GEST-12: renderizada pelo GestaoDeUnidadeMixin com 403; sem trilha, como toda 403 (RED-30). #}
+  <div class="cartao estado-erro">
+    <p>Acesso restrito a gestores de unidade.</p>
+    <p class="acoes acoes--primaria"><a href="{% url 'inovacoes:lista' %}">Voltar para as inovações</a></p>
+  </div>
+{% endblock %}

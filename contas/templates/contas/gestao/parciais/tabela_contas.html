@@ -1,0 +1,49 @@
+{% comment %}
+  Tabela de contas da area do gestor (GEST-13 a GEST-18). Recebe contas (com o atributo administravel, posto pela
+  view) e legenda.
+  Situacao por escrito (GEST-16); acoes so nas contas que o gestor administra
+  (GEST-17, GEST-18). Desativar e Reativar sao secundarios: a acao se desfaz.
+{% endcomment %}
+<div class="tabela">
+<table>
+  <caption>{{ legenda }}</caption>
+  <thead>
+    <tr>
+      <th scope="col">Nome</th>
+      <th scope="col">Usuário</th>
+      <th scope="col">E-mail</th>
+      <th scope="col">Perfil</th>
+      <th scope="col">Situação</th>
+      <th scope="col">Último acesso</th>
+      <th scope="col">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for conta in contas %}
+      <tr>
+        <td>{{ conta.get_full_name }}</td>
+        <td>{{ conta.username }}</td>
+        <td>{{ conta.email }}</td>
+        <td>{{ conta.get_perfil_display }}</td>
+        <td>{{ conta.situacao.label }}</td>
+        <td>{% if conta.last_login %}<time>{{ conta.last_login|date:"d/m/Y H:i" }}</time>{% else %}Nunca{% endif %}</td>
+        <td>
+          {% if conta.administravel %}
+            <div class="acoes">
+              <a class="botao botao--secundario" href="/minha-unidade/contas/{{ conta.pk }}/senha/">Redefinir senha</a>
+              <form method="post" action="/minha-unidade/contas/{{ conta.pk }}/situacao/">
+                {% csrf_token %}
+                {% if conta.is_active %}
+                  <button type="submit" class="botao--secundario" name="situacao" value="DESATIVADA">Desativar</button>
+                {% else %}
+                  <button type="submit" class="botao--secundario" name="situacao" value="ATIVA">Reativar</button>
+                {% endif %}
+              </form>
+            </div>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>

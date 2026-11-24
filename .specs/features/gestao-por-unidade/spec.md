@@ -328,14 +328,14 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Implementing |
 | GEST-10 | P1 Minha unidade (AC 2) | T9 | Pending |
 | GEST-11 | P1 Minha unidade (AC 3) | T9 | Pending |
-| GEST-12 | P1 Minha unidade (AC 4) | T8 | Pending |
-| GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Pending |
+| GEST-12 | P1 Minha unidade (AC 4) | T8 | Implementing |
+| GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Implementing |
 | GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Implementing |
 | GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Implementing |
-| GEST-16 | P1 Minha unidade (AC 8) | T8 | Pending |
+| GEST-16 | P1 Minha unidade (AC 8) | T8 | Implementing |
 | GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Implementing |
 | GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Implementing |
-| GEST-19 | P1 Minha unidade (AC 11) | T8 | Pending |
+| GEST-19 | P1 Minha unidade (AC 11) | T8 | Implementing |
 | GEST-20 | P1 Criar conta (AC 1) | T10 | Pending |
 | GEST-21 | P1 Criar conta (AC 2) | T10 | Pending |
 | GEST-22 | P1 Criar conta (AC 3) | T10 | Pending |
@@ -380,8 +380,8 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing |
 | GEST-62 | Edge: id inexistente → 404 | T11, T12 | Pending |
 | GEST-63 | Edge: desativação simultânea | T11 | Pending |
-| GEST-64 | Edge: unidade renomeada | T8 | Pending |
-| GEST-65 | Edge: unidade só com o gestor | T8 | Pending |
+| GEST-64 | Edge: unidade renomeada | T8 | Implementing |
+| GEST-65 | Edge: unidade só com o gestor | T8 | Implementing |
 | GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
 | GEST-67 | Edge: CSRF inválido | T11 | Pending |
 | GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |

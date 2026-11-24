@@ -266,7 +266,7 @@ T16
 
 ---
 
-### T8: "Minha unidade", porteiro e páginas de recusa
+### T8: "Minha unidade", porteiro e páginas de recusa ✅
 
 **What**: `contas/views_gestao.py` com `GestaoDeUnidadeMixin` e `MinhaUnidadeView`; `contas/urls_gestao.py` (namespace `gestao`) montado em `/minha-unidade/`; templates `minha_unidade.html`, `acesso_restrito.html`, `conta_nao_encontrada.html`, a parcial `parciais/tabela_contas.html` e o parâmetro `unidade` da trilha.
 **Where**: `contas/views_gestao.py`
@@ -278,11 +278,11 @@ T16
 
 **Done when**:
 
-- [ ] T-5: contagem 13 → 16 e `contas/gestao/parciais/tabela_contas.html` em `PECAS`; T-6: `minha_unidade` e `acesso_restrito` na fixture `paginas`
-- [ ] Testes e2e da tela (DOM parseado): h1 "Minha unidade", nome da unidade, `caption` "Contas da unidade {nome}", cabeçalhos Nome, Usuário, E-mail, Perfil, Situação, Último acesso (`th scope="col"`); linhas na ordem da GEST-14 e só da unidade; "Ativa"/"Desativada" por escrito; "Nunca" sem acesso; ações "Redefinir senha" + "Desativar" (ativa) ou "Reativar" (desativada) só nas contas USUARIO, nenhuma ação nas outras; "Criar conta" com `href="/minha-unidade/contas/nova/"`; nome novo da unidade depois de renomear; unidade só com o gestor
-- [ ] Varredura por papel (L-003) sobre toda rota do namespace `gestao`, lida do resolver: USUARIO, USUARIO staff, USUARIO superusuário, ADMINISTRADOR e superusuário recebem 403 com "Acesso restrito a gestores de unidade." exibido; nas rotas com `pk`, gestor de outra unidade recebe 404 com a página própria e nada muda no banco; anônimo vai ao login (AD-006 verde)
-- [ ] Trilha "Minha unidade" com `aria-current="page"`
-- [ ] Gate build passa; test count ≥ T7 + 20
+- [x] T-5: contagem 13 → 16 e `contas/gestao/parciais/tabela_contas.html` em `PECAS`; T-6: `minha_unidade` e `acesso_restrito` na fixture `paginas`
+- [x] Testes e2e da tela (DOM parseado): h1 "Minha unidade", nome da unidade, `caption` "Contas da unidade {nome}", cabeçalhos Nome, Usuário, E-mail, Perfil, Situação, Último acesso (`th scope="col"`); linhas na ordem da GEST-14 e só da unidade; "Ativa"/"Desativada" por escrito; "Nunca" sem acesso; ações "Redefinir senha" + "Desativar" (ativa) ou "Reativar" (desativada) só nas contas USUARIO, nenhuma ação nas outras; "Criar conta" com `href="/minha-unidade/contas/nova/"`; nome novo da unidade depois de renomear; unidade só com o gestor
+- [x] Varredura por papel (L-003) sobre toda rota do namespace `gestao`, lida do resolver: USUARIO, USUARIO staff, USUARIO superusuário, ADMINISTRADOR e superusuário recebem 403 com "Acesso restrito a gestores de unidade." exibido; nas rotas com `pk`, gestor de outra unidade recebe 404 com a página própria e nada muda no banco; anônimo vai ao login (AD-006 verde)
+- [x] Trilha "Minha unidade" com `aria-current="page"`
+- [x] Gate build passa; test count ≥ T7 + 20
 
 **Tests**: e2e
 **Gate**: build

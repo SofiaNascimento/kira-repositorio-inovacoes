@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Conta não encontrada{% endblock %}
+
+{% block titulo %}Conta não encontrada{% endblock %}
+
+{% block conteudo %}
+  {# GEST-61, GEST-62: fora do escopo ou inexistente, a mesma 404; sem trilha (RED-30). #}
+  <div class="cartao estado-erro">
+    <p>Esta conta não existe ou não pertence à sua unidade.</p>
+    <p class="acoes acoes--primaria"><a href="{% url 'gestao:painel' %}">Voltar para Minha unidade</a></p>
+  </div>
+{% endblock %}

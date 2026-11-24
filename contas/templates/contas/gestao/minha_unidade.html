@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Minha unidade{% endblock %}
+
+{% block trilha %}{% include "paginas/trilha.html" with atual="Minha unidade" %}{% endblock %}
+
+{% block titulo %}Minha unidade{% endblock %}
+
+{# GEST-13, GEST-64: o nome atual da unidade do gestor. #}
+{% block descricao %}<p>{{ unidade_do_gestor.nome }}</p>{% endblock %}
+
+{# GEST-19, GEST-65: a acao principal, mesmo com a unidade so com o gestor. #}
+{% block acao_principal %}<a class="botao" href="/minha-unidade/contas/nova/">Criar conta</a>{% endblock %}
+
+{% block conteudo %}
+  {# AD-016: uma secao por grupo de contas; a autocadastro-com-aprovacao poe os pendentes antes. #}
+  <section aria-labelledby="titulo-contas">
+    <h2 id="titulo-contas">Contas da unidade</h2>
+    {% with legenda="Contas da unidade "|add:unidade_do_gestor.nome %}
+      {% include "contas/gestao/parciais/tabela_contas.html" %}
+    {% endwith %}
+  </section>
+{% endblock %}

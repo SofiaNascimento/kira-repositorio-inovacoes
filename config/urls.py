@@ -30,5 +30,7 @@ urlpatterns = [
     path("", include("contas.urls")),
     path("inovacoes/", include("inovacoes.urls")),
     path("indicadores/", include("indicadores.urls")),
+    # gestao-por-unidade: a area do gestor (namespace "gestao").
+    path("minha-unidade/", include("contas.urls_gestao")),
     path("", include("nucleo.urls")),
 ]
