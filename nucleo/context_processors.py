@@ -6,6 +6,8 @@ PAGINA_ATUAL = {
     ("inovacoes", "lista"): ("inovacoes", "page"),
     ("inovacoes", "nova"): ("nova", "page"),
     ("indicadores", "painel"): ("indicadores", "page"),
+    # GEST-11: a lista da area do gestor.
+    ("gestao", "painel"): ("unidade", "page"),
 }
 
 
@@ -18,6 +20,9 @@ def casca(request):
         # RED-18: o resto da secao (detalhe, editar, excluir, status, reaproveitar),
         # inclusive a 404 e a 403 que essas views renderizam.
         menu_atual, menu_estado = "inovacoes", "true"
+    elif chave[0] == "gestao":
+        # GEST-11: o resto da area do gestor (criar conta, redefinir senha, a 404 e a 403).
+        menu_atual, menu_estado = "unidade", "true"
     else:
         menu_atual, menu_estado = None, None
     return {

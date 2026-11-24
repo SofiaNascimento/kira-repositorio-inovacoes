@@ -291,7 +291,7 @@ T16
 
 ---
 
-### T9: Item "Minha unidade" no menu
+### T9: Item "Minha unidade" no menu ✅
 
 **What**: O quarto item do menu Principal só para o gestor, com o ícone `usuarios`, e a página atual da seção `gestao` no `PAGINA_ATUAL`.
 **Where**: `nucleo/context_processors.py`
@@ -303,10 +303,10 @@ T16
 
 **Done when**:
 
-- [ ] Testes unit da casca: `/minha-unidade/` → `("unidade", "page")`; `/minha-unidade/contas/nova/` e as rotas com `pk` → `("unidade", "true")`; os casos antigos iguais
-- [ ] Testes e2e (DOM parseado): gestor vê 4 itens, "Minha unidade" depois de "Indicadores", `href="/minha-unidade/"`, ícone SVG decorativo antes do texto, `aria-current="page"` na lista e `"true"` nas demais telas da área; USUARIO, USUARIO staff, ADMINISTRADOR e superusuário não têm o item nem o `href` no HTML
-- [ ] Os testes de menu antigos (`MENU` de 3 itens com `autor`) verdes sem mudança
-- [ ] Gate build passa; test count ≥ T8 + 10
+- [x] Testes unit da casca: `/minha-unidade/` → `("unidade", "page")`; `/minha-unidade/contas/nova/` e as rotas com `pk` → `("unidade", "true")`; os casos antigos iguais
+- [x] Testes e2e (DOM parseado): gestor vê 4 itens, "Minha unidade" depois de "Indicadores", `href="/minha-unidade/"`, ícone SVG decorativo antes do texto, `aria-current="page"` na lista e `"true"` nas demais telas da área; USUARIO, USUARIO staff, ADMINISTRADOR e superusuário não têm o item nem o `href` no HTML
+- [x] Os testes de menu antigos (`MENU` de 3 itens com `autor`) verdes sem mudança
+- [x] Gate build passa; test count ≥ T8 + 10
 
 **Tests**: e2e
 **Gate**: build

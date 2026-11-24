@@ -47,6 +47,10 @@
           <a href="{% url 'inovacoes:nova' %}"{% if menu_atual == "nova" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/circulo-mais.svg" %}Cadastrar inovação</a>
           {# REAP-28: o painel de indicadores (RF10). #}
           <a href="{% url 'indicadores:painel' %}"{% if menu_atual == "indicadores" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/grafico-barras.svg" %}Indicadores</a>
+          {# GEST-09, GEST-10: so o gestor de unidade, pelo perfil (L-003); GEST-11: aria-current pela casca. #}
+          {% if user.is_gestor_de_unidade %}
+            <a href="{% url 'gestao:painel' %}"{% if menu_atual == "unidade" %} aria-current="{{ menu_estado }}"{% endif %}>{% include "icones/usuarios.svg" %}Minha unidade</a>
+          {% endif %}
         </nav>
         <div class="usuario">
           {# RED-20: iniciais decorativas; o nome completo (ou o username) num span sem atributo. #}

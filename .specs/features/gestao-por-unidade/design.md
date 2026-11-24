@@ -382,3 +382,7 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
 - **T8, porteiro**: nas rotas com `pk`, o `GestaoDeUnidadeMixin` busca a conta no `dispatch`,
   antes do método HTTP. Um GET do gestor de outra unidade na rota de situação dá 404, não 405;
   o 405 da GEST-33 vale para a conta do escopo.
+- **T9, "true" da seção**: na T9 só existe a rota `gestao:painel`; o ramo do namespace `gestao`
+  é testado com o `resolver_match` das rotas futuras (`criar_conta`, `situacao`,
+  `redefinir_senha`). O `aria-current="true"` exibido entra no teste e2e da T10 e da T12, junto
+  com cada tela.
