@@ -736,6 +736,9 @@ PAGINAS_DA_FIXTURE = [
     # T-6 poe na fixture, para o rodape continuar checado em toda pagina dela.
     "acesso_restrito",
     "minha_unidade",
+    # T-7 (T10): "Criar conta", vazia e com erro.
+    "criar_conta",
+    "criar_conta_erro",
 ]
 
 

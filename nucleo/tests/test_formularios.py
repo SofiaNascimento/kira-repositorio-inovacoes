@@ -102,12 +102,15 @@ def test_sem_erro_nao_ha_resumo_no_dom(dados):
 
 def test_resumo_com_dois_erros_lista_os_campos_na_ordem_com_link():
     """GEST-68, §6 v2: titulo com a acao e o numero, um link por campo, na
-    ordem do formulario, "{rotulo}: {mensagem}", role="alert" e tabindex="-1"."""
+    ordem do formulario, "{rotulo}: {mensagem}", role="alert", tabindex="-1" e autofocus
+    (o resumo recebe o foco ao carregar a pagina com erro, §6 v2; sem script, AD-014)."""
     form = FormularioDeTeste(data={"nome": "", "email": "nao-e-email"})
     assert not form.is_valid()
     html = _resumo(form)
     caixa = re.fullmatch(
-        r'\s*<div class="resumo-erros" role="alert" tabindex="-1">(.*)</div>\s*', html, re.S
+        r'\s*<div class="resumo-erros" role="alert" tabindex="-1" autofocus>(.*)</div>\s*',
+        html,
+        re.S,
     )
     assert caixa
     titulo = re.search(r"<p>(.*?)</p>", caixa.group(1), re.S).group(1)

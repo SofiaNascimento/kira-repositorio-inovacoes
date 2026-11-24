@@ -315,7 +315,7 @@ T16
 
 ---
 
-### T10: Criar conta na unidade
+### T10: Criar conta na unidade ✅
 
 **What**: `ContaDaUnidadeForm` em `contas/forms.py`, `CriarContaView` e o template `contas/gestao/conta_form.html` (dois `fieldset.grupo`, resumo de erros, barra de ações).
 **Where**: `contas/views_gestao.py`
@@ -327,10 +327,10 @@ T16
 
 **Done when**:
 
-- [ ] T-5: contagem 16 → 17; T-6: `criar_conta` (e a versão com erro) na fixture `paginas`
-- [ ] Testes de formulário: cada mensagem da spec no campo certo, uma vez só na página (e-mail e usuário duplicados sem diferenciar caixa, validador de senha, confirmação diferente)
-- [ ] Testes e2e: os seis campos obrigatórios e nenhum de perfil ou unidade; envio válido cria USUARIO da unidade do gestor, ativa, com senha provisória e senha em hash, e volta a `/minha-unidade/` com o alerta exato da GEST-22; POST com `perfil`, `unidade`, `is_staff`, `is_superuser` é ignorado; envio inválido não cria, devolve usuário, nome, sobrenome e e-mail e esvazia as senhas, mostra o resumo e o `<title>` com "Erro:"; barra de ações com "Criar conta", "Cancelar" → `/minha-unidade/` e a nota; trilha "Minha unidade › Criar conta"; CSRF inválido → 403 sem criar
-- [ ] Gate full passa; test count ≥ T9 + 16
+- [x] T-5: contagem 16 → 17; T-6: `criar_conta` (e a versão com erro) na fixture `paginas`
+- [x] Testes de formulário: cada mensagem da spec no campo certo, uma vez só na página (e-mail e usuário duplicados sem diferenciar caixa, validador de senha, confirmação diferente)
+- [x] Testes e2e: os seis campos obrigatórios e nenhum de perfil ou unidade; envio válido cria USUARIO da unidade do gestor, ativa, com senha provisória e senha em hash, e volta a `/minha-unidade/` com o alerta exato da GEST-22; POST com `perfil`, `unidade`, `is_staff`, `is_superuser` é ignorado; envio inválido não cria, devolve usuário, nome, sobrenome e e-mail e esvazia as senhas, mostra o resumo e o `<title>` com "Erro:"; barra de ações com "Criar conta", "Cancelar" → `/minha-unidade/` e a nota; trilha "Minha unidade › Criar conta"; CSRF inválido → 403 sem criar
+- [x] Gate full passa; test count ≥ T9 + 16
 
 **Tests**: e2e
 **Gate**: full

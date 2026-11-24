@@ -112,6 +112,9 @@ def paginas(client, autor, terceiro, criar_inovacao):
     )
     client.force_login(gestor)
     html["minha_unidade"] = client.get("/minha-unidade/").content.decode()
+    # T-6 (T10, GEST-20, GEST-68): "Criar conta", vazia e com o resumo de erros.
+    html["criar_conta"] = client.get("/minha-unidade/contas/nova/").content.decode()
+    html["criar_conta_erro"] = client.post("/minha-unidade/contas/nova/", {}).content.decode()
     # AUTH-26: o server_error renderiza o 500.html sem contexto.
     html["erro_500"] = render_to_string("500.html")
     return html
@@ -455,7 +458,8 @@ def test_toda_tela_estende_o_base_sem_estilo_proprio():
     # T-C (fundacao-do-redesign, RED-33, RED-35): e as paginas "Acessibilidade" e "Ajuda".
     # T-5 (gestao-por-unidade, T8): e as telas "Minha unidade", "Acesso restrito" e
     # "Conta não encontrada" (GEST-12, GEST-13, GEST-62).
-    assert len(telas) == 16
+    # T-5 (T10): e a tela "Criar conta" (GEST-20).
+    assert len(telas) == 17
     for nome, fonte in telas.items():
         assert fonte.lstrip().startswith('{% extends "base.html" %}'), nome
         assert "<style" not in fonte, nome

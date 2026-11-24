@@ -386,3 +386,11 @@ telas. Contagem do DS-01: **13 → 19** (as seis telas da tabela acima); `PECAS`
   é testado com o `resolver_match` das rotas futuras (`criar_conta`, `situacao`,
   `redefinir_senha`). O `aria-current="true"` exibido entra no teste e2e da T10 e da T12, junto
   com cada tela.
+- **T10, validador no campo certo**: o `BaseUserCreationForm` põe a mensagem do validador de
+  senha na confirmação (`password2`). A GEST-26 pede no campo "Senha provisória": o
+  `ContaDaUnidadeForm._post_clean` valida pelo `password1`.
+- **T10, foco no resumo**: a parcial `paginas/resumo_erros.html` ganhou `autofocus` (o resumo
+  recebe o foco ao carregar a página com erro, §6 v2, sem script). O teste do Lote A em
+  `nucleo/tests/test_formularios.py` passou a exigir o atributo. Com erro, o formulário tira o
+  `autofocus` que o Django põe no campo Usuário, para o foco ir só ao resumo.
+- **T10, rota**: "Criar conta" da lista passou a `{% url 'gestao:criar_conta' %}`.

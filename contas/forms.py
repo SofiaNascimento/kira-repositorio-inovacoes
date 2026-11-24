@@ -1,6 +1,16 @@
-from django.contrib.auth.forms import AdminUserCreationForm, AuthenticationForm, UserChangeForm
+from django import forms
+from django.contrib.auth.forms import (
+    AdminUserCreationForm,
+    AuthenticationForm,
+    BaseUserCreationForm,
+    UserChangeForm,
+)
+from django.core.exceptions import ValidationError
 
 from contas.models import PerfilUsuario, Usuario
+from nucleo.formularios import FormularioV2Mixin
+
+SENHAS_DIFERENTES = "As duas senhas não são iguais."
 
 
 class LoginForm(AuthenticationForm):
@@ -51,3 +61,56 @@ class UsuarioAlteracaoForm(UserChangeForm):
         if dados.get("perfil") == PerfilUsuario.GESTOR_DE_UNIDADE and not dados.get("unidade"):
             self.add_error("unidade", "Gestor de unidade precisa de uma unidade.")
         return dados
+
+
+class ContaDaUnidadeForm(FormularioV2Mixin, BaseUserCreationForm):
+    """Criar conta na unidade (GEST-20, GEST-24 a GEST-28).
+
+    So os seis campos: perfil, unidade e as bandeiras saem da view, nunca do
+    POST (GEST-23). Usuario e e-mail duplicados acusam no proprio campo, sem
+    diferenciar caixa; com o campo em erro, a validacao do modelo nao repete a
+    mensagem.
+    """
+
+    error_messages = {"password_mismatch": SENHAS_DIFERENTES}
+
+    class Meta:
+        model = Usuario
+        fields = ("username", "first_name", "last_name", "email")
+        labels = {
+            "username": "Usuário",
+            "first_name": "Nome",
+            "last_name": "Sobrenome",
+            "email": "E-mail",
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for nome in ("first_name", "last_name"):
+            self.fields[nome].required = True
+        self.fields["password1"].label = "Senha provisória"
+        self.fields["password2"].label = "Confirmação da senha provisória"
+
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        if Usuario.objects.filter(username__iexact=username).exists():
+            raise ValidationError("Já existe uma conta com este usuário.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if Usuario.objects.filter(email__iexact=email).exists():
+            raise ValidationError("Já existe uma conta com este e-mail.")
+        return email
+
+    def _post_clean(self):
+        # GEST-26: a mensagem do validador vai no campo Senha provisória; o
+        # BaseUserCreationForm a poria na confirmacao.
+        forms.ModelForm._post_clean(self)
+        self.validate_password_for_user(self.instance, password_field_name="password1")
+
+    def full_clean(self):
+        super().full_clean()
+        if self._errors:
+            # §6 v2: com erro, o foco vai ao resumo, nao ao primeiro campo.
+            self.fields["username"].widget.attrs.pop("autofocus", None)

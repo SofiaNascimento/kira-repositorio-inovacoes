@@ -4,10 +4,14 @@ Toda view daqui herda o GestaoDeUnidadeMixin, o porteiro do papel, como as
 views que alteram inovacao herdam o AlteracaoDeInovacaoMixin (AD-009).
 """
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, ListView
 
-from contas.models import Usuario
+from contas.forms import ContaDaUnidadeForm
+from contas.models import PerfilUsuario, Usuario
 
 
 class GestaoDeUnidadeMixin:
@@ -49,3 +53,32 @@ class MinhaUnidadeView(GestaoDeUnidadeMixin, ListView):
         # que "unidade": esse e o parametro da trilha (raiz "Minha unidade").
         contexto["unidade_do_gestor"] = self.request.user.unidade
         return contexto
+
+
+class CriarContaView(GestaoDeUnidadeMixin, CreateView):
+    """Criar conta na unidade do gestor (GEST-20 a GEST-29)."""
+
+    form_class = ContaDaUnidadeForm
+    template_name = "contas/gestao/conta_form.html"
+    success_url = reverse_lazy("gestao:painel")
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(unidade_do_gestor=self.request.user.unidade, **kwargs)
+
+    def form_valid(self, form):
+        conta = form.save(commit=False)
+        # GEST-21, GEST-23: o papel e a unidade vem do gestor, nunca do POST.
+        conta.perfil = PerfilUsuario.USUARIO
+        conta.unidade_id = self.request.user.unidade_id
+        conta.senha_provisoria = True
+        conta.is_active = True
+        conta.is_staff = False
+        conta.is_superuser = False
+        conta.save()
+        self.object = conta
+        messages.success(
+            self.request,
+            f"Conta “{conta.username}” criada. Informe a senha provisória à pessoa: "
+            "ela vai trocá-la no primeiro acesso.",
+        )
+        return HttpResponseRedirect(self.get_success_url())

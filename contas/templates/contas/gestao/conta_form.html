@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{# GEST-68: com erro, o titulo da pagina comeca por "Erro:". #}
+{% block title %}{% if form.errors %}Erro: {% endif %}Criar conta{% endblock %}
+
+{% block trilha %}{% include "paginas/trilha.html" with unidade=True atual="Criar conta" %}{% endblock %}
+
+{% block titulo %}Criar conta{% endblock %}
+
+{% block descricao %}<p>A conta nasce como Usuário da unidade {{ unidade_do_gestor.nome }}.</p>{% endblock %}
+
+{% block conteudo %}
+  {# GEST-68: resumo no topo, so com erro, com o foco ao carregar. #}
+  {% include "paginas/resumo_erros.html" with acao="criar a conta" %}
+
+  <div class="cartao">
+    {# novalidate: as mensagens sao as do servidor, em portugues (RF13). #}
+    <form method="post" novalidate class="formulario">
+      {% csrf_token %}
+      {# GEST-20: so os seis campos; perfil e unidade vem do gestor (GEST-23). #}
+      <fieldset class="grupo">
+        <legend><span class="grupo__numero" aria-hidden="true">1</span>Identificação</legend>
+        <div class="campo">{{ form.username.as_field_group }}</div>
+        <div class="campo">{{ form.first_name.as_field_group }}</div>
+        <div class="campo">{{ form.last_name.as_field_group }}</div>
+        <div class="campo">{{ form.email.as_field_group }}</div>
+      </fieldset>
+      <fieldset class="grupo">
+        <legend><span class="grupo__numero" aria-hidden="true">2</span>Senha provisória</legend>
+        <div class="campo">{{ form.password1.as_field_group }}</div>
+        <div class="campo">{{ form.password2.as_field_group }}</div>
+      </fieldset>
+
+      {# GEST-29, GEST-69: barra de acoes da §6 v2; cancelar e um link, nada grava. #}
+      <div class="barra-acoes">
+        <button type="submit">Criar conta</button>
+        <a class="botao botao--secundario" href="{% url 'gestao:painel' %}">Cancelar</a>
+        <p class="barra-acoes__nota">Nada é gravado se você cancelar.</p>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -336,16 +336,16 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Implementing |
 | GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Implementing |
 | GEST-19 | P1 Minha unidade (AC 11) | T8 | Implementing |
-| GEST-20 | P1 Criar conta (AC 1) | T10 | Pending |
-| GEST-21 | P1 Criar conta (AC 2) | T10 | Pending |
-| GEST-22 | P1 Criar conta (AC 3) | T10 | Pending |
-| GEST-23 | P1 Criar conta (AC 4) | T10 | Pending |
-| GEST-24 | P1 Criar conta (AC 5) | T10 | Pending |
-| GEST-25 | P1 Criar conta (AC 6) | T10 | Pending |
-| GEST-26 | P1 Criar conta (AC 7) | T10 | Pending |
-| GEST-27 | P1 Criar conta (AC 8) | T10 | Pending |
-| GEST-28 | P1 Criar conta (AC 9) | T10 | Pending |
-| GEST-29 | P1 Criar conta (AC 10) | T10 | Pending |
+| GEST-20 | P1 Criar conta (AC 1) | T10 | Implementing |
+| GEST-21 | P1 Criar conta (AC 2) | T10 | Implementing |
+| GEST-22 | P1 Criar conta (AC 3) | T10 | Implementing |
+| GEST-23 | P1 Criar conta (AC 4) | T10 | Implementing |
+| GEST-24 | P1 Criar conta (AC 5) | T10 | Implementing |
+| GEST-25 | P1 Criar conta (AC 6) | T10 | Implementing |
+| GEST-26 | P1 Criar conta (AC 7) | T10 | Implementing |
+| GEST-27 | P1 Criar conta (AC 8) | T10 | Implementing |
+| GEST-28 | P1 Criar conta (AC 9) | T10 | Implementing |
+| GEST-29 | P1 Criar conta (AC 10) | T10 | Implementing |
 | GEST-30 | P1 Desativar (AC 1) | T11 | Pending |
 | GEST-31 | P1 Desativar (AC 2) | T11 | Pending |
 | GEST-32 | P1 Desativar (AC 3) | T2, T11 | Implementing |
@@ -385,7 +385,7 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 | GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
 | GEST-67 | Edge: CSRF inválido | T11 | Pending |
 | GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |
-| GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Pending |
+| GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Implementing |
 
 **Coverage:** 69 total, 69 mapeados para tasks, 69 pendentes.
 
