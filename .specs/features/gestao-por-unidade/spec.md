@@ -2,7 +2,7 @@
 
 **Status:** Aprovada (2026-11-23), com o inventário de testes refeito depois da R2 e as emendas
 E-1 a E-3 do Design. Escopo
-Complex: Discuss feito (`context.md`); segue para Design e Tasks formais.
+Complex: Discuss, Design e Tasks aprovados; Execute aguardando o ok do usuário.
 
 ## Problem Statement
 
@@ -86,7 +86,7 @@ Principal, `PAGINA_ATUAL`, contagem de telas do DS-01, pasta de ícones e fixtur
 - `nucleo/tests/test_paginas_apoio.py:201-230` (Ajuda): fixa as seções, não o texto de permissão.
 - Cadastro e reaproveitamento (INOV-15, `inovacoes/tests/test_forms.py`, `test_forms_reaproveitamento.py`): os usuários de teste não têm unidade; o Design mantém opcional o novo argumento de usuário nos formulários.
 
-A página Ajuda (`templates/paginas/ajuda.html:28`) e a `design-spec.md` (§10, detalhe, linhas
+A página Ajuda (`templates/paginas/ajuda.html:29`) e a `design-spec.md` (§10, detalhe, linhas
 556 e 574) recebem o texto novo. Qualquer outro teste antigo que precise mudar: parar e pedir.
 
 ---
@@ -316,77 +316,77 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| GEST-01 | P1 Unidade e papel (AC 1) | Design | Pending |
-| GEST-02 | P1 Unidade e papel (AC 2) | Design | Pending |
-| GEST-03 | P1 Unidade e papel (AC 3) | Design | Pending |
-| GEST-04 | P1 Unidade e papel (AC 4) | Design | Pending |
-| GEST-05 | P1 Unidade e papel (AC 5) | Design | Pending |
-| GEST-06 | P1 Unidade e papel (AC 6) | Design | Pending |
-| GEST-07 | P1 Unidade e papel (AC 7) | Design | Pending |
-| GEST-08 | P1 Unidade e papel (AC 8) | Design | Pending |
-| GEST-09 | P1 Minha unidade (AC 1) | Design | Pending |
-| GEST-10 | P1 Minha unidade (AC 2) | Design | Pending |
-| GEST-11 | P1 Minha unidade (AC 3) | Design | Pending |
-| GEST-12 | P1 Minha unidade (AC 4) | Design | Pending |
-| GEST-13 | P1 Minha unidade (AC 5) | Design | Pending |
-| GEST-14 | P1 Minha unidade (AC 6) | Design | Pending |
-| GEST-15 | P1 Minha unidade (AC 7) | Design | Pending |
-| GEST-16 | P1 Minha unidade (AC 8) | Design | Pending |
-| GEST-17 | P1 Minha unidade (AC 9) | Design | Pending |
-| GEST-18 | P1 Minha unidade (AC 10) | Design | Pending |
-| GEST-19 | P1 Minha unidade (AC 11) | Design | Pending |
-| GEST-20 | P1 Criar conta (AC 1) | Design | Pending |
-| GEST-21 | P1 Criar conta (AC 2) | Design | Pending |
-| GEST-22 | P1 Criar conta (AC 3) | Design | Pending |
-| GEST-23 | P1 Criar conta (AC 4) | Design | Pending |
-| GEST-24 | P1 Criar conta (AC 5) | Design | Pending |
-| GEST-25 | P1 Criar conta (AC 6) | Design | Pending |
-| GEST-26 | P1 Criar conta (AC 7) | Design | Pending |
-| GEST-27 | P1 Criar conta (AC 8) | Design | Pending |
-| GEST-28 | P1 Criar conta (AC 9) | Design | Pending |
-| GEST-29 | P1 Criar conta (AC 10) | Design | Pending |
-| GEST-30 | P1 Desativar (AC 1) | Design | Pending |
-| GEST-31 | P1 Desativar (AC 2) | Design | Pending |
-| GEST-32 | P1 Desativar (AC 3) | Design | Pending |
-| GEST-33 | P1 Desativar (AC 4) | Design | Pending |
-| GEST-34 | P1 Desativar (AC 5) | Design | Pending |
-| GEST-35 | P1 Desativar (AC 6) | Design | Pending |
-| GEST-36 | P1 Desativar (AC 7) | Design | Pending |
-| GEST-37 | P1 Senha (AC 1) | Design | Pending |
-| GEST-38 | P1 Senha (AC 2) | Design | Pending |
-| GEST-39 | P1 Senha (AC 3) | Design | Pending |
-| GEST-40 | P1 Senha (AC 4) | Design | Pending |
-| GEST-41 | P1 Senha (AC 5) | Design | Pending |
-| GEST-42 | P1 Senha (AC 6) | Design | Pending |
-| GEST-43 | P1 Senha (AC 7) | Design | Pending |
-| GEST-44 | P1 Senha (AC 8) | Design | Pending |
-| GEST-45 | P1 Senha (AC 9) | Design | Pending |
-| GEST-46 | P1 Senha (AC 10) | Design | Pending |
-| GEST-47 | P1 Senha (AC 11) | Design | Pending |
-| GEST-48 | P1 Curadoria (AC 1) | Design | Pending |
-| GEST-49 | P1 Curadoria (AC 2) | Design | Pending |
-| GEST-50 | P1 Curadoria (AC 3) | Design | Pending |
-| GEST-51 | P1 Curadoria (AC 4) | Design | Pending |
-| GEST-52 | P1 Curadoria (AC 5) | Design | Pending |
-| GEST-53 | P1 Curadoria (AC 6) | Design | Pending |
-| GEST-54 | P1 Curadoria (AC 7) | Design | Pending |
-| GEST-55 | P2 Pré-preenchida (AC 1) | Design | Pending |
-| GEST-56 | P2 Pré-preenchida (AC 2) | Design | Pending |
-| GEST-57 | P2 Pré-preenchida (AC 3) | Design | Pending |
-| GEST-58 | P2 Pré-preenchida (AC 4) | Design | Pending |
-| GEST-59 | P2 Pré-preenchida (AC 5) | Design | Pending |
-| GEST-60 | P2 Pré-preenchida (AC 6) | Design | Pending |
-| GEST-61 | Edge: alvo fora do escopo → 404 | Design | Pending |
-| GEST-62 | Edge: id inexistente → 404 | Design | Pending |
-| GEST-63 | Edge: desativação simultânea | Design | Pending |
-| GEST-64 | Edge: unidade renomeada | Design | Pending |
-| GEST-65 | Edge: unidade só com o gestor | Design | Pending |
-| GEST-66 | Edge: senha provisória antes do papel | Design | Pending |
-| GEST-67 | Edge: CSRF inválido | Design | Pending |
-| GEST-68 | P1 Formulários (AC 1) | Design | Pending |
-| GEST-69 | P1 Formulários (AC 2) | Design | Pending |
+| GEST-01 | P1 Unidade e papel (AC 1) | T1 | Pending |
+| GEST-02 | P1 Unidade e papel (AC 2) | T1 | Pending |
+| GEST-03 | P1 Unidade e papel (AC 3) | T1 | Pending |
+| GEST-04 | P1 Unidade e papel (AC 4) | T5 | Pending |
+| GEST-05 | P1 Unidade e papel (AC 5) | T5 | Pending |
+| GEST-06 | P1 Unidade e papel (AC 6) | T5 | Pending |
+| GEST-07 | P1 Unidade e papel (AC 7) | T5 | Pending |
+| GEST-08 | P1 Unidade e papel (AC 8) | T5 | Pending |
+| GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Pending |
+| GEST-10 | P1 Minha unidade (AC 2) | T9 | Pending |
+| GEST-11 | P1 Minha unidade (AC 3) | T9 | Pending |
+| GEST-12 | P1 Minha unidade (AC 4) | T8 | Pending |
+| GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Pending |
+| GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Pending |
+| GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Pending |
+| GEST-16 | P1 Minha unidade (AC 8) | T8 | Pending |
+| GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Pending |
+| GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Pending |
+| GEST-19 | P1 Minha unidade (AC 11) | T8 | Pending |
+| GEST-20 | P1 Criar conta (AC 1) | T10 | Pending |
+| GEST-21 | P1 Criar conta (AC 2) | T10 | Pending |
+| GEST-22 | P1 Criar conta (AC 3) | T10 | Pending |
+| GEST-23 | P1 Criar conta (AC 4) | T10 | Pending |
+| GEST-24 | P1 Criar conta (AC 5) | T10 | Pending |
+| GEST-25 | P1 Criar conta (AC 6) | T10 | Pending |
+| GEST-26 | P1 Criar conta (AC 7) | T10 | Pending |
+| GEST-27 | P1 Criar conta (AC 8) | T10 | Pending |
+| GEST-28 | P1 Criar conta (AC 9) | T10 | Pending |
+| GEST-29 | P1 Criar conta (AC 10) | T10 | Pending |
+| GEST-30 | P1 Desativar (AC 1) | T11 | Pending |
+| GEST-31 | P1 Desativar (AC 2) | T11 | Pending |
+| GEST-32 | P1 Desativar (AC 3) | T2, T11 | Pending |
+| GEST-33 | P1 Desativar (AC 4) | T11 | Pending |
+| GEST-34 | P1 Desativar (AC 5) | T11 | Pending |
+| GEST-35 | P1 Desativar (AC 6) | T11 | Pending |
+| GEST-36 | P1 Desativar (AC 7) | T11 | Pending |
+| GEST-37 | P1 Senha (AC 1) | T12 | Pending |
+| GEST-38 | P1 Senha (AC 2) | T12 | Pending |
+| GEST-39 | P1 Senha (AC 3) | T12 | Pending |
+| GEST-40 | P1 Senha (AC 4) | T14 | Pending |
+| GEST-41 | P1 Senha (AC 5) | T13, T16 | Pending |
+| GEST-42 | P1 Senha (AC 6) | T13 | Pending |
+| GEST-43 | P1 Senha (AC 7) | T13 | Pending |
+| GEST-44 | P1 Senha (AC 8) | T13 | Pending |
+| GEST-45 | P1 Senha (AC 9) | T13 | Pending |
+| GEST-46 | P1 Senha (AC 10) | T13 | Pending |
+| GEST-47 | P1 Senha (AC 11) | T13 | Pending |
+| GEST-48 | P1 Curadoria (AC 1) | T3 | Pending |
+| GEST-49 | P1 Curadoria (AC 2) | T3 | Pending |
+| GEST-50 | P1 Curadoria (AC 3) | T3 | Pending |
+| GEST-51 | P1 Curadoria (AC 4) | T3 | Pending |
+| GEST-52 | P1 Curadoria (AC 5) | T4 | Pending |
+| GEST-53 | P1 Curadoria (AC 6) | T3 | Pending |
+| GEST-54 | P1 Curadoria (AC 7) | T3 | Pending |
+| GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Pending |
+| GEST-56 | P2 Pré-preenchida (AC 2) | T15 | Pending |
+| GEST-57 | P2 Pré-preenchida (AC 3) | T15 | Pending |
+| GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Pending |
+| GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Pending |
+| GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Pending |
+| GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Pending |
+| GEST-62 | Edge: id inexistente → 404 | T11, T12 | Pending |
+| GEST-63 | Edge: desativação simultânea | T11 | Pending |
+| GEST-64 | Edge: unidade renomeada | T8 | Pending |
+| GEST-65 | Edge: unidade só com o gestor | T8 | Pending |
+| GEST-66 | Edge: senha provisória antes do papel | T14 | Pending |
+| GEST-67 | Edge: CSRF inválido | T11 | Pending |
+| GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Pending |
+| GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Pending |
 
-**Coverage:** 69 total, 0 mapped to tasks (Tasks ainda não rodou), 69 pendentes.
+**Coverage:** 69 total, 69 mapeados para tasks, 69 pendentes.
 
 ---
 

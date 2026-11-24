@@ -2,7 +2,7 @@
 
 **Gathered:** 2026-11-15
 **Spec:** `.specs/features/gestao-por-unidade/spec.md`
-**Status:** Spec aprovada em 2026-11-23; em Design
+**Status:** Spec, Design e Tasks aprovados em 2026-11-23; Execute aguardando
 
 ---
 

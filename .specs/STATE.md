@@ -142,6 +142,15 @@
 
 ## Handoff
 
+### Atual (2026-11-23) — gestao-por-unidade aprovada até as Tasks, Execute não iniciado
+
+- **Feature**: gestao-por-unidade — `.specs/features/gestao-por-unidade/`. Complex. Specify ✅ (inventário de testes refeito depois da R2: T-1 a T-6; premissas confirmadas) · Design ✅ (AD-016 situação derivada da conta; AD-017 middleware da senha provisória; extensões da AD-004 e da AD-009; emendas E-1 a E-3 na spec: GEST-07 corrigida, GEST-68 e GEST-69 novas) · Tasks ✅ (T1–T16, `validate_tasks.py` 0 erros) · **Execute não iniciado: o usuário aprovou e pediu para aguardar.**
+- **Decisões do usuário no Design**: botão "Desativar" secundário; contas pendentes da próxima feature numa seção própria; senha trocada no admin não vira provisória sozinha.
+- **Commits**: spec `8b02efe`, design `813489b`, tasks (este).
+- **Next step**: com o ok do usuário, Execute em três sub-agentes em sequência (Lote A T1–T7, Lote B T8–T12, Lote C T13–T16; oferta feita e ainda sem resposta), depois o Verifier. Estimativa dada: 1h30 a 2h até o veredito. Se o Verifier der FAIL, perguntar antes de corrigir.
+- **Regras do usuário para o Execute**: teste antigo fora de T-1 a T-6 → parar e perguntar; migration mantém válidas as contas atuais e os autores do acervo; ícone `usuarios` copiado do `users.svg` do `lucide-static@1.78.0`; não tocar em `.specs/LESSONS.md` nem `lessons.json` fora do fluxo de lições; nada de push, deploy ou migrate no Neon.
+- **Branch**: `main`, só local. **In-progress**: nenhum. **Blockers**: nenhum. Linha de base: 1594 testes.
+
 ### Atual (2026-11-23) — link-administracao concluída com risco aceito
 
 - **Feature**: link-administracao — `.specs/features/link-administracao/`. Small/Medium, sem Design nem tasks.md (plano inline de 4 passos). Link "Administração" na `div.usuario` do `templates/base.html`, entre o nome e o Sair, só com `user.is_administrador` (AD-007, L-003); ícone `templates/icones/engrenagem.svg` copiado do `settings.svg` oficial do Lucide (AD-013); admin com `site_header` "KIRA — Administração" e `site_url="/inovacoes/"` em `config/urls.py`. Nenhuma AD nova.
