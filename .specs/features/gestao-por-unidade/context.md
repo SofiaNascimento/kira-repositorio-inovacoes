@@ -58,6 +58,16 @@ sedes. A feature irmã `link-administracao` resolve o acesso ao admin pela inter
   visível e desmarcado. Registrado na spec.
 - Rota de troca de senha aberta a todos, sem link no cabeçalho. Registrado na spec.
 
+### Decididas no Design (2026-11-23)
+
+- Botão "Desativar" no estilo secundário, como "Reativar": a ação pode ser desfeita, e o estilo
+  de perigo da §6 é só para ação destrutiva.
+- Contas pendentes da `autocadastro-com-aprovacao` ficam numa seção própria ("Pedidos
+  pendentes") em "Minha unidade", antes de "Contas da unidade"; a tabela desta feature não muda
+  (AD-016).
+- Senha trocada pelo ADMINISTRADOR na tela de senha do admin não vira provisória sozinha: ele
+  marca "senha provisória" à mão, como a spec já dizia.
+
 ---
 
 ## Specific References

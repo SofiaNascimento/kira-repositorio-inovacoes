@@ -33,6 +33,7 @@
 - **Scope**: F1 (autenticacao), F4 (edicao-exclusao) e toda regra de autorização por perfil.
 - **Date**: 2026-09-21
 - **Status**: active
+- **Extensão (2026-11-23, gestao-por-unidade)**: o enum ganha o terceiro valor `GESTOR_DE_UNIDADE` ("Gestor de unidade"), ainda no mesmo campo e no mesmo modelo; a coluna `perfil` passa a 17 caracteres e a CHECK `usuario_perfil_valido` acompanha o enum. `Usuario` ganha a unidade opcional (`inovacoes.Unidade`, PROTECT), obrigatória só para o gestor pela CHECK `usuario_gestor_tem_unidade`; contas atuais e autores do acervo seguem com unidade nula. `Usuario.is_gestor_de_unidade` é o ponto único de consulta do papel, como `is_administrador`. O gestor não ganha `is_staff`: o admin segue só do ADMINISTRADOR (AD-007 intacta).
 
 ### AD-005
 - **Decision**: O projeto usa um modelo de usuário customizado (`contas.Usuario`, subclasse de `AbstractUser`) declarado em `AUTH_USER_MODEL` desde a primeira migration; nenhuma app referencia `auth.User` diretamente.
@@ -73,6 +74,7 @@
 - **Scope**: F4 (edicao-exclusao), F5 (ciclo-de-vida-status) e toda view futura que grave ou apague uma `Inovacao`. O detalhe usa o mesmo método para mostrar ou esconder as ações.
 - **Date**: 2026-10-11
 - **Status**: active
+- **Extensão (2026-11-23, gestao-por-unidade)**: a regra passa a "autor, `ADMINISTRADOR` ou gestor da unidade de origem" (`usuario.is_gestor_de_unidade and usuario.unidade_id == self.unidade_id`), ainda só em `pode_ser_alterada_por`, lendo só ids. Editar, excluir e avançar status herdam pelo mixin; o detalhe da R2 já usa `pode_alterar` (o mesmo método) para Editar, Excluir e Avançar, e nenhuma view muda. Os textos de recusa e de explicação passam a citar o gestor. A varredura de autoria continua só no namespace `inovacoes`.
 
 ### AD-010
 - **Decision**: O visual do sistema segue `docs/design-spec.md` por um template base único (`templates/base.html`) e uma folha de estilo central (`templates/kira.css`), embutida pelo base em `<style>{% include "kira.css" %}</style>`. Toda tela estende o base e usa só os componentes da folha (`botao`, `campo`, `alerta`, `cartao`, `tabela`, `selo`, `acoes`, `vazio`); nenhuma tela tem `<style>` ou `style=`. HTML que um teste fixa recebe estilo por seletor de papel ARIA ou por contêiner, nunca por atributo novo. A folha não tem `="` nem `<`, e os seletores de atributo vão sem aspas (`[role=alert]`).
@@ -120,6 +122,22 @@
 - **Trade-off**: Diverge da letra da §5 (trilha dentro do `main`, `tabindex="-1"` nos alvos dos atalhos, formulário dentro da barra). O alerta de feedback fica entre a trilha e o h1. Rota nova fora do namespace `inovacoes` precisa entrar na tabela para marcar o menu.
 - **Scope**: Todas as telas e as features seguintes do redesign.
 - **Date**: 2026-11-15
+- **Status**: active
+
+### AD-016
+- **Decision**: A situação de uma conta (`Usuario.situacao`, enum `SituacaoConta`) é derivada, sem coluna própria: hoje `ATIVA` se `is_active`, senão `DESATIVADA`. O `is_active` do Django continua o único portão de login e de sessão. As mudanças de situação passam pela tabela `TRANSICOES` em `contas/models.py` e por uma rota só da área do gestor (`gestao:situacao`), que recebe o estado de destino no POST.
+- **Reason**: A `autocadastro-com-aprovacao` vai acrescentar uma conta "pendente", aprovada pelo gestor em "Minha unidade". Com a situação derivada, o terceiro estado entra como um marcador novo (inativa + pendente), um valor novo no enum, um par novo em `TRANSICOES` e uma seção nova na tela, sem migrar contas nem reescrever a desativação. Uma coluna `situacao` sincronizada com `is_active` obrigaria trocar o `is_active` do admin pelo campo novo e mudaria testes AUTH do admin.
+- **Trade-off**: A situação não pode ser filtrada como coluna (o filtro usa `is_active` e o marcador). Quem lê o banco vê dois campos em vez de um estado. Cada estado novo precisa da derivação, de uma CHECK de coerência entre os marcadores e do teste de cada transição.
+- **Scope**: gestao-por-unidade, autocadastro-com-aprovacao e toda tela ou regra que mostre ou mude o estado de uma conta.
+- **Date**: 2026-11-23
+- **Status**: active
+
+### AD-017
+- **Decision**: A troca obrigatória da senha provisória mora em `contas.middleware.SenhaProvisoriaMiddleware`, no `MIDDLEWARE` logo depois do `LoginRequiredMiddleware` (AD-006). No `process_view`, se o usuário autenticado tem `senha_provisoria`, toda rota responde 302 para `/conta/senha/`, salvo `contas:trocar_senha`, `contas:sair` e as views públicas (marcadas com `@login_not_required`, a mesma marca que o `LoginRequiredMiddleware` lê). O anônimo nunca chega à regra: o `LoginRequiredMiddleware` trata antes.
+- **Reason**: A GEST-40 e a GEST-66 pedem a troca antes de qualquer tela, inclusive "Minha unidade" e o admin, e antes da checagem de papel. Um mixin por view repetiria o risco que a AD-006 evitou (view nova esquece e abre); redirecionar só no login não pega a URL digitada. A mesma marca de view pública mantém uma allowlist só: o que é público para o anônimo é público para a senha provisória.
+- **Trade-off**: Mais um controle global e implícito. Rota pública nova fica alcançável com senha provisória, o que é aceito porque ela não mostra nada interno. Um teste varre as rotas internas com uma conta de senha provisória e exige 302 em todas, salvo a troca e o sair.
+- **Scope**: gestao-por-unidade e toda view futura; toda rota que precise ficar aberta durante a troca entra na allowlist do middleware, com teste.
+- **Date**: 2026-11-23
 - **Status**: active
 
 ## Handoff

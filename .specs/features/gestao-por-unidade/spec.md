@@ -1,6 +1,7 @@
 # Gestão por Unidade — Specification
 
-**Status:** Aprovada (2026-11-23), com o inventário de testes refeito depois da R2. Escopo
+**Status:** Aprovada (2026-11-23), com o inventário de testes refeito depois da R2 e as emendas
+E-1 a E-3 do Design. Escopo
 Complex: Discuss feito (`context.md`); segue para Design e Tasks formais.
 
 ## Problem Statement
@@ -130,11 +131,11 @@ unidade, para delegar a gestão de contas e a curadoria.
 4. WHEN o ADMINISTRADOR abre a edição de um usuário no admin THEN o sistema SHALL exibir o campo "Unidade" na seção "Perfil", junto do campo "Perfil".
 5. IF o ADMINISTRADOR salva no admin um usuário com perfil "Gestor de unidade" e unidade vazia THEN o sistema SHALL exibir no campo Unidade o erro "Gestor de unidade precisa de uma unidade." e não gravar.
 6. WHEN o ADMINISTRADOR abre a lista de usuários no admin THEN o sistema SHALL exibir a coluna "Unidade" e o filtro por unidade.
-7. WHILE o usuário tem perfil `GESTOR_DE_UNIDADE`, o sistema SHALL responder 403 a toda tela do admin, como faz com o USUARIO (AD-007).
+7. WHILE o usuário tem perfil `GESTOR_DE_UNIDADE`, o sistema SHALL negar toda tela do admin como nega ao USUARIO (AD-007): sem `is_staff`, redireciona ao login do admin; com `is_staff`, responde 403. (Emenda E-1, 2026-11-23.)
 8. IF o ADMINISTRADOR tenta excluir no admin uma unidade com usuários vinculados THEN o sistema SHALL recusar a exclusão e manter a unidade.
 
 **Independent Test**: no admin, pôr a `maria` como gestora da Filial Norte; tentar salvar um
-gestor sem unidade e ver o erro; entrar como `maria` e receber 403 em `/admin/`.
+gestor sem unidade e ver o erro; entrar como `maria` e ser mandada ao login do admin em `/admin/`.
 
 ---
 
@@ -268,6 +269,21 @@ escolhida; abrir o reaproveitamento de uma inovação da Sede e ver "Filial Nort
 
 ---
 
+### P1: Formulários das telas novas ⭐ MVP
+
+**User Story**: Como gestor ou pessoa da unidade, quero que os formulários de conta e de senha
+digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.md`.
+
+**Acceptance Criteria** (emendas E-2 e E-3, 2026-11-23):
+
+1. IF o envio de criar conta, redefinir senha ou trocar senha falha THEN o sistema SHALL exibir no topo o resumo de erros da §6 v2, com o título "Não foi possível {criar a conta | redefinir a senha | trocar a senha}. Corrija {n} campo(s):" e um link por campo com erro, e o `<title>` SHALL começar por "Erro:".
+2. The formulários de criar conta, redefinir senha e trocar senha SHALL terminar na barra de ações da §6 v2: o botão de envio, o link "Cancelar" e a nota "Nada é gravado se você cancelar."; WHILE a conta tem senha provisória, a tela de trocar senha SHALL não exibir "Cancelar" nem a nota.
+
+**Independent Test**: enviar "Criar conta" vazio e ver o resumo com os seis campos e o título
+"Erro: …"; entrar com senha provisória e ver "Trocar senha" sem "Cancelar".
+
+---
+
 ## Edge Cases
 
 - IF o gestor manda POST de desativar, reativar ou redefinir para uma conta de outra unidade, sem unidade, para si mesmo, para outro gestor ou para um ADMINISTRADOR THEN o sistema SHALL responder 404 e não alterar a conta.
@@ -367,8 +383,10 @@ escolhida; abrir o reaproveitamento de uma inovação da Sede e ver "Filial Nort
 | GEST-65 | Edge: unidade só com o gestor | Design | Pending |
 | GEST-66 | Edge: senha provisória antes do papel | Design | Pending |
 | GEST-67 | Edge: CSRF inválido | Design | Pending |
+| GEST-68 | P1 Formulários (AC 1) | Design | Pending |
+| GEST-69 | P1 Formulários (AC 2) | Design | Pending |
 
-**Coverage:** 67 total, 0 mapped to tasks (Tasks ainda não rodou), 67 pendentes.
+**Coverage:** 69 total, 0 mapped to tasks (Tasks ainda não rodou), 69 pendentes.
 
 ---
 
