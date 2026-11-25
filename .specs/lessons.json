@@ -3,44 +3,8 @@
   "promote_threshold": 2,
   "window_days": 45,
   "quarantine_threshold": 2,
-  "next_id": 50,
+  "next_id": 67,
   "lessons": [
-    {
-      "id": "L-001",
-      "key": "surviving_mutant::assert that a submitted password is absent from every response body that re renders a form not only from logs",
-      "text": "Assert that a submitted password is absent from every response body that re-renders a form, not only from logs",
-      "signal": "surviving_mutant",
-      "scope": "forms",
-      "status": "candidate",
-      "features": [
-        "autenticacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md M6 contas/forms.py:21 (forms)"
-      ],
-      "created": "2026-09-27T03:25:06Z",
-      "last_seen": "2026-09-27T03:25:06Z"
-    },
-    {
-      "id": "L-002",
-      "key": "surviving_mutant::cover the dummy password hash on the not found path of a custom auth backend with a test that observes the call",
-      "text": "Cover the dummy password hash on the not-found path of a custom auth backend with a test that observes the call",
-      "signal": "surviving_mutant",
-      "scope": "auth-backend",
-      "status": "candidate",
-      "features": [
-        "autenticacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md M4 contas/backends.py:32 (auth-backend)"
-      ],
-      "created": "2026-09-27T03:25:06Z",
-      "last_seen": "2026-09-27T03:25:06Z"
-    },
     {
       "id": "L-003",
       "key": "ac_gap::when an ac restricts a screen to one role test that other roles holding framework access are denied the screen not only that fields are hidden",
@@ -62,24 +26,6 @@
       "last_seen": "2026-10-11T18:10:26Z"
     },
     {
-      "id": "L-004",
-      "key": "ac_gap::assert the error type the ac names and that the stored value stays unchanged not just that the write fails",
-      "text": "Assert the error type the AC names and that the stored value stays unchanged, not just that the write fails",
-      "signal": "ac_gap",
-      "scope": "models",
-      "status": "candidate",
-      "features": [
-        "autenticacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "AUTH-18 contas/tests/test_constraints.py:17 (models)"
-      ],
-      "created": "2026-09-27T03:25:06Z",
-      "last_seen": "2026-09-27T03:25:06Z"
-    },
-    {
       "id": "L-005",
       "key": "ac_gap::assert every clause of a compound ac at the layer the ac describes a backend test does not cover a screen level outcome",
       "text": "Assert every clause of a compound AC at the layer the AC describes; a backend test does not cover a screen-level outcome",
@@ -98,186 +44,6 @@
       ],
       "created": "2026-09-27T03:25:06Z",
       "last_seen": "2026-10-11T18:10:26Z"
-    },
-    {
-      "id": "L-006",
-      "key": "surviving_mutant::test every admin screen a permission hook guards including delete not only list add and change",
-      "text": "Test every admin screen a permission hook guards, including delete, not only list, add and change",
-      "signal": "surviving_mutant",
-      "scope": "admin",
-      "status": "candidate",
-      "features": [
-        "autenticacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md iteracao 2 A5 contas/admin.py:51 (admin)"
-      ],
-      "created": "2026-09-27T03:45:12Z",
-      "last_seen": "2026-09-27T03:45:12Z"
-    },
-    {
-      "id": "L-007",
-      "key": "surviving_mutant::when asserting that a record is attributed to the requesting user create another account before that user so the assertion cannot pass by picking the oldest or any fixed account",
-      "text": "When asserting that a record is attributed to the requesting user, create another account before that user so the assertion cannot pass by picking the oldest or any fixed account",
-      "signal": "surviving_mutant",
-      "scope": "views",
-      "status": "candidate",
-      "features": [
-        "cadastro-inovacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md mutante V2b; INOV-04; inovacoes/tests/test_views_cadastro.py:68 (views)"
-      ],
-      "created": "2026-09-30T00:34:12Z",
-      "last_seen": "2026-09-30T00:34:12Z"
-    },
-    {
-      "id": "L-008",
-      "key": "surviving_mutant::when testing that a rejected form preserves input trigger the error in a different field than the one whose preserved value you assert and assert every field",
-      "text": "When testing that a rejected form preserves input, trigger the error in a different field than the one whose preserved value you assert, and assert every field",
-      "signal": "surviving_mutant",
-      "scope": "forms",
-      "status": "candidate",
-      "features": [
-        "cadastro-inovacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md mutante T4; INOV-11; inovacoes/tests/test_views_cadastro.py:170 (forms)"
-      ],
-      "created": "2026-09-30T00:34:12Z",
-      "last_seen": "2026-09-30T00:34:12Z"
-    },
-    {
-      "id": "L-009",
-      "key": "ac_gap::guard every permission hook that reads a custom attribute of request user with is authenticated and test the hook s page as an anonymous visitor because django calls admin hooks with anonymoususer on the login page",
-      "text": "Guard every permission hook that reads a custom attribute of request.user with is_authenticated, and test the hook's page as an anonymous visitor, because Django calls admin hooks with AnonymousUser on the login page",
-      "signal": "ac_gap",
-      "scope": "admin",
-      "status": "candidate",
-      "features": [
-        "cadastro-inovacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "UAT achado 1; contas/admin.py:22; contas/tests/test_admin_perfil.py:125 (admin)"
-      ],
-      "created": "2026-10-02T13:43:06Z",
-      "last_seen": "2026-10-02T13:43:06Z"
-    },
-    {
-      "id": "L-010",
-      "key": "spec_precision_gap::when an ac promises a redirect to a login page state and test that the target page opens with 200 for a visitor without a session",
-      "text": "When an AC promises a redirect to a login page, state and test that the target page opens with 200 for a visitor without a session",
-      "signal": "spec_precision_gap",
-      "scope": "auth",
-      "status": "candidate",
-      "features": [
-        "cadastro-inovacao"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "AUTH-21 (autenticacao/spec.md:196); validation.md iteracao 3, Sugestao 1 (auth)"
-      ],
-      "created": "2026-10-02T13:43:06Z",
-      "last_seen": "2026-10-02T13:43:06Z"
-    },
-    {
-      "id": "L-011",
-      "key": "spec_precision_gap::when an ac bounds a numeric query parameter state the outcome for zero and negative values not only for non numeric and above range values",
-      "text": "When an AC bounds a numeric query parameter, state the outcome for zero and negative values, not only for non-numeric and above-range values",
-      "signal": "spec_precision_gap",
-      "scope": "routes",
-      "status": "candidate",
-      "features": [
-        "consulta-inovacoes"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md SPG-1 / CONS-05 (inovacoes/views.py:101-107) (routes)"
-      ],
-      "created": "2026-10-04T03:09:55Z",
-      "last_seen": "2026-10-04T03:09:55Z"
-    },
-    {
-      "id": "L-012",
-      "key": "spec_precision_gap::when an ac limits the length of a text input that is trimmed state whether the limit counts before or after trimming and test the boundary with edge whitespace",
-      "text": "When an AC limits the length of a text input that is trimmed, state whether the limit counts before or after trimming and test the boundary with edge whitespace",
-      "signal": "spec_precision_gap",
-      "scope": "forms",
-      "status": "candidate",
-      "features": [
-        "consulta-inovacoes"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "validation.md SPG-2 / CONS-24 (inovacoes/forms.py:100-108) (forms)"
-      ],
-      "created": "2026-10-04T03:09:55Z",
-      "last_seen": "2026-10-04T03:09:55Z"
-    },
-    {
-      "id": "L-013",
-      "key": "spec_deviation::before designing an ac around a framework helper check the helper on every boundary value because django paginator get page sends page 0 to the last page",
-      "text": "Before designing an AC around a framework helper, check the helper on every boundary value, because Django Paginator.get_page sends page 0 to the last page",
-      "signal": "spec_deviation",
-      "scope": "routes",
-      "status": "candidate",
-      "features": [
-        "consulta-inovacoes"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "SPEC_DEVIATION inovacoes/views.py:101 (T5) (routes)"
-      ],
-      "created": "2026-10-04T03:09:55Z",
-      "last_seen": "2026-10-04T03:09:55Z"
-    },
-    {
-      "id": "L-014",
-      "key": "spec_deviation::set label suffix on a django form through the init keyword because form init overwrites a class level label suffix",
-      "text": "Set label_suffix on a Django Form through the __init__ keyword, because Form.__init__ overwrites a class-level label_suffix",
-      "signal": "spec_deviation",
-      "scope": "forms",
-      "status": "candidate",
-      "features": [
-        "consulta-inovacoes"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "SPEC_DEVIATION inovacoes/forms.py:134 (T17) (forms)"
-      ],
-      "created": "2026-10-04T03:09:55Z",
-      "last_seen": "2026-10-04T03:09:55Z"
-    },
-    {
-      "id": "L-015",
-      "key": "spec_deviation::when a task changes what a route returns grep every test that requests that route before listing any of them as unchanged",
-      "text": "When a task changes what a route returns, grep every test that requests that route before listing any of them as unchanged",
-      "signal": "spec_deviation",
-      "scope": "tests",
-      "status": "candidate",
-      "features": [
-        "consulta-inovacoes"
-      ],
-      "recurrence": 1,
-      "harmful": 0,
-      "evidence": [
-        "tasks.md T8 Done when; contas/tests/test_controle_acesso.py:98 (tests)"
-      ],
-      "created": "2026-10-04T03:09:55Z",
-      "last_seen": "2026-10-04T03:09:55Z"
     },
     {
       "id": "L-016",
@@ -797,17 +563,19 @@
       "text": "When asserting that content is displayed, also forbid display none, visibility hidden and zero opacity in the stylesheet rules that select it, because a DOM check cannot see CSS hiding",
       "signal": "surviving_mutant",
       "scope": "templates-css",
-      "status": "candidate",
+      "status": "confirmed",
       "features": [
-        "reaproveitamento-indicadores"
+        "reaproveitamento-indicadores",
+        "fundacao-do-redesign"
       ],
-      "recurrence": 1,
-      "harmful": 0,
+      "recurrence": 2,
+      "harmful": 1,
       "evidence": [
-        "validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css)"
+        "validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css)",
+        "M27, M28 (validation.md); inovacoes/tests/visibilidade.py:45-54 (templates-css)"
       ],
       "created": "2026-10-19T18:41:08Z",
-      "last_seen": "2026-10-19T18:41:08Z"
+      "last_seen": "2026-11-23T23:33:59Z"
     },
     {
       "id": "L-045",
@@ -898,6 +666,313 @@
       ],
       "created": "2026-10-27T20:12:21Z",
       "last_seen": "2026-10-27T20:12:21Z"
+    },
+    {
+      "id": "L-050",
+      "key": "ac_gap::when an ac names which icon each item shows assert each item s icon against its source file not only that some decorative icon is present",
+      "text": "When an AC names which icon each item shows, assert each item's icon against its source file, not only that some decorative icon is present",
+      "signal": "ac_gap",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RED-16, M43 (validation.md) (tests)"
+      ],
+      "created": "2026-11-15T16:26:31Z",
+      "last_seen": "2026-11-15T16:26:31Z"
+    },
+    {
+      "id": "L-051",
+      "key": "ac_gap::when an ac sets a minimum size for every element of a kind check existing variants such as compact buttons against it and either exempt them in the spec or test them",
+      "text": "When an AC sets a minimum size for every element of a kind, check existing variants such as compact buttons against it and either exempt them in the spec or test them",
+      "signal": "ac_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RED-22, M42; templates/kira.css:389-392 (specs)"
+      ],
+      "created": "2026-11-15T16:26:31Z",
+      "last_seen": "2026-11-15T16:26:31Z"
+    },
+    {
+      "id": "L-052",
+      "key": "surviving_mutant::when an ac forbids a responsive state such as icon only menu items assert that no media query rule hides or shrinks the item text",
+      "text": "When an AC forbids a responsive state such as icon-only menu items, assert that no media query rule hides or shrinks the item text",
+      "signal": "surviving_mutant",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RED-22, M41 (validation.md) (css)",
+        "N22, N30 (RED-22) (css)"
+      ],
+      "created": "2026-11-15T16:26:31Z",
+      "last_seen": "2026-11-15T18:15:04Z"
+    },
+    {
+      "id": "L-053",
+      "key": "spec_precision_gap::when the design source lists a component state without a value state in the ac what the state must change so the test asserts a value rather than any declaration",
+      "text": "When the design source lists a component state without a value, state in the AC what the state must change, so the test asserts a value rather than any declaration",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RED-09 :active (inovacoes/tests/test_folha_v2.py:265) (specs)"
+      ],
+      "created": "2026-11-15T16:26:31Z",
+      "last_seen": "2026-11-15T16:26:31Z"
+    },
+    {
+      "id": "L-054",
+      "key": "surviving_mutant::when asserting a minimum target size in the stylesheet check every rule that can match the element including attribute child and universal selectors and max height not only rules whose selector names the element",
+      "text": "When asserting a minimum target size in the stylesheet, check every rule that can match the element, including attribute, child and universal selectors and max-height, not only rules whose selector names the element",
+      "signal": "surviving_mutant",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N02, N03, N04 (RED-22) (css)"
+      ],
+      "created": "2026-11-15T18:15:04Z",
+      "last_seen": "2026-11-15T18:15:04Z"
+    },
+    {
+      "id": "L-055",
+      "key": "surviving_mutant::when a test parses css declarations decode css escapes in property names and values before matching because escaped display none still hides content",
+      "text": "When a test parses CSS declarations, decode CSS escapes in property names and values before matching, because escaped display none still hides content",
+      "signal": "surviving_mutant",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N17, N18 (regra de teste) (css)"
+      ],
+      "created": "2026-11-15T18:15:04Z",
+      "last_seen": "2026-11-15T18:15:04Z"
+    },
+    {
+      "id": "L-056",
+      "key": "surviving_mutant::when a stylesheet guard lists ways to hide content also catch near zero values every clip path inset form overflow set in another rule transparent or background colored text off screen positioning and content visibility",
+      "text": "When a stylesheet guard lists ways to hide content, also catch near-zero values, every clip-path inset form, overflow set in another rule, transparent or background-colored text, off-screen positioning and content-visibility",
+      "signal": "surviving_mutant",
+      "scope": "css",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N07, N08, N10, N11, N19, N20, N21 (regra de teste) (css)"
+      ],
+      "created": "2026-11-15T18:15:04Z",
+      "last_seen": "2026-11-15T18:15:04Z"
+    },
+    {
+      "id": "L-057",
+      "key": "surviving_mutant::when a test compares rendered output with a production asset file also pin a fixed property of that asset from the spec because a wrong asset file is its own oracle",
+      "text": "When a test compares rendered output with a production asset file, also pin a fixed property of that asset from the spec, because a wrong asset file is its own oracle",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "fundacao-do-redesign"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N27 (RED-16) (tests)"
+      ],
+      "created": "2026-11-15T18:15:04Z",
+      "last_seen": "2026-11-15T18:15:04Z"
+    },
+    {
+      "id": "L-058",
+      "key": "surviving_mutant::when a page has mutually exclusive states such as results and an empty state assert in each state that the content of the other state is absent",
+      "text": "When a page has mutually exclusive states such as results and an empty state, assert in each state that the content of the other state is absent",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "M27 inovacoes/templates/inovacoes/inovacao_list.html:70 (tests)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-059",
+      "key": "spec_precision_gap::when an ac writes a value in parentheses after a field label state whether the value is shown beside the label or as the field value",
+      "text": "When an AC writes a value in parentheses after a field label, state whether the value is shown beside the label or as the field value",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RCON-33 (specs)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-060",
+      "key": "spec_precision_gap::when an ac requires a caption or other text only for assistive technology state its exact text",
+      "text": "When an AC requires a caption or other text only for assistive technology, state its exact text",
+      "signal": "spec_precision_gap",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "RCON-35 (specs)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-061",
+      "key": "spec_deviation::before a design names a framework helper check its output against the literal example in the ac",
+      "text": "Before a design names a framework helper, check its output against the literal example in the AC",
+      "signal": "spec_deviation",
+      "scope": "design",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SPEC_DEVIATION inovacoes/apresentacao.py:76 (design)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-062",
+      "key": "spec_deviation::when display data comes from a django form state whether the valid fields of an invalid form still count because cleaned data keeps them",
+      "text": "When display data comes from a Django form, state whether the valid fields of an invalid form still count, because cleaned_data keeps them",
+      "signal": "spec_deviation",
+      "scope": "specs",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "SPEC_DEVIATION inovacoes/views.py:373 (specs)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-063",
+      "key": "ac_gap::when an edge case names a concrete input such as a long title render that input in a test not only check the stylesheet statically",
+      "text": "When an edge case names a concrete input such as a long title, render that input in a test, not only check the stylesheet statically",
+      "signal": "ac_gap",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "edge case titulo de 150 caracteres (spec.md:303) (tests)"
+      ],
+      "created": "2026-11-20T03:16:36Z",
+      "last_seen": "2026-11-20T03:16:36Z"
+    },
+    {
+      "id": "L-064",
+      "key": "surviving_mutant::when a test proves a layout behavior by the presence of a css property also assert that no rule on the same element declares a property that cancels it",
+      "text": "When a test proves a layout behavior by the presence of a CSS property, also assert that no rule on the same element declares a property that cancels it",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "redesign-consulta"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "N10 templates/kira.css:804 (tests)"
+      ],
+      "created": "2026-11-20T03:29:33Z",
+      "last_seen": "2026-11-20T03:29:33Z"
+    },
+    {
+      "id": "L-065",
+      "key": "surviving_mutant::when asserting that no stylesheet rule restyles an element match every selector whose subject reaches it including prefixed ancestors theme attribute prefixes and media blocks not only the literal selector",
+      "text": "When asserting that no stylesheet rule restyles an element, match every selector whose subject reaches it, including prefixed ancestors, theme attribute prefixes and media blocks, not only the literal selector",
+      "signal": "surviving_mutant",
+      "scope": "templates-css",
+      "status": "candidate",
+      "features": [
+        "link-administracao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M19/M20 (ADM-07), inovacoes/tests/test_link_administracao.py:133-141 (templates-css)"
+      ],
+      "created": "2026-11-23T23:33:59Z",
+      "last_seen": "2026-11-23T23:33:59Z"
+    },
+    {
+      "id": "L-066",
+      "key": "surviving_mutant::when a test compares rendered markup to a project file also pin that file s content to the external reference or the comparison accepts any edit to the file",
+      "text": "When a test compares rendered markup to a project file, also pin that file's content to the external reference, or the comparison accepts any edit to the file",
+      "signal": "surviving_mutant",
+      "scope": "tests",
+      "status": "candidate",
+      "features": [
+        "link-administracao"
+      ],
+      "recurrence": 1,
+      "harmful": 0,
+      "evidence": [
+        "validation.md M22 (ADM-04), inovacoes/tests/test_link_administracao.py:119 (tests)"
+      ],
+      "created": "2026-11-23T23:33:59Z",
+      "last_seen": "2026-11-23T23:33:59Z"
     }
   ]
 }

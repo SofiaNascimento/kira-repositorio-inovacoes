@@ -32,87 +32,15 @@ Corroborated across multiple features. Safe to apply as guidance.
 - evidence: validation.md iteracao 6, F1/F2/F3/F4/F5/F14/F16/F18 (STAT-01, 03, 04, 38, 39, 40, 41), inovacoes/tests/test_views_detalhe.py:438-449 (tests) (+2 more)
 - last seen: 2026-10-19T17:39:06Z
 
+### L-044 - When asserting that content is displayed, also forbid display none, visibility hidden and zero opacity in the stylesheet rules that select it, because a DOM check cannot see CSS hiding
+- signal: `surviving_mutant` · recurrence: 2 feature(s) · scope: `templates-css` · harmful: 1
+- features: reaproveitamento-indicadores, fundacao-do-redesign
+- evidence: validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css) (+1 more)
+- last seen: 2026-11-23T23:33:59Z
+
 ## Candidates (under observation - do NOT load as guidance yet)
 
 Seen once or not yet corroborated. Tracked, not trusted.
-
-### L-001 - Assert that a submitted password is absent from every response body that re-renders a form, not only from logs
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
-- features: autenticacao
-- evidence: validation.md M6 contas/forms.py:21 (forms)
-- last seen: 2026-09-27T03:25:06Z
-
-### L-002 - Cover the dummy password hash on the not-found path of a custom auth backend with a test that observes the call
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `auth-backend` · harmful: 0
-- features: autenticacao
-- evidence: validation.md M4 contas/backends.py:32 (auth-backend)
-- last seen: 2026-09-27T03:25:06Z
-
-### L-004 - Assert the error type the AC names and that the stored value stays unchanged, not just that the write fails
-- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `models` · harmful: 0
-- features: autenticacao
-- evidence: AUTH-18 contas/tests/test_constraints.py:17 (models)
-- last seen: 2026-09-27T03:25:06Z
-
-### L-006 - Test every admin screen a permission hook guards, including delete, not only list, add and change
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `admin` · harmful: 0
-- features: autenticacao
-- evidence: validation.md iteracao 2 A5 contas/admin.py:51 (admin)
-- last seen: 2026-09-27T03:45:12Z
-
-### L-007 - When asserting that a record is attributed to the requesting user, create another account before that user so the assertion cannot pass by picking the oldest or any fixed account
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `views` · harmful: 0
-- features: cadastro-inovacao
-- evidence: validation.md mutante V2b; INOV-04; inovacoes/tests/test_views_cadastro.py:68 (views)
-- last seen: 2026-09-30T00:34:12Z
-
-### L-008 - When testing that a rejected form preserves input, trigger the error in a different field than the one whose preserved value you assert, and assert every field
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
-- features: cadastro-inovacao
-- evidence: validation.md mutante T4; INOV-11; inovacoes/tests/test_views_cadastro.py:170 (forms)
-- last seen: 2026-09-30T00:34:12Z
-
-### L-009 - Guard every permission hook that reads a custom attribute of request.user with is_authenticated, and test the hook's page as an anonymous visitor, because Django calls admin hooks with AnonymousUser on the login page
-- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `admin` · harmful: 0
-- features: cadastro-inovacao
-- evidence: UAT achado 1; contas/admin.py:22; contas/tests/test_admin_perfil.py:125 (admin)
-- last seen: 2026-10-02T13:43:06Z
-
-### L-010 - When an AC promises a redirect to a login page, state and test that the target page opens with 200 for a visitor without a session
-- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `auth` · harmful: 0
-- features: cadastro-inovacao
-- evidence: AUTH-21 (autenticacao/spec.md:196); validation.md iteracao 3, Sugestao 1 (auth)
-- last seen: 2026-10-02T13:43:06Z
-
-### L-011 - When an AC bounds a numeric query parameter, state the outcome for zero and negative values, not only for non-numeric and above-range values
-- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `routes` · harmful: 0
-- features: consulta-inovacoes
-- evidence: validation.md SPG-1 / CONS-05 (inovacoes/views.py:101-107) (routes)
-- last seen: 2026-10-04T03:09:55Z
-
-### L-012 - When an AC limits the length of a text input that is trimmed, state whether the limit counts before or after trimming and test the boundary with edge whitespace
-- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
-- features: consulta-inovacoes
-- evidence: validation.md SPG-2 / CONS-24 (inovacoes/forms.py:100-108) (forms)
-- last seen: 2026-10-04T03:09:55Z
-
-### L-013 - Before designing an AC around a framework helper, check the helper on every boundary value, because Django Paginator.get_page sends page 0 to the last page
-- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `routes` · harmful: 0
-- features: consulta-inovacoes
-- evidence: SPEC_DEVIATION inovacoes/views.py:101 (T5) (routes)
-- last seen: 2026-10-04T03:09:55Z
-
-### L-014 - Set label_suffix on a Django Form through the __init__ keyword, because Form.__init__ overwrites a class-level label_suffix
-- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `forms` · harmful: 0
-- features: consulta-inovacoes
-- evidence: SPEC_DEVIATION inovacoes/forms.py:134 (T17) (forms)
-- last seen: 2026-10-04T03:09:55Z
-
-### L-015 - When a task changes what a route returns, grep every test that requests that route before listing any of them as unchanged
-- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
-- features: consulta-inovacoes
-- evidence: tasks.md T8 Done when; contas/tests/test_controle_acesso.py:98 (tests)
-- last seen: 2026-10-04T03:09:55Z
 
 ### L-016 - Select routes for an authorization sweep by any captured URL parameter, not by a literal converter string, so a new route with another parameter name is still swept
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
@@ -270,12 +198,6 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - evidence: validation.md iteracao 3, N01/N12 (REAP-36), indicadores/templates/indicadores/grafico.html:10-12 (tests)
 - last seen: 2026-10-19T18:41:08Z
 
-### L-044 - When asserting that content is displayed, also forbid display none, visibility hidden and zero opacity in the stylesheet rules that select it, because a DOM check cannot see CSS hiding
-- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `templates-css` · harmful: 0
-- features: reaproveitamento-indicadores
-- evidence: validation.md iteracao 3, N02/N10 (REAP-30, REAP-31, REAP-36), templates/kira.css:536-565 (templates-css)
-- last seen: 2026-10-19T18:41:08Z
-
 ### L-045 - When asserting table semantics, reject a role attribute on the table or its cells that overrides the native role
 - signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
 - features: reaproveitamento-indicadores
@@ -305,6 +227,108 @@ Seen once or not yet corroborated. Tracked, not trusted.
 - features: acervo-realista
 - evidence: validation.md G2: M15 at inovacoes/acervo.py:1441 (seed-data)
 - last seen: 2026-10-27T20:12:21Z
+
+### L-050 - When an AC names which icon each item shows, assert each item's icon against its source file, not only that some decorative icon is present
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: RED-16, M43 (validation.md) (tests)
+- last seen: 2026-11-15T16:26:31Z
+
+### L-051 - When an AC sets a minimum size for every element of a kind, check existing variants such as compact buttons against it and either exempt them in the spec or test them
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: RED-22, M42; templates/kira.css:389-392 (specs)
+- last seen: 2026-11-15T16:26:31Z
+
+### L-052 - When an AC forbids a responsive state such as icon-only menu items, assert that no media query rule hides or shrinks the item text
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: RED-22, M41 (validation.md) (css) (+1 more)
+- last seen: 2026-11-15T18:15:04Z
+
+### L-053 - When the design source lists a component state without a value, state in the AC what the state must change, so the test asserts a value rather than any declaration
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: RED-09 :active (inovacoes/tests/test_folha_v2.py:265) (specs)
+- last seen: 2026-11-15T16:26:31Z
+
+### L-054 - When asserting a minimum target size in the stylesheet, check every rule that can match the element, including attribute, child and universal selectors and max-height, not only rules whose selector names the element
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: N02, N03, N04 (RED-22) (css)
+- last seen: 2026-11-15T18:15:04Z
+
+### L-055 - When a test parses CSS declarations, decode CSS escapes in property names and values before matching, because escaped display none still hides content
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: N17, N18 (regra de teste) (css)
+- last seen: 2026-11-15T18:15:04Z
+
+### L-056 - When a stylesheet guard lists ways to hide content, also catch near-zero values, every clip-path inset form, overflow set in another rule, transparent or background-colored text, off-screen positioning and content-visibility
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `css` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: N07, N08, N10, N11, N19, N20, N21 (regra de teste) (css)
+- last seen: 2026-11-15T18:15:04Z
+
+### L-057 - When a test compares rendered output with a production asset file, also pin a fixed property of that asset from the spec, because a wrong asset file is its own oracle
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: fundacao-do-redesign
+- evidence: N27 (RED-16) (tests)
+- last seen: 2026-11-15T18:15:04Z
+
+### L-058 - When a page has mutually exclusive states such as results and an empty state, assert in each state that the content of the other state is absent
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: redesign-consulta
+- evidence: M27 inovacoes/templates/inovacoes/inovacao_list.html:70 (tests)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-059 - When an AC writes a value in parentheses after a field label, state whether the value is shown beside the label or as the field value
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: redesign-consulta
+- evidence: RCON-33 (specs)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-060 - When an AC requires a caption or other text only for assistive technology, state its exact text
+- signal: `spec_precision_gap` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: redesign-consulta
+- evidence: RCON-35 (specs)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-061 - Before a design names a framework helper, check its output against the literal example in the AC
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `design` · harmful: 0
+- features: redesign-consulta
+- evidence: SPEC_DEVIATION inovacoes/apresentacao.py:76 (design)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-062 - When display data comes from a Django form, state whether the valid fields of an invalid form still count, because cleaned_data keeps them
+- signal: `spec_deviation` · recurrence: 1 feature(s) · scope: `specs` · harmful: 0
+- features: redesign-consulta
+- evidence: SPEC_DEVIATION inovacoes/views.py:373 (specs)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-063 - When an edge case names a concrete input such as a long title, render that input in a test, not only check the stylesheet statically
+- signal: `ac_gap` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: redesign-consulta
+- evidence: edge case titulo de 150 caracteres (spec.md:303) (tests)
+- last seen: 2026-11-20T03:16:36Z
+
+### L-064 - When a test proves a layout behavior by the presence of a CSS property, also assert that no rule on the same element declares a property that cancels it
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: redesign-consulta
+- evidence: N10 templates/kira.css:804 (tests)
+- last seen: 2026-11-20T03:29:33Z
+
+### L-065 - When asserting that no stylesheet rule restyles an element, match every selector whose subject reaches it, including prefixed ancestors, theme attribute prefixes and media blocks, not only the literal selector
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `templates-css` · harmful: 0
+- features: link-administracao
+- evidence: validation.md M19/M20 (ADM-07), inovacoes/tests/test_link_administracao.py:133-141 (templates-css)
+- last seen: 2026-11-23T23:33:59Z
+
+### L-066 - When a test compares rendered markup to a project file, also pin that file's content to the external reference, or the comparison accepts any edit to the file
+- signal: `surviving_mutant` · recurrence: 1 feature(s) · scope: `tests` · harmful: 0
+- features: link-administracao
+- evidence: validation.md M22 (ADM-04), inovacoes/tests/test_link_administracao.py:119 (tests)
+- last seen: 2026-11-23T23:33:59Z
 
 ## Quarantined (failed when applied - ignore)
 
