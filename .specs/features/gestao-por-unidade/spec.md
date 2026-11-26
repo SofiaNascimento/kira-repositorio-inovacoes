@@ -1,8 +1,8 @@
 # Gestão por Unidade — Specification
 
 **Status:** Aprovada (2026-11-23), com o inventário de testes refeito depois da R2 e as emendas
-E-1 a E-3 do Design. Escopo
-Complex: Discuss, Design e Tasks aprovados; Execute aguardando o ok do usuário.
+E-1 a E-3 do Design e a emenda E-4 do Execute (GEST-13, coluna "Ações"). Escopo
+Complex: Discuss, Design e Tasks aprovados; Execute concluído (T1–T16), em verificação.
 
 ## Problem Statement
 
@@ -151,7 +151,7 @@ saber quem está ativo e agir sobre cada conta.
 2. WHILE o usuário autenticado não tem perfil `GESTOR_DE_UNIDADE`, o sistema SHALL não exibir o item "Minha unidade".
 3. WHEN o gestor está em qualquer página sob `/minha-unidade/` THEN o item "Minha unidade" SHALL ter `aria-current` ("page" na lista, "true" nas demais).
 4. IF um usuário sem perfil `GESTOR_DE_UNIDADE` (USUARIO, ADMINISTRADOR ou superusuário) abre qualquer rota sob `/minha-unidade/` THEN o sistema SHALL responder 403 com a página própria "Acesso restrito a gestores de unidade.".
-5. WHEN o gestor abre `/minha-unidade/` THEN o sistema SHALL exibir o h1 "Minha unidade", o nome da sua unidade e uma tabela com `caption` "Contas da unidade {nome}" e as colunas Nome, Usuário, E-mail, Perfil, Situação e Último acesso.
+5. WHEN o gestor abre `/minha-unidade/` THEN o sistema SHALL exibir o h1 "Minha unidade", o nome da sua unidade e uma tabela com `caption` "Contas da unidade {nome}" e as colunas Nome, Usuário, E-mail, Perfil, Situação, Último acesso e Ações, nessa ordem, cada uma com `th scope="col"`. (Emenda E-4, 2026-11-25: a coluna "Ações" entrou no Execute, T8.)
 6. The tabela SHALL listar todas as contas cuja unidade é a do gestor, inclusive a dele e as desativadas, ordenadas por nome completo e depois por usuário.
 7. The tabela SHALL não listar contas de outra unidade nem contas sem unidade.
 8. The coluna Situação SHALL mostrar "Ativa" ou "Desativada" por escrito, nunca só por cor.
