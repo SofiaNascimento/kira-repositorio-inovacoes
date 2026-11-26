@@ -151,7 +151,8 @@
 - **UAT (2026-11-25)**: 8/8 passaram no navegador, servidor e banco locais, contas `uat_*` (detalhes no `validation.md`). Veredito continua "NÃO VERIFICADA".
 - **Push (2026-11-25)**: feito pelo usuário até `0662735` (a chave SSH desta máquina é recusada pelo GitHub; o agente não faz fetch/push).
 - **Migrate no Neon (2026-11-25, ok explícito do usuário)**: `contas 0005` aplicada pelo agente com a URL direta do `~/.kira-neon.env` (o arquivo não pode ser lido com `source`: a URL tem `&` sem aspas; ler com `sed`). Nenhuma migration pendente; 17 contas (15 USUARIO, 2 ADMINISTRADOR), todas sem unidade e sem senha provisória.
-- **Pendente**: deploy (`npx vercel --prod`) só com ok explícito. Até o deploy, o código antigo em produção não preenche `senha_provisoria`: criar conta pelo admin falha nessa janela.
+- **Deploy (2026-11-25, ok explícito do usuário)**: `npx vercel --prod` a partir de `be5d7c1` (código igual ao do último gate verde, `807500d`), deploy `kira-k37jpx8ht-kira-6c77.vercel.app`, alias `kira-nu-green.vercel.app`. Fumaça: `/entrar/` 200; `/`, `/minha-unidade/` e `/conta/senha/` 302 para o login; `/admin/login/` 200 com "KIRA — Administração".
+- **Pendente**: em produção, nenhuma conta tem unidade nem perfil de gestor: o ADMINISTRADOR precisa atribuí-los pelo admin para a feature ter uso; conferir no navegador em produção.
 - **Branch**: `main`, só local, sem push. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local (5433) ficou ligado depois da tentativa do Verifier.
 
 ### Pausa (2026-11-23) — gestao-por-unidade com T1–T16 feitas, Verifier não iniciado
