@@ -149,7 +149,9 @@
 - **Verifier**: disparado e interrompido a pedido do usuário antes de qualquer resultado. **O usuário escolheu fechar sem verificação** (opções recusadas: pausar; só o sensor nas áreas críticas, ~30–45 min). `validation.md` registra "NÃO VERIFICADA — risco aceito"; GEST-01..69 `Implementing (não verificada, risco aceito)`. `validate_state.py` sai com 1 de propósito. Nenhuma lição registrada (sem falha fundamentada).
 - **Risco**: autorização por unidade, ações por perfil, AD-016, AD-017 e migration sem checagem independente nem sensor. Se retomada, começar pelo sensor nessas áreas.
 - **UAT (2026-11-25)**: 8/8 passaram no navegador, servidor e banco locais, contas `uat_*` (detalhes no `validation.md`). Veredito continua "NÃO VERIFICADA".
-- **Pendente**: push e deploy só com ok explícito do usuário; migration nova precisa de `migrate` no Neon antes do deploy, também só com ok explícito.
+- **Push (2026-11-25)**: feito pelo usuário até `0662735` (a chave SSH desta máquina é recusada pelo GitHub; o agente não faz fetch/push).
+- **Migrate no Neon (2026-11-25, ok explícito do usuário)**: `contas 0005` aplicada pelo agente com a URL direta do `~/.kira-neon.env` (o arquivo não pode ser lido com `source`: a URL tem `&` sem aspas; ler com `sed`). Nenhuma migration pendente; 17 contas (15 USUARIO, 2 ADMINISTRADOR), todas sem unidade e sem senha provisória.
+- **Pendente**: deploy (`npx vercel --prod`) só com ok explícito. Até o deploy, o código antigo em produção não preenche `senha_provisoria`: criar conta pelo admin falha nessa janela.
 - **Branch**: `main`, só local, sem push. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local (5433) ficou ligado depois da tentativa do Verifier.
 
 ### Pausa (2026-11-23) — gestao-por-unidade com T1–T16 feitas, Verifier não iniciado
