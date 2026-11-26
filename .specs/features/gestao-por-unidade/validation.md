@@ -16,7 +16,7 @@ minutos depois, antes de produzir qualquer resultado. O usuário escolheu fechar
 verificação, em vez de pausar ou fazer só o sensor de discriminação nas áreas críticas.
 
 Nenhuma afirmação deste arquivo vale como evidência de conformidade. Não há checagem ancorada na
-spec, nem sensor de discriminação, nem UAT.
+spec nem sensor de discriminação. O UAT veio depois (seção abaixo).
 
 ## O que existe de evidência (do autor, não independente)
 
@@ -35,6 +35,29 @@ passe sem discriminar o comportamento — uma regressão nessas regras pode não
 Áreas de maior risco, se a verificação for feita depois: GEST-06/07 (escopo por unidade, 404 vs
 403 vs 405), ações por perfil (só USUARIO da mesma unidade), AD-016, AD-017, pré-preenchimento da
 unidade, migration preservando contas e autores do acervo.
+
+## Interactive UAT Results (2026-11-25)
+
+Feito pelo usuário no navegador, servidor local (`runserver`, banco local `localhost:5433/kira`, com
+`contas 0005` aplicada só ali) e contas `uat_*` criadas para o teste. **8 de 8 passaram**, sem
+problema registrado. O UAT não substitui o Verifier: confirma o comportamento visível, não que os
+testes automatizados discriminem regressões.
+
+| # | Teste | ACs exercidas | Resultado |
+| - | ----- | ------------- | --------- |
+| 1 | Menu e tela "Minha unidade" (item no menu, `aria-current`, tabela com 7 colunas, escopo, ordem, "Nunca", ações só em USUARIO) | Área "Minha unidade" AC 1, 3, 5–11 (GEST-13 com E-4) | ✅ Pass |
+| 2 | Criar conta: formulário, erros de usuário/e-mail (maiúsculas)/confirmação, resumo de erros, campos devolvidos, sucesso | Criar conta AC 1–3, 5, 6, 8, 9; Formulários AC 1, 2 | ✅ Pass |
+| 3 | Troca obrigatória da senha provisória: bloqueio (inclusive `/admin/`), sem "Cancelar", senha atual errada, nova igual à atual, troca certa | Redefinir/troca AC 4–9; Formulários AC 1, 2 | ✅ Pass |
+| 4 | Desativar e reativar: alertas, "Desativada" por escrito, sessão aberta vira anônima, login recusado com a mensagem genérica, GET → 405 | Desativar/reativar AC 1, 2, 4–6 | ✅ Pass |
+| 5 | Redefinir senha: erro de validador, sucesso, sessão aberta cai, senha antiga recusada, troca obrigatória no próximo acesso | Redefinir/troca AC 1–4 | ✅ Pass |
+| 6 | Acesso negado: USUARIO e ADMINISTRADOR recebem "Acesso restrito"; gestor da Sul só vê a Sul e recebe 404 em conta da Norte e de outro gestor; gestor sem staff vai ao login do admin | Área "Minha unidade" AC 2, 4, 7; GEST-07 (E-1) | ✅ Pass |
+| 7 | Curadoria: gestor da origem edita, avança status e exclui inovação de outro autor; gestor de outra unidade sem ações e 403 nas três rotas; USUARIO da mesma unidade sem ações | Curadoria AC 1–5 | ✅ Pass |
+| 8 | Unidade pré-preenchida: cadastro com e sem unidade, troca para outra unidade grava a escolhida, edição mostra a gravada, reaproveitamento elegível e não elegível | Unidade pré-preenchida AC 1–6 | ✅ Pass |
+
+Não exercitado no UAT: campos extras no POST de criar conta (Criar conta AC 4), validador de senha
+na criação (AC 7), "Cancelar" (AC 10), idempotência do POST de situação (Desativar AC 3), autoria
+mantida após desativar (AC 7), mudança de unidade/perfil pelo ADMINISTRADOR (Curadoria AC 6, 7),
+migration sobre os dados existentes além do banco local.
 
 ## Requirement Traceability Update
 

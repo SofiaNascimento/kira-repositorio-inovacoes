@@ -148,7 +148,8 @@
 - **Emenda E-4 (2026-11-25)**: GEST-13 passa a listar a coluna "Ações" depois de "Último acesso", com `th scope="col"` (`dd8411f`).
 - **Verifier**: disparado e interrompido a pedido do usuário antes de qualquer resultado. **O usuário escolheu fechar sem verificação** (opções recusadas: pausar; só o sensor nas áreas críticas, ~30–45 min). `validation.md` registra "NÃO VERIFICADA — risco aceito"; GEST-01..69 `Implementing (não verificada, risco aceito)`. `validate_state.py` sai com 1 de propósito. Nenhuma lição registrada (sem falha fundamentada).
 - **Risco**: autorização por unidade, ações por perfil, AD-016, AD-017 e migration sem checagem independente nem sensor. Se retomada, começar pelo sensor nessas áreas.
-- **Pendente**: UAT no navegador (gestor, USUARIO, senha provisória); push e deploy só com ok explícito do usuário; migration nova precisa de `migrate` no Neon antes do deploy, também só com ok explícito.
+- **UAT (2026-11-25)**: 8/8 passaram no navegador, servidor e banco locais, contas `uat_*` (detalhes no `validation.md`). Veredito continua "NÃO VERIFICADA".
+- **Pendente**: push e deploy só com ok explícito do usuário; migration nova precisa de `migrate` no Neon antes do deploy, também só com ok explícito.
 - **Branch**: `main`, só local, sem push. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local (5433) ficou ligado depois da tentativa do Verifier.
 
 ### Pausa (2026-11-23) — gestao-por-unidade com T1–T16 feitas, Verifier não iniciado
