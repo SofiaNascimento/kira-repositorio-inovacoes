@@ -2,7 +2,7 @@
 
 **Status:** Aprovada (2026-11-23), com o inventário de testes refeito depois da R2 e as emendas
 E-1 a E-3 do Design e a emenda E-4 do Execute (GEST-13, coluna "Ações"). Escopo
-Complex: Discuss, Design e Tasks aprovados; Execute concluído (T1–T16), em verificação.
+Complex: Discuss, Design e Tasks aprovados; Execute concluído (T1–T16). **Fechada sem verificação (2026-11-25), risco aceito pelo usuário** — ver `validation.md`.
 
 ## Problem Statement
 
@@ -317,75 +317,75 @@ digam o que corrigir e como sair sem gravar, como pede a §6 v2 da `design-spec.
 
 | Requirement ID | Story | Phase | Status |
 | -------------- | ----- | ----- | ------ |
-| GEST-01 | P1 Unidade e papel (AC 1) | T1 | Implementing |
-| GEST-02 | P1 Unidade e papel (AC 2) | T1 | Implementing |
-| GEST-03 | P1 Unidade e papel (AC 3) | T1 | Implementing |
-| GEST-04 | P1 Unidade e papel (AC 4) | T5 | Implementing |
-| GEST-05 | P1 Unidade e papel (AC 5) | T5 | Implementing |
-| GEST-06 | P1 Unidade e papel (AC 6) | T5 | Implementing |
-| GEST-07 | P1 Unidade e papel (AC 7) | T5 | Implementing |
-| GEST-08 | P1 Unidade e papel (AC 8) | T5 | Implementing |
-| GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Implementing |
-| GEST-10 | P1 Minha unidade (AC 2) | T9 | Implementing |
-| GEST-11 | P1 Minha unidade (AC 3) | T9 | Implementing |
-| GEST-12 | P1 Minha unidade (AC 4) | T8 | Implementing |
-| GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Implementing |
-| GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Implementing |
-| GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Implementing |
-| GEST-16 | P1 Minha unidade (AC 8) | T8 | Implementing |
-| GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Implementing |
-| GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Implementing |
-| GEST-19 | P1 Minha unidade (AC 11) | T8 | Implementing |
-| GEST-20 | P1 Criar conta (AC 1) | T10 | Implementing |
-| GEST-21 | P1 Criar conta (AC 2) | T10 | Implementing |
-| GEST-22 | P1 Criar conta (AC 3) | T10 | Implementing |
-| GEST-23 | P1 Criar conta (AC 4) | T10 | Implementing |
-| GEST-24 | P1 Criar conta (AC 5) | T10 | Implementing |
-| GEST-25 | P1 Criar conta (AC 6) | T10 | Implementing |
-| GEST-26 | P1 Criar conta (AC 7) | T10 | Implementing |
-| GEST-27 | P1 Criar conta (AC 8) | T10 | Implementing |
-| GEST-28 | P1 Criar conta (AC 9) | T10 | Implementing |
-| GEST-29 | P1 Criar conta (AC 10) | T10 | Implementing |
-| GEST-30 | P1 Desativar (AC 1) | T11 | Implementing |
-| GEST-31 | P1 Desativar (AC 2) | T11 | Implementing |
-| GEST-32 | P1 Desativar (AC 3) | T2, T11 | Implementing |
-| GEST-33 | P1 Desativar (AC 4) | T11 | Implementing |
-| GEST-34 | P1 Desativar (AC 5) | T11 | Implementing |
-| GEST-35 | P1 Desativar (AC 6) | T11 | Implementing |
-| GEST-36 | P1 Desativar (AC 7) | T11 | Implementing |
-| GEST-37 | P1 Senha (AC 1) | T12 | Implementing |
-| GEST-38 | P1 Senha (AC 2) | T12 | Implementing |
-| GEST-39 | P1 Senha (AC 3) | T12 | Implementing |
-| GEST-40 | P1 Senha (AC 4) | T14 | Implementing |
-| GEST-41 | P1 Senha (AC 5) | T13, T16 | Implementing |
-| GEST-42 | P1 Senha (AC 6) | T13 | Implementing |
-| GEST-43 | P1 Senha (AC 7) | T13 | Implementing |
-| GEST-44 | P1 Senha (AC 8) | T13 | Implementing |
-| GEST-45 | P1 Senha (AC 9) | T13 | Implementing |
-| GEST-46 | P1 Senha (AC 10) | T13 | Implementing |
-| GEST-47 | P1 Senha (AC 11) | T13 | Implementing |
-| GEST-48 | P1 Curadoria (AC 1) | T3 | Implementing |
-| GEST-49 | P1 Curadoria (AC 2) | T3 | Implementing |
-| GEST-50 | P1 Curadoria (AC 3) | T3 | Implementing |
-| GEST-51 | P1 Curadoria (AC 4) | T3 | Implementing |
-| GEST-52 | P1 Curadoria (AC 5) | T4 | Implementing |
-| GEST-53 | P1 Curadoria (AC 6) | T3 | Implementing |
-| GEST-54 | P1 Curadoria (AC 7) | T3 | Implementing |
-| GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Implementing |
-| GEST-56 | P2 Pré-preenchida (AC 2) | T15 | Implementing |
-| GEST-57 | P2 Pré-preenchida (AC 3) | T15 | Implementing |
-| GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Implementing |
-| GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Implementing |
-| GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Implementing |
-| GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing |
-| GEST-62 | Edge: id inexistente → 404 | T11, T12 | Implementing |
-| GEST-63 | Edge: desativação simultânea | T11 | Implementing |
-| GEST-64 | Edge: unidade renomeada | T8 | Implementing |
-| GEST-65 | Edge: unidade só com o gestor | T8 | Implementing |
-| GEST-66 | Edge: senha provisória antes do papel | T14 | Implementing |
-| GEST-67 | Edge: CSRF inválido | T11 | Implementing |
-| GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing |
-| GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Implementing |
+| GEST-01 | P1 Unidade e papel (AC 1) | T1 | Implementing (não verificada, risco aceito) |
+| GEST-02 | P1 Unidade e papel (AC 2) | T1 | Implementing (não verificada, risco aceito) |
+| GEST-03 | P1 Unidade e papel (AC 3) | T1 | Implementing (não verificada, risco aceito) |
+| GEST-04 | P1 Unidade e papel (AC 4) | T5 | Implementing (não verificada, risco aceito) |
+| GEST-05 | P1 Unidade e papel (AC 5) | T5 | Implementing (não verificada, risco aceito) |
+| GEST-06 | P1 Unidade e papel (AC 6) | T5 | Implementing (não verificada, risco aceito) |
+| GEST-07 | P1 Unidade e papel (AC 7) | T5 | Implementing (não verificada, risco aceito) |
+| GEST-08 | P1 Unidade e papel (AC 8) | T5 | Implementing (não verificada, risco aceito) |
+| GEST-09 | P1 Minha unidade (AC 1) | T6, T9, T16 | Implementing (não verificada, risco aceito) |
+| GEST-10 | P1 Minha unidade (AC 2) | T9 | Implementing (não verificada, risco aceito) |
+| GEST-11 | P1 Minha unidade (AC 3) | T9 | Implementing (não verificada, risco aceito) |
+| GEST-12 | P1 Minha unidade (AC 4) | T8 | Implementing (não verificada, risco aceito) |
+| GEST-13 | P1 Minha unidade (AC 5) | T8, T16 | Implementing (não verificada, risco aceito) |
+| GEST-14 | P1 Minha unidade (AC 6) | T2, T8 | Implementing (não verificada, risco aceito) |
+| GEST-15 | P1 Minha unidade (AC 7) | T2, T8 | Implementing (não verificada, risco aceito) |
+| GEST-16 | P1 Minha unidade (AC 8) | T8 | Implementing (não verificada, risco aceito) |
+| GEST-17 | P1 Minha unidade (AC 9) | T2, T8 | Implementing (não verificada, risco aceito) |
+| GEST-18 | P1 Minha unidade (AC 10) | T2, T8 | Implementing (não verificada, risco aceito) |
+| GEST-19 | P1 Minha unidade (AC 11) | T8 | Implementing (não verificada, risco aceito) |
+| GEST-20 | P1 Criar conta (AC 1) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-21 | P1 Criar conta (AC 2) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-22 | P1 Criar conta (AC 3) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-23 | P1 Criar conta (AC 4) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-24 | P1 Criar conta (AC 5) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-25 | P1 Criar conta (AC 6) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-26 | P1 Criar conta (AC 7) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-27 | P1 Criar conta (AC 8) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-28 | P1 Criar conta (AC 9) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-29 | P1 Criar conta (AC 10) | T10 | Implementing (não verificada, risco aceito) |
+| GEST-30 | P1 Desativar (AC 1) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-31 | P1 Desativar (AC 2) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-32 | P1 Desativar (AC 3) | T2, T11 | Implementing (não verificada, risco aceito) |
+| GEST-33 | P1 Desativar (AC 4) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-34 | P1 Desativar (AC 5) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-35 | P1 Desativar (AC 6) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-36 | P1 Desativar (AC 7) | T11 | Implementing (não verificada, risco aceito) |
+| GEST-37 | P1 Senha (AC 1) | T12 | Implementing (não verificada, risco aceito) |
+| GEST-38 | P1 Senha (AC 2) | T12 | Implementing (não verificada, risco aceito) |
+| GEST-39 | P1 Senha (AC 3) | T12 | Implementing (não verificada, risco aceito) |
+| GEST-40 | P1 Senha (AC 4) | T14 | Implementing (não verificada, risco aceito) |
+| GEST-41 | P1 Senha (AC 5) | T13, T16 | Implementing (não verificada, risco aceito) |
+| GEST-42 | P1 Senha (AC 6) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-43 | P1 Senha (AC 7) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-44 | P1 Senha (AC 8) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-45 | P1 Senha (AC 9) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-46 | P1 Senha (AC 10) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-47 | P1 Senha (AC 11) | T13 | Implementing (não verificada, risco aceito) |
+| GEST-48 | P1 Curadoria (AC 1) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-49 | P1 Curadoria (AC 2) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-50 | P1 Curadoria (AC 3) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-51 | P1 Curadoria (AC 4) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-52 | P1 Curadoria (AC 5) | T4 | Implementing (não verificada, risco aceito) |
+| GEST-53 | P1 Curadoria (AC 6) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-54 | P1 Curadoria (AC 7) | T3 | Implementing (não verificada, risco aceito) |
+| GEST-55 | P2 Pré-preenchida (AC 1) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-56 | P2 Pré-preenchida (AC 2) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-57 | P2 Pré-preenchida (AC 3) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-58 | P2 Pré-preenchida (AC 4) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-59 | P2 Pré-preenchida (AC 5) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-60 | P2 Pré-preenchida (AC 6) | T15 | Implementing (não verificada, risco aceito) |
+| GEST-61 | Edge: alvo fora do escopo → 404 | T2 | Implementing (não verificada, risco aceito) |
+| GEST-62 | Edge: id inexistente → 404 | T11, T12 | Implementing (não verificada, risco aceito) |
+| GEST-63 | Edge: desativação simultânea | T11 | Implementing (não verificada, risco aceito) |
+| GEST-64 | Edge: unidade renomeada | T8 | Implementing (não verificada, risco aceito) |
+| GEST-65 | Edge: unidade só com o gestor | T8 | Implementing (não verificada, risco aceito) |
+| GEST-66 | Edge: senha provisória antes do papel | T14 | Implementing (não verificada, risco aceito) |
+| GEST-67 | Edge: CSRF inválido | T11 | Implementing (não verificada, risco aceito) |
+| GEST-68 | P1 Formulários (AC 1) | T7, T10, T12, T13 | Implementing (não verificada, risco aceito) |
+| GEST-69 | P1 Formulários (AC 2) | T10, T12, T13 | Implementing (não verificada, risco aceito) |
 
 **Coverage:** 69 total, 69 mapeados para tasks, 69 pendentes.
 

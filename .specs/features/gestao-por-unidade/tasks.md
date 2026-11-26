@@ -10,7 +10,7 @@ Implement these tasks with the `tlc-spec-driven` skill: **activate it by name an
 
 **Spec**: `.specs/features/gestao-por-unidade/spec.md`
 **Design**: `.specs/features/gestao-por-unidade/design.md`
-**Status**: Approved (2026-11-23) · Execute não iniciado (o usuário pediu para aguardar)
+**Status**: Approved (2026-11-23) · Execute concluído (T1–T16) · Verifier não executado; fechada sem verificação com risco aceito (2026-11-25)
 
 ---
 

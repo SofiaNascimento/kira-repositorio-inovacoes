@@ -142,7 +142,16 @@
 
 ## Handoff
 
-### Pausa atual (2026-11-23) — gestao-por-unidade com T1–T16 feitas, Verifier não iniciado
+### Atual (2026-11-25) — gestao-por-unidade fechada sem verificação, risco aceito
+
+- **Feature**: gestao-por-unidade — `.specs/features/gestao-por-unidade/`. Complex. Execute concluído (T1–T16, commits na pausa abaixo); 1864 testes e build gate verdes no último gate do autor.
+- **Emenda E-4 (2026-11-25)**: GEST-13 passa a listar a coluna "Ações" depois de "Último acesso", com `th scope="col"` (`dd8411f`).
+- **Verifier**: disparado e interrompido a pedido do usuário antes de qualquer resultado. **O usuário escolheu fechar sem verificação** (opções recusadas: pausar; só o sensor nas áreas críticas, ~30–45 min). `validation.md` registra "NÃO VERIFICADA — risco aceito"; GEST-01..69 `Implementing (não verificada, risco aceito)`. `validate_state.py` sai com 1 de propósito. Nenhuma lição registrada (sem falha fundamentada).
+- **Risco**: autorização por unidade, ações por perfil, AD-016, AD-017 e migration sem checagem independente nem sensor. Se retomada, começar pelo sensor nessas áreas.
+- **Pendente**: UAT no navegador (gestor, USUARIO, senha provisória); push e deploy só com ok explícito do usuário; migration nova precisa de `migrate` no Neon antes do deploy, também só com ok explícito.
+- **Branch**: `main`, só local, sem push. **In-progress**: nenhum. **Blockers**: nenhum. PostgreSQL local (5433) ficou ligado depois da tentativa do Verifier.
+
+### Pausa (2026-11-23) — gestao-por-unidade com T1–T16 feitas, Verifier não iniciado
 
 - **Feature**: gestao-por-unidade — `.specs/features/gestao-por-unidade/`. Complex. Specify ✅ (inventário de testes refeito depois da R2: T-1 a T-6; premissas confirmadas) · Design ✅ (AD-016 situação derivada da conta; AD-017 middleware da senha provisória; extensões da AD-004 e da AD-009; emendas E-1 a E-3 na spec: GEST-07 corrigida, GEST-68 e GEST-69 novas) · Tasks ✅ (T1–T16, `validate_tasks.py` 0 erros) · **Execute não iniciado: o usuário aprovou e pediu para aguardar.**
 - **Decisões do usuário no Design**: botão "Desativar" secundário; contas pendentes da próxima feature numa seção própria; senha trocada no admin não vira provisória sozinha.
